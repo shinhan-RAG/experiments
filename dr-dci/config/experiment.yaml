@@ -5,14 +5,14 @@ seed: 42
 # Model endpoints (H200 server)
 models:
   agent_llm:
-    url: "http://localhost:8000/v1/chat/completions"
+    url: "http://localhost:8100/v1/chat/completions"
     name: "Qwen/Qwen3-8B"
     temperature: 0
     max_tokens: 2048
 
   embedding:
-    url: "http://localhost:8001/v1/embeddings"
-    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"  # H200에서 실제 모델 확인 후 수정
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
     dimension: 1536
 
   reranker:
