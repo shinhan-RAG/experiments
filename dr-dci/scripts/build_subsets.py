@@ -1,6 +1,7 @@
 """
 2단계: 규모별 서브셋 생성
-- TREC-COVID에서 gold docs 추출 → 10K/50K/110K 서브셋
+- TREC-COVID에서 gold docs 추출 → 20K/50K/110K 서브셋
+  (gold docs score>=1 이 ~17.5K이므로 최소 20K부터 시작)
 - FiQA, Ko-StrategyQA에서 50 쿼리 샘플링
 """
 
@@ -14,7 +15,7 @@ RAW_DIR = DATA_DIR / "raw"
 OUTPUT_DIR = DATA_DIR / "subsets"
 
 SEED = 42
-SUBSET_SIZES = [10_000, 50_000, 110_000]
+SUBSET_SIZES = [20_000, 50_000, 110_000]
 
 
 def load_jsonl(path: Path) -> list:
@@ -70,6 +71,9 @@ def build_trec_covid_subsets():
     # 서브셋 생성 (누적)
     for size in SUBSET_SIZES:
         noise_needed = size - len(gold_docs)
+        if noise_needed < 0:
+            print(f"  WARNING: Gold docs ({len(gold_docs)}) > subset size ({size}). Skipping.")
+            continue
         if noise_needed > len(noise_docs):
             print(f"  WARNING: Not enough noise for {size}. Using all {len(noise_docs)} noise docs.")
             noise_needed = len(noise_docs)
@@ -97,9 +101,9 @@ def build_trec_covid_subsets():
         with open(path) as f:
             subsets[size] = set(json.load(f)["doc_ids"])
 
-    assert subsets[10_000].issubset(subsets[50_000]), "10K is not subset of 50K!"
+    assert subsets[20_000].issubset(subsets[50_000]), "20K is not subset of 50K!"
     assert subsets[50_000].issubset(subsets[110_000]), "50K is not subset of 110K!"
-    print("  ✓ Subset inclusion verified (10K ⊂ 50K ⊂ 110K)")
+    print("  ✓ Subset inclusion verified (20K ⊂ 50K ⊂ 110K)")
 
 
 def sample_queries(dataset_name: str, n: int = 50):

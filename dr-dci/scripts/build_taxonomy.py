@@ -139,6 +139,6 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
 
 if __name__ == "__main__":
     import sys
-    sizes = [10_000, 50_000, 110_000] if "--all" in sys.argv else [10_000]
+    sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
     for size in sizes:
         build_taxonomy("trec-covid", size)

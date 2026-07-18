@@ -28,7 +28,7 @@ def validate():
     print("=== Sample Validation (10 docs) ===\n")
 
     # 10K 서브셋에서 10개 샘플
-    subset = load_json(DATA_DIR / "subsets" / "trec-covid" / "10k.json")
+    subset = load_json(DATA_DIR / "subsets" / "trec-covid" / "20k.json")
     random.seed(SEED)
     sample_ids = random.sample(subset["doc_ids"], 10)
 
@@ -36,12 +36,12 @@ def validate():
     corpus = load_jsonl(RAW_DIR / "trec-covid" / "corpus.jsonl")
     corpus_dict = {doc["_id"]: doc for doc in corpus}
 
-    taxonomy = load_json(DATA_DIR / "taxonomy" / "trec-covid_10k.json")
-    prefix = load_json(DATA_DIR / "prefix" / "trec-covid_10k.json")
-    metadata = load_json(DATA_DIR / "metadata" / "trec-covid_10k.json")
+    taxonomy = load_json(DATA_DIR / "taxonomy" / "trec-covid_20k.json")
+    prefix = load_json(DATA_DIR / "prefix" / "trec-covid_20k.json")
+    metadata = load_json(DATA_DIR / "metadata" / "trec-covid_20k.json")
 
     # tags (approach A만 샘플 검증)
-    tags_a = load_json(DATA_DIR / "tags" / "trec-covid" / "approach_a" / "10k.json")
+    tags_a = load_json(DATA_DIR / "tags" / "trec-covid" / "approach_a" / "20k.json")
     tags_by_doc = {}
     for elem in tags_a:
         doc_id = elem["doc_id"]

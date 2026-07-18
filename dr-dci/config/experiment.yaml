@@ -43,7 +43,7 @@ hybrid:
 # Datasets
 datasets:
   trec-covid:
-    subsets: [10000, 50000, 110000]
+    subsets: [20000, 50000, 110000]
     queries: 50
   fiqa:
     queries: 50
@@ -54,7 +54,7 @@ datasets:
 parts:
   part1_stacking:
     dataset: "trec-covid"
-    subset: 10000
+    subset: 20000
     steps:
       - name: "step0_raw"
         description: "DR-DCI raw (no augmentation)"
@@ -90,11 +90,11 @@ parts:
   part2_scaling:
     dataset: "trec-covid"
     methods: ["dr-dci-final", "hybrid-rag"]
-    subsets: [10000, 50000, 110000]
+    subsets: [20000, 50000, 110000]
 
   part3_tags:
     dataset: "trec-covid"
-    subset: 10000
+    subset: 20000
     approaches: ["A", "B", "C"]
 
   part4_generalization:
