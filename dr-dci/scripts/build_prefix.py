@@ -53,7 +53,11 @@ def call_llm(prompt: str, max_retries: int = 3) -> str:
         try:
             resp = requests.post(VLLM_URL, json=payload, timeout=30)
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"].strip()
+            content = resp.json()["choices"][0]["message"]["content"].strip()
+            if "<think>" in content:
+                import re
+                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
+            return content
         except Exception as e:
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)

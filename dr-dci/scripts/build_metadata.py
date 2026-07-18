@@ -53,6 +53,8 @@ def call_llm(prompt: str, max_retries: int = 3) -> dict:
             resp = requests.post(VLLM_URL, json=payload, timeout=30)
             resp.raise_for_status()
             content = resp.json()["choices"][0]["message"]["content"].strip()
+            if "<think>" in content:
+                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
             if content.startswith("```"):
                 content = content.split("```")[1]
                 if content.startswith("json"):

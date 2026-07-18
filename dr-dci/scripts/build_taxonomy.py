@@ -68,6 +68,10 @@ def call_llm(prompt: str, max_retries: int = 3) -> str:
             resp = requests.post(VLLM_URL, json=payload, timeout=30)
             resp.raise_for_status()
             content = resp.json()["choices"][0]["message"]["content"].strip()
+            # Qwen3 thinking 제거
+            import re
+            if "<think>" in content:
+                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
             # JSON 파싱 시도
             if content.startswith("```"):
                 content = content.split("```")[1]

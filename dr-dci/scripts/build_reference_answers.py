@@ -55,7 +55,12 @@ def call_llm(prompt: str, system: str = SYSTEM_PROMPT, max_retries: int = 3) -> 
         try:
             resp = requests.post(VLLM_URL, json=payload, timeout=60)
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"].strip()
+            content = resp.json()["choices"][0]["message"]["content"].strip()
+            # Qwen3 thinking mode: remove <think>...</think> block
+            if "<think>" in content:
+                import re
+                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL)
+            return content.strip()
         except Exception as e:
             if attempt < max_retries - 1:
                 print(f"    Retry {attempt + 1}: {e}")
