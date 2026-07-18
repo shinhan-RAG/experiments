@@ -61,7 +61,7 @@ def call_llm(prompt: str, max_retries: int = 3) -> str:
         ],
         "temperature": 0,
         "max_tokens": 100,
-        "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+        "chat_template_kwargs": {"enable_thinking": False},
     }
 
     for attempt in range(max_retries):
