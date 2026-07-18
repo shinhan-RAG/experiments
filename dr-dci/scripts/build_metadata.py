@@ -15,7 +15,7 @@ RAW_DIR = DATA_DIR / "raw"
 SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "metadata"
 
-VLLM_URL = "http://localhost:8000/v1/chat/completions"
+VLLM_URL = "http://localhost:8100/v1/chat/completions"
 MODEL_NAME = "Qwen/Qwen3-8B"
 
 SYSTEM_PROMPT = """Extract structured metadata from the given medical document.

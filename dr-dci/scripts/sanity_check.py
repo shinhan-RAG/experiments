@@ -151,7 +151,7 @@ def run_sanity(config):
     )
 
     for i, q in enumerate(queries):
-        query_text = q.get("title", q.get("text", ""))
+        query_text = q.get("title") or q.get("text", "")
         print(f"    [{i+1}] {query_text[:50]}...")
         try:
             result = agent.run(query_text)
@@ -179,7 +179,7 @@ def run_sanity(config):
     hybrid.index(corpus)
 
     for i, q in enumerate(queries):
-        query_text = q.get("title", q.get("text", ""))
+        query_text = q.get("title") or q.get("text", "")
         print(f"    [{i+1}] {query_text[:50]}...")
         try:
             result = hybrid.run(query_text)

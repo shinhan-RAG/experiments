@@ -15,7 +15,7 @@ RAW_DIR = DATA_DIR / "raw"
 SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "prefix"
 
-VLLM_URL = "http://localhost:8000/v1/chat/completions"
+VLLM_URL = "http://localhost:8100/v1/chat/completions"
 MODEL_NAME = "Qwen/Qwen3-8B"
 
 SYSTEM_PROMPT = """Generate a brief contextual prefix (50-100 tokens) for the given document chunk.

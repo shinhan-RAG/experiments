@@ -16,7 +16,7 @@ RAW_DIR = DATA_DIR / "raw"
 OUTPUT_DIR = DATA_DIR / "reference_answers"
 
 # H200 서버의 vLLM endpoint (실행 시 환경에 맞게 수정)
-VLLM_URL = "http://localhost:8000/v1/chat/completions"
+VLLM_URL = "http://localhost:8100/v1/chat/completions"
 MODEL_NAME = "Qwen/Qwen3-8B"
 
 SYSTEM_PROMPT = """You are an expert medical researcher. Given a query and relevant research paper excerpts, generate a comprehensive reference answer.
@@ -91,7 +91,7 @@ def build_reference_answers():
         if qid not in query_dict:
             continue
 
-        query_text = query_dict[qid].get("title", query_dict[qid].get("text", ""))
+        query_text = query_dict[qid].get("title") or query_dict[qid].get("text", "")
 
         # gold docs 텍스트 수집 (최대 5개, 각 500자 제한)
         docs_texts = []

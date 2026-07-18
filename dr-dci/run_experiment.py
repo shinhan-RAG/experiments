@@ -169,7 +169,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     results = []
     for i, q in enumerate(queries):
         qid = str(q["_id"])
-        query_text = q.get("title", q.get("text", ""))
+        query_text = q.get("title") or q.get("text", "")
 
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
 
@@ -241,7 +241,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     results = []
     for i, q in enumerate(queries):
         qid = str(q["_id"])
-        query_text = q.get("title", q.get("text", ""))
+        query_text = q.get("title") or q.get("text", "")
 
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
 
