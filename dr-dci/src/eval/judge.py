@@ -1,0 +1,89 @@
+"""
+LLM-as-Judge 평가기
+- Accuracy: correct/incorrect 판정
+- Gold R@W: workspace recall
+- Efficiency: Gold R@W / Pull 횟수
+"""
+
+import json
+import os
+import requests
+from pathlib import Path
+
+
+class Judge:
+    def __init__(self, llm_url: str, model_name: str, prompt_template: str, api_key: str = None):
+        self.llm_url = llm_url
+        self.model_name = model_name
+        self.prompt_template = prompt_template
+        self.api_key = api_key or os.getenv("NVIDIA_API_KEY", "")
+
+    def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
+        """LLM-as-Judge로 정답 여부 판정"""
+        prompt = self.prompt_template.format(
+            query=query,
+            reference_answer=reference_answer,
+            candidate_answer=candidate_answer,
+        )
+
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        payload = {
+            "model": self.model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0,
+            "max_tokens": 10,
+        }
+
+        try:
+            resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=30)
+            resp.raise_for_status()
+            result = resp.json()["choices"][0]["message"]["content"].strip().lower()
+            return "correct" if "correct" in result else "incorrect"
+        except Exception as e:
+            print(f"  Judge error: {e}")
+            return "error"
+
+    @staticmethod
+    def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
+        """Gold R@W = |Workspace ∩ gold_docs| / |gold_docs|"""
+        if not gold_doc_ids:
+            return 0.0
+        intersection = set(workspace_docs) & set(gold_doc_ids)
+        return len(intersection) / len(gold_doc_ids)
+
+    @staticmethod
+    def efficiency(gold_recall: float, pull_count: int) -> float:
+        """Efficiency = Gold R@W / Pull 횟수"""
+        if pull_count == 0:
+            return 0.0
+        return gold_recall / pull_count
+
+    @staticmethod
+    def degradation_rate(acc_small: float, acc_large: float) -> float:
+        """Degradation Rate = (small_acc - large_acc) / small_acc * 100%"""
+        if acc_small == 0:
+            return 0.0
+        return (acc_small - acc_large) / acc_small * 100
+
+
+def compute_metrics(results: list[dict]) -> dict:
+    """실험 결과 리스트에서 집계 메트릭 계산"""
+    n = len(results)
+    if n == 0:
+        return {}
+
+    accuracy = sum(1 for r in results if r.get("judgment") == "correct") / n
+    avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
+    avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
+    avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
+
+    return {
+        "n": n,
+        "accuracy": round(accuracy, 4),
+        "avg_gold_recall": round(avg_recall, 4),
+        "avg_efficiency": round(avg_efficiency, 4),
+        "avg_pulls": round(avg_pulls, 2),
+    }

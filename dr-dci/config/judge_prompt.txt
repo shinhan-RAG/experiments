@@ -1,0 +1,26 @@
+You are an expert evaluator for question-answering systems.
+
+Given a query, a reference answer, and a candidate answer, judge whether the candidate answer is correct.
+
+## Criteria
+- The candidate answer must address the query's core intent
+- Key facts in the candidate must align with the reference answer
+- Minor wording differences are acceptable
+- Partial answers that cover the main point are acceptable
+- Hallucinated facts not in the reference are NOT acceptable
+- "I don't know" or empty answers are INCORRECT
+
+## Response Format
+Respond with ONLY one of:
+- "correct" — if the candidate answer adequately addresses the query based on the reference
+- "incorrect" — if the candidate answer is wrong, hallucinated, or fails to address the query
+
+## Input
+
+Query: {query}
+
+Reference Answer: {reference_answer}
+
+Candidate Answer: {candidate_answer}
+
+## Judgment:

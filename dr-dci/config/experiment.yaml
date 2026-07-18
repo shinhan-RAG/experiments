@@ -1,0 +1,107 @@
+# DR-DCI Augmentation Experiment Config
+
+seed: 42
+
+# Model endpoints (H200 server)
+models:
+  agent_llm:
+    url: "http://localhost:8000/v1/chat/completions"
+    name: "Qwen/Qwen3-8B"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8001/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"  # H200에서 실제 모델 확인 후 수정
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    # NVIDIA NIM API
+    url: "https://integrate.api.nvidia.com/v1/chat/completions"
+    name: "meta/llama-3.1-70b-instruct"
+    temperature: 0
+    max_tokens: 512
+
+# DR-DCI agent settings
+agent:
+  max_turns: 30
+  pull_top_k: 20
+  workspace_max_docs: 100
+  dci_tools: ["grep", "find", "read", "filter"]
+
+# Hybrid RAG baseline settings
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"  # reciprocal rank fusion
+  rerank_top_k: 20
+
+# Datasets
+datasets:
+  trec-covid:
+    subsets: [10000, 50000, 110000]
+    queries: 50
+  fiqa:
+    queries: 50
+  ko-strategyqa:
+    queries: 50
+
+# Experiment parts
+parts:
+  part1_stacking:
+    dataset: "trec-covid"
+    subset: 10000
+    steps:
+      - name: "step0_raw"
+        description: "DR-DCI raw (no augmentation)"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "step1_taxonomy"
+        description: "+Document Taxonomy (Pull path filtering)"
+        taxonomy: true
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "step2_tags"
+        description: "+Semantic Tagging @el: approach A (DCI grep precision)"
+        taxonomy: true
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "step3_prefix"
+        description: "+Contextual Prefix (Pull embedding quality)"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: false
+      - name: "step4_metadata"
+        description: "+Metadata Filter (Pull pre-filter)"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: true
+
+  part2_scaling:
+    dataset: "trec-covid"
+    methods: ["dr-dci-final", "hybrid-rag"]
+    subsets: [10000, 50000, 110000]
+
+  part3_tags:
+    dataset: "trec-covid"
+    subset: 10000
+    approaches: ["A", "B", "C"]
+
+  part4_generalization:
+    datasets: ["fiqa", "ko-strategyqa"]
+    methods: ["dr-dci-final", "hybrid-rag"]
+
+# Evaluation
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"
