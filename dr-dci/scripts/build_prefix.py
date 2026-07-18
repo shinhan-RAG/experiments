@@ -47,6 +47,7 @@ def call_llm(prompt: str, max_retries: int = 3) -> str:
         ],
         "temperature": 0,
         "max_tokens": 150,
+        "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
     }
 
     for attempt in range(max_retries):
@@ -90,8 +91,6 @@ def build_prefix(dataset: str = "trec-covid", subset_size: int = 10_000):
 
         if (i + 1) % 100 == 0:
             print(f"  Progress: {i + 1}/{len(corpus_subset)}")
-
-        time.sleep(0.05)
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
