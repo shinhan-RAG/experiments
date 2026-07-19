@@ -7,6 +7,7 @@ LLM-as-Judge 평가기
 
 import json
 import os
+import time
 import requests
 from pathlib import Path
 
@@ -19,7 +20,7 @@ class Judge:
         self.api_key = api_key or os.getenv("NVIDIA_API_KEY", "")
 
     def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
-        """LLM-as-Judge로 정답 여부 판정"""
+        """LLM-as-Judge로 정답 여부 판정 (retry with backoff)"""
         prompt = self.prompt_template.format(
             query=query,
             reference_answer=reference_answer,
@@ -35,17 +36,26 @@ class Judge:
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0,
             "max_tokens": 10,
-            "chat_template_kwargs": {"enable_thinking": False},
         }
 
-        try:
-            resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
-            resp.raise_for_status()
-            result = resp.json()["choices"][0]["message"]["content"].strip().lower()
-            return "correct" if "correct" in result else "incorrect"
-        except Exception as e:
-            print(f"  Judge error: {e}")
-            return "error"
+        for attempt in range(3):
+            try:
+                resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
+                if resp.status_code == 429:
+                    wait = 2 ** (attempt + 1)
+                    time.sleep(wait)
+                    continue
+                resp.raise_for_status()
+                result = resp.json()["choices"][0]["message"]["content"].strip().lower()
+                return "correct" if "correct" in result else "incorrect"
+            except requests.exceptions.Timeout:
+                time.sleep(2 ** attempt)
+                continue
+            except Exception as e:
+                print(f"  Judge error: {e}")
+                return "error"
+        print(f"  Judge error: max retries exceeded")
+        return "error"
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
