@@ -1,0 +1,51 @@
+dataset: fiqa
+domain: finance
+
+L1:
+  - Investing
+  - Personal_Finance
+  - Markets
+  - Banking
+  - Tax
+  - Insurance
+  - Other
+
+L2:
+  Investing:
+    - Stock_Selection
+    - Portfolio
+    - ETF_Funds
+    - Dividends
+    - Risk_Management
+  Personal_Finance:
+    - Budgeting
+    - Debt
+    - Savings
+    - Retirement
+    - Credit
+  Markets:
+    - Equities
+    - Bonds
+    - Commodities
+    - Crypto
+    - Forex
+  Banking:
+    - Accounts
+    - Loans
+    - Mortgage
+    - Interest_Rates
+  Tax:
+    - Income_Tax
+    - Capital_Gains
+    - Deductions
+    - Filing
+  Insurance:
+    - Life
+    - Health
+    - Property
+    - Auto
+  Other:
+    - Regulation
+    - Economics
+    - Career
+    - General

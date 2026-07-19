@@ -1,0 +1,69 @@
+dataset: ko-strategyqa
+domain: general_knowledge
+
+L1:
+  - Science
+  - History
+  - Geography
+  - Arts_Culture
+  - Sports
+  - Politics
+  - Technology
+  - Biology
+  - Society
+  - Other
+
+L2:
+  Science:
+    - Physics
+    - Chemistry
+    - Astronomy
+    - Mathematics
+    - Earth_Science
+  History:
+    - Ancient
+    - Medieval
+    - Modern
+    - Wars
+    - Civilizations
+  Geography:
+    - Countries
+    - Cities
+    - Natural_Features
+    - Climate
+  Arts_Culture:
+    - Music
+    - Film
+    - Literature
+    - Visual_Arts
+    - Architecture
+  Sports:
+    - Team_Sports
+    - Individual_Sports
+    - Olympics
+    - Records
+  Politics:
+    - Government
+    - Elections
+    - International
+    - Law
+  Technology:
+    - Computing
+    - Engineering
+    - Internet
+    - Inventions
+  Biology:
+    - Animals
+    - Plants
+    - Human_Body
+    - Ecology
+    - Genetics
+  Society:
+    - Education
+    - Economy
+    - Religion
+    - Demographics
+  Other:
+    - Miscellaneous
+    - Trivia
+    - General

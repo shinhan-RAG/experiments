@@ -1,0 +1,42 @@
+dataset: trec-covid
+domain: biomedical
+
+L1:
+  - Treatment
+  - Diagnosis
+  - Prevention
+  - Mechanism
+  - Epidemiology
+  - Other
+
+L2:
+  Treatment:
+    - Drug
+    - Vaccine
+    - Therapy
+    - Clinical_Trial
+  Diagnosis:
+    - Testing
+    - Imaging
+    - Symptoms
+    - Biomarker
+  Prevention:
+    - Public_Health
+    - PPE
+    - Social_Distancing
+    - Hygiene
+  Mechanism:
+    - Virology
+    - Immunology
+    - Pathogenesis
+    - Genetics
+  Epidemiology:
+    - Transmission
+    - Mortality
+    - Risk_Factors
+    - Modeling
+  Other:
+    - Policy
+    - Mental_Health
+    - Economics
+    - General
