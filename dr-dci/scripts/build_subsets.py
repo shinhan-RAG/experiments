@@ -163,7 +163,7 @@ def build_generic_subset(dataset_name: str, subset_size: int = 20_000):
     out_dir = OUTPUT_DIR / dataset_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(out_dir / f"{actual_size // 1000}k.json", "w") as f:
+    with open(out_dir / f"{subset_size // 1000}k.json", "w") as f:
         json.dump({
             "subset_size": actual_size,
             "actual_size": len(subset_ids),
