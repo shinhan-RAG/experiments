@@ -1,0 +1,62 @@
+dataset: ko-strategyqa
+domain: general_knowledge
+description: "Korean multi-hop reasoning QA over Wikipedia-style documents"
+
+fields:
+  topic_domain:
+    type: enum
+    description: "Primary knowledge domain of the document"
+    values:
+      - history
+      - science
+      - geography
+      - arts_culture
+      - sports
+      - politics
+      - technology
+      - economics
+      - biology
+      - society
+      - other
+
+  document_type:
+    type: enum
+    description: "Type/style of the document"
+    values:
+      - encyclopedia
+      - news
+      - biography
+      - event_description
+      - explanation
+      - statistics
+      - other
+
+  time_period:
+    type: enum
+    description: "Primary time period discussed"
+    nullable: true
+    values:
+      - ancient
+      - medieval
+      - modern
+      - contemporary
+      - timeless
+
+  entities:
+    type: list
+    description: "Key named entities in the document"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - person
+          - organization
+          - location
+          - event
+          - concept
+          - work
+          - other
