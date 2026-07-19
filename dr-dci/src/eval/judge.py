@@ -17,7 +17,7 @@ class Judge:
         self.llm_url = llm_url
         self.model_name = model_name
         self.prompt_template = prompt_template
-        self.api_key = api_key or os.getenv("NVIDIA_API_KEY", "")
+        self.api_key = api_key or os.getenv("GROQ_API_KEY", "")
 
     def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
         """LLM-as-Judge로 정답 여부 판정 (retry with backoff)"""
@@ -40,7 +40,7 @@ class Judge:
 
         for attempt in range(5):
             try:
-                time.sleep(1)  # base delay between calls
+                time.sleep(2)  # base delay between calls (Groq: 30 req/min)
                 resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
                 if resp.status_code == 429:
                     wait = 5 * (attempt + 1)  # 5, 10, 15, 20, 25s
