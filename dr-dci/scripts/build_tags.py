@@ -167,6 +167,12 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
     """서브셋 문서에 대해 3가지 방식의 @el: 태그 생성"""
     print(f"=== Building @el: Tags for {dataset} ({subset_size // 1000}K) ===")
 
+    # 이미 존재하면 스킵 (approach C 기준)
+    check_path = OUTPUT_DIR / dataset / "approach_c" / f"{subset_size // 1000}k.json"
+    if check_path.exists():
+        print(f"  Already exists: {check_path}, skipping.")
+        return
+
     # 서브셋 doc IDs
     subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
     with open(subset_path) as f:
@@ -215,6 +221,8 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
 
 if __name__ == "__main__":
     import sys
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    dataset = args[0] if args else "trec-covid"
     sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
     for size in sizes:
-        build_tags("trec-covid", size)
+        build_tags(dataset, size)

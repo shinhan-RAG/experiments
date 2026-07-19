@@ -106,49 +106,98 @@ def build_trec_covid_subsets():
     print("  ✓ Subset inclusion verified (20K ⊂ 50K ⊂ 110K)")
 
 
-def sample_queries(dataset_name: str, n: int = 50):
-    """FiQA, Ko-StrategyQA에서 n개 쿼리 샘플링 (gold docs가 있는 것만)"""
-    print(f"\n=== Sampling {n} queries for {dataset_name} ===")
+def build_generic_subset(dataset_name: str, subset_size: int = 20_000):
+    """fiqa, ko-strategyqa 등 일반 데이터셋의 서브셋 생성
+    - 50개 쿼리 샘플링
+    - gold docs 전부 포함 + noise로 채워서 subset_size 맞춤
+    """
+    print(f"\n=== Building {dataset_name} subset ({subset_size // 1000}K) ===")
 
     queries = load_jsonl(RAW_DIR / dataset_name / "queries.jsonl")
     qrels = load_jsonl(RAW_DIR / dataset_name / "qrels.jsonl")
+    corpus = load_jsonl(RAW_DIR / dataset_name / "corpus.jsonl")
 
     # 쿼리 ID별 gold docs
     query_gold = defaultdict(set)
     for entry in qrels:
         if entry["score"] >= 1:
-            query_gold[str(entry["query-id"])].add(entry["corpus-id"])
+            query_gold[str(entry["query-id"])].add(str(entry["corpus-id"]))
 
-    # gold docs가 있는 쿼리만 필터
+    # gold docs가 있는 쿼리만 필터 → 50개 샘플링
     valid_queries = [q for q in queries if str(q["_id"]) in query_gold]
     print(f"  Valid queries (with gold docs): {len(valid_queries)}")
 
     random.seed(SEED)
-    sampled = random.sample(valid_queries, min(n, len(valid_queries)))
+    sampled = random.sample(valid_queries, min(50, len(valid_queries)))
+    sampled_ids = [q["_id"] for q in sampled]
 
     # 샘플된 쿼리의 gold doc IDs
-    sampled_ids = [q["_id"] for q in sampled]
-    sampled_gold_ids = set()
+    gold_doc_ids = set()
     for qid in sampled_ids:
-        sampled_gold_ids.update(query_gold[str(qid)])
+        gold_doc_ids.update(query_gold[str(qid)])
+    print(f"  Sampled: {len(sampled)} queries, {len(gold_doc_ids)} gold docs")
 
-    out_path = OUTPUT_DIR / dataset_name / "sampled_queries.json"
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    # corpus에서 gold / noise 분리
+    corpus_ids = {doc["_id"] for doc in corpus}
+    gold_doc_ids = gold_doc_ids & corpus_ids  # corpus에 있는 것만
+
+    gold_docs = [doc for doc in corpus if doc["_id"] in gold_doc_ids]
+    noise_docs = [doc for doc in corpus if doc["_id"] not in gold_doc_ids]
+
+    random.shuffle(noise_docs)
+
+    # subset 구성
+    actual_size = min(subset_size, len(corpus))
+    noise_needed = actual_size - len(gold_docs)
+    if noise_needed < 0:
+        # gold docs가 subset_size보다 많으면 gold만으로 구성
+        subset_docs = gold_docs[:actual_size]
+        noise_needed = 0
+    else:
+        noise_needed = min(noise_needed, len(noise_docs))
+        subset_docs = gold_docs + noise_docs[:noise_needed]
+
+    subset_ids = [doc["_id"] for doc in subset_docs]
+
+    # 저장: subset
+    out_dir = OUTPUT_DIR / dataset_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(out_dir / f"{actual_size // 1000}k.json", "w") as f:
+        json.dump({
+            "subset_size": actual_size,
+            "actual_size": len(subset_ids),
+            "gold_doc_count": len(gold_docs),
+            "noise_doc_count": noise_needed,
+            "doc_ids": subset_ids,
+        }, f, ensure_ascii=False, indent=2)
+
+    # 저장: sampled queries
+    with open(out_dir / "sampled_queries.json", "w") as f:
         json.dump({
             "count": len(sampled),
             "query_ids": sampled_ids,
-            "gold_doc_ids": list(sampled_gold_ids),
-            "gold_doc_count": len(sampled_gold_ids),
+            "queries": sampled,
+            "gold_doc_ids": list(gold_doc_ids),
+            "gold_doc_count": len(gold_doc_ids),
         }, f, ensure_ascii=False, indent=2)
 
-    print(f"  Sampled: {len(sampled)} queries, {len(sampled_gold_ids)} gold docs")
+    print(f"  Subset: {len(subset_ids)} docs ({len(gold_docs)} gold + {noise_needed} noise)")
+    print(f"  Saved to: {out_dir}")
 
 
 if __name__ == "__main__":
-    build_trec_covid_subsets()
-    sample_queries("fiqa", n=50)
-    sample_queries("ko-strategyqa", n=50)
+    import sys
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+
+    if not args or "trec-covid" in args:
+        build_trec_covid_subsets()
+
+    if not args or "fiqa" in args:
+        build_generic_subset("fiqa", subset_size=20_000)
+
+    if not args or "ko-strategyqa" in args:
+        build_generic_subset("ko-strategyqa", subset_size=20_000)
 
     print("\n=== Done ===")
     print(f"Subsets saved to: {OUTPUT_DIR}")

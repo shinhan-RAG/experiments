@@ -191,6 +191,12 @@ def build_default_result(schema: dict) -> dict:
 def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
     print(f"=== Building Metadata for {dataset} ({subset_size // 1000}K) ===")
 
+    # 이미 존재하면 스킵
+    out_path = OUTPUT_DIR / f"{dataset}_{subset_size // 1000}k.json"
+    if out_path.exists():
+        print(f"  Already exists: {out_path}, skipping.")
+        return
+
     # 스키마 로드
     schema = load_schema(dataset)
     system_prompt = build_system_prompt(schema)

@@ -92,8 +92,14 @@ def call_llm(prompt: str, max_retries: int = 3) -> str:
 
 
 def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
-    """10K 서브셋 문서에 대해 taxonomy 생성"""
+    """서브셋 문서에 대해 taxonomy 생성"""
     print(f"=== Building Taxonomy for {dataset} ({subset_size // 1000}K) ===")
+
+    # 이미 존재하면 스킵
+    out_path = OUTPUT_DIR / f"{dataset}_{subset_size // 1000}k.json"
+    if out_path.exists():
+        print(f"  Already exists: {out_path}, skipping.")
+        return
 
     # 서브셋 doc IDs 로드
     subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
@@ -144,6 +150,8 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
 
 if __name__ == "__main__":
     import sys
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    dataset = args[0] if args else "trec-covid"
     sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
     for size in sizes:
-        build_taxonomy("trec-covid", size)
+        build_taxonomy(dataset, size)
