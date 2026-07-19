@@ -40,7 +40,7 @@ class Judge:
 
         for attempt in range(5):
             try:
-                time.sleep(2)  # base delay between calls (Groq: 30 req/min)
+                time.sleep(3)  # base delay between calls (Groq: 30 req/min → 20 req/min safe)
                 resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
                 if resp.status_code == 429:
                     wait = 5 * (attempt + 1)  # 5, 10, 15, 20, 25s
