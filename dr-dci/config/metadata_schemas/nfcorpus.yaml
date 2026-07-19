@@ -1,0 +1,51 @@
+dataset: nfcorpus
+domain: nutrition_medicine
+description: "Nutrition and medical information documents"
+
+fields:
+  document_type:
+    type: enum
+    description: "Type of document"
+    values:
+      - research_article
+      - clinical_guideline
+      - patient_education
+      - news
+      - review
+      - other
+
+  year:
+    type: integer
+    description: "Publication year"
+    range: [2000, 2024]
+    nullable: true
+
+  target_audience:
+    type: enum
+    description: "Intended audience"
+    nullable: true
+    values:
+      - clinician
+      - patient
+      - researcher
+      - general_public
+      - other
+
+  entities:
+    type: list
+    description: "Key named entities"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - nutrient
+          - food
+          - disease
+          - drug
+          - supplement
+          - body_system
+          - other

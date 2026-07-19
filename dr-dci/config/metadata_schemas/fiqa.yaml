@@ -1,0 +1,61 @@
+dataset: fiqa
+domain: finance
+description: "Financial opinion and QA documents"
+
+fields:
+  asset_class:
+    type: enum
+    description: "Primary asset class discussed"
+    nullable: true
+    values:
+      - equity
+      - fixed_income
+      - commodity
+      - crypto
+      - real_estate
+      - forex
+      - derivatives
+      - other
+
+  topic_type:
+    type: enum
+    description: "Financial topic category"
+    values:
+      - investing
+      - tax
+      - retirement
+      - debt
+      - insurance
+      - budgeting
+      - banking
+      - market_analysis
+      - other
+
+  time_horizon:
+    type: enum
+    description: "Investment/planning time horizon"
+    nullable: true
+    values:
+      - short_term
+      - medium_term
+      - long_term
+      - null
+
+  entities:
+    type: list
+    description: "Key financial entities"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - company
+          - index
+          - instrument
+          - regulation
+          - institution
+          - concept
+          - other

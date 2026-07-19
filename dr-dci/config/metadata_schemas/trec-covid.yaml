@@ -1,0 +1,60 @@
+dataset: trec-covid
+domain: biomedical
+description: "COVID-19 related medical research papers"
+
+fields:
+  study_type:
+    type: enum
+    description: "Type of study/publication"
+    values:
+      - review
+      - clinical_trial
+      - observational
+      - case_report
+      - meta_analysis
+      - commentary
+      - in_vitro
+      - animal_study
+      - other
+
+  year:
+    type: integer
+    description: "Publication year (null if undetectable)"
+    range: [1990, 2024]
+    nullable: true
+
+  population:
+    type: enum
+    description: "Target population studied"
+    nullable: true
+    values:
+      - general
+      - elderly
+      - children
+      - pregnant
+      - healthcare_workers
+      - immunocompromised
+      - hospitalized
+      - icu_patients
+      - outpatient
+      - other
+
+  entities:
+    type: list
+    description: "Key named entities in the document"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - disease
+          - drug
+          - gene_protein
+          - organism
+          - procedure
+          - biomarker
+          - organ_system
+          - other

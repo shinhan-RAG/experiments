@@ -1,0 +1,59 @@
+dataset: scifact
+domain: scientific_claims
+description: "Scientific claim verification documents"
+
+fields:
+  discipline:
+    type: enum
+    description: "Scientific discipline"
+    values:
+      - biology
+      - medicine
+      - chemistry
+      - genetics
+      - neuroscience
+      - epidemiology
+      - pharmacology
+      - other
+
+  methodology:
+    type: enum
+    description: "Research methodology used"
+    nullable: true
+    values:
+      - experimental
+      - observational
+      - computational
+      - meta_analysis
+      - review
+      - case_study
+      - other
+
+  evidence_strength:
+    type: enum
+    description: "Strength of evidence presented"
+    nullable: true
+    values:
+      - strong
+      - moderate
+      - weak
+      - inconclusive
+
+  entities:
+    type: list
+    description: "Key scientific entities"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - gene_protein
+          - disease
+          - drug
+          - organism
+          - cell_type
+          - pathway
+          - other
