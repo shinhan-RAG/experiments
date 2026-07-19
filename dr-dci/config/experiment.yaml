@@ -20,9 +20,9 @@ models:
     name: "BAAI/bge-reranker-v2-m3"
 
   judge_llm:
-    # NVIDIA NIM API
-    url: "https://integrate.api.nvidia.com/v1/chat/completions"
-    name: "meta/llama-3.1-70b-instruct"
+    # Local Qwen3-8B
+    url: "http://localhost:8100/v1/chat/completions"
+    name: "Qwen/Qwen3-8B"
     temperature: 0
     max_tokens: 512
 

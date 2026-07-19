@@ -35,10 +35,11 @@ class Judge:
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0,
             "max_tokens": 10,
+            "chat_template_kwargs": {"enable_thinking": False},
         }
 
         try:
-            resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=30)
+            resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
             resp.raise_for_status()
             result = resp.json()["choices"][0]["message"]["content"].strip().lower()
             return "correct" if "correct" in result else "incorrect"
