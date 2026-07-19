@@ -86,69 +86,65 @@ DR-DCI (arxiv 2606.14885) 고도화 실험용 전처리 데이터셋.
 
 ## Datasets
 
-| Dataset | Corpus | Queries | Language | Role |
-|---------|--------|---------|----------|------|
-| TREC-COVID | 171K medical papers | 50 | EN | Main (high intra-domain similarity) |
-| FiQA | 57K financial docs | 50 sampled | EN | Generalization |
-| Ko-StrategyQA | 27.8K docs | 50 sampled | KO | Korean verification |
+| Dataset | Corpus | Subsets | Queries | Language | Role |
+|---------|--------|---------|---------|----------|------|
+| TREC-COVID | 171K medical papers | 20K/50K/110K | 50 | EN | Main (scale degradation test) |
+| FiQA | 57K financial docs | 20K | 50 sampled | EN | Cross-domain generalization |
+| Ko-StrategyQA | 9.2K docs | 9.2K (full) | 50 sampled | EN | Cross-domain generalization |
 
 ## Structure
 
 ```
 subsets/
-  trec-covid/
-    10k.json          # doc_ids for 10K subset (gold + noise)
-    50k.json          # 50K subset (10K ⊂ 50K)
-    110k.json         # 110K subset (50K ⊂ 110K)
-  fiqa/
-    sampled_queries.json
-  ko-strategyqa/
-    sampled_queries.json
+  trec-covid/{20k,50k,110k}.json
+  fiqa/{20k,sampled_queries}.json
+  ko-strategyqa/{20k,sampled_queries}.json
 
 taxonomy/
-  trec-covid_10k.json   # L1/L2/L3 classification per doc
+  {dataset}_{size}.json         # L1/L2/L3 per doc (dataset-specific categories)
 
 tags/
-  trec-covid/
-    approach_a/10k.json  # @el:type/semantic_role
-    approach_b/10k.json  # @el:type/question_type
-    approach_c/10k.json  # @el:type only
+  {dataset}/approach_{a,b,c}/{size}.json  # @el: semantic tags
 
 prefix/
-  trec-covid_10k.json   # contextual prefix per doc
+  {dataset}_{size}.json         # contextual prefix per doc
 
 metadata/
-  trec-covid_10k.json   # topic, entities, year, study_type
+  {dataset}_{size}.json         # structured metadata (schema-driven)
 
 reference_answers/
-  trec-covid.json       # LLM-generated answers from gold docs
+  trec-covid.json               # LLM-generated answers from gold docs
 ```
 
 ## Augmentation Details
 
-### Document Taxonomy (L1/L2/L3)
-- L1: Treatment, Diagnosis, Prevention, Mechanism, Epidemiology, Other
-- L2: Sub-categories per L1
-- L3: Free-form topic keyword
+### Document Taxonomy (L1/L2/L3) — Dataset-specific
+- **TREC-COVID**: Treatment, Diagnosis, Prevention, Mechanism, Epidemiology, Other
+- **FiQA**: Investing, Personal_Finance, Markets, Banking, Tax, Insurance, Other
+- **Ko-StrategyQA**: Science, History, Geography, Arts_Culture, Sports, Politics, Technology, Biology, Society, Other
 
 ### Semantic Tags (@el:)
 - Elements: paragraph, table, list, figure
 - Approach A (semantic role): definition, condition, procedure, example, exception, comparison, summary, evidence, criteria
 - Approach B (question type): what, how, when, who, how_much, why, which, if
 - Approach C (type only): no sub-tag
-- Small elements: caption/footnote → merged into parent; header/footer/page-number → removed
 
 ### Contextual Prefix
 - 50-100 token summary prepended to each chunk
 - Improves embedding quality for Pull retriever
 
-### Metadata
-- topic, entities, year, study_type, population
-- Used for Pull pre-filtering
+### Metadata — Schema-driven per dataset
+- **TREC-COVID**: study_type, year, population, entities (disease/drug/gene_protein/...)
+- **FiQA**: asset_class, topic_type, time_horizon, entities (company/index/instrument/...)
+- **Ko-StrategyQA**: topic_domain, document_type, time_period, entities (person/org/location/...)
+
+## Generation
+
+All augmentations generated with Qwen3-8B (vLLM, async 32 concurrent).
 
 ## Experiment Design
 
-See: https://github.com/HwangIsAce/experiments/tree/main/dr-dci
+See: https://github.com/HwangIsAce/experiments/tree/dev/dr-dci
 """
 
 
