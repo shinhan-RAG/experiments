@@ -236,6 +236,7 @@ class DCIAgent:
             "tools": TOOL_DEFINITIONS,
             "temperature": 0,
             "max_tokens": 1024,
+            "chat_template_kwargs": {"enable_thinking": False},
         }
 
         resp = requests.post(self.llm_url, json=payload, timeout=120)

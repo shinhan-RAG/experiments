@@ -201,6 +201,7 @@ class HybridRAG:
             ],
             "temperature": 0,
             "max_tokens": 512,
+            "chat_template_kwargs": {"enable_thinking": False},
         }
         resp = requests.post(self.llm_url, json=payload, timeout=60)
         resp.raise_for_status()

@@ -389,7 +389,8 @@ def run_part4(config: dict):
 
     all_results = {}
     for dataset in part_cfg["datasets"]:
-        corpus = load_corpus(dataset)
+        subset_size = 20_000
+        corpus = load_corpus(dataset, subset_size)
         queries, qrels = load_queries(dataset)
 
         # sampled queries만 사용
@@ -402,10 +403,10 @@ def run_part4(config: dict):
 
         ref_answers = {}  # FiQA/Ko-StrategyQA는 reference answer 없음 → recall만 평가
 
-        step_config = {"taxonomy": False, "tags": False, "prefix": False, "metadata": False}
+        step_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
 
         print(f"\n  --- DR-DCI @ {dataset} ---")
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, None, dataset)
+        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, subset_size, dataset)
         metrics = compute_metrics(results)
         all_results[f"dr-dci_{dataset}"] = {"results": results, "metrics": metrics}
         print(f"    Metrics: {metrics}")

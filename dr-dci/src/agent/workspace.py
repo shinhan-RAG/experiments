@@ -75,9 +75,16 @@ class Workspace:
             if metadata_filter and match:
                 for key, val in metadata_filter.items():
                     if key == "entities":
-                        # entities는 포함 여부 확인
-                        if not any(v in doc.metadata.get("entities", []) for v in val):
-                            match = False
+                        # entities: [{name, category}, ...]
+                        doc_entities = doc.metadata.get("entities", [])
+                        doc_names = {e.get("name", "").lower() for e in doc_entities if isinstance(e, dict)}
+                        if isinstance(val, list):
+                            if not any(v.lower() in doc_names for v in val):
+                                match = False
+                        elif isinstance(val, str):
+                            doc_cats = {e.get("category", "") for e in doc_entities if isinstance(e, dict)}
+                            if val not in doc_cats:
+                                match = False
                     elif doc.metadata.get(key) != val:
                         match = False
 

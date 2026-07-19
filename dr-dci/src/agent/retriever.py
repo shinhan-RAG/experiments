@@ -98,10 +98,22 @@ class PullRetriever:
 
     def _match_metadata(self, doc_id: str, filter: dict) -> bool:
         meta = self.doc_metadata.get(doc_id, {})
+        if meta is None:
+            return False
         for key, val in filter.items():
             if key == "entities":
-                if not any(v in meta.get("entities", []) for v in val):
-                    return False
+                # entities: [{"name": ..., "category": ...}]
+                doc_entities = meta.get("entities", [])
+                if isinstance(val, list):
+                    # val이 entity name 리스트인 경우
+                    doc_names = {e.get("name", "").lower() for e in doc_entities if isinstance(e, dict)}
+                    if not any(v.lower() in doc_names for v in val):
+                        return False
+                elif isinstance(val, str):
+                    # val이 category인 경우
+                    doc_cats = {e.get("category", "") for e in doc_entities if isinstance(e, dict)}
+                    if val not in doc_cats:
+                        return False
             elif meta.get(key) != val:
                 return False
         return True
