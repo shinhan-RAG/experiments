@@ -2,21 +2,17 @@
 4단계: Document Taxonomy 생성
 - 각 문서에 L1/L2/L3 분류 태그 부여
 - LLM으로 자동 분류 (H200 Qwen3-8B)
-- TREC-COVID: 의학 논문 → 주제 기반 분류
+- 병렬 처리 (async, 32 concurrent)
 """
 
 import json
-import time
-import requests
 from pathlib import Path
+from utils import run_batch_llm, parse_llm_content
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 RAW_DIR = DATA_DIR / "raw"
 SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "taxonomy"
-
-VLLM_URL = "http://localhost:8100/v1/chat/completions"
-MODEL_NAME = "Qwen/Qwen3-8B"
 
 # TREC-COVID L1/L2 체계
 TAXONOMY = {
@@ -41,54 +37,14 @@ Respond in JSON format only:
 
 L3 is a free-form keyword (1-3 words) describing the specific topic."""
 
-USER_TEMPLATE = """Title: {title}
-Text (first 300 chars): {text}
+USER_TEMPLATE = "Title: {title}\nText (first 300 chars): {text}\n\nClassify this document."
 
-Classify this document."""
+DEFAULT_RESULT = {"L1": "Other", "L2": "General", "L3": "unknown"}
 
 
 def load_jsonl(path: Path) -> list:
     with open(path) as f:
         return [json.loads(line) for line in f]
-
-
-def call_llm(prompt: str, max_retries: int = 3) -> str:
-    payload = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0,
-        "max_tokens": 100,
-        "chat_template_kwargs": {"enable_thinking": False},
-    }
-
-    for attempt in range(max_retries):
-        try:
-            resp = requests.post(VLLM_URL, json=payload, timeout=30)
-            resp.raise_for_status()
-            content = resp.json()["choices"][0]["message"]["content"].strip()
-            # Qwen3 thinking 제거
-            import re
-            if "<think>" in content:
-                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
-            # JSON 파싱 시도
-            if content.startswith("```"):
-                content = content.split("```")[1]
-                if content.startswith("json"):
-                    content = content[4:]
-            return json.loads(content)
-        except json.JSONDecodeError:
-            if attempt < max_retries - 1:
-                time.sleep(1)
-            else:
-                return {"L1": "Other", "L2": "General", "L3": "unknown"}
-        except Exception as e:
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)
-            else:
-                return {"L1": "Other", "L2": "General", "L3": "unknown"}
 
 
 def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
@@ -113,25 +69,38 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
     corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
     print(f"  Loaded {len(corpus_subset)} docs from corpus")
 
-    # 배치 처리
-    results = {}
-    batch_size = 100
-    for i, doc in enumerate(corpus_subset):
+    # 프롬프트 준비
+    prompts = []
+    for doc in corpus_subset:
         title = doc.get("title", "")
         text = doc.get("text", "")[:300]
+        prompts.append({
+            "id": doc["_id"],
+            "text": USER_TEMPLATE.format(title=title, text=text),
+        })
 
-        prompt = USER_TEMPLATE.format(title=title, text=text)
-        taxonomy = call_llm(prompt)
-        results[doc["_id"]] = taxonomy
+    # 배치 처리
+    BATCH_SIZE = 500
+    results = {}
+    for batch_start in range(0, len(prompts), BATCH_SIZE):
+        batch = prompts[batch_start:batch_start + BATCH_SIZE]
+        raw_results = run_batch_llm(batch, SYSTEM_PROMPT, max_tokens=100)
 
-        if (i + 1) % batch_size == 0:
-            print(f"  Progress: {i + 1}/{len(corpus_subset)}")
+        for prompt_item, raw in zip(batch, raw_results):
+            if raw is None:
+                results[prompt_item["id"]] = DEFAULT_RESULT
+            else:
+                try:
+                    parsed = json.loads(parse_llm_content(raw))
+                    results[prompt_item["id"]] = parsed
+                except json.JSONDecodeError:
+                    results[prompt_item["id"]] = DEFAULT_RESULT
 
-        # no sleep needed — local vLLM handles sequential requests
+        done = min(batch_start + BATCH_SIZE, len(prompts))
+        print(f"  Progress: {done}/{len(prompts)}")
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"{dataset}_{subset_size // 1000}k.json"
     with open(out_path, "w") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 

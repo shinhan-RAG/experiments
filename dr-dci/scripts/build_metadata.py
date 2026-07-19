@@ -1,25 +1,22 @@
 """
-7단계: Metadata 생성 (Schema-driven)
+7단계: Metadata 생성 (Schema-driven, 병렬 처리)
 - 데이터셋별 YAML 스키마에 따라 구조화된 메타데이터 추출
 - controlled vocabulary로 일관성 보장
 - vLLM guided_json으로 출력 형식 강제
-- Pull pre-filter에 사용
+- async 32 concurrent
 """
 
 import json
 import re
-import requests
 import yaml
 from pathlib import Path
+from utils import run_batch_llm, parse_llm_content
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 RAW_DIR = DATA_DIR / "raw"
 SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "metadata"
 SCHEMA_DIR = Path(__file__).parent.parent / "config" / "metadata_schemas"
-
-VLLM_URL = "http://localhost:8100/v1/chat/completions"
-MODEL_NAME = "Qwen/Qwen3-8B"
 
 
 def load_schema(dataset: str) -> dict:
@@ -41,7 +38,7 @@ def build_system_prompt(schema: dict) -> str:
             categories = field_def["item_schema"]["category"]["values"]
             max_items = field_def.get("max_items", 5)
             field_descriptions.append(
-                f'  "{field_name}": [list of objects {{\"name\": \"...\", \"category\": \"...\"}}]  '
+                f'  "{field_name}": [list of objects {{"name": "...", "category": "..."}}]  '
                 f'// max {max_items}, category must be one of: {categories}'
             )
         elif field_def["type"] == "enum":
@@ -139,39 +136,6 @@ def load_jsonl(path: Path) -> list:
         return [json.loads(line) for line in f]
 
 
-def call_llm(prompt: str, system: str, json_schema: dict, max_retries: int = 3) -> dict:
-    payload = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0,
-        "max_tokens": 300,
-        "chat_template_kwargs": {"enable_thinking": False},
-        "guided_json": json_schema,
-    }
-
-    for attempt in range(max_retries):
-        try:
-            resp = requests.post(VLLM_URL, json=payload, timeout=30)
-            resp.raise_for_status()
-            content = resp.json()["choices"][0]["message"]["content"].strip()
-            if "<think>" in content:
-                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
-            if content.startswith("```"):
-                content = content.split("```")[1]
-                if content.startswith("json"):
-                    content = content[4:]
-            return json.loads(content)
-        except (json.JSONDecodeError, Exception):
-            if attempt < max_retries - 1:
-                import time
-                time.sleep(1)
-            else:
-                return None
-
-
 def build_default_result(schema: dict) -> dict:
     """스키마 기반 기본값 생성"""
     fields = schema["fields"]
@@ -215,34 +179,49 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
     corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
     print(f"  Docs to process: {len(corpus_subset)}")
 
-    results = {}
-    failed = 0
-    for i, doc in enumerate(corpus_subset):
+    # 프롬프트 준비
+    prompts = []
+    for doc in corpus_subset:
         title = doc.get("title", "")
         text = doc.get("text", "")[:400]
+        prompts.append({
+            "id": doc["_id"],
+            "text": f"Title: {title}\nText: {text}",
+        })
 
-        prompt = f"Title: {title}\nText: {text}"
-        metadata = call_llm(prompt, system_prompt, json_schema)
+    # 배치 처리
+    BATCH_SIZE = 500
+    results = {}
+    failed = 0
+    for batch_start in range(0, len(prompts), BATCH_SIZE):
+        batch = prompts[batch_start:batch_start + BATCH_SIZE]
+        raw_results = run_batch_llm(
+            batch, system_prompt, max_tokens=300, guided_json=json_schema
+        )
 
-        if metadata is None:
-            metadata = build_default_result(schema)
-            failed += 1
+        for prompt_item, raw in zip(batch, raw_results):
+            if raw is None:
+                results[prompt_item["id"]] = build_default_result(schema)
+                failed += 1
+            else:
+                try:
+                    parsed = json.loads(parse_llm_content(raw))
+                    results[prompt_item["id"]] = parsed
+                except json.JSONDecodeError:
+                    results[prompt_item["id"]] = build_default_result(schema)
+                    failed += 1
 
-        results[doc["_id"]] = metadata
-
-        if (i + 1) % 100 == 0:
-            print(f"  Progress: {i + 1}/{len(corpus_subset)} (failed: {failed})")
+        done = min(batch_start + BATCH_SIZE, len(prompts))
+        print(f"  Progress: {done}/{len(prompts)} (failed: {failed})")
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"{dataset}_{subset_size // 1000}k.json"
     with open(out_path, "w") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     # 통계
     print(f"\n  Total: {len(results)} docs (failed: {failed})")
 
-    # enum 필드 분포 출력
     for field_name, field_def in schema["fields"].items():
         if field_def["type"] == "enum":
             counts = {}
@@ -255,7 +234,6 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
                 for val, count in sorted(counts.items(), key=lambda x: -x[1])[:8]:
                     print(f"    {val}: {count}")
 
-    # entity category 분포
     if "entities" in schema["fields"]:
         cat_counts = {}
         for meta in results.values():
@@ -272,7 +250,8 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
 
 if __name__ == "__main__":
     import sys
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    dataset = args[0] if args else "trec-covid"
     sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
-    dataset = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "trec-covid"
     for size in sizes:
         build_metadata(dataset, size)

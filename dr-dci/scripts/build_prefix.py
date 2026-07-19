@@ -1,22 +1,18 @@
 """
 6단계: Contextual Prefix 생성
-- 각 문서 청크에 50-100 토큰의 문맥 요약 prefix 부여
+- 각 문서에 50-100 토큰의 문맥 요약 prefix 부여
 - 임베딩 품질 향상 (Pull retriever 정밀도 개선)
-- Format: "[prefix] original_text"
+- 병렬 처리 (async, 32 concurrent)
 """
 
 import json
-import time
-import requests
 from pathlib import Path
+from utils import run_batch_llm, strip_thinking
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 RAW_DIR = DATA_DIR / "raw"
 SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "prefix"
-
-VLLM_URL = "http://localhost:8100/v1/chat/completions"
-MODEL_NAME = "Qwen/Qwen3-8B"
 
 SYSTEM_PROMPT = """Generate a brief contextual prefix (50-100 tokens) for the given document chunk.
 The prefix should:
@@ -36,34 +32,6 @@ Generate a contextual prefix for this document."""
 def load_jsonl(path: Path) -> list:
     with open(path) as f:
         return [json.loads(line) for line in f]
-
-
-def call_llm(prompt: str, max_retries: int = 3) -> str:
-    payload = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0,
-        "max_tokens": 150,
-        "chat_template_kwargs": {"enable_thinking": False},
-    }
-
-    for attempt in range(max_retries):
-        try:
-            resp = requests.post(VLLM_URL, json=payload, timeout=30)
-            resp.raise_for_status()
-            content = resp.json()["choices"][0]["message"]["content"].strip()
-            if "<think>" in content:
-                import re
-                content = re.sub(r"<think>.*?</think>\s*", "", content, flags=re.DOTALL).strip()
-            return content
-        except Exception as e:
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)
-            else:
-                return ""
 
 
 def build_prefix(dataset: str = "trec-covid", subset_size: int = 10_000):
@@ -86,21 +54,34 @@ def build_prefix(dataset: str = "trec-covid", subset_size: int = 10_000):
     corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
     print(f"  Docs to process: {len(corpus_subset)}")
 
-    results = {}
-    for i, doc in enumerate(corpus_subset):
+    # 프롬프트 준비
+    prompts = []
+    for doc in corpus_subset:
         title = doc.get("title", "")
         text = doc.get("text", "")[:500]
+        prompts.append({
+            "id": doc["_id"],
+            "text": USER_TEMPLATE.format(title=title, text=text),
+        })
 
-        prompt = USER_TEMPLATE.format(title=title, text=text)
-        prefix = call_llm(prompt)
-        results[doc["_id"]] = prefix
+    # 배치 처리
+    BATCH_SIZE = 500
+    results = {}
+    for batch_start in range(0, len(prompts), BATCH_SIZE):
+        batch = prompts[batch_start:batch_start + BATCH_SIZE]
+        raw_results = run_batch_llm(batch, SYSTEM_PROMPT, max_tokens=150)
 
-        if (i + 1) % 100 == 0:
-            print(f"  Progress: {i + 1}/{len(corpus_subset)}")
+        for prompt_item, raw in zip(batch, raw_results):
+            if raw is None:
+                results[prompt_item["id"]] = ""
+            else:
+                results[prompt_item["id"]] = strip_thinking(raw)
+
+        done = min(batch_start + BATCH_SIZE, len(prompts))
+        print(f"  Progress: {done}/{len(prompts)}")
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"{dataset}_{subset_size // 1000}k.json"
     with open(out_path, "w") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
