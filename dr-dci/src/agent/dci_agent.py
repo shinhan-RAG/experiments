@@ -7,21 +7,56 @@ import requests
 from .workspace import Workspace, Document
 from .retriever import PullRetriever
 
-AGENT_SYSTEM = """You are a research assistant that answers questions by searching and analyzing documents.
+AGENT_SYSTEM_BASE = """You are a research assistant that answers questions by searching and analyzing documents.
 
 You have access to the following tools:
-1. pull(query) - Search and retrieve relevant documents into your workspace
+1. pull(query, taxonomy_filter?, metadata_filter?) - Search and retrieve relevant documents into your workspace. Use filters to narrow results.
 2. grep(pattern, tag_filter?) - Search text patterns in your workspace documents
 3. find(taxonomy_filter?, metadata_filter?) - Filter documents in workspace
 4. read(doc_id) - Read full content of a specific document
 5. answer(text) - Provide your final answer
 
-Process:
-1. Use pull() to retrieve potentially relevant documents
+Strategy:
+1. Use pull() with relevant filters to retrieve focused documents. You can pull multiple times with different queries/filters.
 2. Use grep/find/read to analyze documents in your workspace
-3. When you have enough information, use answer() to respond
+3. If initial results are insufficient, pull again with refined queries or different filters
+4. When you have enough information, use answer() to respond
 
 Always provide a final answer. If you cannot find relevant information, say so."""
+
+
+def build_system_prompt(taxonomy_schema: dict = None, metadata_schema: dict = None, tags_enabled: bool = False) -> str:
+    """Build system prompt with available schema information."""
+    prompt = AGENT_SYSTEM_BASE
+
+    if taxonomy_schema:
+        prompt += "\n\n## Available Taxonomy Categories\n"
+        prompt += "Use taxonomy_filter in pull() or find() to narrow results.\n"
+        l1_cats = taxonomy_schema.get("L1", [])
+        prompt += f"- L1 categories: {', '.join(l1_cats)}\n"
+        l2_map = taxonomy_schema.get("L2", {})
+        for l1, l2_list in l2_map.items():
+            prompt += f"  - {l1} → L2: {', '.join(l2_list)}\n"
+
+    if metadata_schema:
+        prompt += "\n\n## Available Metadata Fields\n"
+        prompt += "Use metadata_filter in pull() or find() to narrow results.\n"
+        fields = metadata_schema.get("fields", {})
+        for field_name, field_info in fields.items():
+            if field_info.get("type") == "enum":
+                values = field_info.get("values", [])
+                prompt += f"- {field_name}: {', '.join(values[:10])}\n"
+            elif field_name == "entities":
+                item_schema = field_info.get("item_schema", {})
+                cats = item_schema.get("category", {}).get("values", [])
+                prompt += f"- entities: filter by entity name list. Categories: {', '.join(cats)}\n"
+
+    if tags_enabled:
+        prompt += "\n\n## Semantic Tags (@el:)\n"
+        prompt += "Use tag_filter in grep() to search specific element types.\n"
+        prompt += "Available tags: @el:definition, @el:condition, @el:procedure, @el:example, @el:exception, @el:comparison, @el:summary, @el:evidence, @el:criteria\n"
+
+    return prompt
 
 TOOL_DEFINITIONS = [
     {
@@ -112,19 +147,25 @@ TOOL_DEFINITIONS = [
 
 class DCIAgent:
     def __init__(self, llm_url: str, model_name: str, retriever: PullRetriever,
-                 corpus: dict, tags_data: dict = None, max_turns: int = 30):
+                 corpus: dict, tags_data: dict = None, max_turns: int = 30,
+                 taxonomy_schema: dict = None, metadata_schema: dict = None):
         self.llm_url = llm_url
         self.model_name = model_name
         self.retriever = retriever
         self.corpus = corpus  # doc_id → doc dict
         self.tags_data = tags_data  # doc_id → [elements]
         self.max_turns = max_turns
+        self.system_prompt = build_system_prompt(
+            taxonomy_schema=taxonomy_schema,
+            metadata_schema=metadata_schema,
+            tags_enabled=tags_data is not None,
+        )
 
     def run(self, query: str) -> dict:
         """쿼리에 대해 에이전트 실행, 결과 반환"""
         workspace = Workspace()
         messages = [
-            {"role": "system", "content": AGENT_SYSTEM},
+            {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": f"Answer this question: {query}"},
         ]
 

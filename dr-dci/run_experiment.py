@@ -139,6 +139,20 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
 
     corpus_dict = {doc["_id"]: doc for doc in corpus}
 
+    # Load schemas for agent prompt
+    taxonomy_schema = None
+    metadata_schema = None
+    if step_config.get("taxonomy"):
+        schema_path = CONFIG_DIR / "taxonomy_schemas" / f"{dataset}.yaml"
+        if schema_path.exists():
+            with open(schema_path) as f:
+                taxonomy_schema = yaml.safe_load(f)
+    if step_config.get("metadata"):
+        schema_path = CONFIG_DIR / "metadata_schemas" / f"{dataset}.yaml"
+        if schema_path.exists():
+            with open(schema_path) as f:
+                metadata_schema = yaml.safe_load(f)
+
     # Agent
     agent = DCIAgent(
         llm_url=models["agent_llm"]["url"],
@@ -147,6 +161,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         corpus=corpus_dict,
         tags_data=tags,
         max_turns=agent_cfg["max_turns"],
+        taxonomy_schema=taxonomy_schema,
+        metadata_schema=metadata_schema,
     )
 
     # Judge
