@@ -38,18 +38,20 @@ class Judge:
             "max_tokens": 10,
         }
 
-        for attempt in range(3):
+        for attempt in range(5):
             try:
+                time.sleep(1)  # base delay between calls
                 resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
                 if resp.status_code == 429:
-                    wait = 2 ** (attempt + 1)
+                    wait = 5 * (attempt + 1)  # 5, 10, 15, 20, 25s
+                    print(f"  Judge rate limited, waiting {wait}s...")
                     time.sleep(wait)
                     continue
                 resp.raise_for_status()
                 result = resp.json()["choices"][0]["message"]["content"].strip().lower()
                 return "correct" if "correct" in result else "incorrect"
             except requests.exceptions.Timeout:
-                time.sleep(2 ** attempt)
+                time.sleep(5 * (attempt + 1))
                 continue
             except Exception as e:
                 print(f"  Judge error: {e}")
