@@ -40,10 +40,9 @@ class Judge:
 
         for attempt in range(5):
             try:
-                time.sleep(3)  # base delay between calls (Groq: 30 req/min → 20 req/min safe)
                 resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
                 if resp.status_code == 429:
-                    wait = 5 * (attempt + 1)  # 5, 10, 15, 20, 25s
+                    wait = 10 * (attempt + 1)  # 10, 20, 30, 40, 50s
                     print(f"  Judge rate limited, waiting {wait}s...")
                     time.sleep(wait)
                     continue
@@ -51,7 +50,7 @@ class Judge:
                 result = resp.json()["choices"][0]["message"]["content"].strip().lower()
                 return "correct" if "correct" in result else "incorrect"
             except requests.exceptions.Timeout:
-                time.sleep(5 * (attempt + 1))
+                time.sleep(10)
                 continue
             except Exception as e:
                 print(f"  Judge error: {e}")
