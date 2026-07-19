@@ -28,7 +28,7 @@ models:
 
 # DR-DCI agent settings
 agent:
-  max_turns: 30
+  max_turns: 10
   pull_top_k: 20
   workspace_max_docs: 100
   dci_tools: ["grep", "find", "read", "filter"]

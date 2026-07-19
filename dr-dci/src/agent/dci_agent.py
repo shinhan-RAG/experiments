@@ -281,6 +281,9 @@ class DCIAgent:
         }
 
         resp = requests.post(self.llm_url, json=payload, timeout=120)
+        if resp.status_code == 400:
+            # Context too long or malformed — force answer
+            return {"content": "I cannot process this query due to context limitations.", "tool_calls": None}
         resp.raise_for_status()
         choice = resp.json()["choices"][0]["message"]
         return choice
