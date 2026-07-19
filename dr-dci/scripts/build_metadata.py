@@ -196,7 +196,7 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
     for batch_start in range(0, len(prompts), BATCH_SIZE):
         batch = prompts[batch_start:batch_start + BATCH_SIZE]
         raw_results = run_batch_llm(
-            batch, system_prompt, max_tokens=300, guided_json=json_schema
+            batch, system_prompt, max_tokens=300
         )
 
         for prompt_item, raw in zip(batch, raw_results):
@@ -226,6 +226,8 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
         if field_def["type"] == "enum":
             counts = {}
             for meta in results.values():
+                if meta is None:
+                    continue
                 val = meta.get(field_name)
                 if val is not None:
                     counts[val] = counts.get(val, 0) + 1
@@ -237,6 +239,8 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
     if "entities" in schema["fields"]:
         cat_counts = {}
         for meta in results.values():
+            if meta is None:
+                continue
             for ent in meta.get("entities", []):
                 cat = ent.get("category", "other")
                 cat_counts[cat] = cat_counts.get(cat, 0) + 1
