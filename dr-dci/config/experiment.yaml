@@ -22,7 +22,7 @@ models:
   judge_llm:
     # Groq API (Llama-3.1-70B for strict judging)
     url: "https://api.groq.com/openai/v1/chat/completions"
-    name: "llama-3.1-70b-versatile"
+    name: "llama-3.3-70b-versatile"
     temperature: 0
     max_tokens: 512
 
