@@ -56,32 +56,59 @@ parts:
     dataset: "trec-covid"
     subset: 20000
     steps:
-      - name: "step0_raw"
+      # Baseline
+      - name: "baseline"
         description: "DR-DCI raw (no augmentation)"
         taxonomy: false
         tags: false
         prefix: false
         metadata: false
-      - name: "step1_taxonomy"
-        description: "+Document Taxonomy (Pull path filtering)"
+      # 독립 효과
+      - name: "taxonomy_only"
+        description: "Taxonomy only"
         taxonomy: true
         tags: false
         prefix: false
         metadata: false
-      - name: "step2_tags"
-        description: "+Semantic Tagging @el: approach A (DCI grep precision)"
+      - name: "tags_only"
+        description: "Tags only"
+        taxonomy: false
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "prefix_only"
+        description: "Prefix only"
+        taxonomy: false
+        tags: false
+        prefix: true
+        metadata: false
+      - name: "metadata_only"
+        description: "Metadata only"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: true
+      # 적층
+      - name: "stack_tax"
+        description: "Stacked: +Taxonomy"
+        taxonomy: true
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "stack_tax_tags"
+        description: "Stacked: +Taxonomy +Tags"
         taxonomy: true
         tags: "A"
         prefix: false
         metadata: false
-      - name: "step3_prefix"
-        description: "+Contextual Prefix (Pull embedding quality)"
+      - name: "stack_tax_tags_prefix"
+        description: "Stacked: +Taxonomy +Tags +Prefix"
         taxonomy: true
         tags: "A"
         prefix: true
         metadata: false
-      - name: "step4_metadata"
-        description: "+Metadata Filter (Pull pre-filter)"
+      - name: "stack_all"
+        description: "Stacked: All augmentations"
         taxonomy: true
         tags: "A"
         prefix: true
