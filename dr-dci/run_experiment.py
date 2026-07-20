@@ -11,6 +11,7 @@ import os
 import yaml
 import argparse
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -181,39 +182,40 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         if entry["score"] >= 1:
             query_gold[str(entry["query-id"])].add(str(entry["corpus-id"]))
 
-    # 실행
-    results = []
-    for i, q in enumerate(queries):
+    # 에이전트 병렬 실행
+    def run_single_query(i, q):
         qid = str(q["_id"])
         query_text = q.get("title") or q.get("text", "")
-
-        print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
-
         result = agent.run(query_text)
-
-        # 평가
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
-
-        # Accuracy (reference answer 있을 때만)
-        judgment = "n/a"
-        if qid in ref_answers:
-            judgment = judge.evaluate_accuracy(
-                query_text, ref_answers[qid], result["answer"]
-            )
-
-        results.append({
+        print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
+        return {
             "query_id": qid,
             "query_text": query_text,
             "answer": result["answer"],
-            "judgment": judgment,
             "gold_recall": gold_recall,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
             "workspace_docs": result["workspace_docs"],
             "turns": result["turns"],
-        })
+        }
+
+    results = [None] * len(queries)
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(run_single_query, i, q): i for i, q in enumerate(queries)}
+        for future in as_completed(futures):
+            idx = futures[future]
+            results[idx] = future.result()
+
+    # Judge 순차 실행 (외부 API)
+    for r in results:
+        r["judgment"] = "n/a"
+        if r["query_id"] in ref_answers:
+            r["judgment"] = judge.evaluate_accuracy(
+                r["query_text"], ref_answers[r["query_id"]], r["answer"]
+            )
 
     return results
 
@@ -254,35 +256,39 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         if entry["score"] >= 1:
             query_gold[str(entry["query-id"])].add(str(entry["corpus-id"]))
 
-    results = []
-    for i, q in enumerate(queries):
+    # Hybrid 병렬 실행
+    def run_single_hybrid(i, q):
         qid = str(q["_id"])
         query_text = q.get("title") or q.get("text", "")
-
-        print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
-
         result = pipeline.run(query_text)
-
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["retrieved_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
-
-        judgment = "n/a"
-        if qid in ref_answers:
-            judgment = judge.evaluate_accuracy(
-                query_text, ref_answers[qid], result["answer"]
-            )
-
-        results.append({
+        print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
+        return {
             "query_id": qid,
             "query_text": query_text,
             "answer": result["answer"],
-            "judgment": judgment,
             "gold_recall": gold_recall,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
             "retrieved_docs": result["retrieved_docs"],
-        })
+        }
+
+    results = [None] * len(queries)
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(run_single_hybrid, i, q): i for i, q in enumerate(queries)}
+        for future in as_completed(futures):
+            idx = futures[future]
+            results[idx] = future.result()
+
+    # Judge 순차 실행
+    for r in results:
+        r["judgment"] = "n/a"
+        if r["query_id"] in ref_answers:
+            r["judgment"] = judge.evaluate_accuracy(
+                r["query_text"], ref_answers[r["query_id"]], r["answer"]
+            )
 
     return results
 
