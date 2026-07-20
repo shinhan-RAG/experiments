@@ -97,26 +97,24 @@ class PullRetriever:
         return True
 
     def _match_metadata(self, doc_id: str, filter: dict) -> bool:
+        """OR 로직: 필터 조건 중 하나라도 매치하면 포함"""
         meta = self.doc_metadata.get(doc_id, {})
         if meta is None:
             return False
         for key, val in filter.items():
             if key == "entities":
-                # entities: [{"name": ..., "category": ...}]
                 doc_entities = meta.get("entities", [])
                 if isinstance(val, list):
-                    # val이 entity name 리스트인 경우
                     doc_names = {e.get("name", "").lower() for e in doc_entities if isinstance(e, dict)}
-                    if not any(v.lower() in doc_names for v in val):
-                        return False
+                    if any(v.lower() in doc_names for v in val):
+                        return True
                 elif isinstance(val, str):
-                    # val이 category인 경우
                     doc_cats = {e.get("category", "") for e in doc_entities if isinstance(e, dict)}
-                    if val not in doc_cats:
-                        return False
-            elif meta.get(key) != val:
-                return False
-        return True
+                    if val in doc_cats:
+                        return True
+            elif meta.get(key) == val:
+                return True
+        return False
 
     def _embed_batch(self, texts: list[str], batch_size: int = 32) -> list[np.ndarray]:
         """vLLM embedding endpoint 호출"""

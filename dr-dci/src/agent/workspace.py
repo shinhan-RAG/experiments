@@ -73,20 +73,21 @@ class Workspace:
                         break
 
             if metadata_filter and match:
+                meta_match = False
                 for key, val in metadata_filter.items():
                     if key == "entities":
-                        # entities: [{name, category}, ...]
                         doc_entities = doc.metadata.get("entities", [])
                         doc_names = {e.get("name", "").lower() for e in doc_entities if isinstance(e, dict)}
                         if isinstance(val, list):
-                            if not any(v.lower() in doc_names for v in val):
-                                match = False
+                            if any(v.lower() in doc_names for v in val):
+                                meta_match = True
                         elif isinstance(val, str):
                             doc_cats = {e.get("category", "") for e in doc_entities if isinstance(e, dict)}
-                            if val not in doc_cats:
-                                match = False
-                    elif doc.metadata.get(key) != val:
-                        match = False
+                            if val in doc_cats:
+                                meta_match = True
+                    elif doc.metadata.get(key) == val:
+                        meta_match = True
+                match = meta_match
 
             if match:
                 results.append(doc.doc_id)
