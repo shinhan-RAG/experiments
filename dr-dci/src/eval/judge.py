@@ -17,7 +17,7 @@ class Judge:
         self.llm_url = llm_url
         self.model_name = model_name
         self.prompt_template = prompt_template
-        self.api_key = api_key or os.getenv("GROQ_API_KEY", "")
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
 
     def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
         """LLM-as-Judge로 정답 여부 판정 (retry with backoff)"""
