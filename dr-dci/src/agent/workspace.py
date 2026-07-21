@@ -44,18 +44,22 @@ class Workspace:
                         if regex.search(elem.get("text", "")):
                             results.append({
                                 "doc_id": doc.doc_id,
+                                "title": doc.title[:50],
                                 "match": elem["text"][:200],
                                 "tag": elem.get("tag", ""),
                             })
             else:
-                if regex.search(doc.text):
-                    # 매칭 라인 추출
-                    for line in doc.text.split("\n"):
-                        if regex.search(line):
-                            results.append({
-                                "doc_id": doc.doc_id,
-                                "match": line[:200],
-                            })
+                # 문서 텍스트에서 매칭되는 모든 라인 반환 (최대 5개/문서)
+                doc_matches = 0
+                for line in doc.text.split("\n"):
+                    if regex.search(line):
+                        results.append({
+                            "doc_id": doc.doc_id,
+                            "title": doc.title[:50],
+                            "match": line[:200],
+                        })
+                        doc_matches += 1
+                        if doc_matches >= 5:
                             break
 
         return results
@@ -98,7 +102,11 @@ class Workspace:
         """workspace 내 특정 문서 읽기 (DCI read)"""
         doc = self.docs.get(doc_id)
         if doc:
-            return f"[{doc.doc_id}] {doc.title}\n{doc.text}"
+            parts = [f"[{doc.doc_id}] {doc.title}"]
+            if doc.prefix:
+                parts.append(f"Summary: {doc.prefix}")
+            parts.append(doc.text)
+            return "\n".join(parts)
         return None
 
     def summary(self) -> dict:

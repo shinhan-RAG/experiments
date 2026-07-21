@@ -116,27 +116,29 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
 
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                ref_answers: dict, step_config: dict, subset_size: int,
-               dataset: str) -> list:
+               dataset: str, cached_retriever: PullRetriever = None) -> list:
     """DR-DCI 에이전트 실행"""
     models = config["models"]
     agent_cfg = config["agent"]
 
     taxonomy, tags, prefix, metadata = load_augmentations(dataset, subset_size, step_config)
 
-    # Retriever 설정
-    retriever_config = RetrieverConfig(
-        embedding_url=models["embedding"]["url"],
-        embedding_model=models["embedding"]["name"],
-        top_k=agent_cfg["pull_top_k"],
-        use_taxonomy=step_config.get("taxonomy", False),
-        use_metadata=step_config.get("metadata", False),
-        use_prefix=step_config.get("prefix", False),
-    )
-    retriever = PullRetriever(retriever_config)
-
-    print("    Indexing corpus...")
-    corpus_dicts = corpus
-    retriever.index(corpus_dicts, taxonomy=taxonomy, metadata=metadata, prefixes=prefix)
+    if cached_retriever:
+        retriever = cached_retriever
+        # taxonomy가 있으면 retriever에 설정 (soft boost용)
+        if taxonomy:
+            retriever.doc_taxonomy = {did: t for did, t in taxonomy.items()}
+        print("    Using cached embeddings")
+    else:
+        retriever_config = RetrieverConfig(
+            embedding_url=models["embedding"]["url"],
+            embedding_model=models["embedding"]["name"],
+            top_k=agent_cfg["pull_top_k"],
+            use_prefix=step_config.get("prefix", False),
+        )
+        retriever = PullRetriever(retriever_config)
+        print("    Indexing corpus...")
+        retriever.index(corpus, prefixes=prefix, taxonomy=taxonomy)
 
     corpus_dict = {doc["_id"]: doc for doc in corpus}
 
@@ -161,9 +163,13 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         retriever=retriever,
         corpus=corpus_dict,
         tags_data=tags,
+        taxonomy_data=taxonomy,
+        metadata_data=metadata,
+        prefix_data=prefix,
         max_turns=agent_cfg["max_turns"],
         taxonomy_schema=taxonomy_schema,
         metadata_schema=metadata_schema,
+        api_key=os.getenv("OPENAI_API_KEY", ""),
     )
 
     # Judge
@@ -203,19 +209,23 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         }
 
     results = [None] * len(queries)
-    with ThreadPoolExecutor(max_workers=8) as executor:
+    with ThreadPoolExecutor(max_workers=16) as executor:
         futures = {executor.submit(run_single_query, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
             results[idx] = future.result()
 
-    # Judge 순차 실행 (외부 API)
-    for r in results:
-        r["judgment"] = "n/a"
+    # Judge 병렬 실행
+    def judge_single(r):
         if r["query_id"] in ref_answers:
             r["judgment"] = judge.evaluate_accuracy(
                 r["query_text"], ref_answers[r["query_id"]], r["answer"]
             )
+        else:
+            r["judgment"] = "n/a"
+
+    with ThreadPoolExecutor(max_workers=16) as executor:
+        executor.map(judge_single, results)
 
     return results
 
@@ -236,6 +246,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         dense_top_k=hybrid_cfg["dense_top_k"],
         bm25_top_k=hybrid_cfg["bm25_top_k"],
         rerank_top_k=hybrid_cfg["rerank_top_k"],
+        api_key=os.getenv("OPENAI_API_KEY", ""),
     )
 
     print("    Indexing corpus...")
@@ -314,12 +325,36 @@ def run_part1(config: dict):
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
+    # 임베딩 캐싱: prefix off / prefix on 두 가지만 빌드
+    models = config["models"]
+    agent_cfg = config["agent"]
+
+    print("\n  Building cached embeddings (prefix=off)...")
+    retriever_no_prefix = PullRetriever(RetrieverConfig(
+        embedding_url=models["embedding"]["url"],
+        embedding_model=models["embedding"]["name"],
+        top_k=agent_cfg["pull_top_k"],
+        use_prefix=False,
+    ))
+    retriever_no_prefix.index(corpus)
+
+    _, _, prefix_data, _ = load_augmentations(dataset, subset_size, {"prefix": True})
+    print("  Building cached embeddings (prefix=on)...")
+    retriever_with_prefix = PullRetriever(RetrieverConfig(
+        embedding_url=models["embedding"]["url"],
+        embedding_model=models["embedding"]["name"],
+        top_k=agent_cfg["pull_top_k"],
+        use_prefix=True,
+    ))
+    retriever_with_prefix.index(corpus, prefixes=prefix_data)
+
     all_results = {}
     for step in part_cfg["steps"]:
         step_name = step["name"]
         print(f"\n  --- {step_name}: {step['description']} ---")
 
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step, subset_size, dataset)
+        cached = retriever_with_prefix if step.get("prefix") else retriever_no_prefix
+        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step, subset_size, dataset, cached_retriever=cached)
         metrics = compute_metrics(results)
         all_results[step_name] = {"results": results, "metrics": metrics}
 
@@ -345,16 +380,16 @@ def run_part2(config: dict):
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
-    # DR-DCI final (step4 config)
-    step4_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
+    # DR-DCI best config from Part 1 (stack_all)
+    best_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
 
     all_results = {}
     for subset_size in part_cfg["subsets"]:
         size_key = f"{subset_size // 1000}k"
         corpus = load_corpus(dataset, subset_size)
 
-        print(f"\n  --- DR-DCI Final @ {size_key} ---")
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step4_config, subset_size, dataset)
+        print(f"\n  --- DR-DCI Best @ {size_key} ---")
+        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, best_config, subset_size, dataset)
         metrics = compute_metrics(results)
         all_results[f"dr-dci_{size_key}"] = {"results": results, "metrics": metrics}
         print(f"    Metrics: {metrics}")

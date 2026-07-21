@@ -1,14 +1,19 @@
 """
 Pull Retriever: 에이전트가 호출하는 검색 함수
 - Dense retrieval (embedding similarity)
-- Taxonomy path filtering (optional)
-- Metadata pre-filtering (optional)
-- Contextual prefix 적용 (optional)
+- Prefix: 임베딩 보강 (자연어 요약)
+- Taxonomy: pull 시 soft boost (네비게이션)
+- Metadata/Tags: workspace 탐색 전용
 """
 
+import hashlib
 import numpy as np
 import requests
 from dataclasses import dataclass
+from pathlib import Path
+
+
+CACHE_DIR = Path(__file__).parent.parent.parent / "cache" / "embeddings"
 
 
 @dataclass
@@ -16,120 +21,122 @@ class RetrieverConfig:
     embedding_url: str
     embedding_model: str
     top_k: int = 20
-    use_taxonomy: bool = False
-    use_metadata: bool = False
     use_prefix: bool = False
+    taxonomy_boost: float = 1.5
+    reranker_url: str = None
+    reranker_model: str = None
 
 
 class PullRetriever:
     def __init__(self, config: RetrieverConfig):
         self.config = config
         self.doc_embeddings: dict[str, np.ndarray] = {}
-        self.doc_texts: dict[str, str] = {}
+        self.doc_ids: list[str] = []
+        self.embedding_matrix: np.ndarray = None  # (N, D) for vectorized search
         self.doc_taxonomy: dict[str, dict] = {}
-        self.doc_metadata: dict[str, dict] = {}
+        self.doc_raw_texts: dict[str, str] = {}  # for reranker
 
-    def index(self, documents: list[dict], taxonomy: dict = None,
-              metadata: dict = None, prefixes: dict = None):
-        """문서를 인덱싱 (임베딩 생성)"""
+    def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
+        """문서를 인덱싱. 디스크 캐시 활용."""
+        doc_ids = []
+        texts = []
         for doc in documents:
             doc_id = doc["_id"]
             title = doc.get("title", "")
             text = doc.get("text", "")
-
-            # contextual prefix 적용
+            embed_text = f"{title} {text}"
             if self.config.use_prefix and prefixes and doc_id in prefixes:
-                embed_text = f"{prefixes[doc_id]} {title} {text}"
-            else:
-                embed_text = f"{title} {text}"
-
-            self.doc_texts[doc_id] = embed_text[:512]  # 임베딩 입력 제한
-
+                embed_text = f"{prefixes[doc_id]} {embed_text}"
+            doc_ids.append(doc_id)
+            texts.append(embed_text[:4096])
+            self.doc_raw_texts[doc_id] = f"{title} {text}"[:4096]
             if taxonomy and doc_id in taxonomy:
                 self.doc_taxonomy[doc_id] = taxonomy[doc_id]
-            if metadata and doc_id in metadata:
-                self.doc_metadata[doc_id] = metadata[doc_id]
 
-        # 배치 임베딩
-        texts = list(self.doc_texts.values())
-        ids = list(self.doc_texts.keys())
+        # 캐시 키: doc_ids 해시 + prefix 여부
+        cache_key = hashlib.md5(
+            f"{sorted(doc_ids)[:5]}_{len(doc_ids)}_{self.config.use_prefix}".encode()
+        ).hexdigest()[:12]
+        cache_path = CACHE_DIR / f"{cache_key}.npz"
+
+        if cache_path.exists():
+            print(f"    [Cache HIT] Loading embeddings from {cache_path.name}")
+            data = np.load(cache_path, allow_pickle=True)
+            cached_ids = list(data["ids"])
+            embeddings = data["embeddings"]
+            if cached_ids == doc_ids:
+                self.doc_ids = doc_ids
+                self.embedding_matrix = embeddings
+                for i, did in enumerate(doc_ids):
+                    self.doc_embeddings[did] = embeddings[i]
+                return
+
+        print(f"    [Cache MISS] Embedding {len(texts)} documents (batch=256)...")
         embeddings = self._embed_batch(texts)
+        emb_matrix = np.array(embeddings)
 
-        for doc_id, emb in zip(ids, embeddings):
-            self.doc_embeddings[doc_id] = emb
+        # 디스크 캐시 저장
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        np.savez(cache_path, ids=np.array(doc_ids, dtype=object), embeddings=emb_matrix)
+        print(f"    [Cache SAVED] {cache_path.name}")
 
-    def pull(self, query: str, taxonomy_filter: dict = None,
-             metadata_filter: dict = None) -> list[dict]:
-        """Pull action: query로 top-k 문서 검색"""
+        self.doc_ids = doc_ids
+        self.embedding_matrix = emb_matrix
+        for i, did in enumerate(doc_ids):
+            self.doc_embeddings[did] = emb_matrix[i]
+
+    def pull(self, query: str, taxonomy_filter: dict = None) -> list[dict]:
+        """Pull action: vectorized cosine similarity + taxonomy soft boost."""
         query_emb = self._embed_batch([query])[0]
 
-        # 후보 필터링
-        candidates = list(self.doc_embeddings.keys())
+        # 벡터화 cosine similarity (행렬 연산)
+        norms = np.linalg.norm(self.embedding_matrix, axis=1)
+        query_norm = np.linalg.norm(query_emb)
+        sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
 
-        if self.config.use_taxonomy and taxonomy_filter:
-            candidates = [
-                did for did in candidates
-                if self._match_taxonomy(did, taxonomy_filter)
-            ]
+        # taxonomy soft boost
+        if taxonomy_filter and self.doc_taxonomy:
+            for i, did in enumerate(self.doc_ids):
+                tax = self.doc_taxonomy.get(did, {})
+                if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
+                    sims[i] *= self.config.taxonomy_boost
 
-        if self.config.use_metadata and metadata_filter:
-            candidates = [
-                did for did in candidates
-                if self._match_metadata(did, metadata_filter)
-            ]
+        # dense top candidates (reranker가 있으면 더 많이 뽑아서 rerank)
+        candidate_k = self.config.top_k * 4 if self.config.reranker_url else self.config.top_k
+        top_indices = np.argsort(-sims)[:candidate_k]
+        candidates = [{"doc_id": self.doc_ids[i], "score": float(sims[i])} for i in top_indices]
 
-        # 유사도 계산
-        scores = []
-        for did in candidates:
-            sim = np.dot(query_emb, self.doc_embeddings[did]) / (
-                np.linalg.norm(query_emb) * np.linalg.norm(self.doc_embeddings[did]) + 1e-8
-            )
-            scores.append((did, float(sim)))
+        if self.config.reranker_url:
+            candidates = self._rerank(query, candidates)
 
-        scores.sort(key=lambda x: -x[1])
-        return [{"doc_id": did, "score": score} for did, score in scores[:self.config.top_k]]
+        return candidates[:self.config.top_k]
 
-    def _match_taxonomy(self, doc_id: str, filter: dict) -> bool:
-        tax = self.doc_taxonomy.get(doc_id, {})
-        for key, val in filter.items():
-            if tax.get(key) != val:
-                return False
-        return True
+    def _rerank(self, query: str, candidates: list[dict]) -> list[dict]:
+        docs = [self.doc_raw_texts.get(c["doc_id"], "") for c in candidates]
+        try:
+            payload = {
+                "model": self.config.reranker_model,
+                "query": query,
+                "documents": docs,
+            }
+            resp = requests.post(self.config.reranker_url, json=payload, timeout=60)
+            resp.raise_for_status()
+            results = resp.json()["results"]
+            scored = [{"doc_id": candidates[r["index"]]["doc_id"], "score": r["relevance_score"]} for r in results]
+            scored.sort(key=lambda x: -x["score"])
+            return scored
+        except Exception:
+            return candidates
 
-    def _match_metadata(self, doc_id: str, filter: dict) -> bool:
-        """OR 로직: 필터 조건 중 하나라도 매치하면 포함"""
-        meta = self.doc_metadata.get(doc_id, {})
-        if meta is None:
-            return False
-        for key, val in filter.items():
-            if key == "entities":
-                doc_entities = meta.get("entities", [])
-                if isinstance(val, list):
-                    doc_names = {e.get("name", "").lower() for e in doc_entities if isinstance(e, dict)}
-                    if any(v.lower() in doc_names for v in val):
-                        return True
-                elif isinstance(val, str):
-                    doc_cats = {e.get("category", "") for e in doc_entities if isinstance(e, dict)}
-                    if val in doc_cats:
-                        return True
-            elif meta.get(key) == val:
-                return True
-        return False
-
-    def _embed_batch(self, texts: list[str], batch_size: int = 32) -> list[np.ndarray]:
-        """vLLM embedding endpoint 호출"""
+    def _embed_batch(self, texts: list[str], batch_size: int = 256) -> list[np.ndarray]:
+        """vLLM embedding endpoint 호출 (batch=256)"""
         all_embeddings = []
-
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
-            payload = {
-                "model": self.config.embedding_model,
-                "input": batch,
-            }
-            resp = requests.post(self.config.embedding_url, json=payload, timeout=60)
+            payload = {"model": self.config.embedding_model, "input": batch}
+            resp = requests.post(self.config.embedding_url, json=payload, timeout=120)
             resp.raise_for_status()
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):
                 all_embeddings.append(np.array(item["embedding"]))
-
         return all_embeddings
