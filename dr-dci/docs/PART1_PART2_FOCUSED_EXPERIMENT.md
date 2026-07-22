@@ -159,6 +159,42 @@ python run_experiment.py --part 2 --scale-probe
 # H200 인스턴스 일괄 실행: bash scripts/run_scale_probe_gte.sh
 ```
 
+#### 실측 결과 (2026-07-22, H200·gte-Qwen2-1.5B-instruct)
+
+`results/part2_scale_probe/20260722_011134.json` (인스턴스 보관, 정책상
+미추적). preflight `ready`, 분모 50/50 질의, seed 42.
+
+| 지표 | 20K | 50K | 110K | 110K−20K Δ | 95% CI |
+|---|---:|---:|---:|---:|---|
+| nDCG@10 | 0.823 | 0.754 | 0.630 | **−0.194** | **[−0.245, −0.145]** |
+| Precision@20 | 0.853 | 0.778 | 0.651 | **−0.202** | **[−0.240, −0.164]** |
+| Recall@20 | 0.0442 | 0.0399 | 0.0329 | **−0.011** | **[−0.015, −0.008]** |
+| Hit@5 / Hit@10 | 1.0 | 1.0 | 1.0 | 0 | 포화(예측대로) |
+| latency (s) | 0.118 | 0.256 | 0.528 | +0.410 | [+0.406, +0.414] |
+
+세 scale 쌍(20↔50, 20↔110, 50↔110) 모두에서 주 지표 CI 전체가 0 아래다.
+질의별 분해는 단조성을 보인다: 상위 scale에서 nDCG@10이 좋아진 질의는
+**0개**(20K→110K에서 40개 악화·10개 동률, P@20은 45개 악화·5개 동률)다.
+
+판정 (5.3의 사전 규칙 적용):
+
+- **검색단 degradation의 존재가 지지된다.** distractor 5.5배(gold 밀도
+  2.39%→0.43%) 희석에서 상위 순위 품질이 상대 기준 약 −24% 하락했다.
+  Part 2에서 관측된 agent 수준 저하에는 최소한 검색단 성분이 실재한다.
+- 단, 절대 수준은 유지된다: 110K에서도 P@20 0.651은 무작위 기대치
+  (≈0.004)의 160배 수준이다. 검색이 무너진 것이 아니라 순도가 희석되는
+  양상이다.
+- 이 결과는 병목의 국소화이며 agent 후단의 기여를 배제하지 않는다.
+  agent 수준 저하량과의 정량 비교는 Gate 2·3(taxonomy agent 실험)에서만
+  가능하다.
+- Gate 2·3과의 연결: taxonomy soft boost는 정확히 이 검색단에 작용하는
+  증강이므로, "scale이 커질수록 taxonomy의 개선 여지가 커진다"는 가설은
+  기각되지 않고 살아 있다. 검증은 원본 산출물 확보 후의 Gate 2·3에서 한다.
+
+한계: TREC-COVID의 심층 qrels 구조(질의당 gold 수백 개)에 특화된 관찰이며,
+gold가 희소한 코퍼스(FiQA류·실무 문서)에 그대로 일반화하지 않는다. n=50,
+임베딩은 자가 서빙 gte-Qwen2 단일 모델이다.
+
 ## 6. 구현된 보호 장치
 
 - `scripts/audit_part12.py`: 모델 호출 전 subset·gold·augmentation 계약 검사
@@ -181,6 +217,7 @@ python run_experiment.py --part 2 --scale-probe
 - taxonomy 20K 산출물: 없음
 - Peter의 augmentation 저장소는 현재 인증 없이 조회되지 않음
 - 원 생성기는 `Qwen/Qwen3-8B`를 `localhost:8100`에서 호출하지만 현재 해당 endpoint가 없음
+- retrieval-only scale probe: **실측 완료** (5.3 결과 참조 — 검색단 degradation 지지)
 - Part 1 집중 실행: 차단
 
 따라서 지금 숫자를 새로 만들 수는 없다. Peter가 사용한 taxonomy artifact를 원 실행 환경에서 가져오거나 동일 모델·prompt·subset 계약으로 복원한 뒤 다음 순서로 진행한다. 환경에 존재하는 다른 API key로 taxonomy를 새로 생성하면 생성 모델까지 바뀌므로 원 결과의 단일변수 재검증이 아니다.
