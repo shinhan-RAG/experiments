@@ -1,0 +1,29 @@
+{
+  "trec-covid": {
+    "documents": 171332,
+    "queries": 50,
+    "document_token_p50": 176.0,
+    "document_token_p95": 355.0,
+    "multi_gold_query_rate": 1.0,
+    "zero_overlap_query_rate": 0.0,
+    "query_token_coverage_p50": 1.0
+  },
+  "fiqa": {
+    "documents": 57638,
+    "queries": 6648,
+    "document_token_p50": 95.0,
+    "document_token_p95": 380.0,
+    "multi_gold_query_rate": 0.660494,
+    "zero_overlap_query_rate": 0.006173,
+    "query_token_coverage_p50": 0.6667
+  },
+  "ko-strategyqa": {
+    "documents": 9251,
+    "queries": 2833,
+    "document_token_p50": 64.0,
+    "document_token_p95": 150.0,
+    "multi_gold_query_rate": 0.643581,
+    "zero_overlap_query_rate": 0.258446,
+    "query_token_coverage_p50": 0.25
+  }
+}

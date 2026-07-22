@@ -1,0 +1,174 @@
+{
+  "eda_version": 1,
+  "dataset": "trec-covid",
+  "generated_at_utc": "2026-07-21T08:41:51.699444+00:00",
+  "source": {
+    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/trec-covid",
+    "configured_huggingface_ids": {
+      "corpus_queries": "BeIR/trec-covid",
+      "qrels": "BeIR/trec-covid-qrels"
+    },
+    "files": {
+      "corpus.jsonl": {
+        "sha256": "c78448cd2df29e296e2114d27f3153661f9daad50db3cc6dbf95dfea52c7c5d0",
+        "bytes": 199684676
+      },
+      "queries.jsonl": {
+        "sha256": "83e0c835df617e8e3ba940827c04c5d48df5bed1a007f470076a6d1bcade3f74",
+        "bytes": 5153
+      },
+      "qrels.jsonl": {
+        "sha256": "0652294332e23c0a8eabed1b50f5bb2ab3235dc4650489c927fffebfab06606b",
+        "bytes": 3236229
+      }
+    }
+  },
+  "corpus": {
+    "document_count": 171332,
+    "empty_document_count": 1,
+    "title_present_rate": 0.999959,
+    "contains_korean_rate": 0.0,
+    "contains_latin_rate": 0.999947,
+    "characters": {
+      "count": 171332,
+      "min": 0.0,
+      "mean": 1117.4974,
+      "p25": 208.75,
+      "p50": 1174.0,
+      "p75": 1713.0,
+      "p90": 2051.0,
+      "p95": 2319.0,
+      "p99": 3007.69,
+      "max": 122459.0
+    },
+    "tokens_regex": {
+      "count": 171332,
+      "min": 0.0,
+      "mean": 169.4209,
+      "p25": 31.0,
+      "p50": 176.0,
+      "p75": 261.0,
+      "p90": 314.0,
+      "p95": 355.0,
+      "p99": 465.0,
+      "max": 19387.0
+    },
+    "paragraphs": {
+      "count": 171332,
+      "min": 0.0,
+      "mean": 0.754,
+      "p25": 1.0,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "short_document_rates": {
+      "tokens_le_64": 0.274304,
+      "tokens_le_128": 0.374606,
+      "tokens_le_256": 0.736576,
+      "tokens_le_512": 0.994047,
+      "tokens_le_1024": 0.999591
+    },
+    "chars_le_4000_rate": 0.997636
+  },
+  "queries": {
+    "query_count": 50,
+    "characters": {
+      "count": 50,
+      "min": 30.0,
+      "mean": 69.24,
+      "p25": 56.5,
+      "p50": 64.5,
+      "p75": 76.75,
+      "p90": 92.2,
+      "p95": 102.4,
+      "p99": 159.61,
+      "max": 165.0
+    },
+    "tokens_regex": {
+      "count": 50,
+      "min": 6.0,
+      "mean": 11.72,
+      "p25": 9.0,
+      "p50": 11.0,
+      "p75": 13.0,
+      "p90": 15.3,
+      "p95": 19.1,
+      "p99": 24.02,
+      "max": 25.0
+    }
+  },
+  "relevance": {
+    "qrels_total": 66336,
+    "positive_qrels": 24673,
+    "relevance_score_counts": {
+      "-1": 2,
+      "0": 41661,
+      "1": 10456,
+      "2": 14217
+    },
+    "queries_with_positive_gold": 50,
+    "queries_without_positive_gold": 0,
+    "unique_gold_documents": 17537,
+    "missing_gold_documents": 0,
+    "gold_documents_per_query": {
+      "count": 50,
+      "min": 111.0,
+      "mean": 493.46,
+      "p25": 311.75,
+      "p50": 478.0,
+      "p75": 628.0,
+      "p90": 810.3,
+      "p95": 863.85,
+      "p99": 1115.57,
+      "max": 1266.0
+    },
+    "multi_gold_query_rate": 1.0,
+    "metric_population": "queries with at least one positive qrel"
+  },
+  "lexical_alignment": {
+    "evaluated_query_count": 50,
+    "query_token_coverage_in_gold": {
+      "count": 50,
+      "min": 0.9167,
+      "mean": 0.9967,
+      "p25": 1.0,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "max_query_gold_jaccard": {
+      "count": 50,
+      "min": 0.1176,
+      "mean": 0.315,
+      "p25": 0.24,
+      "p50": 0.2857,
+      "p75": 0.4,
+      "p90": 0.4558,
+      "p95": 0.5306,
+      "p99": 0.6,
+      "max": 0.6
+    },
+    "zero_token_overlap_query_rate": 0.0,
+    "exact_normalized_query_in_gold_rate": 0.0,
+    "rare_query_term_ratio": {
+      "count": 50,
+      "min": 0.0,
+      "mean": 0.0103,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p90": 0.0,
+      "p95": 0.0896,
+      "p99": 0.1681,
+      "max": 0.1818
+    },
+    "rare_document_frequency_limit": 171
+  }
+}

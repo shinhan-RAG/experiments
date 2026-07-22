@@ -1,0 +1,174 @@
+{
+  "eda_version": 1,
+  "dataset": "ko-strategyqa",
+  "generated_at_utc": "2026-07-21T08:41:54.067827+00:00",
+  "source": {
+    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/ko-strategyqa",
+    "configured_huggingface_ids": {
+      "preferred": "taeminlee/Ko-StrategyQA",
+      "alternate_candidates_in_code": [
+        "KETI-AIR/ko-strategy-qa",
+        "wics/strategy-qa"
+      ]
+    },
+    "files": {
+      "corpus.jsonl": {
+        "sha256": "f2315999e5807fb44b7d1479201dda934e94c17d342d88c159cb26ed7142385b",
+        "bytes": 12942394
+      },
+      "queries.jsonl": {
+        "sha256": "c4f2acbca4f8f1f3f300b2d7fd9a4b8be2421dae8648ce83981943001a66596a",
+        "bytes": 424812
+      },
+      "qrels.jsonl": {
+        "sha256": "1ae505cb9f1014e926e4eaefb5efacc17df27a2ad737f9344105c7580f106590",
+        "bytes": 92704
+      }
+    }
+  },
+  "corpus": {
+    "document_count": 9251,
+    "empty_document_count": 0,
+    "title_present_rate": 1.0,
+    "contains_korean_rate": 0.999568,
+    "contains_latin_rate": 0.999568,
+    "characters": {
+      "count": 9251,
+      "min": 29.0,
+      "mean": 320.2595,
+      "p25": 192.0,
+      "p50": 275.0,
+      "p75": 389.0,
+      "p90": 526.0,
+      "p95": 644.0,
+      "p99": 1134.5,
+      "max": 5016.0
+    },
+    "tokens_regex": {
+      "count": 9251,
+      "min": 7.0,
+      "mean": 74.075,
+      "p25": 44.0,
+      "p50": 64.0,
+      "p75": 90.0,
+      "p90": 123.0,
+      "p95": 150.0,
+      "p99": 266.0,
+      "max": 1121.0
+    },
+    "paragraphs": {
+      "count": 9251,
+      "min": 1.0,
+      "mean": 1.0,
+      "p25": 1.0,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "short_document_rates": {
+      "tokens_le_64": 0.51162,
+      "tokens_le_128": 0.914388,
+      "tokens_le_256": 0.989082,
+      "tokens_le_512": 0.997622,
+      "tokens_le_1024": 0.999892
+    },
+    "chars_le_4000_rate": 0.999568
+  },
+  "queries": {
+    "query_count": 2833,
+    "characters": {
+      "count": 2833,
+      "min": 9.0,
+      "mean": 22.6244,
+      "p25": 18.0,
+      "p50": 22.0,
+      "p75": 26.0,
+      "p90": 31.0,
+      "p95": 35.0,
+      "p99": 43.0,
+      "max": 67.0
+    },
+    "tokens_regex": {
+      "count": 2833,
+      "min": 2.0,
+      "mean": 5.3251,
+      "p25": 4.0,
+      "p50": 5.0,
+      "p75": 6.0,
+      "p90": 8.0,
+      "p95": 9.0,
+      "p99": 10.68,
+      "max": 16.0
+    }
+  },
+  "relevance": {
+    "qrels_total": 1145,
+    "positive_qrels": 1145,
+    "relevance_score_counts": {
+      "1.0": 1145
+    },
+    "queries_with_positive_gold": 592,
+    "queries_without_positive_gold": 2241,
+    "unique_gold_documents": 1077,
+    "missing_gold_documents": 0,
+    "gold_documents_per_query": {
+      "count": 592,
+      "min": 1.0,
+      "mean": 1.9341,
+      "p25": 1.0,
+      "p50": 2.0,
+      "p75": 2.0,
+      "p90": 3.0,
+      "p95": 3.0,
+      "p99": 4.09,
+      "max": 7.0
+    },
+    "multi_gold_query_rate": 0.643581,
+    "metric_population": "queries with at least one positive qrel"
+  },
+  "lexical_alignment": {
+    "evaluated_query_count": 592,
+    "query_token_coverage_in_gold": {
+      "count": 592,
+      "min": 0.0,
+      "mean": 0.2503,
+      "p25": 0.0,
+      "p50": 0.25,
+      "p75": 0.4,
+      "p90": 0.5,
+      "p95": 0.6,
+      "p99": 0.75,
+      "max": 0.8
+    },
+    "max_query_gold_jaccard": {
+      "count": 592,
+      "min": 0.0,
+      "mean": 0.0238,
+      "p25": 0.0,
+      "p50": 0.0194,
+      "p75": 0.0346,
+      "p90": 0.0526,
+      "p95": 0.0659,
+      "p99": 0.1055,
+      "max": 0.1429
+    },
+    "zero_token_overlap_query_rate": 0.258446,
+    "exact_normalized_query_in_gold_rate": 0.0,
+    "rare_query_term_ratio": {
+      "count": 592,
+      "min": 0.1429,
+      "mean": 0.5544,
+      "p25": 0.4,
+      "p50": 0.5,
+      "p75": 0.6667,
+      "p90": 0.8,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "rare_document_frequency_limit": 9
+  }
+}
