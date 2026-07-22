@@ -5,11 +5,20 @@ LLM-as-Judge 평가기
 - Efficiency: Gold R@W / Pull 횟수
 """
 
-import json
 import os
 import time
 import requests
 import numpy as np
+
+VALID_JUDGMENTS = {"correct", "incorrect"}
+
+
+def parse_judgment(raw: str) -> str:
+    """Judge 출력 전체가 허용된 단어일 때만 인정한다."""
+    if raw is None:
+        return "format_error"
+    cleaned = raw.strip().lower().strip("\"'`.,!:; \n\t")
+    return cleaned if cleaned in VALID_JUDGMENTS else "format_error"
 
 
 class Judge:
@@ -60,12 +69,7 @@ class Judge:
 
     @staticmethod
     def parse_judgment(value: str) -> str:
-        normalized = value.strip().strip('"\'').lower().rstrip(".!")
-        if normalized == "correct":
-            return "correct"
-        if normalized == "incorrect":
-            return "incorrect"
-        return "error"
+        return parse_judgment(value)
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
@@ -98,7 +102,7 @@ def compute_metrics(results: list[dict]) -> dict:
 
     judged = [
         r for r in results
-        if r.get("judgment") in {"correct", "incorrect"}
+        if r.get("judgment") in VALID_JUDGMENTS
     ]
     accuracy = (
         sum(1 for r in judged if r["judgment"] == "correct") / len(judged)
@@ -119,11 +123,17 @@ def compute_metrics(results: list[dict]) -> dict:
         if r.get("retrieved_candidates", 0) > 0
     ]
 
-    return {
+    metrics = {
         "n": n,
         "accuracy": round(accuracy, 4) if accuracy is not None else None,
         "judged_n": len(judged),
-        "judge_error_n": sum(1 for r in results if r.get("judgment") == "error"),
+        "n_judged": len(judged),
+        "judge_error_n": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
+        "judge_error_count": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
         "avg_gold_recall": round(avg_recall, 4),
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
@@ -138,3 +148,32 @@ def compute_metrics(results: list[dict]) -> dict:
             sum(candidate_efficiencies) / len(candidate_efficiencies), 4
         ) if candidate_efficiencies else 0.0,
     }
+
+    def avg(key: str) -> float:
+        return sum(float(r.get(key, 0) or 0) for r in results) / n
+
+    if any("read_recall" in r for r in results):
+        metrics["avg_read_recall"] = round(avg("read_recall"), 4)
+    if any("distinct_pull_queries" in r for r in results):
+        metrics["avg_distinct_queries"] = round(avg("distinct_pull_queries"), 2)
+    if any("rule_violations" in r for r in results):
+        metrics["violation_rate"] = round(
+            sum(1 for r in results if r.get("rule_violations")) / n, 4
+        )
+    if any("budget_exhausted" in r for r in results):
+        metrics["budget_exhausted_rate"] = round(
+            sum(1 for r in results if r.get("budget_exhausted")) / n, 4
+        )
+    if any(r.get("pull_stats") for r in results):
+        duplicate_rates = []
+        for row in results:
+            stats = row.get("pull_stats") or []
+            requested = sum(item.get("requested", 0) for item in stats)
+            duplicates = sum(item.get("duplicate_count", 0) for item in stats)
+            if requested:
+                duplicate_rates.append(duplicates / requested)
+        if duplicate_rates:
+            metrics["avg_duplicate_pull_rate"] = round(
+                sum(duplicate_rates) / len(duplicate_rates), 4
+            )
+    return metrics

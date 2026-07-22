@@ -12,7 +12,7 @@ class HybridRAG:
                  reranker_url: str, reranker_model: str,
                  llm_url: str, llm_model: str,
                  dense_top_k: int = 20, bm25_top_k: int = 20, rerank_top_k: int = 20,
-                 api_key: str = None):
+                 api_key: str = None, query_instruction: str = None):
         self.embedding_url = embedding_url
         self.api_key = api_key
         self.embedding_model = embedding_model
@@ -23,6 +23,7 @@ class HybridRAG:
         self.dense_top_k = dense_top_k
         self.bm25_top_k = bm25_top_k
         self.rerank_top_k = rerank_top_k
+        self.query_instruction = query_instruction
 
         self.bm25 = BM25()
         self.doc_ids: list[str] = []
@@ -71,7 +72,8 @@ class HybridRAG:
     def run(self, query: str) -> dict:
         """쿼리 실행: Dense + BM25 → RRF → Rerank → LLM"""
         # Dense retrieval (vectorized)
-        query_emb = self._embed_batch([query])[0]
+        query_text = f"{self.query_instruction}{query}" if self.query_instruction else query
+        query_emb = self._embed_batch([query_text])[0]
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
         sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
@@ -172,10 +174,13 @@ class HybridRAG:
 
     def _embed_batch(self, texts: list[str], batch_size: int = 256) -> list[np.ndarray]:
         all_embeddings = []
+        headers = {"Content-Type": "application/json"}
+        if self.api_key and "openai.com" in self.embedding_url:
+            headers["Authorization"] = f"Bearer {self.api_key}"
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             payload = {"model": self.embedding_model, "input": batch}
-            resp = requests.post(self.embedding_url, json=payload, timeout=120)
+            resp = requests.post(self.embedding_url, json=payload, headers=headers, timeout=120)
             resp.raise_for_status()
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):

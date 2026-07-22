@@ -20,18 +20,23 @@ class StaticEmbeddingRetriever(PullRetriever):
 
 
 class StaticPullRetriever:
-    def pull(self, query, taxonomy_filter=None):
-        return [
+    def pull(self, query, taxonomy_filter=None, top_k=None, exclude_ids=None):
+        rows = [
             {"doc_id": "d1", "score": 1.0},
             {"doc_id": "d2", "score": 0.5},
         ]
+        excluded = exclude_ids or set()
+        rows = [row for row in rows if row["doc_id"] not in excluded]
+        limit = top_k or len(rows)
+        return {"results": rows[:limit], "requested": limit,
+                "duplicates_excluded": len(excluded & {"d1", "d2"})}
 
 
 class ExperimentContractTests(unittest.TestCase):
     def test_judge_does_not_match_incorrect_as_correct(self):
         self.assertEqual(Judge.parse_judgment("correct"), "correct")
         self.assertEqual(Judge.parse_judgment("incorrect"), "incorrect")
-        self.assertEqual(Judge.parse_judgment("probably correct"), "error")
+        self.assertEqual(Judge.parse_judgment("probably correct"), "format_error")
 
     def test_embedding_cache_key_covers_content_and_model(self):
         base = embedding_cache_key(
@@ -78,7 +83,7 @@ class ExperimentContractTests(unittest.TestCase):
         )
         dense.doc_ids = ["lexical", "dense"]
         dense.embedding_matrix = np.asarray([[0.0, 1.0], [1.0, 0.0]])
-        self.assertEqual(dense.pull("ZXQ991")[0]["doc_id"], "dense")
+        self.assertEqual(dense.pull("ZXQ991")["results"][0]["doc_id"], "dense")
 
         hybrid = StaticEmbeddingRetriever(
             RetrieverConfig("unused", "model", top_k=1, backend="hybrid_rrf", bm25_top_k=2),
@@ -88,8 +93,34 @@ class ExperimentContractTests(unittest.TestCase):
         hybrid.embedding_matrix = np.asarray([[0.0, 1.0], [1.0, 0.0]])
         hybrid.bm25.fit(documents)
         results = hybrid.pull("ZXQ991")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["doc_id"], "lexical")
+        self.assertEqual(len(results["results"]), 1)
+        self.assertEqual(results["results"][0]["doc_id"], "lexical")
+
+    def test_hybrid_baseline_uses_the_same_query_instruction_contract(self):
+        from src.hybrid.pipeline import HybridRAG
+
+        pipeline = HybridRAG(
+            embedding_url="unused", embedding_model="model",
+            reranker_url="", reranker_model="",
+            llm_url="unused", llm_model="model",
+            dense_top_k=1, bm25_top_k=1, rerank_top_k=1,
+            query_instruction="PREFIX: ",
+        )
+        pipeline.doc_ids = ["d1"]
+        pipeline.embedding_matrix = np.asarray([[1.0, 0.0]])
+        pipeline.corpus = {"d1": {"title": "t", "text": "body"}}
+        pipeline.bm25.fit([{"_id": "d1", "title": "t", "text": "body"}])
+        seen = []
+
+        def embed(texts, batch_size=256):
+            seen.extend(texts)
+            return [np.asarray([1.0, 0.0]) for _ in texts]
+
+        pipeline._embed_batch = embed
+        pipeline._rerank = lambda query, candidates: candidates
+        pipeline._generate_answer = lambda query, context: "answer"
+        pipeline.run("question")
+        self.assertEqual(seen, ["PREFIX: question"])
 
     def test_workspace_limit_is_applied_by_agent(self):
         corpus = {
@@ -103,6 +134,7 @@ class ExperimentContractTests(unittest.TestCase):
             corpus=corpus,
             max_turns=2,
             workspace_max_docs=1,
+            min_pulls=1,
         )
         responses = iter([
             {
@@ -273,6 +305,7 @@ class AgentAccountingTests(unittest.TestCase):
             corpus={"d1": {"title": "t", "text": "본문"},
                     "d2": {"title": "t2", "text": "본문2"}},
             max_turns=5, workspace_max_docs=10,
+            min_pulls=1,
         )
         scripted = [
             {"content": None, "_usage": {"prompt_tokens": 10, "completion_tokens": 3},

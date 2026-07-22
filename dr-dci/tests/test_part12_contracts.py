@@ -31,6 +31,23 @@ class Part12ContractTests(unittest.TestCase):
         ])
         self.assertEqual(duplicates[0]["arms"], ["taxonomy_only", "stack_tax"])
 
+    def test_repository_part1_config_has_unique_treatments(self):
+        import yaml
+
+        config_path = Path(__file__).resolve().parents[1] / "config" / "experiment.yaml"
+        with config_path.open(encoding="utf-8") as stream:
+            steps = yaml.safe_load(stream)["parts"]["part1_stacking"]["steps"]
+        self.assertEqual(duplicate_arms(steps), [])
+
+    def test_requested_augmentation_missing_fails_loudly(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(
+            run_experiment, "DATA_DIR", Path(tmp)
+        ):
+            with self.assertRaises(FileNotFoundError):
+                run_experiment.load_augmentations(
+                    "dataset", 20_000, {"taxonomy": True}
+                )
+
     def test_audit_blocks_missing_artifacts_but_accepts_nested_gold_subsets(self):
         with tempfile.TemporaryDirectory() as directory:
             data = Path(directory)

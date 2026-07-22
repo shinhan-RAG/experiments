@@ -210,6 +210,12 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
         subset_report.pop("_ids"),
     )
     blockers = [*subset_report["blockers"], *augmentation_report["blockers"]]
+    if duplicates:
+        labels = ["/".join(item["arms"]) for item in duplicates]
+        blockers.append(
+            "duplicate treatment arms must not be executed independently: "
+            + ", ".join(labels)
+        )
     return {
         "status": "blocked" if blockers else "ready",
         "selected_arms": [str(step["name"]) for step in selected_steps],
@@ -217,5 +223,5 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
         "subsets": subset_report,
         "augmentations": augmentation_report,
         "blockers": blockers,
-        "warnings": (["Part 1 contains duplicate treatment arms"] if duplicates else []),
+        "warnings": [],
     }

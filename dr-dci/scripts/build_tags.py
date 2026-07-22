@@ -47,7 +47,7 @@ Respond in JSON: {{"type": "..."}}"""
 
 
 def load_jsonl(path: Path) -> list:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
@@ -149,7 +149,7 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 서브셋 doc IDs
     subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path) as f:
+    with open(subset_path, encoding="utf-8") as f:
         subset_info = json.load(f)
     doc_ids = set(subset_info["doc_ids"])
 
@@ -176,7 +176,7 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / f"{subset_size // 1000}k.json"
 
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(tagged, f, ensure_ascii=False)
 
         # 태그 분포

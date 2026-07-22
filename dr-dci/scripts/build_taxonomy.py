@@ -18,7 +18,7 @@ SCHEMA_DIR = Path(__file__).parent.parent / "config" / "taxonomy_schemas"
 
 def load_schema(dataset: str) -> dict:
     schema_path = SCHEMA_DIR / f"{dataset}.yaml"
-    with open(schema_path) as f:
+    with open(schema_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -42,7 +42,7 @@ USER_TEMPLATE = "Title: {title}\nText (first 300 chars): {text}\n\nClassify this
 
 
 def load_jsonl(path: Path) -> list:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
@@ -64,7 +64,7 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 서브셋 doc IDs 로드
     subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path) as f:
+    with open(subset_path, encoding="utf-8") as f:
         subset_info = json.load(f)
     doc_ids = set(subset_info["doc_ids"])
     print(f"  Subset docs: {len(doc_ids)}")
@@ -107,7 +107,7 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     # 통계

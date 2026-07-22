@@ -36,7 +36,7 @@ Generate a reference answer based on the above documents."""
 
 
 def load_jsonl(path: Path) -> list:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
@@ -135,7 +135,7 @@ def build_reference_answers():
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / "trec-covid.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     print(f"\n  Generated {len(results)} reference answers")

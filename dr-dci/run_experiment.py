@@ -40,7 +40,7 @@ RESULTS_DIR = BASE_DIR / "results"
 
 
 def load_config():
-    with open(CONFIG_DIR / "experiment.yaml") as f:
+    with open(CONFIG_DIR / "experiment.yaml", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -48,13 +48,13 @@ def load_corpus(dataset: str, subset_size: int = None):
     """corpus 로드 (서브셋 적용)"""
     raw_dir = DATA_DIR / "raw" / dataset
     corpus = []
-    with open(raw_dir / "corpus.jsonl") as f:
+    with open(raw_dir / "corpus.jsonl", encoding="utf-8") as f:
         for line in f:
             corpus.append(json.loads(line))
 
     if subset_size:
         subset_path = DATA_DIR / "subsets" / dataset / f"{subset_size // 1000}k.json"
-        with open(subset_path) as f:
+        with open(subset_path, encoding="utf-8") as f:
             doc_ids = set(json.load(f)["doc_ids"])
         corpus = [doc for doc in corpus if doc["_id"] in doc_ids]
 
@@ -65,12 +65,12 @@ def load_queries(dataset: str):
     """쿼리 + qrels 로드"""
     raw_dir = DATA_DIR / "raw" / dataset
     queries = []
-    with open(raw_dir / "queries.jsonl") as f:
+    with open(raw_dir / "queries.jsonl", encoding="utf-8") as f:
         for line in f:
             queries.append(json.loads(line))
 
     qrels = []
-    with open(raw_dir / "qrels.jsonl") as f:
+    with open(raw_dir / "qrels.jsonl", encoding="utf-8") as f:
         for line in f:
             qrels.append(json.loads(line))
 
@@ -78,7 +78,11 @@ def load_queries(dataset: str):
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
-    """step 설정에 따라 augmentation 데이터 로드"""
+    """step 설정에 따라 augmentation을 로드한다.
+
+    요청한 처치가 없는 상태로 같은 arm 이름을 사용하면 실험 라벨이
+    어긋난다. 그러므로 요청된 산출물 누락은 즉시 실패한다.
+    """
     taxonomy = None
     tags = None
     prefix = None
@@ -89,37 +93,41 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
 
     size_key = f"{subset_size // 1000}k"
 
+    def required(path: Path, feature: str) -> Path:
+        if not path.exists():
+            raise FileNotFoundError(
+                f"requested augmentation '{feature}' is missing: {path}"
+            )
+        return path
+
     if step_config.get("taxonomy"):
         path = DATA_DIR / "taxonomy" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                taxonomy = json.load(f)
+        required(path, "taxonomy")
+        with open(path, encoding="utf-8") as f:
+            taxonomy = json.load(f)
 
     if step_config.get("tags"):
         approach = step_config["tags"].lower()
         path = DATA_DIR / "tags" / dataset / f"approach_{approach}" / f"{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                raw_tags = json.load(f)
-            # doc_id별로 그룹핑
-            tags = {}
-            for elem in raw_tags:
-                did = elem["doc_id"]
-                if did not in tags:
-                    tags[did] = []
-                tags[did].append(elem)
+        required(path, f"tags({approach})")
+        with open(path, encoding="utf-8") as f:
+            raw_tags = json.load(f)
+        tags = {}
+        for elem in raw_tags:
+            did = elem["doc_id"]
+            tags.setdefault(did, []).append(elem)
 
     if step_config.get("prefix"):
         path = DATA_DIR / "prefix" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                prefix = json.load(f)
+        required(path, "prefix")
+        with open(path, encoding="utf-8") as f:
+            prefix = json.load(f)
 
     if step_config.get("metadata"):
         path = DATA_DIR / "metadata" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                metadata = json.load(f)
+        required(path, "metadata")
+        with open(path, encoding="utf-8") as f:
+            metadata = json.load(f)
 
     return taxonomy, tags, prefix, metadata
 
@@ -142,6 +150,8 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
         bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
         rrf_k=agent_cfg.get("rrf_k", 60),
         api_key=os.getenv("OPENAI_API_KEY", ""),
+        query_instruction=models["embedding"].get("query_instruction"),
+        max_top_k=agent_cfg.get("max_pull_top_k", 200),
     )
     retriever = PullRetriever(retriever_config)
     print("    Indexing corpus...")
@@ -185,7 +195,9 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
         gains = query_gains.get(qid) if query_gains else None
         text = q.get("title") or q.get("text", "")
         started = time.perf_counter()
-        ranked = [r["doc_id"] for r in retriever.pull(text)]
+        pulled = retriever.pull(text)
+        candidates = pulled["results"] if isinstance(pulled, dict) else pulled
+        ranked = [r["doc_id"] for r in candidates]
         latency = time.perf_counter() - started
         rows.append({
             "query_id": qid,
@@ -198,7 +210,8 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
 
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                ref_answers: dict, step_config: dict, subset_size: int,
-               dataset: str, cached_retriever: PullRetriever = None) -> list:
+               dataset: str, cached_retriever: PullRetriever = None,
+               single_pull: bool = False) -> list:
     """DR-DCI 에이전트 실행"""
     models = config["models"]
     agent_cfg = config["agent"]
@@ -207,9 +220,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
 
     if cached_retriever:
         retriever = cached_retriever
-        retriever.doc_taxonomy = (
-            {did: t for did, t in taxonomy.items()} if taxonomy else {}
-        )
+        retriever.set_taxonomy(taxonomy)
         print("    Using cached embeddings")
     else:
         retriever = build_pull_retriever(
@@ -244,6 +255,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         prefix_data=prefix,
         max_turns=agent_cfg["max_turns"],
         workspace_max_docs=agent_cfg["workspace_max_docs"],
+        min_pulls=agent_cfg.get("min_pulls", 2),
+        single_pull=single_pull,
         taxonomy_schema=taxonomy_schema,
         metadata_schema=metadata_schema,
         api_key=os.getenv("OPENAI_API_KEY", ""),
@@ -274,6 +287,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
+        read_recall = Judge.gold_recall_at_workspace(result["read_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -281,11 +295,13 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "query_text": query_text,
             "answer": result["answer"],
             "gold_recall": gold_recall,
+            "read_recall": read_recall,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
             "retrieved_candidates": result["retrieved_candidates"],
             "added_documents": result["added_documents"],
             "workspace_docs": result["workspace_docs"],
+            "read_docs": result["read_docs"],
             "turns": result["turns"],
             "tool_call_counts": result.get("tool_call_counts", {}),
             "tool_calls_total": result.get("tool_calls_total", 0),
@@ -294,6 +310,16 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "taxonomy_filtered_pulls": result.get("taxonomy_filtered_pulls", 0),
             "system_fingerprints": result.get("system_fingerprints", []),
             "latency_seconds": latency_seconds,
+            "distinct_pull_queries": result["distinct_pull_queries"],
+            "pull_stats": result["pull_stats"],
+            "budget_exhausted": result["budget_exhausted"],
+            "rule_violations": result["rule_violations"],
+            "trace": result["trace"],
+            "requested_features": {
+                key: step_config.get(key, False)
+                for key in ("taxonomy", "tags", "prefix", "metadata")
+            },
+            "single_pull": single_pull,
         }
 
     results = [None] * len(queries)
@@ -313,7 +339,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             r["judgment"] = "n/a"
 
     with ThreadPoolExecutor(max_workers=16) as executor:
-        executor.map(judge_single, results)
+        list(executor.map(judge_single, results))
 
     return results
 
@@ -335,6 +361,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         bm25_top_k=hybrid_cfg["bm25_top_k"],
         rerank_top_k=hybrid_cfg["rerank_top_k"],
         api_key=os.getenv("OPENAI_API_KEY", ""),
+        query_instruction=models["embedding"].get("query_instruction"),
     )
 
     print("    Indexing corpus...")
@@ -454,6 +481,12 @@ def run_part1(config: dict, *, focused: bool = False):
             embedding_model=models["embedding"]["name"],
             top_k=agent_cfg["pull_top_k"],
             use_prefix=False,
+            backend=agent_cfg.get("pull_backend", "dense"),
+            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
+            rrf_k=agent_cfg.get("rrf_k", 60),
+            api_key=os.getenv("OPENAI_API_KEY", ""),
+            query_instruction=models["embedding"].get("query_instruction"),
+            max_top_k=agent_cfg.get("max_pull_top_k", 200),
         ))
         retriever_no_prefix.index(corpus)
 
@@ -468,6 +501,12 @@ def run_part1(config: dict, *, focused: bool = False):
             embedding_model=models["embedding"]["name"],
             top_k=agent_cfg["pull_top_k"],
             use_prefix=True,
+            backend=agent_cfg.get("pull_backend", "dense"),
+            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
+            rrf_k=agent_cfg.get("rrf_k", 60),
+            api_key=os.getenv("OPENAI_API_KEY", ""),
+            query_instruction=models["embedding"].get("query_instruction"),
+            max_top_k=agent_cfg.get("max_pull_top_k", 200),
         ))
         retriever_with_prefix.index(corpus, prefixes=prefix_data)
 
@@ -556,6 +595,19 @@ def run_part2(config: dict, *, focused: bool = False):
             }
             print(f"    Metrics: {metrics}")
 
+            if part_cfg.get("include_single_pull", True):
+                print(f"\n  --- Single Pull {arm['name']} @ {size_key} ---")
+                single_results = run_dr_dci(
+                    config, corpus, queries, qrels, ref_answers,
+                    arm, subset_size, dataset, single_pull=True,
+                )
+                single_key = f"single-pull_{arm['name']}_{size_key}"
+                all_results[single_key] = {
+                    "results": single_results,
+                    "metrics": compute_metrics(single_results),
+                }
+                print(f"    Metrics: {all_results[single_key]['metrics']}")
+
         if not focused:
             print(f"\n  --- Hybrid RAG @ {size_key} ---")
             results = run_hybrid(config, corpus, queries, qrels, ref_answers)
@@ -582,6 +634,16 @@ def run_part2(config: dict, *, focused: bool = False):
                     all_results[f"{arm}_{size_key}"]["results"],
                     seed=config["seed"],
                 )
+    if part_cfg.get("include_single_pull", True):
+        for arm in selected_steps:
+            arm_name = arm["name"]
+            for size in sizes:
+                size_key = f"{size // 1000}k"
+                analysis[f"dynamic_minus_single_{arm_name}_{size_key}"] = compare_result_rows(
+                    all_results[f"single-pull_{arm_name}_{size_key}"]["results"],
+                    all_results[f"{arm_name}_{size_key}"]["results"],
+                    seed=config["seed"],
+                )
 
     save_results(
         "part2_taxonomy_scaling_focused" if focused else "part2_scaling",
@@ -592,6 +654,7 @@ def run_part2(config: dict, *, focused: bool = False):
             "subsets": sizes,
             "focused": focused,
             "arms": [str(step["name"]) for step in selected_steps],
+            "include_single_pull": part_cfg.get("include_single_pull", True),
             "preflight": preflight,
         },
         analysis=analysis,
