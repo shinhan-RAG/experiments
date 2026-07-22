@@ -50,7 +50,7 @@ def upload():
     # README 생성 & 업로드
     readme = generate_readme()
     readme_path = DATA_DIR / "README.md"
-    with open(readme_path, "w") as f:
+    with open(readme_path, "w", encoding="utf-8") as f:
         f.write(readme)
 
     api.upload_file(

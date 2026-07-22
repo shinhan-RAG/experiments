@@ -34,7 +34,7 @@ def download_beir_dataset(dataset_name: str, hf_name: str = None):
     # Corpus
     print(f"    Loading corpus...")
     corpus_ds = load_dataset(f"BeIR/{hf_name}", "corpus", split="corpus")
-    with open(out_dir / "corpus.jsonl", "w") as f:
+    with open(out_dir / "corpus.jsonl", "w", encoding="utf-8") as f:
         for item in corpus_ds:
             doc = {
                 "_id": item["_id"],
@@ -47,7 +47,7 @@ def download_beir_dataset(dataset_name: str, hf_name: str = None):
     # Queries
     print(f"    Loading queries...")
     queries_ds = load_dataset(f"BeIR/{hf_name}", "queries", split="queries")
-    with open(out_dir / "queries.jsonl", "w") as f:
+    with open(out_dir / "queries.jsonl", "w", encoding="utf-8") as f:
         for item in queries_ds:
             q = {
                 "_id": item["_id"],
@@ -64,7 +64,7 @@ def download_beir_dataset(dataset_name: str, hf_name: str = None):
         # 일부 데이터셋은 다른 구조
         qrels_ds = load_dataset(f"BeIR/{hf_name}", "default", split="test")
 
-    with open(out_dir / "qrels.jsonl", "w") as f:
+    with open(out_dir / "qrels.jsonl", "w", encoding="utf-8") as f:
         for item in qrels_ds:
             qrel = {
                 "query-id": item.get("query-id", item.get("query_id", "")),
@@ -88,65 +88,36 @@ def download_ko_strategyqa():
         print(f"  [ko-strategyqa] Already exists, skipping.")
         return
 
-    print(f"  [ko-strategyqa] Downloading...")
+    print(f"  [ko-strategyqa] Downloading from mteb/Ko-StrategyQA...")
 
-    # StrategyQA 데이터 로드
-    # Korean version from HuggingFace (or build from English + translate)
-    try:
-        ds = load_dataset("KETI-AIR/ko-strategy-qa", split="train")
-    except Exception:
-        # Fallback: English StrategyQA + use as-is for structure
-        print("    Korean version not found, trying English StrategyQA...")
-        ds = load_dataset("wics/strategy-qa", split="train")
-
-    # 문서 풀 구성 (evidence paragraphs)
-    corpus = {}
-    queries = []
-    qrels = []
-
-    for i, item in enumerate(ds):
-        query_id = f"q_{i}"
-        query_text = item.get("question", "")
-        queries.append({"_id": query_id, "text": query_text})
-
-        # evidence/facts를 문서로 변환
-        facts = item.get("facts", item.get("evidence", []))
-        if isinstance(facts, str):
-            facts = [facts]
-
-        for j, fact in enumerate(facts):
-            doc_id = f"doc_{i}_{j}"
-            if doc_id not in corpus:
-                corpus[doc_id] = {
-                    "_id": doc_id,
-                    "title": "",
-                    "text": fact if isinstance(fact, str) else str(fact),
-                }
-            qrels.append({
-                "query-id": query_id,
-                "corpus-id": doc_id,
-                "score": 1,
-            })
-
-    # 추가 노이즈 문서 (다른 쿼리의 facts를 활용)
-    # 이미 충분하면 생략
-
-    # 저장
-    with open(out_dir / "corpus.jsonl", "w") as f:
-        for doc in corpus.values():
+    # mteb/Ko-StrategyQA: 이미 BEIR 포맷(corpus/queries/qrels), split은 "dev"
+    corpus_ds = load_dataset("mteb/Ko-StrategyQA", "corpus", split="dev")
+    with open(out_dir / "corpus.jsonl", "w", encoding="utf-8") as f:
+        for item in corpus_ds:
+            doc = {
+                "_id": item["_id"],
+                "title": item.get("title", ""),
+                "text": item.get("text", ""),
+            }
             f.write(json.dumps(doc, ensure_ascii=False) + "\n")
 
-    with open(out_dir / "queries.jsonl", "w") as f:
-        for q in queries:
-            f.write(json.dumps(q, ensure_ascii=False) + "\n")
+    queries_ds = load_dataset("mteb/Ko-StrategyQA", "queries", split="dev")
+    with open(out_dir / "queries.jsonl", "w", encoding="utf-8") as f:
+        for item in queries_ds:
+            f.write(json.dumps({"_id": item["_id"], "text": item.get("text", "")}, ensure_ascii=False) + "\n")
 
-    with open(out_dir / "qrels.jsonl", "w") as f:
-        for qrel in qrels:
-            f.write(json.dumps(qrel, ensure_ascii=False) + "\n")
+    qrels_ds = load_dataset("mteb/Ko-StrategyQA", "qrels", split="dev")
+    with open(out_dir / "qrels.jsonl", "w", encoding="utf-8") as f:
+        for item in qrels_ds:
+            f.write(json.dumps({
+                "query-id": item["query-id"],
+                "corpus-id": item["corpus-id"],
+                "score": item.get("score", 0),
+            }, ensure_ascii=False) + "\n")
 
-    print(f"    Corpus: {len(corpus)} docs")
-    print(f"    Queries: {len(queries)}")
-    print(f"    Qrels: {len(qrels)}")
+    print(f"    Corpus: {len(corpus_ds)} docs")
+    print(f"    Queries: {len(queries_ds)}")
+    print(f"    Qrels: {len(qrels_ds)}")
     print(f"  [ko-strategyqa] Done! Saved to {out_dir}")
 
 

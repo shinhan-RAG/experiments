@@ -240,10 +240,13 @@ class HybridRAG:
 
     def _embed_batch(self, texts: list[str], batch_size: int = 256) -> list[np.ndarray]:
         all_embeddings = []
+        headers = {"Content-Type": "application/json"}
+        if self.api_key and "openai.com" in self.embedding_url:
+            headers["Authorization"] = f"Bearer {self.api_key}"
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             payload = {"model": self.embedding_model, "input": batch}
-            resp = requests.post(self.embedding_url, json=payload, timeout=120)
+            resp = requests.post(self.embedding_url, json=payload, headers=headers, timeout=120)
             resp.raise_for_status()
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):

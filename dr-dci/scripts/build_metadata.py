@@ -22,7 +22,7 @@ SCHEMA_DIR = Path(__file__).parent.parent / "config" / "metadata_schemas"
 def load_schema(dataset: str) -> dict:
     """데이터셋별 metadata 스키마 로드"""
     schema_path = SCHEMA_DIR / f"{dataset}.yaml"
-    with open(schema_path) as f:
+    with open(schema_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -132,7 +132,7 @@ def build_json_schema(schema: dict) -> dict:
 
 
 def load_jsonl(path: Path) -> list:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
@@ -170,7 +170,7 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 서브셋 doc IDs
     subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path) as f:
+    with open(subset_path, encoding="utf-8") as f:
         subset_info = json.load(f)
     doc_ids = set(subset_info["doc_ids"])
 
@@ -216,7 +216,7 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     # 통계
