@@ -10,6 +10,8 @@ import json
 import os
 import yaml
 import argparse
+import subprocess
+import time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -20,6 +22,7 @@ load_dotenv(Path(__file__).parent / ".env")
 from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
+from src.eval.comparison import compare_paired_results
 from src.eval.judge import Judge, compute_metrics
 
 
@@ -125,16 +128,22 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
 
     if cached_retriever:
         retriever = cached_retriever
-        # taxonomy가 있으면 retriever에 설정 (soft boost용)
-        if taxonomy:
-            retriever.doc_taxonomy = {did: t for did, t in taxonomy.items()}
+        retriever.doc_taxonomy = (
+            {did: t for did, t in taxonomy.items()} if taxonomy else {}
+        )
         print("    Using cached embeddings")
     else:
+        pull_backend = step_config.get(
+            "pull_backend", agent_cfg.get("pull_backend", "dense")
+        )
         retriever_config = RetrieverConfig(
             embedding_url=models["embedding"]["url"],
             embedding_model=models["embedding"]["name"],
             top_k=agent_cfg["pull_top_k"],
             use_prefix=step_config.get("prefix", False),
+            backend=pull_backend,
+            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
+            rrf_k=agent_cfg.get("rrf_k", 60),
         )
         retriever = PullRetriever(retriever_config)
         print("    Indexing corpus...")
@@ -167,6 +176,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         metadata_data=metadata,
         prefix_data=prefix,
         max_turns=agent_cfg["max_turns"],
+        workspace_max_docs=agent_cfg["workspace_max_docs"],
         taxonomy_schema=taxonomy_schema,
         metadata_schema=metadata_schema,
         api_key=os.getenv("OPENAI_API_KEY", ""),
@@ -192,7 +202,9 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     def run_single_query(i, q):
         qid = str(q["_id"])
         query_text = q.get("title") or q.get("text", "")
+        started = time.perf_counter()
         result = agent.run(query_text)
+        latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
@@ -204,8 +216,11 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "gold_recall": gold_recall,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
+            "retrieved_candidates": result["retrieved_candidates"],
+            "added_documents": result["added_documents"],
             "workspace_docs": result["workspace_docs"],
             "turns": result["turns"],
+            "latency_seconds": latency_seconds,
         }
 
     results = [None] * len(queries)
@@ -271,7 +286,9 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     def run_single_hybrid(i, q):
         qid = str(q["_id"])
         query_text = q.get("title") or q.get("text", "")
+        started = time.perf_counter()
         result = pipeline.run(query_text)
+        latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["retrieved_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
@@ -283,7 +300,10 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             "gold_recall": gold_recall,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
+            "retrieved_candidates": len(result["retrieved_docs"]),
             "retrieved_docs": result["retrieved_docs"],
+            "turns": 1,
+            "latency_seconds": latency_seconds,
         }
 
     results = [None] * len(queries)
@@ -477,7 +497,86 @@ def run_part4(config: dict):
     save_results("part4_generalization", all_results)
 
 
-def save_results(part_name: str, results: dict):
+def run_part5(config: dict):
+    """Part 5: compare pull backends while holding the agent loop fixed."""
+    print("\n" + "=" * 60)
+    print("Part 5: Pull Backend (Dense vs Hybrid RRF)")
+    print("=" * 60)
+
+    part_cfg = config["parts"]["part5_pull_backend"]
+    dataset = part_cfg["dataset"]
+    subset_size = part_cfg["subset"]
+    corpus = load_corpus(dataset, subset_size)
+    queries, qrels = load_queries(dataset)
+
+    ref_answers = {}
+    ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
+    if ref_path.exists():
+        with open(ref_path) as f:
+            for item in json.load(f):
+                ref_answers[item["query_id"]] = item["reference_answer"]
+
+    fixed = dict(part_cfg["fixed_augmentations"])
+    all_results = {}
+    for backend in part_cfg["backends"]:
+        step_config = {**fixed, "pull_backend": backend}
+        print(f"\n  --- pull backend: {backend} ---")
+        results = run_dr_dci(
+            config,
+            corpus,
+            queries,
+            qrels,
+            ref_answers,
+            step_config,
+            subset_size,
+            dataset,
+        )
+        metrics = compute_metrics(results)
+        all_results[backend] = {"results": results, "metrics": metrics}
+        print(f"    Metrics: {metrics}")
+
+    manifest = {
+        "hypothesis": (
+            "Adding BM25 through RRF improves pull coverage for exact lexical "
+            "clues without changing the agent loop."
+        ),
+        "single_variable": "pull_backend",
+        "backends": list(part_cfg["backends"]),
+        "fixed_augmentations": fixed,
+        "dataset": dataset,
+        "subset_size": subset_size,
+        "query_count": len(queries),
+        "seed": config["seed"],
+        "git_commit": current_git_commit(),
+    }
+    comparison = compare_paired_results(
+        all_results["dense"]["results"],
+        all_results["hybrid_rrf"]["results"],
+        seed=config["seed"],
+    )
+    save_results(
+        "part5_pull_backend",
+        all_results,
+        manifest=manifest,
+        analysis={"dense_vs_hybrid_rrf": comparison},
+    )
+
+
+def current_git_commit() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=BASE_DIR, text=True
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+
+
+def save_results(
+    part_name: str,
+    results: dict,
+    manifest: dict = None,
+    analysis: dict = None,
+):
     out_dir = RESULTS_DIR / part_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -490,14 +589,24 @@ def save_results(part_name: str, results: dict):
         summary[key] = val["metrics"]
 
     with open(out_path, "w") as f:
-        json.dump({"summary": summary, "full_results": results}, f, ensure_ascii=False, indent=2)
+        json.dump(
+            {
+                "manifest": manifest or {},
+                "analysis": analysis or {},
+                "summary": summary,
+                "full_results": results,
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
 
     print(f"\n  Results saved: {out_path}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="DR-DCI Experiment Runner")
-    parser.add_argument("--part", type=int, choices=[1, 2, 3, 4], help="Run specific part")
+    parser.add_argument("--part", type=int, choices=[1, 2, 3, 4, 5], help="Run specific part")
     parser.add_argument("--all", action="store_true", help="Run all parts")
     args = parser.parse_args()
 
@@ -508,6 +617,7 @@ def main():
         run_part2(config)
         run_part3(config)
         run_part4(config)
+        run_part5(config)
     elif args.part == 1:
         run_part1(config)
     elif args.part == 2:
@@ -516,8 +626,10 @@ def main():
         run_part3(config)
     elif args.part == 4:
         run_part4(config)
+    elif args.part == 5:
+        run_part5(config)
     else:
-        print("Usage: python run_experiment.py --part {1,2,3,4} or --all")
+        print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
 
 
 if __name__ == "__main__":

@@ -30,6 +30,8 @@ models:
 agent:
   max_turns: 10
   pull_top_k: 20
+  bm25_top_k: 20
+  rrf_k: 60
   workspace_max_docs: 100
   dci_tools: ["grep", "find", "read", "filter"]
 
@@ -127,6 +129,17 @@ parts:
   part4_generalization:
     datasets: ["fiqa", "ko-strategyqa"]
     methods: ["dr-dci-final", "hybrid-rag"]
+
+  # Keep Peter's final augmentation stack fixed and change only the pull backend.
+  part5_pull_backend:
+    dataset: "trec-covid"
+    subset: 20000
+    backends: ["dense", "hybrid_rrf"]
+    fixed_augmentations:
+      taxonomy: true
+      tags: "A"
+      prefix: true
+      metadata: true
 
 # Evaluation
 evaluation:

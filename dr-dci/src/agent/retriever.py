@@ -6,16 +6,15 @@ Pull Retriever: 에이전트가 호출하는 검색 함수
 - Metadata/Tags: workspace 탐색 전용
 """
 
-import hashlib
 import numpy as np
 import requests
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.retrieval import BM25, embedding_cache_key, reciprocal_rank_fusion
+
 
 CACHE_DIR = Path(__file__).parent.parent.parent / "cache" / "embeddings"
-
-
 @dataclass
 class RetrieverConfig:
     embedding_url: str
@@ -25,6 +24,9 @@ class RetrieverConfig:
     taxonomy_boost: float = 1.5
     reranker_url: str = None
     reranker_model: str = None
+    backend: str = "dense"
+    bm25_top_k: int = 20
+    rrf_k: int = 60
 
 
 class PullRetriever:
@@ -35,9 +37,16 @@ class PullRetriever:
         self.embedding_matrix: np.ndarray = None  # (N, D) for vectorized search
         self.doc_taxonomy: dict[str, dict] = {}
         self.doc_raw_texts: dict[str, str] = {}  # for reranker
+        self.bm25 = BM25()
 
     def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
         """문서를 인덱싱. 디스크 캐시 활용."""
+        if self.config.backend not in {"dense", "hybrid_rrf"}:
+            raise ValueError(f"unsupported retrieval backend: {self.config.backend}")
+
+        self.doc_embeddings.clear()
+        self.doc_raw_texts.clear()
+        self.doc_taxonomy.clear()
         doc_ids = []
         texts = []
         for doc in documents:
@@ -53,10 +62,16 @@ class PullRetriever:
             if taxonomy and doc_id in taxonomy:
                 self.doc_taxonomy[doc_id] = taxonomy[doc_id]
 
-        # 캐시 키: doc_ids 해시 + prefix 여부
-        cache_key = hashlib.md5(
-            f"{sorted(doc_ids)[:5]}_{len(doc_ids)}_{self.config.use_prefix}".encode()
-        ).hexdigest()[:12]
+        if self.config.backend == "hybrid_rrf":
+            self.bm25.fit(documents)
+
+        cache_key = embedding_cache_key(
+            namespace="pull",
+            model=self.config.embedding_model,
+            use_prefix=self.config.use_prefix,
+            doc_ids=doc_ids,
+            texts=texts,
+        )
         cache_path = CACHE_DIR / f"{cache_key}.npz"
 
         if cache_path.exists():
@@ -101,10 +116,24 @@ class PullRetriever:
                 if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
                     sims[i] *= self.config.taxonomy_boost
 
-        # dense top candidates (reranker가 있으면 더 많이 뽑아서 rerank)
+        # Dense candidates are always built so the hybrid arm changes only the backend.
         candidate_k = self.config.top_k * 4 if self.config.reranker_url else self.config.top_k
-        top_indices = np.argsort(-sims)[:candidate_k]
-        candidates = [{"doc_id": self.doc_ids[i], "score": float(sims[i])} for i in top_indices]
+        dense_k = max(candidate_k, self.config.bm25_top_k)
+        top_indices = np.argsort(-sims, kind="stable")[:dense_k]
+        dense_candidates = [
+            {"doc_id": self.doc_ids[i], "score": float(sims[i])}
+            for i in top_indices
+        ]
+
+        if self.config.backend == "hybrid_rrf":
+            lexical_candidates = self.bm25.search(query, self.config.bm25_top_k)
+            candidates = reciprocal_rank_fusion(
+                [dense_candidates, lexical_candidates],
+                k=self.config.rrf_k,
+                top_k=candidate_k,
+            )
+        else:
+            candidates = dense_candidates[:candidate_k]
 
         if self.config.reranker_url:
             candidates = self._rerank(query, candidates)

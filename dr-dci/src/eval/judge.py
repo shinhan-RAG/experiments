@@ -9,7 +9,7 @@ import json
 import os
 import time
 import requests
-from pathlib import Path
+import numpy as np
 
 
 class Judge:
@@ -47,8 +47,8 @@ class Judge:
                     time.sleep(wait)
                     continue
                 resp.raise_for_status()
-                result = resp.json()["choices"][0]["message"]["content"].strip().lower()
-                return "correct" if "correct" in result else "incorrect"
+                result = resp.json()["choices"][0]["message"]["content"]
+                return self.parse_judgment(result)
             except requests.exceptions.Timeout:
                 time.sleep(10)
                 continue
@@ -56,6 +56,15 @@ class Judge:
                 print(f"  Judge error: {e}")
                 return "error"
         print(f"  Judge error: max retries exceeded")
+        return "error"
+
+    @staticmethod
+    def parse_judgment(value: str) -> str:
+        normalized = value.strip().strip('"\'').lower().rstrip(".!")
+        if normalized == "correct":
+            return "correct"
+        if normalized == "incorrect":
+            return "incorrect"
         return "error"
 
     @staticmethod
@@ -87,15 +96,43 @@ def compute_metrics(results: list[dict]) -> dict:
     if n == 0:
         return {}
 
-    accuracy = sum(1 for r in results if r.get("judgment") == "correct") / n
+    judged = [
+        r for r in results
+        if r.get("judgment") in {"correct", "incorrect"}
+    ]
+    accuracy = (
+        sum(1 for r in judged if r["judgment"] == "correct") / len(judged)
+        if judged else None
+    )
     avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
     avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
     avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
+    avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
+    avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
+    avg_turns = sum(r.get("turns", 0) for r in results) / n
+    avg_latency = sum(r.get("latency_seconds", 0) for r in results) / n
+    latencies = [r.get("latency_seconds", 0) for r in results]
+    candidate_efficiencies = [
+        r.get("gold_recall", 0) * 100 / r.get("retrieved_candidates", 0)
+        for r in results
+        if r.get("retrieved_candidates", 0) > 0
+    ]
 
     return {
         "n": n,
-        "accuracy": round(accuracy, 4),
+        "accuracy": round(accuracy, 4) if accuracy is not None else None,
+        "judged_n": len(judged),
+        "judge_error_n": sum(1 for r in results if r.get("judgment") == "error"),
         "avg_gold_recall": round(avg_recall, 4),
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
+        "avg_retrieved_candidates": round(avg_candidates, 2),
+        "avg_workspace_docs": round(avg_workspace_docs, 2),
+        "avg_turns": round(avg_turns, 2),
+        "avg_latency_seconds": round(avg_latency, 3),
+        "p50_latency_seconds": round(float(np.percentile(latencies, 50)), 3),
+        "p95_latency_seconds": round(float(np.percentile(latencies, 95)), 3),
+        "avg_gold_recall_per_100_candidates": round(
+            sum(candidate_efficiencies) / len(candidate_efficiencies), 4
+        ) if candidate_efficiencies else 0.0,
     }

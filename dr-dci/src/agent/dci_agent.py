@@ -150,6 +150,7 @@ class DCIAgent:
                  corpus: dict, tags_data: dict = None, taxonomy_data: dict = None,
                  metadata_data: dict = None, prefix_data: dict = None,
                  max_turns: int = 10,
+                 workspace_max_docs: int = 100,
                  taxonomy_schema: dict = None, metadata_schema: dict = None,
                  api_key: str = None):
         self.llm_url = llm_url
@@ -162,6 +163,7 @@ class DCIAgent:
         self.metadata_data = metadata_data
         self.prefix_data = prefix_data
         self.max_turns = max_turns
+        self.workspace_max_docs = workspace_max_docs
         self.system_prompt = build_system_prompt(
             taxonomy_schema=taxonomy_schema,
             metadata_schema=metadata_schema,
@@ -170,16 +172,20 @@ class DCIAgent:
 
     def run(self, query: str) -> dict:
         """쿼리에 대해 에이전트 실행, 결과 반환"""
-        workspace = Workspace()
+        workspace = Workspace(max_docs=self.workspace_max_docs)
         messages = [
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": f"Answer this question: {query}"},
         ]
 
         pull_count = 0
+        retrieved_candidates = 0
+        added_documents = 0
         final_answer = ""
+        turns_used = 0
 
         for turn in range(self.max_turns):
+            turns_used = turn + 1
             response = self._call_llm(messages)
 
             if not response.get("tool_calls"):
@@ -203,6 +209,8 @@ class DCIAgent:
 
                 if func_name == "pull":
                     pull_count += 1
+                    retrieved_candidates += result.get("retrieved", 0)
+                    added_documents += result.get("added_to_workspace", 0)
                 elif func_name == "answer":
                     final_answer = args.get("text", "")
                     messages.append({
@@ -213,6 +221,8 @@ class DCIAgent:
                     return {
                         "answer": final_answer,
                         "pull_count": pull_count,
+                        "retrieved_candidates": retrieved_candidates,
+                        "added_documents": added_documents,
                         "workspace_docs": list(workspace.docs.keys()),
                         "turns": turn + 1,
                     }
@@ -226,8 +236,10 @@ class DCIAgent:
         return {
             "answer": final_answer,
             "pull_count": pull_count,
+            "retrieved_candidates": retrieved_candidates,
+            "added_documents": added_documents,
             "workspace_docs": list(workspace.docs.keys()),
-            "turns": self.max_turns,
+            "turns": turns_used,
         }
 
     def _execute_tool(self, name: str, args: dict, workspace: Workspace) -> dict:
