@@ -1,3 +1,4 @@
+import math
 import unittest
 
 import numpy as np
@@ -188,6 +189,29 @@ class RankMetricTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rank_metrics(["a"], set())
 
+    def test_ndcg_uses_graded_gains_with_log2_discount(self):
+        from src.eval.retrieval_metrics import ndcg_at_k, precision_at_k
+
+        ranked = ["a", "b", "c"]
+        gains = {"a": 2.0, "c": 1.0, "x": 2.0}
+        dcg = 2.0 / math.log2(2) + 1.0 / math.log2(4)
+        idcg = 2.0 / math.log2(2) + 2.0 / math.log2(3) + 1.0 / math.log2(4)
+        self.assertAlmostEqual(ndcg_at_k(ranked, gains, 10), dcg / idcg)
+        # 완전 순위는 1.0, 미검색은 0.0
+        self.assertAlmostEqual(ndcg_at_k(["a"], {"a": 1.0}, 10), 1.0)
+        self.assertAlmostEqual(ndcg_at_k(["z"], {"a": 1.0}, 10), 0.0)
+        self.assertAlmostEqual(precision_at_k(ranked, {"a", "c", "x"}, 20), 2 / 20)
+
+    def test_rank_metrics_binary_fallback_matches_graded_keys(self):
+        from src.eval.retrieval_metrics import rank_metrics
+
+        binary = rank_metrics(["a", "b"], {"a"})
+        graded = rank_metrics(["a", "b"], {"a"}, gains={"a": 2.0})
+        self.assertEqual(set(binary), set(graded))
+        self.assertAlmostEqual(binary["ndcg_at_10"], 1.0)   # 1위 완전 순위
+        self.assertAlmostEqual(graded["ndcg_at_10"], 1.0)   # 배율 불변성
+        self.assertAlmostEqual(binary["precision_at_20"], 1 / 20)
+
 
 class PullProbeTests(unittest.TestCase):
     def test_probe_excludes_queries_without_gold_and_is_deterministic(self):
@@ -209,6 +233,18 @@ class PullProbeTests(unittest.TestCase):
             [r["ranked_top20"] for r in rows],
             [r["ranked_top20"] for r in again],
         )
+
+    def test_probe_records_graded_ndcg_when_gains_given(self):
+        from run_experiment import run_pull_probe
+
+        retriever = StaticPullRetriever()
+        queries = [{"_id": "q1", "text": "판정 질의"}]
+        rows = run_pull_probe(retriever, queries, {"q1": {"d2"}},
+                              query_gains={"q1": {"d2": 2.0}})
+        # d2가 2위: DCG=2/log2(3), IDCG=2/log2(2)
+        self.assertAlmostEqual(rows[0]["ndcg_at_10"],
+                               (2.0 / math.log2(3)) / 2.0)
+        self.assertAlmostEqual(rows[0]["precision_at_20"], 1 / 20)
 
     def test_probe_paired_comparison_shape(self):
         from src.eval.comparison import compare_probe_rows
@@ -258,6 +294,8 @@ class AgentAccountingTests(unittest.TestCase):
         self.assertEqual(result["tool_call_counts"]["pull"], 1)
         self.assertEqual(result["tool_call_counts"]["grep"], 1)
         self.assertEqual(result["tool_call_counts"]["answer"], 1)
+        self.assertEqual(result["taxonomy_filtered_pulls"], 0)
+        self.assertEqual(result["system_fingerprints"], [])
         self.assertEqual(result["tool_calls_total"], 3)      # turns(2)와 분리 계측
         self.assertEqual(result["turns"], 2)
         self.assertEqual(result["llm_prompt_tokens"], 30)

@@ -1,9 +1,10 @@
 """
 DR-DCI Augmentation Experiment Runner
-- Part 1: 기법 적층 (TREC-COVID, 10K)
-- Part 2: 규모 확장 비교
+- Part 1: 기법 적층 (TREC-COVID, config subset 크기)
+- Part 2: 규모 확장 비교 (controlled distractor scaling)
 - Part 3: @el: 태그 방식 비교
 - Part 4: 일반화 검증
+- Part 5: pull backend 비교 (dense vs hybrid_rrf)
 """
 
 import json
@@ -22,8 +23,13 @@ load_dotenv(Path(__file__).parent / ".env")
 from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
-from src.eval.comparison import compare_paired_results, compare_probe_rows
+from src.eval.comparison import (
+    compare_paired_results,
+    compare_probe_rows,
+    compare_result_rows,
+)
 from src.eval.judge import Judge, compute_metrics
+from src.eval.part12_contracts import audit_part12
 from src.eval.retrieval_metrics import rank_metrics
 
 
@@ -154,24 +160,36 @@ def positive_gold_by_query(qrels: list) -> dict:
     return dict(gold)
 
 
+def positive_gold_gains_by_query(qrels: list) -> dict:
+    """질의별 graded gain(doc_id→score) — nDCG용. positive(score>=1)만 포함해
+    분모 정책을 positive_gold_by_query와 일치시킨다."""
+    from collections import defaultdict
+    gains = defaultdict(dict)
+    for entry in qrels:
+        if entry["score"] >= 1:
+            gains[str(entry["query-id"])][str(entry["corpus-id"])] = float(entry["score"])
+    return dict(gains)
+
+
 def run_pull_probe(retriever: PullRetriever, queries: list,
-                   query_gold: dict) -> list:
+                   query_gold: dict, query_gains: dict = None) -> list:
     """retrieval-only probe: 원 질의 텍스트로 backend를 직접 1회 pull해
-    rank 지표(Recall@5/20·Hit@5/10)를 잰다 — agent의 질의 재작성과 독립인
-    검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
+    rank 지표(Recall@5/20·Hit@5/10·P@20·nDCG@10)를 잰다 — agent의 질의
+    재작성과 독립인 검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
     rows = []
     for q in queries:
         qid = str(q["_id"])
         gold = query_gold.get(qid)
         if not gold:
             continue                      # gold 없는 질의는 분모 제외
+        gains = query_gains.get(qid) if query_gains else None
         text = q.get("title") or q.get("text", "")
         started = time.perf_counter()
         ranked = [r["doc_id"] for r in retriever.pull(text)]
         latency = time.perf_counter() - started
         rows.append({
             "query_id": qid,
-            **rank_metrics(ranked, gold),
+            **rank_metrics(ranked, gold, gains=gains),
             "probe_latency_seconds": latency,
             "ranked_top20": ranked[:20],
         })
@@ -273,6 +291,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "tool_calls_total": result.get("tool_calls_total", 0),
             "llm_prompt_tokens": result.get("llm_prompt_tokens", 0),
             "llm_completion_tokens": result.get("llm_completion_tokens", 0),
+            "taxonomy_filtered_pulls": result.get("taxonomy_filtered_pulls", 0),
+            "system_fingerprints": result.get("system_fingerprints", []),
             "latency_seconds": latency_seconds,
         }
 
@@ -377,15 +397,39 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     return results
 
 
-def run_part1(config: dict):
-    """Part 1: 기법 적층"""
-    print("\n" + "=" * 60)
-    print("Part 1: Technique Stacking (TREC-COVID, 10K)")
-    print("=" * 60)
+def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
+    report = audit_part12(
+        config,
+        DATA_DIR,
+        step_names=step_names,
+        sizes=sizes,
+    )
+    if report["blockers"]:
+        details = "\n".join(f"- {item}" for item in report["blockers"])
+        raise RuntimeError(f"Part 1/2 preflight failed:\n{details}")
+    return report
 
+
+def run_part1(config: dict, *, focused: bool = False):
+    """Part 1: 기법 적층"""
     part_cfg = config["parts"]["part1_stacking"]
     dataset = part_cfg["dataset"]
     subset_size = part_cfg["subset"]
+    steps = part_cfg["steps"]
+    if focused:
+        focused_names = {"baseline", "taxonomy_only"}
+        steps = [step for step in steps if step["name"] in focused_names]
+
+    print("\n" + "=" * 60)
+    print(f"Part 1: Technique Stacking ({dataset}, {subset_size // 1000}K)")
+    print("=" * 60)
+
+    # Validate treatments before loading a corpus or calling any model endpoint.
+    preflight = _part12_preflight(
+        config,
+        step_names={str(step["name"]) for step in steps},
+        sizes=[subset_size],
+    )
 
     corpus = load_corpus(dataset, subset_size)
     queries, qrels = load_queries(dataset)
@@ -402,27 +446,33 @@ def run_part1(config: dict):
     models = config["models"]
     agent_cfg = config["agent"]
 
-    print("\n  Building cached embeddings (prefix=off)...")
-    retriever_no_prefix = PullRetriever(RetrieverConfig(
-        embedding_url=models["embedding"]["url"],
-        embedding_model=models["embedding"]["name"],
-        top_k=agent_cfg["pull_top_k"],
-        use_prefix=False,
-    ))
-    retriever_no_prefix.index(corpus)
+    retriever_no_prefix = None
+    if any(not step.get("prefix") for step in steps):
+        print("\n  Building cached embeddings (prefix=off)...")
+        retriever_no_prefix = PullRetriever(RetrieverConfig(
+            embedding_url=models["embedding"]["url"],
+            embedding_model=models["embedding"]["name"],
+            top_k=agent_cfg["pull_top_k"],
+            use_prefix=False,
+        ))
+        retriever_no_prefix.index(corpus)
 
-    _, _, prefix_data, _ = load_augmentations(dataset, subset_size, {"prefix": True})
-    print("  Building cached embeddings (prefix=on)...")
-    retriever_with_prefix = PullRetriever(RetrieverConfig(
-        embedding_url=models["embedding"]["url"],
-        embedding_model=models["embedding"]["name"],
-        top_k=agent_cfg["pull_top_k"],
-        use_prefix=True,
-    ))
-    retriever_with_prefix.index(corpus, prefixes=prefix_data)
+    retriever_with_prefix = None
+    if any(step.get("prefix") for step in steps):
+        _, _, prefix_data, _ = load_augmentations(
+            dataset, subset_size, {"prefix": True}
+        )
+        print("  Building cached embeddings (prefix=on)...")
+        retriever_with_prefix = PullRetriever(RetrieverConfig(
+            embedding_url=models["embedding"]["url"],
+            embedding_model=models["embedding"]["name"],
+            top_k=agent_cfg["pull_top_k"],
+            use_prefix=True,
+        ))
+        retriever_with_prefix.index(corpus, prefixes=prefix_data)
 
     all_results = {}
-    for step in part_cfg["steps"]:
+    for step in steps:
         step_name = step["name"]
         print(f"\n  --- {step_name}: {step['description']} ---")
 
@@ -433,10 +483,29 @@ def run_part1(config: dict):
 
         print(f"    Metrics: {metrics}")
 
-    save_results("part1_stacking", all_results)
+    analysis = {}
+    if "baseline" in all_results and "taxonomy_only" in all_results:
+        analysis["taxonomy_only_minus_baseline"] = compare_result_rows(
+            all_results["baseline"]["results"],
+            all_results["taxonomy_only"]["results"],
+            seed=config["seed"],
+        )
+    save_results(
+        "part1_taxonomy_focused" if focused else "part1_stacking",
+        all_results,
+        manifest={
+            "git_commit": current_git_commit(),
+            "dataset": dataset,
+            "subset_size": subset_size,
+            "focused": focused,
+            "arms": [str(step["name"]) for step in steps],
+            "preflight": preflight,
+        },
+        analysis=analysis,
+    )
 
 
-def run_part2(config: dict):
+def run_part2(config: dict, *, focused: bool = False):
     """Part 2: 규모 확장 비교"""
     print("\n" + "=" * 60)
     print("Part 2: Scale Comparison (TREC-COVID)")
@@ -453,27 +522,152 @@ def run_part2(config: dict):
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
-    # DR-DCI best config from Part 1 (stack_all)
+    # The focused path tests one mechanism at a time. The historical path keeps
+    # Peter's original stack_all comparison for reproducibility.
     best_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
+    focused_arms = [
+        {"name": "baseline", "taxonomy": False, "tags": False,
+         "prefix": False, "metadata": False},
+        {"name": "taxonomy_only", "taxonomy": True, "tags": False,
+         "prefix": False, "metadata": False},
+    ]
+    selected_steps = focused_arms if focused else [{"name": "stack_all", **best_config}]
+    preflight = _part12_preflight(
+        config,
+        step_names={"baseline", "taxonomy_only"} if focused else {"stack_all"},
+        sizes=[int(size) for size in part_cfg["subsets"]],
+    )
 
     all_results = {}
     for subset_size in part_cfg["subsets"]:
         size_key = f"{subset_size // 1000}k"
         corpus = load_corpus(dataset, subset_size)
 
-        print(f"\n  --- DR-DCI Best @ {size_key} ---")
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, best_config, subset_size, dataset)
-        metrics = compute_metrics(results)
-        all_results[f"dr-dci_{size_key}"] = {"results": results, "metrics": metrics}
-        print(f"    Metrics: {metrics}")
+        for arm in selected_steps:
+            print(f"\n  --- DR-DCI {arm['name']} @ {size_key} ---")
+            results = run_dr_dci(
+                config, corpus, queries, qrels, ref_answers,
+                arm, subset_size, dataset,
+            )
+            metrics = compute_metrics(results)
+            all_results[f"{arm['name']}_{size_key}"] = {
+                "results": results,
+                "metrics": metrics,
+            }
+            print(f"    Metrics: {metrics}")
 
-        print(f"\n  --- Hybrid RAG @ {size_key} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers)
-        metrics = compute_metrics(results)
-        all_results[f"hybrid_{size_key}"] = {"results": results, "metrics": metrics}
-        print(f"    Metrics: {metrics}")
+        if not focused:
+            print(f"\n  --- Hybrid RAG @ {size_key} ---")
+            results = run_hybrid(config, corpus, queries, qrels, ref_answers)
+            metrics = compute_metrics(results)
+            all_results[f"hybrid_{size_key}"] = {"results": results, "metrics": metrics}
+            print(f"    Metrics: {metrics}")
 
-    save_results("part2_scaling", all_results)
+    analysis = {}
+    sizes = [int(size) for size in part_cfg["subsets"]]
+    smallest_key = f"{sizes[0] // 1000}k"
+    if focused:
+        for size in sizes:
+            size_key = f"{size // 1000}k"
+            analysis[f"taxonomy_minus_baseline_{size_key}"] = compare_result_rows(
+                all_results[f"baseline_{size_key}"]["results"],
+                all_results[f"taxonomy_only_{size_key}"]["results"],
+                seed=config["seed"],
+            )
+        for arm in ("baseline", "taxonomy_only"):
+            for size in sizes[1:]:
+                size_key = f"{size // 1000}k"
+                analysis[f"{arm}_{size_key}_minus_{smallest_key}"] = compare_result_rows(
+                    all_results[f"{arm}_{smallest_key}"]["results"],
+                    all_results[f"{arm}_{size_key}"]["results"],
+                    seed=config["seed"],
+                )
+
+    save_results(
+        "part2_taxonomy_scaling_focused" if focused else "part2_scaling",
+        all_results,
+        manifest={
+            "git_commit": current_git_commit(),
+            "dataset": dataset,
+            "subsets": sizes,
+            "focused": focused,
+            "arms": [str(step["name"]) for step in selected_steps],
+            "preflight": preflight,
+        },
+        analysis=analysis,
+    )
+
+
+def run_part2_scale_probe(config: dict):
+    """Part 2 선행 probe: 같은 질의를 nested subset(20K/50K/110K)에서 dense
+    pull만으로 재측정한다 — distractor 희석에 따른 검색단 저하를 agent/LLM
+    없이 국소화하는 단계. augmentation 산출물과 무관하게 실행 가능하다.
+
+    지표 선택 근거: TREC-COVID는 질의당 positive gold 중앙값 478로 Recall@20
+    상한이 낮고 Hit@k가 포화되므로 nDCG@10(graded)·P@20을 주 지표로 쓴다.
+    주의: 지표가 스케일에 평탄해도 후단(agent/LLM) 원인 확정이 아니라 검색단
+    병목 가설의 약화로만 해석한다(국소화이지 귀속 확정이 아님)."""
+    print("\n" + "=" * 60)
+    print("Part 2 Scale Probe: Dense Retrieval vs Distractor Scaling")
+    print("=" * 60)
+
+    part_cfg = config["parts"]["part2_scaling"]
+    dataset = part_cfg["dataset"]
+    sizes = [int(size) for size in part_cfg["subsets"]]
+    # 모델 호출 전 무비용 계약 검사(nested·gold 보존). baseline은 산출물이
+    # 필요 없으므로 augmentation 부재로 차단되지 않는다.
+    preflight = _part12_preflight(config, step_names={"baseline"}, sizes=sizes)
+
+    queries, qrels = load_queries(dataset)
+    query_gold = positive_gold_by_query(qrels)
+    query_gains = positive_gold_gains_by_query(qrels)
+
+    all_results = {}
+    probes = {}
+    for size in sizes:
+        size_key = f"{size // 1000}k"
+        corpus = load_corpus(dataset, size)
+        print(f"\n  --- dense probe @ {size_key} ---")
+        retriever = build_pull_retriever(config, {"pull_backend": "dense"}, corpus)
+        probes[size_key] = run_pull_probe(retriever, queries, query_gold,
+                                          query_gains=query_gains)
+        all_results[f"dense_{size_key}"] = {"probe_rows": probes[size_key]}
+
+    analysis = {}
+    size_keys = [f"{size // 1000}k" for size in sizes]
+    for i in range(len(size_keys)):
+        for j in range(i + 1, len(size_keys)):
+            analysis[f"dense_{size_keys[j]}_minus_{size_keys[i]}"] = compare_probe_rows(
+                probes[size_keys[i]], probes[size_keys[j]], seed=config["seed"]
+            )
+
+    manifest = {
+        "hypothesis": (
+            "Top-rank dense retrieval quality degrades as distractors grow "
+            "from 20K to 110K over fixed queries and fixed gold."
+        ),
+        "single_variable": "distractor_count",
+        "design": "controlled distractor scaling (nested subsets, gold preserved)",
+        "backend": "dense",
+        "dataset": dataset,
+        "subset_sizes": sizes,
+        "primary_metrics": ["ndcg_at_10", "precision_at_20"],
+        "secondary_metrics": ["recall_at_5", "recall_at_20", "hit_at_5",
+                              "hit_at_10", "probe_latency_seconds"],
+        "probe": (
+            "retrieval-only rank metrics on the original query text; "
+            "denominator = queries with positive gold only"
+        ),
+        "seed": config["seed"],
+        "git_commit": current_git_commit(),
+        "embedding_endpoint": {
+            "url": config["models"]["embedding"]["url"],
+            "model": config["models"]["embedding"]["name"],
+        },
+        "preflight": preflight,
+    }
+    save_results("part2_scale_probe", all_results, manifest=manifest,
+                 analysis=analysis)
 
 
 def run_part3(config: dict):
@@ -571,6 +765,7 @@ def run_part5(config: dict, probe_only: bool = False):
 
     fixed = dict(part_cfg["fixed_augmentations"])
     query_gold = positive_gold_by_query(qrels)
+    query_gains = positive_gold_gains_by_query(qrels)
     all_results = {}
     probes = {}
     for backend in part_cfg["backends"]:
@@ -584,7 +779,8 @@ def run_part5(config: dict, probe_only: bool = False):
         )
         # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
         # backend 외 변인 없이 rank 지표를 먼저 잰다.
-        probes[backend] = run_pull_probe(retriever, queries, query_gold)
+        probes[backend] = run_pull_probe(retriever, queries, query_gold,
+                                         query_gains=query_gains)
         if probe_only:
             all_results[backend] = {"probe_rows": probes[backend]}
             continue
@@ -702,13 +898,18 @@ def main():
     parser.add_argument("--subset", type=int, default=-1,
                         help="part5 subset 크기 오버라이드(0=전체 코퍼스)")
     parser.add_argument("--all", action="store_true", help="Run all parts")
+    parser.add_argument("--focused", action="store_true",
+                        help="part1/2: run the narrow baseline vs taxonomy experiment")
+    parser.add_argument("--scale-probe", action="store_true",
+                        help="part2: retrieval-only distractor scale probe"
+                             "(agent/judge 생략, 임베딩 endpoint만 필요)")
     args = parser.parse_args()
 
     config = load_config()
 
     if args.all:
-        run_part1(config)
-        run_part2(config)
+        run_part1(config, focused=args.focused)
+        run_part2(config, focused=args.focused)
         run_part3(config)
         run_part4(config)
         if args.embedding_url:
@@ -723,9 +924,16 @@ def main():
             )
         run_part5(config, probe_only=args.probe_only)
     elif args.part == 1:
-        run_part1(config)
+        run_part1(config, focused=args.focused)
     elif args.part == 2:
-        run_part2(config)
+        if args.scale_probe:
+            if args.embedding_url:
+                config["models"]["embedding"]["url"] = args.embedding_url
+            if args.embedding_model:
+                config["models"]["embedding"]["name"] = args.embedding_model
+            run_part2_scale_probe(config)
+        else:
+            run_part2(config, focused=args.focused)
     elif args.part == 3:
         run_part3(config)
     elif args.part == 4:

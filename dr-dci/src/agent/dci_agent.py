@@ -189,11 +189,16 @@ class DCIAgent:
         tool_call_counts = {"pull": 0, "grep": 0, "find": 0, "read": 0, "answer": 0}
         prompt_tokens = 0
         completion_tokens = 0
+        taxonomy_filtered_pulls = 0
+        system_fingerprints = set()
 
         for turn in range(self.max_turns):
             turns_used = turn + 1
             response = self._call_llm(messages)
             usage = response.pop("_usage", None) or {}
+            fingerprint = response.pop("_system_fingerprint", None)
+            if fingerprint:
+                system_fingerprints.add(str(fingerprint))
             prompt_tokens += int(usage.get("prompt_tokens") or 0)
             completion_tokens += int(usage.get("completion_tokens") or 0)
 
@@ -219,6 +224,8 @@ class DCIAgent:
 
                 if func_name == "pull":
                     pull_count += 1
+                    if args.get("taxonomy_filter"):
+                        taxonomy_filtered_pulls += 1
                     retrieved_candidates += result.get("retrieved", 0)
                     added_documents += result.get("added_to_workspace", 0)
                 elif func_name == "answer":
@@ -239,6 +246,8 @@ class DCIAgent:
                         "tool_calls_total": sum(tool_call_counts.values()),
                         "llm_prompt_tokens": prompt_tokens,
                         "llm_completion_tokens": completion_tokens,
+                        "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
+                        "system_fingerprints": sorted(system_fingerprints),
                     }
 
                 messages.append({
@@ -258,6 +267,8 @@ class DCIAgent:
             "tool_calls_total": sum(tool_call_counts.values()),
             "llm_prompt_tokens": prompt_tokens,
             "llm_completion_tokens": completion_tokens,
+            "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
+            "system_fingerprints": sorted(system_fingerprints),
         }
 
     def _execute_tool(self, name: str, args: dict, workspace: Workspace) -> dict:
@@ -330,6 +341,7 @@ class DCIAgent:
             body = resp.json()
             choice = dict(body["choices"][0]["message"])
             choice["_usage"] = body.get("usage") or {}
+            choice["_system_fingerprint"] = body.get("system_fingerprint")
             return choice
 
         return {"content": "Max retries exceeded.", "tool_calls": None}
