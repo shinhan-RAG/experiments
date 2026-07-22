@@ -167,9 +167,19 @@ class PullRetriever:
             headers = {"Content-Type": "application/json"}
             if self.config.api_key:
                 headers["Authorization"] = f"Bearer {self.config.api_key}"
-            resp = requests.post(self.config.embedding_url, json=payload,
-                                 headers=headers, timeout=120)
-            resp.raise_for_status()
+            # 일시 네트워크 장애 1회로 장시간 배치 전체(과금 포함)가 죽지 않게
+            # 지수 백오프 재시도. 재시도 소진 시에만 전파(무음 강등 없음).
+            for attempt in range(4):
+                try:
+                    resp = requests.post(self.config.embedding_url, json=payload,
+                                         headers=headers, timeout=120)
+                    resp.raise_for_status()
+                    break
+                except (requests.ConnectionError, requests.Timeout):
+                    if attempt == 3:
+                        raise
+                    import time as _time
+                    _time.sleep(2 ** attempt)
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):
                 all_embeddings.append(np.array(item["embedding"]))

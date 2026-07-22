@@ -176,6 +176,56 @@ shows partial lexical alignment (66% query-token coverage, 2-document median
 gold) and Peter's Part 4 already observed Hybrid RAG ahead of DR-DCI. That is
 the dataset where the hybrid pull hypothesis has its best prior.
 
+## 7.2 FiQA Probe Run (2026-07-21)
+
+Same probe, same deviations as Section 7.1 (OpenAI `text-embedding-3-small`,
+no augmentation artifacts), full 57,638-document corpus, all 648 queries with
+positive gold (EDA confirms zero missing gold documents). A first attempt
+failed mid-embedding on a transient network outage (`[Errno 51]`, partial
+billing, no cache written); the embedding client now retries transient
+connection failures with exponential backoff (4 attempts, then raises — no
+silent degradation), and the rerun completed
+(`results/part5_pull_backend/20260721_203516.json`, untracked by policy).
+
+| Metric | dense | hybrid_rrf | delta | 95% CI |
+|---|---:|---:|---:|---|
+| Recall@5 | 0.4325 | 0.3697 | **−0.0627** | **[−0.0848, −0.0401]** |
+| Recall@20 | 0.5910 | 0.5607 | **−0.0303** | **[−0.0443, −0.0165]** |
+| Hit@5 | 0.6343 | 0.5802 | **−0.0540** | **[−0.0818, −0.0262]** |
+| Hit@10 | 0.6975 | 0.6929 | −0.0046 | [−0.0247, +0.0154] |
+| Probe latency (s) | — | — | +0.0839 | [+0.0631, +0.1056] |
+
+Displacement over ranked lists (recall@20 basis): 82 queries worse versus 26
+better (540 unchanged); fusion pushed 5,020 non-gold candidates into the
+Top-20 while admitting only 33 new gold and displacing 97 dense gold. Hit@5
+flipped from hit to miss on 61 queries versus 26 gains.
+
+Interpretation:
+
+- Every interval that excludes zero is negative. Under the Section 6 decision
+  rule, **dense remains the control on FiQA as well**, and this dataset had
+  the hypothesis's best prior (66% lexical alignment; Peter's Part 4 showed
+  Hybrid RAG ahead of DR-DCI there). On FiQA's natural-language finance
+  questions, BM25's Top-20 is dominated by lexically overlapping but
+  non-relevant posts, and equal-weight RRF lets them displace dense gold.
+- This does **not** contradict Peter's Part 4. His "Hybrid RAG" was a
+  different full pipeline (single-shot dense+BM25+reranker) compared against
+  the DR-DCI agent loop; this probe isolates only the pull-backend fusion.
+  The two results together suggest Part 4's Hybrid advantage did not come
+  from BM25 candidates per se.
+- Open confound: both probe runs used `text-embedding-3-small`, a strong
+  general embedder. A weaker embedding (such as the configured gte-Qwen2
+  stack) could leave more room for BM25 to help. The conclusion is therefore
+  scoped to this embedding.
+
+Two-dataset verdict: the hybrid_rrf pull hypothesis is refuted on both tested
+datasets under this embedding. Next single experiment (one only): rerun both
+probes on the configured H200 `gte-Qwen2-1.5B-instruct` endpoint when it is
+reachable, which removes the embedding deviation and tests whether the
+hybrid pull's value depends on embedding strength. (Ranked pull preview
+remains the next agent-loop candidate per Section 8; it is not an additional
+proposal here.)
+
 ## 8. Scope Boundary
 
 The following are intentionally not changed in this experiment:
@@ -198,5 +248,5 @@ Semantic tags should be revisited on long, internally structured documents. In t
 
 - Experiment code: complete (probe and accounting added 2026-07-21)
 - Offline contract tests: complete (13 passing)
-- Model-backed probe run: executed 2026-07-21 with the deviations in Section 7.1; agent-loop benchmark still pending Peter's stack
+- Model-backed probe runs: TREC-COVID and FiQA executed 2026-07-21 with the deviations in Sections 7.1-7.2; both refute hybrid_rrf under this embedding; agent-loop benchmark still pending Peter's stack
 - Production or Shinhan-specific conclusion: not available from this run

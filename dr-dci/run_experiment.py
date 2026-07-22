@@ -697,6 +697,10 @@ def main():
                         help="임베딩 endpoint 오버라이드(결과 manifest에 기록)")
     parser.add_argument("--embedding-model", default="",
                         help="임베딩 모델 오버라이드(결과 manifest에 기록)")
+    parser.add_argument("--dataset", default="",
+                        help="part5 데이터셋 오버라이드(예: fiqa)")
+    parser.add_argument("--subset", type=int, default=-1,
+                        help="part5 subset 크기 오버라이드(0=전체 코퍼스)")
     parser.add_argument("--all", action="store_true", help="Run all parts")
     args = parser.parse_args()
 
@@ -711,6 +715,12 @@ def main():
             config["models"]["embedding"]["url"] = args.embedding_url
         if args.embedding_model:
             config["models"]["embedding"]["name"] = args.embedding_model
+        if args.dataset:
+            config["parts"]["part5_pull_backend"]["dataset"] = args.dataset
+        if args.subset >= 0:
+            config["parts"]["part5_pull_backend"]["subset"] = (
+                args.subset if args.subset > 0 else None
+            )
         run_part5(config, probe_only=args.probe_only)
     elif args.part == 1:
         run_part1(config)
@@ -725,6 +735,12 @@ def main():
             config["models"]["embedding"]["url"] = args.embedding_url
         if args.embedding_model:
             config["models"]["embedding"]["name"] = args.embedding_model
+        if args.dataset:
+            config["parts"]["part5_pull_backend"]["dataset"] = args.dataset
+        if args.subset >= 0:
+            config["parts"]["part5_pull_backend"]["subset"] = (
+                args.subset if args.subset > 0 else None
+            )
         run_part5(config, probe_only=args.probe_only)
     else:
         print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
