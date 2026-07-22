@@ -54,3 +54,31 @@ def compare_paired_results(
         "treatment_query_count": len(treatment_by_id),
         "paired_query_count": len(shared_ids),
     }
+
+
+PROBE_METRIC_KEYS = ("recall_at_5", "recall_at_20", "hit_at_5", "hit_at_10",
+                     "probe_latency_seconds")
+
+
+def compare_probe_rows(
+    control: list[dict],
+    treatment: list[dict],
+    *,
+    seed: int,
+) -> dict:
+    """retrieval-only probe의 질의별 paired 비교 — rank 지표 각각에 대해
+    bootstrap 95% CI를 병기한다(집계 평균만으로 비교 금지 원칙)."""
+    control_by_id = {row["query_id"]: row for row in control}
+    treatment_by_id = {row["query_id"]: row for row in treatment}
+    shared_ids = sorted(set(control_by_id) & set(treatment_by_id))
+    if not shared_ids:
+        raise ValueError("no shared query IDs for probe comparison")
+
+    out = {"paired_query_count": len(shared_ids)}
+    for key in PROBE_METRIC_KEYS:
+        out[key] = paired_bootstrap_delta(
+            [float(control_by_id[qid].get(key, 0.0)) for qid in shared_ids],
+            [float(treatment_by_id[qid].get(key, 0.0)) for qid in shared_ids],
+            seed=seed,
+        )
+    return out

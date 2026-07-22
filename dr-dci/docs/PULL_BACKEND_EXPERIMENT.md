@@ -83,6 +83,25 @@ Interpretation:
 - Do not use answer accuracy when `judged_n` is lower than the expected query count without reporting judge coverage.
 - No production latency threshold is inferred from the development environment.
 
+### 6.1 Measurement Expansion (2026-07-21)
+
+These are measurement additions, not treatment changes. The single variable
+remains the pull backend.
+
+- Retrieval-only probe: before the agent run, each backend answers every
+  judged query once with the original query text on the same retriever
+  instance (shared index and embedding cache). The probe reports paired
+  Recall@5, Recall@20, Hit@5, Hit@10, and probe latency with seeded bootstrap
+  confidence intervals. Queries without positive gold are excluded from the
+  denominator. The probe isolates retrieval quality from agent query
+  rewriting; the agent loop remains the endpoint for call efficiency.
+- Agent accounting: per-tool call counts (`pull`, `grep`, `find`, `read`,
+  `answer`), total tool calls (separate from assistant turns, because one turn
+  can issue several tool calls), and LLM prompt/completion token sums when the
+  endpoint returns a `usage` block.
+- Both arms share one retriever construction path (`build_pull_retriever`), so
+  the probe and the agent cannot diverge on anything except the backend.
+
 ## 7. Execution
 
 Prepare the existing datasets, augmentations, model endpoints, and API credentials exactly as used by Peter's original run. Then execute:
@@ -124,7 +143,7 @@ Semantic tags should be revisited on long, internally structured documents. In t
 
 ## 9. Current Status
 
-- Experiment code: complete
-- Offline contract tests: complete
+- Experiment code: complete (probe and accounting added 2026-07-21)
+- Offline contract tests: complete (13 passing)
 - Model-backed benchmark run: pending model endpoints and experiment data
 - Production or Shinhan-specific conclusion: not available from this run

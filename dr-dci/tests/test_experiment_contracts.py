@@ -168,3 +168,99 @@ class ExperimentContractTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RankMetricTests(unittest.TestCase):
+    def test_rank_metrics_values_and_truncation(self):
+        from src.eval.retrieval_metrics import rank_metrics
+
+        ranked = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "g1"]
+        gold = {"b", "g1", "zz"}
+        m = rank_metrics(ranked, gold)
+        self.assertAlmostEqual(m["recall_at_5"], 1 / 3)     # b만 top-5
+        self.assertAlmostEqual(m["recall_at_20"], 2 / 3)    # b·g1, zz는 코퍼스 밖
+        self.assertEqual(m["hit_at_5"], 1.0)
+        self.assertEqual(m["hit_at_10"], 1.0)
+
+    def test_rank_metrics_reject_empty_gold(self):
+        from src.eval.retrieval_metrics import rank_metrics
+
+        with self.assertRaises(ValueError):
+            rank_metrics(["a"], set())
+
+
+class PullProbeTests(unittest.TestCase):
+    def test_probe_excludes_queries_without_gold_and_is_deterministic(self):
+        from run_experiment import run_pull_probe
+
+        retriever = StaticPullRetriever()
+        queries = [
+            {"_id": "q1", "text": "판정 질의"},
+            {"_id": "q2", "text": "gold 없는 질의"},
+        ]
+        query_gold = {"q1": {"d2"}}
+        rows = run_pull_probe(retriever, queries, query_gold)
+        self.assertEqual([r["query_id"] for r in rows], ["q1"])  # 분모=judged만
+        self.assertAlmostEqual(rows[0]["recall_at_5"], 1.0)
+        self.assertEqual(rows[0]["hit_at_5"], 1.0)
+        self.assertEqual(rows[0]["ranked_top20"], ["d1", "d2"])
+        again = run_pull_probe(retriever, queries, query_gold)
+        self.assertEqual(
+            [r["ranked_top20"] for r in rows],
+            [r["ranked_top20"] for r in again],
+        )
+
+    def test_probe_paired_comparison_shape(self):
+        from src.eval.comparison import compare_probe_rows
+
+        control = [{"query_id": "q1", "recall_at_5": 0.0, "recall_at_20": 0.5,
+                    "hit_at_5": 0.0, "hit_at_10": 1.0,
+                    "probe_latency_seconds": 0.01}]
+        treatment = [{"query_id": "q1", "recall_at_5": 0.5, "recall_at_20": 0.5,
+                      "hit_at_5": 1.0, "hit_at_10": 1.0,
+                      "probe_latency_seconds": 0.02}]
+        out = compare_probe_rows(control, treatment, seed=42)
+        self.assertEqual(out["paired_query_count"], 1)
+        self.assertAlmostEqual(out["recall_at_5"]["mean_delta"], 0.5)
+        self.assertIn("ci95_low", out["recall_at_5"])
+
+
+class AgentAccountingTests(unittest.TestCase):
+    def test_agent_counts_tool_calls_and_tokens(self):
+        import json as _json
+
+        from src.agent.dci_agent import DCIAgent
+
+        agent = DCIAgent(
+            llm_url="http://unused", model_name="stub",
+            retriever=StaticPullRetriever(),
+            corpus={"d1": {"title": "t", "text": "본문"},
+                    "d2": {"title": "t2", "text": "본문2"}},
+            max_turns=5, workspace_max_docs=10,
+        )
+        scripted = [
+            {"content": None, "_usage": {"prompt_tokens": 10, "completion_tokens": 3},
+             "tool_calls": [
+                 {"id": "1", "function": {"name": "pull",
+                                          "arguments": _json.dumps({"query": "q"})}},
+                 {"id": "2", "function": {"name": "grep",
+                                          "arguments": _json.dumps({"pattern": "본문"})}},
+             ]},
+            {"content": None, "_usage": {"prompt_tokens": 20, "completion_tokens": 7},
+             "tool_calls": [
+                 {"id": "3", "function": {"name": "answer",
+                                          "arguments": _json.dumps({"text": "답"})}},
+             ]},
+        ]
+        agent._call_llm = lambda messages: scripted.pop(0)
+
+        result = agent.run("질의")
+        self.assertEqual(result["tool_call_counts"]["pull"], 1)
+        self.assertEqual(result["tool_call_counts"]["grep"], 1)
+        self.assertEqual(result["tool_call_counts"]["answer"], 1)
+        self.assertEqual(result["tool_calls_total"], 3)      # turns(2)와 분리 계측
+        self.assertEqual(result["turns"], 2)
+        self.assertEqual(result["llm_prompt_tokens"], 30)
+        self.assertEqual(result["llm_completion_tokens"], 10)
+        self.assertEqual(result["pull_count"], 1)
+        self.assertEqual(result["answer"], "답")

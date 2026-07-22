@@ -183,10 +183,19 @@ class DCIAgent:
         added_documents = 0
         final_answer = ""
         turns_used = 0
+        # Measurement only: per-tool call decomposition and token accounting.
+        # `turns` counts assistant steps; one turn may issue several tool calls,
+        # so cost comparisons need the tool-call totals as a separate axis.
+        tool_call_counts = {"pull": 0, "grep": 0, "find": 0, "read": 0, "answer": 0}
+        prompt_tokens = 0
+        completion_tokens = 0
 
         for turn in range(self.max_turns):
             turns_used = turn + 1
             response = self._call_llm(messages)
+            usage = response.pop("_usage", None) or {}
+            prompt_tokens += int(usage.get("prompt_tokens") or 0)
+            completion_tokens += int(usage.get("completion_tokens") or 0)
 
             if not response.get("tool_calls"):
                 final_answer = response.get("content", "")
@@ -200,6 +209,7 @@ class DCIAgent:
 
             for tool_call in response["tool_calls"]:
                 func_name = tool_call["function"]["name"]
+                tool_call_counts[func_name] = tool_call_counts.get(func_name, 0) + 1
                 try:
                     args = json.loads(tool_call["function"]["arguments"])
                 except json.JSONDecodeError:
@@ -225,6 +235,10 @@ class DCIAgent:
                         "added_documents": added_documents,
                         "workspace_docs": list(workspace.docs.keys()),
                         "turns": turn + 1,
+                        "tool_call_counts": dict(tool_call_counts),
+                        "tool_calls_total": sum(tool_call_counts.values()),
+                        "llm_prompt_tokens": prompt_tokens,
+                        "llm_completion_tokens": completion_tokens,
                     }
 
                 messages.append({
@@ -240,6 +254,10 @@ class DCIAgent:
             "added_documents": added_documents,
             "workspace_docs": list(workspace.docs.keys()),
             "turns": turns_used,
+            "tool_call_counts": dict(tool_call_counts),
+            "tool_calls_total": sum(tool_call_counts.values()),
+            "llm_prompt_tokens": prompt_tokens,
+            "llm_completion_tokens": completion_tokens,
         }
 
     def _execute_tool(self, name: str, args: dict, workspace: Workspace) -> dict:
@@ -309,7 +327,9 @@ class DCIAgent:
                 time.sleep(5 * (attempt + 1))
                 continue
             resp.raise_for_status()
-            choice = resp.json()["choices"][0]["message"]
+            body = resp.json()
+            choice = dict(body["choices"][0]["message"])
+            choice["_usage"] = body.get("usage") or {}
             return choice
 
         return {"content": "Max retries exceeded.", "tool_calls": None}

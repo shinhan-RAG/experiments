@@ -22,8 +22,9 @@ load_dotenv(Path(__file__).parent / ".env")
 from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
-from src.eval.comparison import compare_paired_results
+from src.eval.comparison import compare_paired_results, compare_probe_rows
 from src.eval.judge import Judge, compute_metrics
+from src.eval.retrieval_metrics import rank_metrics
 
 
 BASE_DIR = Path(__file__).parent
@@ -117,6 +118,65 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
     return taxonomy, tags, prefix, metadata
 
 
+def build_pull_retriever(config: dict, step_config: dict, corpus: list,
+                         prefix: dict = None, taxonomy: dict = None) -> PullRetriever:
+    """pull retriever 구성 단일화 — agent 실행과 retrieval-only probe가 같은
+    구성·인덱스(임베딩 캐시 포함)를 공유해 backend 외 변인이 생기지 않게 한다."""
+    models = config["models"]
+    agent_cfg = config["agent"]
+    pull_backend = step_config.get(
+        "pull_backend", agent_cfg.get("pull_backend", "dense")
+    )
+    retriever_config = RetrieverConfig(
+        embedding_url=models["embedding"]["url"],
+        embedding_model=models["embedding"]["name"],
+        top_k=agent_cfg["pull_top_k"],
+        use_prefix=step_config.get("prefix", False),
+        backend=pull_backend,
+        bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
+        rrf_k=agent_cfg.get("rrf_k", 60),
+    )
+    retriever = PullRetriever(retriever_config)
+    print("    Indexing corpus...")
+    retriever.index(corpus, prefixes=prefix, taxonomy=taxonomy)
+    return retriever
+
+
+def positive_gold_by_query(qrels: list) -> dict:
+    """질의별 positive gold 집합 — gold 없는 질의는 retrieval 분모에서 제외
+    (EDA §3 원칙: unjudged를 miss로 세면 결과가 왜곡된다)."""
+    from collections import defaultdict
+    gold = defaultdict(set)
+    for entry in qrels:
+        if entry["score"] >= 1:
+            gold[str(entry["query-id"])].add(str(entry["corpus-id"]))
+    return dict(gold)
+
+
+def run_pull_probe(retriever: PullRetriever, queries: list,
+                   query_gold: dict) -> list:
+    """retrieval-only probe: 원 질의 텍스트로 backend를 직접 1회 pull해
+    rank 지표(Recall@5/20·Hit@5/10)를 잰다 — agent의 질의 재작성과 독립인
+    검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
+    rows = []
+    for q in queries:
+        qid = str(q["_id"])
+        gold = query_gold.get(qid)
+        if not gold:
+            continue                      # gold 없는 질의는 분모 제외
+        text = q.get("title") or q.get("text", "")
+        started = time.perf_counter()
+        ranked = [r["doc_id"] for r in retriever.pull(text)]
+        latency = time.perf_counter() - started
+        rows.append({
+            "query_id": qid,
+            **rank_metrics(ranked, gold),
+            "probe_latency_seconds": latency,
+            "ranked_top20": ranked[:20],
+        })
+    return rows
+
+
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                ref_answers: dict, step_config: dict, subset_size: int,
                dataset: str, cached_retriever: PullRetriever = None) -> list:
@@ -133,21 +193,9 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         )
         print("    Using cached embeddings")
     else:
-        pull_backend = step_config.get(
-            "pull_backend", agent_cfg.get("pull_backend", "dense")
+        retriever = build_pull_retriever(
+            config, step_config, corpus, prefix=prefix, taxonomy=taxonomy
         )
-        retriever_config = RetrieverConfig(
-            embedding_url=models["embedding"]["url"],
-            embedding_model=models["embedding"]["name"],
-            top_k=agent_cfg["pull_top_k"],
-            use_prefix=step_config.get("prefix", False),
-            backend=pull_backend,
-            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
-            rrf_k=agent_cfg.get("rrf_k", 60),
-        )
-        retriever = PullRetriever(retriever_config)
-        print("    Indexing corpus...")
-        retriever.index(corpus, prefixes=prefix, taxonomy=taxonomy)
 
     corpus_dict = {doc["_id"]: doc for doc in corpus}
 
@@ -220,6 +268,10 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "added_documents": result["added_documents"],
             "workspace_docs": result["workspace_docs"],
             "turns": result["turns"],
+            "tool_call_counts": result.get("tool_call_counts", {}),
+            "tool_calls_total": result.get("tool_calls_total", 0),
+            "llm_prompt_tokens": result.get("llm_prompt_tokens", 0),
+            "llm_completion_tokens": result.get("llm_completion_tokens", 0),
             "latency_seconds": latency_seconds,
         }
 
@@ -517,10 +569,21 @@ def run_part5(config: dict):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
     fixed = dict(part_cfg["fixed_augmentations"])
+    query_gold = positive_gold_by_query(qrels)
     all_results = {}
+    probes = {}
     for backend in part_cfg["backends"]:
         step_config = {**fixed, "pull_backend": backend}
         print(f"\n  --- pull backend: {backend} ---")
+        taxonomy, tags, prefix, metadata = load_augmentations(
+            dataset, subset_size, step_config
+        )
+        retriever = build_pull_retriever(
+            config, step_config, corpus, prefix=prefix, taxonomy=taxonomy
+        )
+        # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
+        # backend 외 변인 없이 rank 지표를 먼저 잰다.
+        probes[backend] = run_pull_probe(retriever, queries, query_gold)
         results = run_dr_dci(
             config,
             corpus,
@@ -530,9 +593,11 @@ def run_part5(config: dict):
             step_config,
             subset_size,
             dataset,
+            cached_retriever=retriever,
         )
         metrics = compute_metrics(results)
-        all_results[backend] = {"results": results, "metrics": metrics}
+        all_results[backend] = {"results": results, "metrics": metrics,
+                                "probe_rows": probes[backend]}
         print(f"    Metrics: {metrics}")
 
     manifest = {
@@ -554,11 +619,19 @@ def run_part5(config: dict):
         all_results["hybrid_rrf"]["results"],
         seed=config["seed"],
     )
+    probe_analysis = compare_probe_rows(
+        probes["dense"], probes["hybrid_rrf"], seed=config["seed"]
+    )
+    manifest["probe"] = (
+        "retrieval-only rank metrics on the original query text; "
+        "denominator = queries with positive gold only"
+    )
     save_results(
         "part5_pull_backend",
         all_results,
         manifest=manifest,
-        analysis={"dense_vs_hybrid_rrf": comparison},
+        analysis={"dense_vs_hybrid_rrf": comparison,
+                  "probe_dense_vs_hybrid_rrf": probe_analysis},
     )
 
 
