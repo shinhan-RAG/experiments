@@ -226,6 +226,90 @@ hybrid pull's value depends on embedding strength. (Ranked pull preview
 remains the next agent-loop candidate per Section 8; it is not an additional
 proposal here.)
 
+## 7.3 gte-Qwen2 Rerun of Both Probes (2026-07-21)
+
+Both probes were rerun with the embedding deviation of Sections 7.1-7.2
+removed: the configured `Alibaba-NLP/gte-Qwen2-1.5B-instruct` model was served
+on the H200 instance itself and reached at the configured
+`http://localhost:8101/v1/embeddings` endpoint. Remaining deviations, applied
+identically to both arms and therefore outside the treatment variable:
+
+- The model was served through sentence-transformers (transformers pinned to
+  4.44.2 for compatibility with the model's custom modeling code) rather than
+  vLLM; sequence length was capped at 8,192 tokens (99.8% of documents in
+  both corpora are at most 4,000 characters, far below this bound).
+- Queries were embedded as raw text without the model's recommended
+  instruction prefix, matching how the repository's retriever calls the
+  endpoint.
+- Both arms again shared one retriever construction and one embedding cache.
+- The run executed from an exported source archive, so the result manifests
+  record `git_commit: unknown`; the packaged source commit is recorded in the
+  archive's `SOURCE_COMMIT.txt`. Results
+  `results/part5_pull_backend/20260721_223951.json` (TREC-COVID) and
+  `20260721_225611.json` (FiQA) remain on the instance, untracked by policy.
+
+TREC-COVID 20K subset, 50 judged queries (delta = hybrid_rrf − dense,
+bootstrap 95% CI, seed 42):
+
+| Metric | dense | hybrid_rrf | delta | 95% CI |
+|---|---:|---:|---:|---|
+| Recall@5 | 0.0123 | 0.0119 | −0.0004 | [−0.0010, +0.0001] |
+| Recall@20 | 0.0442 | 0.0438 | −0.0004 | [−0.0025, +0.0020] |
+| Hit@5 | 1.0 | 1.0 | 0 | saturated |
+| Hit@10 | 1.0 | 1.0 | 0 | saturated |
+| Probe latency (s) | 0.116 | 0.166 | +0.050 | [+0.045, +0.056] |
+
+FiQA full corpus, 648 judged queries:
+
+| Metric | dense | hybrid_rrf | delta | 95% CI |
+|---|---:|---:|---:|---|
+| Recall@5 | 0.4743 | 0.4198 | **−0.0545** | **[−0.0789, −0.0317]** |
+| Recall@20 | 0.6669 | 0.6194 | **−0.0475** | **[−0.0627, −0.0328]** |
+| Hit@5 | 0.6883 | 0.6497 | **−0.0386** | **[−0.0679, −0.0108]** |
+| Hit@10 | 0.7809 | 0.7454 | **−0.0355** | **[−0.0571, −0.0139]** |
+| Probe latency (s) | 0.290 | 0.403 | +0.113 | [+0.110, +0.117] |
+
+Displacement over ranked lists (recall@20 basis): on FiQA, fusion pushed
+5,190 non-gold candidates into the Top-20 while admitting 21 new gold and
+displacing 117 dense gold; 103 queries got worse versus 18 better (527
+unchanged). On TREC-COVID the churn was symmetric (328 gold out, 320 gold
+in, 19 queries worse versus 19 better) — a statistical tie.
+
+Interpretation:
+
+- **The embedding confound of Section 7.2 is resolved.** On FiQA all four
+  rank-metric intervals are entirely below zero under the configured
+  embedding as well: the refutation of hybrid_rrf pull is a property of the
+  fixed Top-20 RRF fusion, not an artifact of `text-embedding-3-small`. The
+  failure mechanism is the same lexical flooding observed in Section 7.2,
+  with an even more asymmetric gold exchange (117 lost versus 21 gained).
+- The "weaker embedding leaves more room for BM25" branch is answered in the
+  opposite direction than the concern assumed: gte-Qwen2 dense is *stronger*
+  than `text-embedding-3-small` on FiQA in absolute terms (Recall@20 0.667
+  versus 0.591 on identical corpus, queries, and harness), and hybrid fusion
+  still degrades it — by a larger Recall@20 margin than under the OpenAI
+  embedding.
+- On TREC-COVID the small significant Recall@20 loss of Section 7.1 does not
+  replicate; both recall deltas are statistically null here. This does not
+  weaken the verdict (no interval favors hybrid_rrf on any dataset or
+  embedding), and TREC-COVID rank metrics remain weakly informative for the
+  saturation reasons in Section 7.1.
+- Latency: hybrid_rrf costs +43% (TREC-COVID) and +39% (FiQA) per pull with
+  no quality gain, so the efficiency axis also favors dense.
+- Provenance note: before this run the instance's model cache did not
+  contain gte-Qwen2-1.5B-instruct. Which embedder produced earlier recorded
+  runs on this instance therefore still needs confirmation; this section's
+  claims are scoped to the config-pinned model actually served here.
+
+Final two-embedding verdict: hybrid_rrf pull under fixed Top-20 RRF is
+refuted on TREC-COVID and FiQA under both a strong general embedder and the
+configured stack embedder, on quality and on latency. Dense pull remains the
+control. Any future hybrid attempt should change the fusion design itself
+(candidate pool wider than the final Top-K before truncation, non-equal
+fusion weights, or rerank-after-fusion) and must run as its own
+single-variable experiment; Ko-StrategyQA (the dense-prior dataset) and
+Shinhan long documents remain untested.
+
 ## 8. Scope Boundary
 
 The following are intentionally not changed in this experiment:
@@ -247,6 +331,6 @@ Semantic tags should be revisited on long, internally structured documents. In t
 ## 9. Current Status
 
 - Experiment code: complete (probe and accounting added 2026-07-21)
-- Offline contract tests: complete (13 passing)
-- Model-backed probe runs: TREC-COVID and FiQA executed 2026-07-21 with the deviations in Sections 7.1-7.2; both refute hybrid_rrf under this embedding; agent-loop benchmark still pending Peter's stack
+- Offline contract tests: complete (14 passing)
+- Model-backed probe runs: TREC-COVID and FiQA executed 2026-07-21 under both `text-embedding-3-small` (Sections 7.1-7.2) and the configured `gte-Qwen2-1.5B-instruct` served on the H200 instance (Section 7.3); hybrid_rrf pull is refuted under both embeddings; agent-loop benchmark still pending Peter's stack
 - Production or Shinhan-specific conclusion: not available from this run
