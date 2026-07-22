@@ -123,6 +123,59 @@ Run the local contract tests before the model-backed experiment:
 PYTHONPATH=dr-dci python -m unittest discover -s dr-dci/tests -v
 ```
 
+## 7.1 Probe Measurement Run (2026-07-21)
+
+A retrieval-only probe run was executed. This run is **not** a reproduction of
+Peter's stack and must not be merged with his numbers:
+
+- Embedding: OpenAI `text-embedding-3-small` (the configured H200
+  `gte-Qwen2-1.5B-instruct` endpoint was unreachable from this environment).
+- Prefix/taxonomy/tag/metadata artifacts were absent locally, so the corpus
+  was embedded without contextual prefixes.
+- Both arms shared one retriever construction and one embedding cache
+  (`dense` embedded; `hybrid_rrf` reused the identical cache), so the paired
+  comparison is internally valid for the backend variable only.
+- Command: `python run_experiment.py --part 5 --probe-only
+  --embedding-url https://api.openai.com/v1/embeddings
+  --embedding-model text-embedding-3-small` (result
+  `results/part5_pull_backend/20260721_181041.json`, untracked by policy).
+
+Paired results (TREC-COVID 20K subset, 50 judged queries, seed 42,
+delta = hybrid_rrf − dense, bootstrap 95% CI):
+
+| Metric | dense | hybrid_rrf | delta | 95% CI |
+|---|---:|---:|---:|---|
+| Recall@5 | 0.0127 | 0.0126 | −0.0001 | [−0.0005, +0.0003] |
+| Recall@20 | 0.0479 | 0.0446 | **−0.0033** | **[−0.0052, −0.0016]** |
+| Hit@5 | 1.0 | 1.0 | 0 | saturated |
+| Hit@10 | 1.0 | 1.0 | 0 | saturated |
+| Probe latency (s) | 0.579 | 0.676 | +0.097 | [−0.010, +0.259] |
+
+Interpretation under the Section 6 decision rule:
+
+- The Recall@20 interval is entirely below zero: on this dataset and this
+  embedding, **dense stays the control**. Displacement analysis over the saved
+  ranked lists: 28 of 50 queries got worse versus 6 better; fusing BM25
+  displaced 367 gold documents out of dense's Top-20 while promoting 304 gold
+  and 103 non-gold — a net gold loss, matching the two-sided hypothesis's
+  displacement branch.
+- This matches the EDA: TREC-COVID's judged queries have full query-token
+  coverage inside gold documents (p50 100%) and no rare-term tail, so BM25
+  adds mostly redundant evidence and the fixed Top-20 fusion pays a
+  displacement cost.
+- Hit@5/Hit@10 are saturated at 1.0 because the median gold set is 478
+  documents; these metrics are uninformative on TREC-COVID and must not be
+  read as quality evidence. Absolute recall is structurally small for the same
+  reason (Top-20 against a 478-document gold set caps Recall@20 near 0.042).
+- This result screens the idea on one short-document dataset only. It says
+  nothing about Peter's embedding stack, agent-loop behavior, FiQA,
+  Ko-StrategyQA, or Shinhan documents.
+
+Next single experiment (one only): run the same probe on FiQA, where the EDA
+shows partial lexical alignment (66% query-token coverage, 2-document median
+gold) and Peter's Part 4 already observed Hybrid RAG ahead of DR-DCI. That is
+the dataset where the hybrid pull hypothesis has its best prior.
+
 ## 8. Scope Boundary
 
 The following are intentionally not changed in this experiment:
@@ -145,5 +198,5 @@ Semantic tags should be revisited on long, internally structured documents. In t
 
 - Experiment code: complete (probe and accounting added 2026-07-21)
 - Offline contract tests: complete (13 passing)
-- Model-backed benchmark run: pending model endpoints and experiment data
+- Model-backed probe run: executed 2026-07-21 with the deviations in Section 7.1; agent-loop benchmark still pending Peter's stack
 - Production or Shinhan-specific conclusion: not available from this run

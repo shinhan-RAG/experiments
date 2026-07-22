@@ -27,6 +27,7 @@ class RetrieverConfig:
     backend: str = "dense"
     bm25_top_k: int = 20
     rrf_k: int = 60
+    api_key: str = None            # OpenAI 호환 원격 endpoint용(로컬 vLLM은 불요)
 
 
 class PullRetriever:
@@ -163,7 +164,11 @@ class PullRetriever:
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             payload = {"model": self.config.embedding_model, "input": batch}
-            resp = requests.post(self.config.embedding_url, json=payload, timeout=120)
+            headers = {"Content-Type": "application/json"}
+            if self.config.api_key:
+                headers["Authorization"] = f"Bearer {self.config.api_key}"
+            resp = requests.post(self.config.embedding_url, json=payload,
+                                 headers=headers, timeout=120)
             resp.raise_for_status()
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):

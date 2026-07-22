@@ -135,6 +135,7 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
         backend=pull_backend,
         bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
         rrf_k=agent_cfg.get("rrf_k", 60),
+        api_key=os.getenv("OPENAI_API_KEY", ""),
     )
     retriever = PullRetriever(retriever_config)
     print("    Indexing corpus...")
@@ -549,7 +550,7 @@ def run_part4(config: dict):
     save_results("part4_generalization", all_results)
 
 
-def run_part5(config: dict):
+def run_part5(config: dict, probe_only: bool = False):
     """Part 5: compare pull backends while holding the agent loop fixed."""
     print("\n" + "=" * 60)
     print("Part 5: Pull Backend (Dense vs Hybrid RRF)")
@@ -584,6 +585,9 @@ def run_part5(config: dict):
         # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
         # backend 외 변인 없이 rank 지표를 먼저 잰다.
         probes[backend] = run_pull_probe(retriever, queries, query_gold)
+        if probe_only:
+            all_results[backend] = {"probe_rows": probes[backend]}
+            continue
         results = run_dr_dci(
             config,
             corpus,
@@ -614,11 +618,13 @@ def run_part5(config: dict):
         "seed": config["seed"],
         "git_commit": current_git_commit(),
     }
-    comparison = compare_paired_results(
-        all_results["dense"]["results"],
-        all_results["hybrid_rrf"]["results"],
-        seed=config["seed"],
-    )
+    comparison = None
+    if not probe_only:
+        comparison = compare_paired_results(
+            all_results["dense"]["results"],
+            all_results["hybrid_rrf"]["results"],
+            seed=config["seed"],
+        )
     probe_analysis = compare_probe_rows(
         probes["dense"], probes["hybrid_rrf"], seed=config["seed"]
     )
@@ -626,6 +632,11 @@ def run_part5(config: dict):
         "retrieval-only rank metrics on the original query text; "
         "denominator = queries with positive gold only"
     )
+    manifest["probe_only"] = probe_only
+    manifest["embedding_endpoint"] = {
+        "url": config["models"]["embedding"]["url"],
+        "model": config["models"]["embedding"]["name"],
+    }
     save_results(
         "part5_pull_backend",
         all_results,
@@ -659,7 +670,7 @@ def save_results(
     # results에서 큰 리스트 제거 (요약만 저장)
     summary = {}
     for key, val in results.items():
-        summary[key] = val["metrics"]
+        summary[key] = val.get("metrics", "probe_only")
 
     with open(out_path, "w") as f:
         json.dump(
@@ -680,6 +691,12 @@ def save_results(
 def main():
     parser = argparse.ArgumentParser(description="DR-DCI Experiment Runner")
     parser.add_argument("--part", type=int, choices=[1, 2, 3, 4, 5], help="Run specific part")
+    parser.add_argument("--probe-only", action="store_true",
+                        help="part5: retrieval-only probe만 실행(agent/judge 생략)")
+    parser.add_argument("--embedding-url", default="",
+                        help="임베딩 endpoint 오버라이드(결과 manifest에 기록)")
+    parser.add_argument("--embedding-model", default="",
+                        help="임베딩 모델 오버라이드(결과 manifest에 기록)")
     parser.add_argument("--all", action="store_true", help="Run all parts")
     args = parser.parse_args()
 
@@ -690,7 +707,11 @@ def main():
         run_part2(config)
         run_part3(config)
         run_part4(config)
-        run_part5(config)
+        if args.embedding_url:
+            config["models"]["embedding"]["url"] = args.embedding_url
+        if args.embedding_model:
+            config["models"]["embedding"]["name"] = args.embedding_model
+        run_part5(config, probe_only=args.probe_only)
     elif args.part == 1:
         run_part1(config)
     elif args.part == 2:
@@ -700,7 +721,11 @@ def main():
     elif args.part == 4:
         run_part4(config)
     elif args.part == 5:
-        run_part5(config)
+        if args.embedding_url:
+            config["models"]["embedding"]["url"] = args.embedding_url
+        if args.embedding_model:
+            config["models"]["embedding"]["name"] = args.embedding_model
+        run_part5(config, probe_only=args.probe_only)
     else:
         print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
 

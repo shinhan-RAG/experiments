@@ -264,3 +264,36 @@ class AgentAccountingTests(unittest.TestCase):
         self.assertEqual(result["llm_completion_tokens"], 10)
         self.assertEqual(result["pull_count"], 1)
         self.assertEqual(result["answer"], "답")
+
+
+class EmbeddingAuthTests(unittest.TestCase):
+    def test_embed_batch_sends_bearer_only_when_key_set(self):
+        from unittest.mock import patch
+
+        from src.agent.retriever import PullRetriever, RetrieverConfig
+
+        captured = {}
+
+        def fake_post(url, json=None, headers=None, timeout=None):
+            captured["headers"] = headers
+
+            class R:
+                def raise_for_status(self):
+                    pass
+
+                def json(self):
+                    return {"data": [{"index": 0, "embedding": [0.0, 1.0]}]}
+            return R()
+
+        with patch("src.agent.retriever.requests.post", side_effect=fake_post):
+            r = PullRetriever(RetrieverConfig(
+                embedding_url="https://api.openai.com/v1/embeddings",
+                embedding_model="m", api_key="sk-test"))
+            r._embed_batch(["x"])
+            self.assertEqual(captured["headers"]["Authorization"], "Bearer sk-test")
+
+            r2 = PullRetriever(RetrieverConfig(
+                embedding_url="http://localhost:8101/v1/embeddings",
+                embedding_model="m"))
+            r2._embed_batch(["x"])
+            self.assertNotIn("Authorization", captured["headers"])
