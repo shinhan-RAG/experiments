@@ -532,6 +532,236 @@ def focused_decision_rule_blockers(config: dict) -> list[str]:
     return []
 
 
+PART1_TO_PART2_CONTROL_KEYS = (
+    "embedding_model",
+    "embedding_endpoint",
+    "query_instruction",
+    "agent_model",
+    "agent_temperature",
+    "agent_max_tokens",
+    "agent_generation_seed",
+    "judge_model",
+    "judge_temperature",
+    "judge_max_tokens",
+    "judge_generation_seed",
+    "pull_top_k",
+    "pull_backend",
+    "taxonomy_boost",
+    "workspace_max_docs",
+    "max_turns",
+)
+
+
+def focused_control_snapshot(config: dict) -> dict:
+    """Return the model and retrieval controls that must survive Part 1→2."""
+    models = config.get("models", {})
+    embedding = models.get("embedding", {})
+    agent = models.get("agent_llm", {})
+    judge = models.get("judge_llm", {})
+    agent_cfg = config.get("agent", {})
+    return {
+        "embedding_model": embedding.get("name"),
+        "embedding_endpoint": embedding.get("url"),
+        "query_instruction": embedding.get("query_instruction"),
+        "agent_model": agent.get("name"),
+        "agent_temperature": agent.get("temperature"),
+        "agent_max_tokens": agent.get("max_tokens"),
+        "agent_generation_seed": agent.get("seed"),
+        "judge_model": judge.get("name"),
+        "judge_temperature": judge.get("temperature"),
+        "judge_max_tokens": judge.get("max_tokens"),
+        "judge_generation_seed": judge.get("seed"),
+        "pull_top_k": agent_cfg.get("pull_top_k"),
+        "pull_backend": agent_cfg.get("pull_backend", "dense"),
+        "taxonomy_boost": agent_cfg.get("taxonomy_boost", 1.5),
+        "workspace_max_docs": agent_cfg.get("workspace_max_docs"),
+        "max_turns": agent_cfg.get("max_turns"),
+    }
+
+
+def taxonomy_artifact_sha256(preflight: dict, size: int) -> str | None:
+    """Return the audited taxonomy artifact digest for one corpus scale."""
+    artifacts = preflight.get("augmentations", {}).get("artifacts", [])
+    for artifact in artifacts:
+        if (
+            isinstance(artifact, dict)
+            and artifact.get("feature") == "taxonomy"
+            and artifact.get("size") == size
+            and artifact.get("present") is True
+        ):
+            digest = artifact.get("sha256")
+            return digest if isinstance(digest, str) else None
+    return None
+
+
+def _approved_result_path(value: str) -> Path:
+    path = Path(value).expanduser()
+    return path if path.is_absolute() else BASE_DIR / path
+
+
+def approved_part1_result_gate(config: dict, part2_preflight: dict) -> dict:
+    """Validate the approved focused Part 1 result required for focused Part 2.
+
+    The result is verified as an immutable artifact before Part 2 loads a query
+    or reaches an embedding/LLM endpoint.  It must be a positive focused Part 1
+    result produced under the same source revision, taxonomy artifact at the
+    shared scale, and model/retrieval controls.
+    """
+    part1_cfg = config.get("parts", {}).get("part1_stacking", {})
+    part2_cfg = config.get("parts", {}).get("part2_scaling", {})
+    approval = part2_cfg.get("approved_part1_result")
+    blockers: list[str] = []
+    if not isinstance(approval, dict):
+        blockers.append("missing parts.part2_scaling.approved_part1_result")
+        approval = {}
+    if approval.get("status") != "approved":
+        blockers.append("approved Part 1 result status must be approved")
+    configured_path = approval.get("path")
+    expected_sha256 = approval.get("sha256")
+    if not isinstance(configured_path, str) or not configured_path:
+        blockers.append("approved Part 1 result path is required")
+    if (
+        not isinstance(expected_sha256, str)
+        or len(expected_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in expected_sha256.lower())
+    ):
+        blockers.append("approved Part 1 result SHA-256 is required")
+    if blockers:
+        details = "\n".join(f"- {item}" for item in blockers)
+        raise RuntimeError(f"focused Part 2 approved Part 1 result gate failed:\n{details}")
+
+    result_path = _approved_result_path(configured_path)
+    if not result_path.exists():
+        raise RuntimeError(
+            "focused Part 2 approved Part 1 result gate failed:\n"
+            f"- approved Part 1 result does not exist: {result_path}"
+        )
+    actual_sha256 = sha256_file(result_path)
+    if actual_sha256 != expected_sha256:
+        raise RuntimeError(
+            "focused Part 2 approved Part 1 result gate failed:\n"
+            "- approved Part 1 result SHA-256 does not match the configured value"
+        )
+    try:
+        with result_path.open(encoding="utf-8") as stream:
+            payload = json.load(stream)
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(
+            "focused Part 2 approved Part 1 result gate failed:\n"
+            f"- could not read approved Part 1 result: {error}"
+        ) from error
+
+    manifest = payload.get("manifest") if isinstance(payload, dict) else None
+    full_results = payload.get("full_results") if isinstance(payload, dict) else None
+    analysis = payload.get("analysis") if isinstance(payload, dict) else None
+    if not isinstance(manifest, dict) or not isinstance(full_results, dict) or not isinstance(analysis, dict):
+        raise RuntimeError(
+            "focused Part 2 approved Part 1 result gate failed:\n"
+            "- approved Part 1 result must contain manifest, full_results, and analysis objects"
+        )
+
+    blockers = validate_focused_part12_result(manifest, full_results, analysis)
+    if manifest.get("schema_version") != "dr-dci.part1-taxonomy.v2":
+        blockers.append("approved result is not a focused Part 1 result")
+    decision = analysis.get("taxonomy_only_minus_baseline", {}).get(
+        "document_gold_recall_decision"
+    )
+    if decision != "positive_practical_signal":
+        blockers.append("approved Part 1 result decision must be positive_practical_signal")
+
+    dataset = str(part2_cfg.get("dataset", ""))
+    part1_size = part1_cfg.get("subset")
+    if not isinstance(part1_size, int) or part1_size <= 0:
+        blockers.append("Part 1 subset must be a positive integer for the Part 2 gate")
+    if manifest.get("dataset") != dataset:
+        blockers.append("approved Part 1 result dataset does not match Part 2")
+    if manifest.get("subset_size") != part1_size:
+        blockers.append("approved Part 1 result subset does not match Part 1 config")
+    if manifest.get("taxonomy_action_point") != "pull score soft boost only":
+        blockers.append("approved Part 1 result taxonomy action point is incompatible")
+    if manifest.get("taxonomy_prompt_schema_shared") is not True:
+        blockers.append("approved Part 1 result does not preserve the shared taxonomy prompt")
+    result_arms = manifest.get("arms", [])
+    expected_arms = (
+        ("baseline", False, True, False),
+        ("taxonomy_only", True, True, False),
+    )
+    actual_arms = tuple(
+        (
+            arm.get("name"),
+            arm.get("taxonomy"),
+            arm.get("taxonomy_prompt_schema"),
+            arm.get("workspace_taxonomy"),
+        )
+        for arm in result_arms if isinstance(arm, dict)
+    )
+    if actual_arms != expected_arms:
+        blockers.append("approved Part 1 result arms are not the focused single-variable setup")
+    result_preflight = manifest.get("preflight")
+    if not isinstance(result_preflight, dict) or result_preflight.get("status") != "ready":
+        blockers.append("approved Part 1 result preflight was not ready")
+
+    source = config.get("data_provenance", {}).get(dataset)
+    result_provenance = manifest.get("dataset_provenance", {})
+    if result_provenance.get("source") != source:
+        blockers.append("approved Part 1 result data revision does not match current config")
+    result_files = result_provenance.get("files", {})
+    raw_dir = DATA_DIR / "raw" / dataset
+    for name in ("corpus", "queries", "qrels"):
+        path = raw_dir / f"{name}.jsonl"
+        if not path.exists() or result_files.get(name) != sha256_file(path):
+            blockers.append(f"approved Part 1 result {name} hash does not match current data")
+
+    result_taxonomy_sha256 = None
+    if isinstance(part1_size, int) and part1_size > 0:
+        subset_path = DATA_DIR / "subsets" / dataset / f"{part1_size // 1000}k.json"
+        result_subsets = result_provenance.get("subsets", [])
+        result_subset = next(
+            (entry for entry in result_subsets
+             if isinstance(entry, dict) and entry.get("size") == part1_size),
+            None,
+        )
+        if not subset_path.exists() or not isinstance(result_subset, dict) or result_subset.get(
+            "sha256"
+        ) != sha256_file(subset_path):
+            blockers.append("approved Part 1 result subset hash does not match current data")
+
+        result_taxonomy_sha256 = taxonomy_artifact_sha256(result_preflight or {}, part1_size)
+        current_taxonomy_sha256 = taxonomy_artifact_sha256(part2_preflight, part1_size)
+        if not result_taxonomy_sha256 or result_taxonomy_sha256 != current_taxonomy_sha256:
+            blockers.append("approved Part 1 result taxonomy artifact does not match Part 2")
+
+    result_controls = manifest.get("controls", {})
+    current_controls = focused_control_snapshot(config)
+    changed_controls = [
+        key for key in PART1_TO_PART2_CONTROL_KEYS
+        if result_controls.get(key) != current_controls.get(key)
+    ]
+    if changed_controls:
+        blockers.append(
+            "approved Part 1 result model/retrieval controls differ: "
+            + ", ".join(changed_controls)
+        )
+
+    if blockers:
+        details = "\n".join(f"- {item}" for item in blockers)
+        raise RuntimeError(f"focused Part 2 approved Part 1 result gate failed:\n{details}")
+    return {
+        "status": "approved",
+        "configured_path": configured_path,
+        "sha256": actual_sha256,
+        "decision": decision,
+        "part1_git_commit": manifest.get("git_commit"),
+        "compatibility": {
+            "data_revision": "matched",
+            "raw_data_hashes": "matched",
+            "subset_hash": "matched",
+            "taxonomy_artifact_sha256": result_taxonomy_sha256,
+            "model_and_retrieval_controls": "matched",
+        },
+    }
+
+
 def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int],
                       require_focused_decision_rule: bool = False):
     report = audit_part12(
@@ -714,14 +944,6 @@ def run_part2(config: dict, *, focused: bool = False):
     part_cfg = config["parts"]["part2_scaling"]
     dataset = part_cfg["dataset"]
 
-    queries, qrels = load_queries(dataset)
-    ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
-    ref_answers = {}
-    if ref_path.exists():
-        with open(ref_path) as f:
-            for item in json.load(f):
-                ref_answers[item["query_id"]] = item["reference_answer"]
-
     # The focused path tests one mechanism at a time. The historical path keeps
     # Peter's original stack_all comparison for reproducibility.
     best_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
@@ -740,6 +962,17 @@ def run_part2(config: dict, *, focused: bool = False):
         sizes=[int(size) for size in part_cfg["subsets"]],
         require_focused_decision_rule=focused,
     )
+    part1_approval_gate = (
+        approved_part1_result_gate(config, preflight) if focused else None
+    )
+
+    queries, qrels = load_queries(dataset)
+    ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
+    ref_answers = {}
+    if ref_path.exists():
+        with open(ref_path) as f:
+            for item in json.load(f):
+                ref_answers[item["query_id"]] = item["reference_answer"]
 
     all_results = {}
     for subset_size in part_cfg["subsets"]:
@@ -863,6 +1096,7 @@ def run_part2(config: dict, *, focused: bool = False):
             for step in selected_steps
         ],
         "preflight": preflight,
+        "part1_approval_gate": part1_approval_gate,
     })
     if focused:
         errors = validate_focused_part12_result(manifest, all_results, analysis)
@@ -1230,7 +1464,7 @@ def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *
         },
         "controls": {
             "analysis_bootstrap_seed": config.get("seed"),
-            "analysis_seed_purpose": "paired_bootstrap_and_sign_flip",
+            "analysis_seed_purpose": "paired_bootstrap",
             "minimum_practical_effect_status": config.get("parts", {}).get(
                 "part1_stacking", {}
             ).get("minimum_practical_effect_status"),

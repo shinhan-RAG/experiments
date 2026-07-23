@@ -83,7 +83,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 - TREC-COVID 20K subset
 - 같은 50개 질의와 qrels
 - 같은 embedding, agent LLM, **taxonomy category schema를 포함한 prompt**, max turns, pull Top-K, workspace cap
-- 같은 실행 코드, analysis bootstrap/sign-flip seed, agent/judge temperature·max tokens·generation seed 설정
+- 같은 실행 코드, analysis paired-bootstrap seed, agent/judge temperature·max tokens·generation seed 설정
 
 주 평가:
 
@@ -110,7 +110,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 
 ### 5.2 Part 2: 같은 메커니즘의 규모 확장
 
-Part 1을 통과한 경우에만 taxonomy arm을 확장한다.
+Part 1을 통과한 경우에만 taxonomy arm을 확장한다. focused Part 2는 config의 `approved_part1_result`에 사람이 승인한 Part 1 결과 파일 경로와 SHA-256이 있을 때만 시작한다. 이 gate는 해당 파일의 focused validator 통과, `positive_practical_signal` 판정, 그리고 현재의 data revision·raw/subset hash·20K taxonomy artifact hash·model/retrieval controls 정합성을 모두 확인한다.
 
 | Scale | Control | Treatment |
 |---|---|---|

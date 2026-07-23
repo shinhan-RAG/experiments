@@ -1,4 +1,5 @@
 import json
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -20,6 +21,21 @@ def write_json(path: Path, value):
 def write_jsonl(path: Path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+
+
+def focused_agent_row(query_id="q1"):
+    return {
+        "query_id": query_id,
+        "gold_recall": 0.2,
+        "latency_seconds": 1.0,
+        "latency_without_taxonomy_boost_telemetry_seconds": 1.0,
+        "taxonomy_boost_telemetry_seconds": 0.0,
+        "pull_count": 1,
+        "pull_queries": ["query"],
+        "pull_traces": [{"workspace_document_ids_after": ["d1"]}],
+        "first_pull_document_gold_recall": 0.2,
+        "workspace_expansion_document_gold_recall": 0.0,
+    }
 
 
 class Part12ContractTests(unittest.TestCase):
@@ -86,6 +102,118 @@ class Part12ContractTests(unittest.TestCase):
             "minimum_practical_effect_status": "approved",
         }}}
         self.assertEqual(run_experiment.focused_decision_rule_blockers(approved), [])
+
+    def test_approved_part1_result_gate_requires_explicit_approval_path_and_hash(self):
+        config = {"parts": {"part1_stacking": {"dataset": "fixture", "subset": 1000},
+                            "part2_scaling": {"dataset": "fixture", "subsets": [1000, 2000]}}}
+
+        with self.assertRaisesRegex(RuntimeError, "approved Part 1 result"):
+            run_experiment.approved_part1_result_gate(config, {"augmentations": {"artifacts": []}})
+
+    def test_approved_part1_result_gate_checks_decision_and_execution_conditions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            data = Path(directory)
+            raw = data / "raw" / "fixture"
+            write_jsonl(raw / "corpus.jsonl", [{"_id": "d1"}])
+            write_jsonl(raw / "queries.jsonl", [{"_id": "q1"}])
+            write_jsonl(raw / "qrels.jsonl", [
+                {"query-id": "q1", "corpus-id": "d1", "score": 1},
+            ])
+            subset_path = data / "subsets" / "fixture" / "1k.json"
+            write_json(subset_path, {"subset_size": 1000, "doc_ids": ["d1"]})
+            taxonomy_path = data / "taxonomy" / "fixture_1k.json"
+            write_json(taxonomy_path, {"d1": {"L1": "A"}})
+            taxonomy_sha256 = run_experiment.sha256_file(taxonomy_path)
+            config = {
+                "seed": 42,
+                "data_provenance": {"fixture": {
+                    "corpus": {"dataset": "source", "split": "corpus", "revision": "r1"},
+                    "queries": {"dataset": "source", "split": "queries", "revision": "r1"},
+                    "qrels": {"dataset": "source-qrels", "split": "test", "revision": "r1"},
+                }},
+                "models": {
+                    "embedding": {"name": "embed", "url": "http://embed"},
+                    "agent_llm": {"name": "agent", "url": "http://agent", "temperature": 0,
+                                  "max_tokens": 2048, "seed": None},
+                    "judge_llm": {"name": "judge", "url": "http://judge", "temperature": 0,
+                                  "max_tokens": 512, "seed": None},
+                },
+                "agent": {"pull_top_k": 20, "workspace_max_docs": 100, "max_turns": 10,
+                          "taxonomy_boost": 1.5},
+                "parts": {
+                    "part1_stacking": {"dataset": "fixture", "subset": 1000},
+                    "part2_scaling": {"dataset": "fixture", "subsets": [1000, 2000]},
+                },
+            }
+            controls = {
+                "analysis_bootstrap_seed": 42,
+                "analysis_seed_purpose": "paired_bootstrap",
+                **run_experiment.focused_control_snapshot(config),
+            }
+            part1_payload = {
+                "manifest": {
+                    "schema_version": "dr-dci.part1-taxonomy.v2",
+                    "focused": True,
+                    "dataset": "fixture",
+                    "subset_size": 1000,
+                    "primary_endpoint": "workspace_document_gold_recall",
+                    "taxonomy_action_point": "pull score soft boost only",
+                    "taxonomy_prompt_schema_shared": True,
+                    "decision_rule": {"minimum_practical_effect_size": 0.01, "status": "approved"},
+                    "arms": [
+                        {"name": "baseline", "taxonomy": False,
+                         "taxonomy_prompt_schema": True, "workspace_taxonomy": False},
+                        {"name": "taxonomy_only", "taxonomy": True,
+                         "taxonomy_prompt_schema": True, "workspace_taxonomy": False},
+                    ],
+                    "dataset_provenance": {
+                        "source": config["data_provenance"]["fixture"],
+                        "files": {
+                            name: run_experiment.sha256_file(raw / f"{name}.jsonl")
+                            for name in ("corpus", "queries", "qrels")
+                        },
+                        "subsets": [{"size": 1000, "sha256": run_experiment.sha256_file(subset_path)}],
+                    },
+                    "experiment_config": {},
+                    "execution_environment": {},
+                    "git_commit": "a" * 40,
+                    "preflight": {"status": "ready", "augmentations": {"artifacts": [{
+                        "feature": "taxonomy", "size": 1000, "present": True,
+                        "sha256": taxonomy_sha256,
+                    }]}},
+                    "controls": controls,
+                },
+                "full_results": {
+                    "baseline": {"results": [focused_agent_row()]},
+                    "taxonomy_only": {"results": [focused_agent_row()]},
+                },
+                "analysis": {"taxonomy_only_minus_baseline": {
+                    "paired_query_count": 1,
+                    "gold_recall": {"n": 1, "mean_delta": 0.02, "ci95_low": 0.02, "ci95_high": 0.03},
+                    "document_gold_recall_decision": "positive_practical_signal",
+                }},
+            }
+            result_path = data / "approved-part1.json"
+            write_json(result_path, part1_payload)
+            config["parts"]["part2_scaling"]["approved_part1_result"] = {
+                "status": "approved",
+                "path": str(result_path),
+                "sha256": run_experiment.sha256_file(result_path),
+            }
+            part2_preflight = {"augmentations": {"artifacts": [{
+                "feature": "taxonomy", "size": 1000, "present": True,
+                "sha256": taxonomy_sha256,
+            }]}}
+
+            with patch.object(run_experiment, "DATA_DIR", data):
+                report = run_experiment.approved_part1_result_gate(config, part2_preflight)
+                changed_config = copy.deepcopy(config)
+                changed_config["models"]["agent_llm"]["max_tokens"] = 1024
+                with self.assertRaisesRegex(RuntimeError, "model/retrieval controls differ"):
+                    run_experiment.approved_part1_result_gate(changed_config, part2_preflight)
+
+            self.assertEqual(report["decision"], "positive_practical_signal")
+            self.assertEqual(report["compatibility"]["taxonomy_artifact_sha256"], taxonomy_sha256)
 
     def test_audit_blocks_missing_artifacts_but_accepts_nested_gold_subsets(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -278,6 +406,7 @@ class Part12ContractTests(unittest.TestCase):
             }]
 
         with patch.object(run_experiment, "_part12_preflight", return_value={"status": "ready"}), \
+                patch.object(run_experiment, "approved_part1_result_gate", return_value={"status": "approved"}), \
                 patch.object(run_experiment, "load_corpus", return_value=[]), \
                 patch.object(run_experiment, "load_queries", return_value=([], [])), \
                 patch.object(run_experiment, "run_dr_dci", side_effect=fake_run) as run_agent, \
@@ -291,6 +420,24 @@ class Part12ContractTests(unittest.TestCase):
         self.assertEqual(saved["analysis"]["dynamic_minus_single_taxonomy_only_2k"]["pull_count"]["mean_delta"], 1.0)
         self.assertIn("baseline_3k_minus_2k", saved["analysis"])
         self.assertTrue(saved["manifest"]["include_single_pull"])
+
+    def test_focused_part2_checks_approved_part1_before_loading_queries(self):
+        config = {
+            "parts": {
+                "part1_stacking": {"dataset": "fixture", "subset": 1000},
+                "part2_scaling": {"dataset": "fixture", "subsets": [1000, 2000]},
+            },
+        }
+        with patch.object(run_experiment, "_part12_preflight", return_value={"status": "ready"}), \
+                patch.object(
+                    run_experiment,
+                    "approved_part1_result_gate",
+                    side_effect=RuntimeError("approved Part 1 result gate failed"),
+                ), \
+                patch.object(run_experiment, "load_queries") as load_queries:
+            with self.assertRaisesRegex(RuntimeError, "approved Part 1 result gate failed"):
+                run_experiment.run_part2(config, focused=True)
+        load_queries.assert_not_called()
 
 
 if __name__ == "__main__":

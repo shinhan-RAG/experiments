@@ -105,8 +105,9 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 - single-pull은 실제 첫 pull만 실행하고 attempted pull과 실제 pull을 분리해 기록한다.
 - taxonomy boost는 양수 cosine에만 적용한다. dense-stage 전후 rank, Top-K 진입·이탈, score 분포와 bounded pull trace를 보존한다.
 - 순위 계측은 `argpartition`으로 뽑은 제한된 candidate 집합에서만 수행한다. baseline 또는 점수가 실제로 바뀌지 않은 pull에는 전후 순위 정렬·rank map을 만들지 않는다. agent raw row에는 전체 latency, rank-telemetry 추가 시간, 그리고 이를 뺀 latency를 함께 기록한다.
-- 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, 분석 bootstrap/sign-flip seed의 용도, 실제 agent/judge temperature·max tokens·generation seed, model/instruction/control, 실행 환경을 보존한다.
+- 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, 분석 paired-bootstrap seed의 용도, 실제 agent/judge temperature·max tokens·generation seed, model/instruction/control, 실행 환경을 보존한다.
 - scale probe와 focused Part 1·2 모두 raw per-query rows, provenance, metric, paired CI와 필수 telemetry 계약이 빠지면 저장 전 실패한다.
+- focused Part 2는 승인된 Part 1 result의 path/SHA-256, validator, positive practical signal, focused arm 구성, data·subset·taxonomy artifact hash, model/retrieval control을 모두 대조한 뒤에만 query를 로드한다.
 - H200 전송은 git pull이 아닌 code/config/manifest bundle만 사용하며 data, key, cache, result를 넣지 않는다.
 
 관련 구현은 `run_experiment.py`, `src/agent/dci_agent.py`, `src/agent/retriever.py`, `src/eval/part12_contracts.py`, `src/eval/scale_probe_contract.py`, `src/eval/part12_result_contract.py`에 있다.
@@ -129,6 +130,7 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash. Part 2에는 110K 정본과 20K/50K 파생 규칙도 필요하다.
 3. H200/외부 모델 실행에 대한 명시적 승인
 4. `0.01` 최소 실질 효과 기준의 명시적 승인(`minimum_practical_effect_status: approved`) 또는 승인된 대체 기준
+5. Part 1의 승인된 focused 결과 파일 경로·SHA-256. Part 2는 이 결과가 validator를 통과하고 `positive_practical_signal`이며, 현재 data revision·20K taxonomy artifact·model/retrieval controls와 일치할 때만 실행된다.
 
 ### 과거 결과 재해석에만 필요한 입력
 
@@ -158,7 +160,18 @@ bash scripts/package_part12_h200_bundle.sh /private/tmp/dr-dci-part12.tar.gz
 2. retrieval-only scale probe를 실행하고 raw result validator를 통과시킨다.
 3. 승인된 최소 실질 효과 기준을 config에 기록한 뒤 baseline 대 taxonomy-only Part 1을 한 번 실행한다.
 4. paired 결과와 telemetry를 검토해 H1의 방향만 판정한다.
-5. 긍정 신호가 있어도 별도 승인 전에는 Part 2 확대나 반복 실행을 시작하지 않는다.
+5. Part 1 결과를 명시 승인하고 경로·SHA-256을 `part2_scaling.approved_part1_result`에 기록한다. Part 2는 positive signal과 data/artifact/control 정합성을 검증한 뒤에만 시작한다.
+
+```yaml
+parts:
+  part2_scaling:
+    approved_part1_result:
+      status: "approved"
+      path: "/approved-results/part1_taxonomy_focused.json"
+      sha256: "<64-character SHA-256>"
+```
+
+Part 1 결과 파일의 byte가 바뀌거나 현재 input/control이 달라지면 이 gate는 실패한다. 결과 파일이나 고객 데이터를 코드 bundle에 포함하지 않는다.
 
 ## 11. 설계 검토에서 확인할 결정
 

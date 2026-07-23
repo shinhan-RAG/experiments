@@ -107,7 +107,7 @@ class ScaleProbeResultContractTests(unittest.TestCase):
             self.assertEqual(manifest["controls"]["analysis_bootstrap_seed"], 42)
             self.assertEqual(
                 manifest["controls"]["analysis_seed_purpose"],
-                "paired_bootstrap_and_sign_flip",
+                "paired_bootstrap",
             )
             self.assertEqual(manifest["controls"]["agent_max_tokens"], 2048)
             self.assertEqual(manifest["controls"]["judge_max_tokens"], 512)

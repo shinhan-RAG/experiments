@@ -39,7 +39,7 @@ def part1_manifest():
         "preflight": {"status": "ready"},
         "controls": {
             "analysis_bootstrap_seed": 42,
-            "analysis_seed_purpose": "paired_bootstrap_and_sign_flip",
+            "analysis_seed_purpose": "paired_bootstrap",
             "embedding_model": "embed",
             "agent_model": "agent",
             "agent_temperature": 0,
@@ -95,6 +95,30 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
         self.assertTrue(any("taxonomy_boost_telemetry_seconds" in error for error in errors))
         self.assertTrue(any("document_gold_recall_decision" in error for error in errors))
 
+    def test_part1_rejects_invalid_latency_and_workspace_recall_invariants(self):
+        row = agent_row()
+        row["latency_without_taxonomy_boost_telemetry_seconds"] = 0.7
+        row["taxonomy_boost_telemetry_seconds"] = 0.2
+        row["first_pull_document_gold_recall"] = 0.1
+        row["workspace_expansion_document_gold_recall"] = 0.2
+        errors = validate_focused_part12_result(
+            part1_manifest(),
+            {
+                "baseline": {"results": [row]},
+                "taxonomy_only": {"results": [agent_row()]},
+            },
+            {
+                "taxonomy_only_minus_baseline": {
+                    "paired_query_count": 1,
+                    "gold_recall": paired(),
+                    "document_gold_recall_decision": "inconclusive",
+                },
+            },
+        )
+
+        self.assertTrue(any("latency_without" in error for error in errors))
+        self.assertTrue(any("workspace expansion" in error for error in errors))
+
     def test_part2_requires_primary_scale_and_dynamic_single_comparisons(self):
         manifest = {
             **part1_manifest(),
@@ -113,6 +137,13 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
             "single_pull_comparison": {
                 "classification": "exploratory_interface_ablation_not_pull_count_only",
                 "within_dynamic_diagnostic": "first versus final workspace",
+            },
+            "part1_approval_gate": {
+                "status": "approved",
+                "configured_path": "/results/approved-part1.json",
+                "sha256": "b" * 64,
+                "decision": "positive_practical_signal",
+                "compatibility": {"model_and_retrieval_controls": "matched"},
             },
         }
         full_results = {
@@ -135,3 +166,7 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
         del analysis["baseline_2k_minus_1k"]
         errors = validate_focused_part12_result(manifest, full_results, analysis)
         self.assertTrue(any("baseline_2k_minus_1k" in error for error in errors))
+        analysis["baseline_2k_minus_1k"] = {"paired_query_count": 1, "gold_recall": paired()}
+        del manifest["part1_approval_gate"]
+        errors = validate_focused_part12_result(manifest, full_results, analysis)
+        self.assertTrue(any("approved Part 1 result gate" in error for error in errors))

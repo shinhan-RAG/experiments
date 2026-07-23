@@ -1,6 +1,6 @@
 # DR-DCI Augmentation Experiment Config
 
-# Analysis-only seed for paired bootstrap and sign-flip calculations. It is
+# Analysis-only seed for paired bootstrap calculations. It is
 # not forwarded to an LLM generation request.
 seed: 42
 
@@ -158,6 +158,12 @@ parts:
     methods: ["dr-dci-final", "hybrid-rag"]
     subsets: [20000, 50000, 110000]
     include_single_pull: true
+    # Part 2 focused execution is blocked until a human-approved, positive
+    # focused Part 1 result is provided with its immutable file hash.
+    approved_part1_result:
+      status: "pending"
+      path: null
+      sha256: null
 
   part3_tags:
     dataset: "trec-covid"

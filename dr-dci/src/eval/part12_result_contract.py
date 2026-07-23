@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from itertools import combinations
+import math
 from typing import Any
 
 
@@ -46,6 +47,63 @@ REQUIRED_AGENT_ROW_KEYS = (
     "workspace_expansion_document_gold_recall",
 )
 
+NUMERIC_TOLERANCE = 1e-6
+
+
+def _is_finite_number(value: Any) -> bool:
+    return (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and math.isfinite(value)
+    )
+
+
+def _validate_agent_measurements(label: str, row: dict[str, Any],
+                                 errors: list[str]) -> None:
+    gold_recall = row["gold_recall"]
+    if not _is_finite_number(gold_recall) or not 0 <= gold_recall <= 1:
+        errors.append(f"{label}.results gold_recall must be within [0, 1]")
+
+    latency = row["latency_seconds"]
+    latency_without = row["latency_without_taxonomy_boost_telemetry_seconds"]
+    telemetry = row["taxonomy_boost_telemetry_seconds"]
+    if not all(_is_finite_number(value) and value >= 0 for value in (
+        latency, latency_without, telemetry,
+    )):
+        errors.append(f"{label}.results latency values must be finite and non-negative")
+    elif not math.isclose(
+        latency_without + telemetry,
+        latency,
+        rel_tol=0.0,
+        abs_tol=NUMERIC_TOLERANCE,
+    ):
+        errors.append(
+            f"{label}.results latency_without_taxonomy_boost_telemetry_seconds + "
+            "taxonomy_boost_telemetry_seconds must equal latency_seconds"
+        )
+
+    pull_count = row.get("pull_count")
+    first_pull_recall = row["first_pull_document_gold_recall"]
+    expansion_recall = row["workspace_expansion_document_gold_recall"]
+    if isinstance(pull_count, int) and pull_count > 0:
+        if not all(_is_finite_number(value) and 0 <= value <= 1 for value in (
+            first_pull_recall, expansion_recall,
+        )):
+            errors.append(
+                f"{label}.results first-pull and workspace expansion recall "
+                "must be within [0, 1]"
+            )
+        elif _is_finite_number(gold_recall) and not math.isclose(
+            first_pull_recall + expansion_recall,
+            gold_recall,
+            rel_tol=0.0,
+            abs_tol=NUMERIC_TOLERANCE,
+        ):
+            errors.append(
+                f"{label}.results first-pull recall + workspace expansion recall "
+                "must equal gold_recall"
+            )
+
 
 def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> None:
     for key in REQUIRED_MANIFEST_KEYS:
@@ -63,7 +121,7 @@ def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> No
     missing_controls = [key for key in REQUIRED_CONTROL_KEYS if key not in controls]
     if missing_controls:
         errors.append(f"manifest controls missing {', '.join(missing_controls)}")
-    if controls.get("analysis_seed_purpose") != "paired_bootstrap_and_sign_flip":
+    if controls.get("analysis_seed_purpose") != "paired_bootstrap":
         errors.append("manifest controls must distinguish the analysis seed purpose")
 
 
@@ -86,6 +144,7 @@ def _validate_rows(label: str, arm: Any, errors: list[str]) -> set[str]:
             continue
         if not isinstance(row["pull_queries"], list) or not isinstance(row["pull_traces"], list):
             errors.append(f"{label}.results pull traces must be lists")
+        _validate_agent_measurements(label, row, errors)
         pull_count = row.get("pull_count")
         if not isinstance(pull_count, int) or pull_count < 0:
             errors.append(f"{label}.results pull_count must be a non-negative integer")
@@ -162,6 +221,17 @@ def validate_focused_part12_result(
         return errors
 
     if schema == "dr-dci.part2-taxonomy-scaling.v1":
+        part1_gate = manifest.get("part1_approval_gate")
+        if not isinstance(part1_gate, dict) or part1_gate.get("status") != "approved":
+            errors.append("Part 2 manifest lacks an approved Part 1 result gate")
+        elif (
+            not isinstance(part1_gate.get("configured_path"), str)
+            or not isinstance(part1_gate.get("sha256"), str)
+            or len(part1_gate["sha256"]) != 64
+            or part1_gate.get("decision") != "positive_practical_signal"
+            or not isinstance(part1_gate.get("compatibility"), dict)
+        ):
+            errors.append("Part 2 approved Part 1 result gate is incomplete")
         sizes = manifest.get("subsets")
         if not isinstance(sizes, list) or len(sizes) < 2 or any(
             not isinstance(size, int) for size in sizes

@@ -9,6 +9,7 @@ size.
 from __future__ import annotations
 
 import json
+import hashlib
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,14 @@ def _load_json(path: Path) -> Any:
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
     with path.open() as stream:
         return [json.loads(line) for line in stream if line.strip()]
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def _artifact_path(data_dir: Path, dataset: str, size: int, feature: str,
@@ -172,6 +181,7 @@ def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
                 "variant": variant,
                 "size": size,
                 "present": True,
+                "sha256": _sha256_file(path),
                 "document_count": len(by_doc),
                 "missing_subset_document_count": len(missing),
                 "positive_gold_document_count": len(gold_in_subset),
