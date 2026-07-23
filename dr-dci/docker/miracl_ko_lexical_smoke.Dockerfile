@@ -6,6 +6,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openjdk-21-jre-headless=21.0.11+10-1~deb13u2 \
+    && mkdir -p /opt/java \
     && ln -s "/usr/lib/jvm/java-21-openjdk-$(dpkg --print-architecture)" "${JAVA_HOME}" \
     && rm -rf /var/lib/apt/lists/*
 
