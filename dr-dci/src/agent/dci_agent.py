@@ -107,7 +107,10 @@ TOOL_DEFINITIONS = [
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
-                    "top_k": {"type": "integer", "description": "Optional: number of new documents to retrieve (default set by system)"},
+                    "top_k": {
+                        "type": "integer", "minimum": 1, "maximum": 200,
+                        "description": "Optional: number of new documents to retrieve (default set by system)",
+                    },
                     "taxonomy_filter": {
                         "type": "object",
                         "description": "Optional: focus retrieval on a taxonomy category (e.g. {\"L1\": \"Treatment\"})",
@@ -233,17 +236,32 @@ class DCIAgent:
             "rule_violations": [],
             "final_answer": "",
             "answered": False,
+            "retrieved_candidates": 0,
+            "added_documents": 0,
+            "tool_call_counts": {"pull": 0, "grep": 0, "find": 0, "read": 0, "answer": 0},
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "taxonomy_filtered_pulls": 0,
+            "system_fingerprints": set(),
         }
 
         turns_used = self.max_turns
         for turn in range(self.max_turns):
             response = self._call_llm(messages)
+            usage = response.pop("_usage", None) or {}
+            fingerprint = response.pop("_system_fingerprint", None)
+            state["prompt_tokens"] += int(usage.get("prompt_tokens") or 0)
+            state["completion_tokens"] += int(usage.get("completion_tokens") or 0)
+            if fingerprint:
+                state["system_fingerprints"].add(str(fingerprint))
 
             if not response.get("tool_calls"):
-                # 도구 없이 일반 텍스트로 종료 시도 — 규칙 위반으로 기록
-                state["final_answer"] = response.get("content", "") or ""
-                if state["pull_count"] < self.min_pulls:
+                distinct = len({normalize_query(q) for q in state["pull_queries"]})
+                if state["pull_count"] < self.min_pulls or distinct < self.min_pulls:
                     state["rule_violations"].append("answered_without_min_pulls")
+                else:
+                    state["final_answer"] = response.get("content", "") or ""
+                    state["answered"] = True
                 turns_used = turn + 1
                 break
 
@@ -256,13 +274,15 @@ class DCIAgent:
             answered_this_turn = False
             for tool_call in response["tool_calls"]:
                 func_name = tool_call["function"]["name"]
+                state["tool_call_counts"][func_name] = (
+                    state["tool_call_counts"].get(func_name, 0) + 1
+                )
                 try:
                     args = json.loads(tool_call["function"]["arguments"])
                 except json.JSONDecodeError:
                     args = {}
 
-                is_last_turn = turn == self.max_turns - 1
-                result = self._execute_tool(func_name, args, workspace, state, is_last_turn)
+                result = self._execute_tool(func_name, args, workspace, state)
 
                 state["trace"].append({
                     "turn": turn + 1,
@@ -299,23 +319,41 @@ class DCIAgent:
             "budget_exhausted": not state["answered"] and turns_used >= self.max_turns,
             "rule_violations": state["rule_violations"],
             "trace": state["trace"],
+            "retrieved_candidates": state["retrieved_candidates"],
+            "added_documents": state["added_documents"],
+            "tool_call_counts": dict(state["tool_call_counts"]),
+            "tool_calls_total": sum(state["tool_call_counts"].values()),
+            "llm_prompt_tokens": state["prompt_tokens"],
+            "llm_completion_tokens": state["completion_tokens"],
+            "taxonomy_filtered_pulls": state["taxonomy_filtered_pulls"],
+            "system_fingerprints": sorted(state["system_fingerprints"]),
         }
 
     def _execute_tool(self, name: str, args: dict, workspace: Workspace,
-                      state: dict, is_last_turn: bool) -> dict:
+                      state: dict) -> dict:
         if name == "pull":
             if self.single_pull and state["pull_count"] >= 1:
                 state["rule_violations"].append("extra_pull_in_single_pull_mode")
                 return {"error": "pull budget exhausted: single-pull mode allows exactly one pull"}
 
-            pulled = self.retriever.pull(
-                query=args["query"],
-                taxonomy_filter=args.get("taxonomy_filter"),
-                top_k=args.get("top_k"),
-                exclude_ids=set(workspace.docs.keys()),
-            )
+            query = str(args.get("query") or "").strip()
+            if not query:
+                state["rule_violations"].append("invalid_pull_arguments")
+                return {"error": "pull requires a non-empty query"}
+            try:
+                pulled = self.retriever.pull(
+                    query=query,
+                    taxonomy_filter=args.get("taxonomy_filter"),
+                    top_k=args.get("top_k"),
+                    exclude_ids=set(workspace.docs.keys()),
+                )
+            except (TypeError, ValueError) as exc:
+                state["rule_violations"].append("invalid_pull_arguments")
+                return {"error": str(exc)}
             state["pull_count"] += 1
-            state["pull_queries"].append(args["query"])
+            state["pull_queries"].append(query)
+            if args.get("taxonomy_filter"):
+                state["taxonomy_filtered_pulls"] += 1
 
             added = 0
             preview = []
@@ -348,6 +386,8 @@ class DCIAgent:
                 "duplicate_count": pulled["duplicates_excluded"],
             }
             state["pull_stats"].append(stats)
+            state["retrieved_candidates"] += stats["retrieved"]
+            state["added_documents"] += added
             if added == 0:
                 state["rule_violations"].append("pull_did_not_expand_workspace")
 
@@ -358,7 +398,10 @@ class DCIAgent:
             }
 
         elif name == "grep":
-            result = workspace.grep(args["pattern"], args.get("tag_filter"))
+            pattern = str(args.get("pattern") or "")
+            if not pattern:
+                return {"error": "grep requires a non-empty pattern"}
+            result = workspace.grep(pattern, args.get("tag_filter"))
             result["matches"] = result["matches"][:20]
             return result
 
@@ -374,7 +417,7 @@ class DCIAgent:
         elif name == "answer":
             # P0-3: 최소 pull 규칙을 harness에서 강제
             distinct = len({normalize_query(q) for q in state["pull_queries"]})
-            if not is_last_turn and (state["pull_count"] < self.min_pulls or distinct < self.min_pulls):
+            if state["pull_count"] < self.min_pulls or distinct < self.min_pulls:
                 state["rule_violations"].append("answer_rejected_min_pull_rule")
                 return {
                     "error": (
@@ -385,8 +428,6 @@ class DCIAgent:
                 }
             state["final_answer"] = args.get("text", "")
             state["answered"] = True
-            if state["pull_count"] < self.min_pulls:
-                state["rule_violations"].append("answered_without_min_pulls")
             return {"status": "answered"}
 
         return {"error": f"Unknown tool: {name}"}
@@ -432,7 +473,10 @@ class DCIAgent:
                 time.sleep(5 * (attempt + 1))
                 continue
             resp.raise_for_status()
-            choice = resp.json()["choices"][0]["message"]
+            body = resp.json()
+            choice = dict(body["choices"][0]["message"])
+            choice["_usage"] = body.get("usage") or {}
+            choice["_system_fingerprint"] = body.get("system_fingerprint")
             return choice
 
         return {"content": "Max retries exceeded.", "tool_calls": None}

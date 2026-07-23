@@ -1,5 +1,6 @@
 """P0-2: pull dedup / backfill / ranked preview 검증 (mock embedder)"""
 import numpy as np
+import pytest
 from src.agent.retriever import PullRetriever, RetrieverConfig
 
 
@@ -62,6 +63,12 @@ def test_pull_dynamic_top_k():
     r = build()
     out = r.pull("q0", top_k=5)
     assert len(out["results"]) == 5
+
+
+@pytest.mark.parametrize("bad", [0, -1, 201, 1.5, True])
+def test_pull_rejects_invalid_dynamic_top_k(bad):
+    with pytest.raises(ValueError):
+        build().pull("q0", top_k=bad)
 
 
 def test_cache_key_changes_with_prefix():

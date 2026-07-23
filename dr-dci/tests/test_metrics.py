@@ -1,4 +1,5 @@
 """P1-1, P1-11: retrieval metrics + 통계 도구 검증"""
+import pytest
 from src.eval.metrics import (
     recall_at_k, ndcg_at_k, mrr_at_k, bootstrap_ci, paired_bootstrap_test,
 )
@@ -12,7 +13,8 @@ def test_recall_at_k():
 
 
 def test_recall_empty_gold():
-    assert recall_at_k(["a"], set(), 10) == 0.0
+    with pytest.raises(ValueError):
+        recall_at_k(["a"], set(), 10)
 
 
 def test_ndcg_perfect_ranking_is_one():

@@ -1,37 +1,24 @@
 """
 LLM-as-Judge 평가기
-
-가이드 반영 사항:
-- P0-1: exact-match 판정 파싱 — 'correct'/'incorrect'만 인정, 그 외는 format_error
-- P0-8/Part4: reference 없는 query는 'n/a'로 두고 accuracy 분모에서 제외 (nullable accuracy)
-- P1-2/P1-3: read recall, duplicate pull rate 등 mechanism metric 집계
+- Accuracy: correct/incorrect 판정
+- Gold R@W: workspace recall
+- Efficiency: Gold R@W / Pull 횟수
 """
 
 import os
-import re
 import time
 import requests
+import numpy as np
 
 VALID_JUDGMENTS = {"correct", "incorrect"}
 
 
 def parse_judgment(raw: str) -> str:
-    """judge 응답을 엄격하게 파싱한다.
-
-    - 앞뒤 공백/따옴표/구두점 제거 후 전체가 정확히 correct 또는 incorrect일 때만 인정
-    - 그 외(빈 응답, 설명이 붙은 응답, 형식 위반)는 'format_error'
-    """
+    """Judge 출력 전체가 허용된 단어일 때만 인정한다."""
     if raw is None:
         return "format_error"
-    cleaned = raw.strip().lower()
-    cleaned = cleaned.strip("\"'`.,!:; \n\t")
-    if cleaned in VALID_JUDGMENTS:
-        return cleaned
-    # 단독 단어로 한 줄에만 등장하는 경우 허용 (예: "Judgment: correct" 는 불허)
-    lines = [ln.strip().strip("\"'`.,!:;") for ln in cleaned.splitlines() if ln.strip()]
-    if len(lines) == 1 and lines[0] in VALID_JUDGMENTS:
-        return lines[0]
-    return "format_error"
+    cleaned = raw.strip().lower().strip("\"'`.,!:; \n\t")
+    return cleaned if cleaned in VALID_JUDGMENTS else "format_error"
 
 
 class Judge:
@@ -42,10 +29,7 @@ class Judge:
         self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
 
     def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
-        """LLM-as-Judge로 정답 여부 판정 (retry with backoff).
-
-        반환: 'correct' | 'incorrect' | 'format_error' | 'error'
-        """
+        """LLM-as-Judge로 정답 여부 판정 (retry with backoff)"""
         prompt = self.prompt_template.format(
             query=query,
             reference_answer=reference_answer,
@@ -67,13 +51,13 @@ class Judge:
             try:
                 resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=60)
                 if resp.status_code == 429:
-                    wait = 10 * (attempt + 1)
+                    wait = 10 * (attempt + 1)  # 10, 20, 30, 40, 50s
                     print(f"  Judge rate limited, waiting {wait}s...")
                     time.sleep(wait)
                     continue
                 resp.raise_for_status()
                 result = resp.json()["choices"][0]["message"]["content"]
-                return parse_judgment(result)
+                return self.parse_judgment(result)
             except requests.exceptions.Timeout:
                 time.sleep(10)
                 continue
@@ -82,6 +66,10 @@ class Judge:
                 return "error"
         print(f"  Judge error: max retries exceeded")
         return "error"
+
+    @staticmethod
+    def parse_judgment(value: str) -> str:
+        return parse_judgment(value)
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
@@ -107,57 +95,85 @@ class Judge:
 
 
 def compute_metrics(results: list[dict]) -> dict:
-    """실험 결과 리스트에서 집계 메트릭 계산.
-
-    accuracy는 실제 판정된(correct/incorrect) query만 분모로 사용하고,
-    판정 대상이 없으면 None으로 보고한다 (P0-8).
-    """
+    """실험 결과 리스트에서 집계 메트릭 계산"""
     n = len(results)
     if n == 0:
         return {}
 
-    judged = [r for r in results if r.get("judgment") in VALID_JUDGMENTS]
-    n_correct = sum(1 for r in judged if r["judgment"] == "correct")
-    accuracy = round(n_correct / len(judged), 4) if judged else None
-
-    judge_errors = sum(1 for r in results if r.get("judgment") in ("error", "format_error"))
-
-    def avg(key, default=0):
-        return sum(r.get(key, default) or 0 for r in results) / n
+    judged = [
+        r for r in results
+        if r.get("judgment") in VALID_JUDGMENTS
+    ]
+    accuracy = (
+        sum(1 for r in judged if r["judgment"] == "correct") / len(judged)
+        if judged else None
+    )
+    avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
+    avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
+    avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
+    avg_taxonomy_pulls = sum(r.get("taxonomy_filtered_pulls", 0) for r in results) / n
+    avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
+    avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
+    avg_turns = sum(r.get("turns", 0) for r in results) / n
+    avg_latency = sum(r.get("latency_seconds", 0) for r in results) / n
+    latencies = [r.get("latency_seconds", 0) for r in results]
+    candidate_efficiencies = [
+        r.get("gold_recall", 0) * 100 / r.get("retrieved_candidates", 0)
+        for r in results
+        if r.get("retrieved_candidates", 0) > 0
+    ]
 
     metrics = {
         "n": n,
+        "accuracy": round(accuracy, 4) if accuracy is not None else None,
+        "judged_n": len(judged),
         "n_judged": len(judged),
-        "accuracy": accuracy,
-        "judge_error_count": judge_errors,
-        "avg_gold_recall": round(avg("gold_recall"), 4),
-        "avg_efficiency": round(avg("efficiency"), 4),
-        "avg_pulls": round(avg("pull_count"), 2),
+        "judge_error_n": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
+        "judge_error_count": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
+        "avg_gold_recall": round(avg_recall, 4),
+        "avg_efficiency": round(avg_efficiency, 4),
+        "avg_pulls": round(avg_pulls, 2),
+        "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
+        "avg_retrieved_candidates": round(avg_candidates, 2),
+        "avg_workspace_docs": round(avg_workspace_docs, 2),
+        "avg_turns": round(avg_turns, 2),
+        "avg_latency_seconds": round(avg_latency, 3),
+        "p50_latency_seconds": round(float(np.percentile(latencies, 50)), 3),
+        "p95_latency_seconds": round(float(np.percentile(latencies, 95)), 3),
+        "avg_gold_recall_per_100_candidates": round(
+            sum(candidate_efficiencies) / len(candidate_efficiencies), 4
+        ) if candidate_efficiencies else 0.0,
     }
 
-    # mechanism metrics (있을 때만 집계)
+    def avg(key: str) -> float:
+        return sum(float(r.get(key, 0) or 0) for r in results) / n
+
     if any("read_recall" in r for r in results):
         metrics["avg_read_recall"] = round(avg("read_recall"), 4)
     if any("distinct_pull_queries" in r for r in results):
         metrics["avg_distinct_queries"] = round(avg("distinct_pull_queries"), 2)
     if any("rule_violations" in r for r in results):
         metrics["violation_rate"] = round(
-            sum(1 for r in results if r.get("rule_violations")) / n, 4)
+            sum(1 for r in results if r.get("rule_violations")) / n, 4
+        )
     if any("budget_exhausted" in r for r in results):
         metrics["budget_exhausted_rate"] = round(
-            sum(1 for r in results if r.get("budget_exhausted")) / n, 4)
+            sum(1 for r in results if r.get("budget_exhausted")) / n, 4
+        )
     if any(r.get("pull_stats") for r in results):
-        dup_rates = []
-        for r in results:
-            stats = r.get("pull_stats") or []
-            requested = sum(s.get("requested", 0) for s in stats)
-            dups = sum(s.get("duplicate_count", 0) for s in stats)
+        duplicate_rates = []
+        for row in results:
+            stats = row.get("pull_stats") or []
+            requested = sum(item.get("requested", 0) for item in stats)
+            duplicates = sum(item.get("duplicate_count", 0) for item in stats)
             if requested:
-                dup_rates.append(dups / requested)
-        if dup_rates:
-            metrics["avg_duplicate_pull_rate"] = round(sum(dup_rates) / len(dup_rates), 4)
-    for k in ("recall@20", "recall@100", "ndcg@10"):
-        if any(k in r for r in results):
-            metrics[f"avg_{k}"] = round(avg(k), 4)
-
+                duplicate_rates.append(duplicates / requested)
+        if duplicate_rates:
+            metrics["avg_duplicate_pull_rate"] = round(
+                sum(duplicate_rates) / len(duplicate_rates), 4
+            )
     return metrics

@@ -83,7 +83,10 @@ else:
     EMBED_URL = os.getenv("PILOT_EMBED_URL", MODELS["embedding"]["url"])
     EMBED_MODEL = os.getenv("PILOT_EMBED_MODEL", MODELS["embedding"]["name"])
     EMBED_KEY = None
-    QUERY_INSTRUCTION = RetrieverConfig.query_instruction
+    QUERY_INSTRUCTION = (
+        os.getenv("PILOT_QUERY_INSTRUCTION")
+        or MODELS["embedding"].get("query_instruction")
+    )
 
 TAX_SCHEMA = yaml.safe_load(open(CONFIG / "taxonomy_schemas" / "trec-covid.yaml", encoding="utf-8"))
 META_SCHEMA = yaml.safe_load(open(CONFIG / "metadata_schemas" / "trec-covid.yaml", encoding="utf-8"))
@@ -92,6 +95,8 @@ SUBTAGS = ["definition", "evidence", "procedure", "condition", "comparison", "su
 
 # ---------------------------------------------------------------- OpenAI helper
 def oai(messages, max_tokens=200, json_mode=False):
+    if not OAI_KEY:
+        raise RuntimeError("OPENAI_API_KEY is required for the real-component pilot")
     payload = {"model": OAI_MODEL, "messages": messages, "temperature": 0, "max_tokens": max_tokens}
     if json_mode:
         payload["response_format"] = {"type": "json_object"}
@@ -103,19 +108,17 @@ def oai(messages, max_tokens=200, json_mode=False):
                 time.sleep(5 * (attempt + 1)); continue
             r.raise_for_status()
             return r.json()["choices"][0]["message"]["content"]
-        except Exception as e:
+        except Exception as exc:
             if attempt == 3:
-                return ""
+                raise RuntimeError("pilot model call failed after retries") from exc
             time.sleep(2)
-    return ""
+    raise RuntimeError("pilot model call failed after retries")
 
 
 def parallel(fn, items, workers=16):
     out = [None] * len(items)
     with ThreadPoolExecutor(max_workers=workers) as ex:
         futs = {ex.submit(fn, it): i for i, it in enumerate(items)}
-        for f in futs:
-            pass
         for f, i in futs.items():
             out[i] = f.result()
     return out
@@ -133,8 +136,8 @@ def parse_json(text):
             try:
                 return json.loads(m.group(0))
             except Exception:
-                return {}
-        return {}
+                raise ValueError("model response is not valid JSON")
+        raise ValueError("model response is not valid JSON")
 
 
 # ---------------------------------------------------------------- data loading
@@ -209,9 +212,11 @@ def gen_taxonomy(corpus, ids):
         r = oai([{"role": "system", "content": sys_p}, {"role": "user", "content": text}],
                 max_tokens=60, json_mode=True)
         j = parse_json(r)
-        if j.get("L1") in l1:
-            return did, {"L1": j.get("L1"), "L2": j.get("L2"), "L3": j.get("L3", "")}
-        return did, {"L1": "Other", "L2": "General", "L3": ""}
+        chosen_l1 = j.get("L1")
+        chosen_l2 = j.get("L2")
+        if chosen_l1 not in l1 or chosen_l2 not in l2.get(chosen_l1, []):
+            raise ValueError(f"invalid taxonomy output for {did}")
+        return did, {"L1": chosen_l1, "L2": chosen_l2, "L3": j.get("L3", "")}
 
     return dict(parallel(one, ids))
 
@@ -223,7 +228,10 @@ def gen_prefix(corpus, ids):
     def one(did):
         d = corpus[did]; text = f"{d.get('title','')} {d.get('text','')}"[:800]
         r = oai([{"role": "system", "content": sys_p}, {"role": "user", "content": text}], max_tokens=90)
-        return did, r.strip().strip('"')
+        value = r.strip().strip('"')
+        if not value:
+            raise ValueError(f"empty prefix output for {did}")
+        return did, value
     return dict(parallel(one, ids))
 
 
@@ -241,8 +249,8 @@ def gen_metadata(corpus, ids):
         r = oai([{"role": "system", "content": sys_p}, {"role": "user", "content": text}],
                 max_tokens=200, json_mode=True)
         j = parse_json(r)
-        if not isinstance(j, dict):
-            j = {}
+        if not isinstance(j, dict) or "study_type" not in j:
+            raise ValueError(f"invalid metadata output for {did}")
         ents = j.get("entities") or []
         ents = [e for e in ents if isinstance(e, dict) and e.get("name")][:5]
         return did, {"study_type": j.get("study_type"), "year": j.get("year"),
@@ -264,9 +272,8 @@ def gen_tags(corpus, ids):
             if isinstance(e, dict) and e.get("text"):
                 sub = e.get("subtag") if e.get("subtag") in SUBTAGS else "evidence"
                 out.append({"doc_id": did, "tag": f"@el:paragraph/{sub}", "text": str(e["text"])[:200]})
-        if not out:  # fallback: 전체를 evidence 하나로
-            out.append({"doc_id": did, "tag": "@el:paragraph/evidence",
-                        "text": f"{d.get('title','')} {d.get('text','')}"[:200]})
+        if not out:
+            raise ValueError(f"empty semantic-tag output for {did}")
         return out
 
     flat = {}
@@ -286,7 +293,10 @@ def gen_reference_answers(corpus, chosen, query_gold, queries):
         ctx = "\n\n".join(ev)
         r = oai([{"role": "system", "content": "Answer the question using ONLY the evidence. 2-4 sentences, factual."},
                  {"role": "user", "content": f"Question: {qtext}\n\nEvidence:\n{ctx}"}], max_tokens=200)
-        return qid, r.strip()
+        value = r.strip()
+        if not value:
+            raise ValueError(f"empty reference answer for {qid}")
+        return qid, value
     return dict(parallel(one, chosen))
 
 
@@ -336,7 +346,8 @@ def run_dci_condition(retriever, corpus_dict, queries, query_gold, ref, step, au
 def run_hybrid_condition(corpus_list, corpus_dict, query_gold, queries, ref):
     pipe = HybridRAG(embedding_url=EMBED_URL, embedding_model=EMBED_MODEL,
                      reranker_url=RERANKER_URL, reranker_model=RERANKER_MODEL,
-                     llm_url=OAI_URL, llm_model=OAI_MODEL, api_key=OAI_KEY)
+                     llm_url=OAI_URL, llm_model=OAI_MODEL, api_key=OAI_KEY,
+                     query_instruction=QUERY_INSTRUCTION)
     pipe.index(corpus_list)
     judge = Judge(JUDGE_URL, JUDGE_MODEL, open(CONFIG / "judge_prompt.txt", encoding="utf-8").read(), api_key=OAI_KEY)
 
@@ -373,7 +384,6 @@ PART1_STEPS = [
     ("tags_only", {"tags": "A"}),
     ("prefix_only", {"prefix": True}),
     ("metadata_only", {"metadata": True}),
-    ("stack_tax", {"taxonomy": True}),
     ("stack_tax_tags", {"taxonomy": True, "tags": "A"}),
     ("stack_tax_tags_prefix", {"taxonomy": True, "tags": "A", "prefix": True}),
     ("stack_all", {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}),
@@ -388,6 +398,10 @@ def main():
     chosen, query_gold, subsets, union_ids = build_pilot_data(corpus, queries, gold)
     qids = list(query_gold.keys())
     print(f"[pilot] queries={len(qids)}, gold/query~{K_GOLD_PER_Q}, scales={SCALES}, union_docs={len(union_ids)}")
+    if PART1_SCALE not in subsets:
+        raise ValueError(
+            f"PILOT_PART1_SCALE={PART1_SCALE} must be one of PILOT_SCALES={SCALES}"
+        )
 
     print("[pilot] generating augmentations via gpt-4o-mini (union docs)...")
     aug = {}
@@ -396,6 +410,21 @@ def main():
     aug["metadata"] = gen_metadata(corpus, union_ids); print("  metadata done")
     aug["tags"] = gen_tags(corpus, union_ids); print("  tags done")
     ref = gen_reference_answers(corpus, chosen, query_gold, queries); print("  reference answers done")
+
+    artifact_path = OUT / f"{OUT_PREFIX.lower()}_artifacts.json"
+    artifact_path.write_text(json.dumps({
+        "seed": SEED,
+        "query_ids": qids,
+        "corpus_ids": union_ids,
+        "query_gold": query_gold,
+        "augmentations": aug,
+        "reference_answers": ref,
+        "models": {
+            "agent": OAI_MODEL,
+            "embedding": EMBED_MODEL,
+            "query_instruction": QUERY_INSTRUCTION,
+        },
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     queries_sub = {qid: queries[qid] for qid in qids}
 
@@ -479,16 +508,19 @@ def main():
     md = "\n".join(report)
     (OUT / f"{OUT_PREFIX}.md").write_text(md, encoding="utf-8")
     with open(OUT / f"{OUT_PREFIX.lower()}_raw.json", "w", encoding="utf-8") as f:
-        json.dump({"part1": {k: v["metrics"] for k, v in part1.items()},
-                   "part2": {k: v["metrics"] for k, v in part2.items()},
+        json.dump({"part1": part1,
+                   "part2": part2,
                    "part1_stat": pb, "config": {"n_queries": len(qids), "scales": SCALES,
-                   "k_gold": K_GOLD_PER_Q, "part1_scale": PART1_SCALE}}, f, ensure_ascii=False, indent=2)
+                   "k_gold": K_GOLD_PER_Q, "part1_scale": PART1_SCALE,
+                   "seed": SEED, "query_instruction": QUERY_INSTRUCTION}},
+                  f, ensure_ascii=False, indent=2)
 
     print("\n" + t1)
     print(f"\n[Part1 stat] Δ(stack_all-baseline) recall={pb['mean_diff']} CI=[{pb['ci_low']},{pb['ci_high']}] p={pb['p_value']}")
     print("\n" + t2)
     print("\n[Degradation]\n" + "\n".join(deg_lines))
-    print(f"\n[saved] {OUT/(OUT_PREFIX+'.md')}\n[saved] {OUT/(OUT_PREFIX.lower()+'_raw.json')}")
+    print(f"\n[saved] {OUT/(OUT_PREFIX+'.md')}\n[saved] {OUT/(OUT_PREFIX.lower()+'_raw.json')}"
+          f"\n[saved] {artifact_path}")
 
 
 if __name__ == "__main__":

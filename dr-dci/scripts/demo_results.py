@@ -185,7 +185,6 @@ def part1_demo():
         ("tags_only",             0.15),
         ("prefix_only",           0.10),
         ("metadata_only",         0.08),
-        ("stack_tax",             0.35),
         ("stack_tax_tags",        0.45),
         ("stack_tax_tags_prefix", 0.52),
         ("stack_all",             0.58),
@@ -269,7 +268,7 @@ def part2_demo():
 
     print("\n[해석]")
     print("  - Single Pull baseline이 추가되어 'agentic dynamic retrieval' 효과가 분리됨 (P0-2)")
-    print("    (DR-DCI vs Single-Pull = dynamic 효과, Single-Pull vs Hybrid = workspace 효과)")
+    print("    (synthetic 가정의 동작 예시이며 실제 인과 효과 판정이 아님)")
     print("  - 규모별 degradation rate를 세 시스템 모두에서 동일 정의로 비교")
     print("  - budget_exhausted_rate로 예산 소진이 성능 하락 원인인지 진단 가능 (P0-9)")
     return all_results

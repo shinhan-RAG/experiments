@@ -6,30 +6,9 @@
 - paired_bootstrap_test: 동일 query 단위 paired 비교 p-value
 """
 
-import math
 import random
 
-
-def recall_at_k(ranked_ids: list[str], gold_ids: set, k: int) -> float:
-    if not gold_ids:
-        return 0.0
-    top = set(ranked_ids[:k])
-    return len(top & set(gold_ids)) / len(gold_ids)
-
-
-def ndcg_at_k(ranked_ids: list[str], qrel_scores: dict, k: int) -> float:
-    """qrel_scores: {doc_id: graded relevance score(int)}"""
-    dcg = 0.0
-    for i, did in enumerate(ranked_ids[:k]):
-        rel = qrel_scores.get(did, 0)
-        if rel > 0:
-            dcg += (2 ** rel - 1) / math.log2(i + 2)
-
-    ideal = sorted(qrel_scores.values(), reverse=True)[:k]
-    idcg = sum((2 ** rel - 1) / math.log2(i + 2) for i, rel in enumerate(ideal) if rel > 0)
-    if idcg == 0:
-        return 0.0
-    return dcg / idcg
+from .retrieval_metrics import ndcg_at_k, recall_at_k
 
 
 def mrr_at_k(ranked_ids: list[str], gold_ids: set, k: int) -> float:
@@ -59,9 +38,11 @@ def bootstrap_ci(values: list[float], n_boot: int = 2000, alpha: float = 0.05,
 
 def paired_bootstrap_test(values_a: list[float], values_b: list[float],
                           n_boot: int = 2000, seed: int = 42) -> dict:
-    """동일 query 순서로 정렬된 두 시스템 값의 paired bootstrap.
+    """동일 query 순서로 정렬된 두 시스템 값의 paired 비교.
 
-    반환: 평균 차이(a-b), 95% CI, two-sided p-value 근사.
+    평균 차이의 CI는 paired bootstrap, p-value는 질의 단위 sign-flip
+    randomization으로 계산한다. bootstrap 분포를 그대로 귀무가설
+    p-value로 해석하지 않는다.
     """
     assert len(values_a) == len(values_b), "paired test requires equal-length aligned lists"
     diffs = [a - b for a, b in zip(values_a, values_b)]
@@ -77,11 +58,13 @@ def paired_bootstrap_test(values_a: list[float], values_b: list[float],
     boots.sort()
     lo = boots[int(0.025 * n_boot)]
     hi = boots[min(int(0.975 * n_boot), n_boot - 1)]
-    # two-sided p: 부호가 뒤집히는 bootstrap 비율의 2배 (근사)
-    if mean_diff >= 0:
-        p = 2 * sum(1 for b in boots if b <= 0) / n_boot
-    else:
-        p = 2 * sum(1 for b in boots if b >= 0) / n_boot
+    observed = abs(mean_diff)
+    extreme = 0
+    for _ in range(n_boot):
+        randomized = sum(d if rng.random() < 0.5 else -d for d in diffs) / n
+        if abs(randomized) >= observed - 1e-15:
+            extreme += 1
+    p = (extreme + 1) / (n_boot + 1)
     return {
         "mean_diff": round(mean_diff, 4),
         "ci_low": round(lo, 4),

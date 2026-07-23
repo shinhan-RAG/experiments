@@ -2,74 +2,9 @@
 Hybrid RAG Baseline: Dense + BM25 + RRF + Reranker + LLM
 """
 
-import json
-import math
-import re
 import numpy as np
 import requests
-from collections import defaultdict
-
-
-class BM25:
-    """Simple BM25 implementation"""
-
-    def __init__(self, k1: float = 1.5, b: float = 0.75):
-        self.k1 = k1
-        self.b = b
-        self.doc_freqs = defaultdict(int)
-        self.doc_lens = {}
-        self.avg_dl = 0
-        self.corpus_size = 0
-        self.index = {}  # doc_id → term_freqs
-
-    def fit(self, documents: list[dict]):
-        self.corpus_size = len(documents)
-        total_len = 0
-
-        for doc in documents:
-            doc_id = doc["_id"]
-            text = f"{doc.get('title', '')} {doc.get('text', '')}"
-            terms = self._tokenize(text)
-            self.doc_lens[doc_id] = len(terms)
-            total_len += len(terms)
-
-            term_freqs = defaultdict(int)
-            seen = set()
-            for term in terms:
-                term_freqs[term] += 1
-                if term not in seen:
-                    self.doc_freqs[term] += 1
-                    seen.add(term)
-
-            self.index[doc_id] = dict(term_freqs)
-
-        self.avg_dl = total_len / self.corpus_size if self.corpus_size else 1
-
-    def search(self, query: str, top_k: int = 20) -> list[dict]:
-        query_terms = self._tokenize(query)
-        scores = {}
-
-        for doc_id, term_freqs in self.index.items():
-            score = 0
-            dl = self.doc_lens[doc_id]
-
-            for term in query_terms:
-                if term not in term_freqs:
-                    continue
-                tf = term_freqs[term]
-                df = self.doc_freqs.get(term, 0)
-                idf = math.log((self.corpus_size - df + 0.5) / (df + 0.5) + 1)
-                tf_norm = (tf * (self.k1 + 1)) / (tf + self.k1 * (1 - self.b + self.b * dl / self.avg_dl))
-                score += idf * tf_norm
-
-            if score > 0:
-                scores[doc_id] = score
-
-        ranked = sorted(scores.items(), key=lambda x: -x[1])
-        return [{"doc_id": did, "score": s} for did, s in ranked[:top_k]]
-
-    def _tokenize(self, text: str) -> list[str]:
-        return re.findall(r'\w+', text.lower())
+from src.retrieval import BM25, embedding_cache_key, reciprocal_rank_fusion
 
 
 class HybridRAG:
@@ -77,7 +12,7 @@ class HybridRAG:
                  reranker_url: str, reranker_model: str,
                  llm_url: str, llm_model: str,
                  dense_top_k: int = 20, bm25_top_k: int = 20, rerank_top_k: int = 20,
-                 api_key: str = None):
+                 api_key: str = None, query_instruction: str = None):
         self.embedding_url = embedding_url
         self.api_key = api_key
         self.embedding_model = embedding_model
@@ -88,6 +23,7 @@ class HybridRAG:
         self.dense_top_k = dense_top_k
         self.bm25_top_k = bm25_top_k
         self.rerank_top_k = rerank_top_k
+        self.query_instruction = query_instruction
 
         self.bm25 = BM25()
         self.doc_ids: list[str] = []
@@ -96,7 +32,6 @@ class HybridRAG:
 
     def index(self, documents: list[dict]):
         """문서 인덱싱 (BM25 + Dense), 디스크 캐시 활용"""
-        import hashlib
         from pathlib import Path
         cache_dir = Path(__file__).parent.parent.parent / "cache" / "embeddings"
 
@@ -107,9 +42,13 @@ class HybridRAG:
         texts = [f"{doc.get('title', '')} {doc.get('text', '')}"[:4096] for doc in documents]
         ids = [doc["_id"] for doc in documents]
 
-        cache_key = hashlib.md5(
-            f"{sorted(ids)[:5]}_{len(ids)}_hybrid".encode()
-        ).hexdigest()[:12]
+        cache_key = embedding_cache_key(
+            namespace="hybrid",
+            model=self.embedding_model,
+            use_prefix=False,
+            doc_ids=ids,
+            texts=texts,
+        )
         cache_path = cache_dir / f"{cache_key}.npz"
 
         if cache_path.exists():
@@ -133,7 +72,8 @@ class HybridRAG:
     def run(self, query: str) -> dict:
         """쿼리 실행: Dense + BM25 → RRF → Rerank → LLM"""
         # Dense retrieval (vectorized)
-        query_emb = self._embed_batch([query])[0]
+        query_text = f"{self.query_instruction}{query}" if self.query_instruction else query
+        query_emb = self._embed_batch([query_text])[0]
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
         sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
@@ -144,10 +84,14 @@ class HybridRAG:
         bm25_results = self.bm25.search(query, self.bm25_top_k)
 
         # RRF fusion
-        fused = self._rrf_fusion(
-            [(did, s) for did, s in dense_results],
-            [(r["doc_id"], r["score"]) for r in bm25_results],
+        fused_rows = reciprocal_rank_fusion(
+            [
+                [{"doc_id": did, "score": score} for did, score in dense_results],
+                bm25_results,
+            ],
+            top_k=self.rerank_top_k * 2,
         )
+        fused = [(row["doc_id"], row["score"]) for row in fused_rows]
 
         # Reranking
         reranked = self._rerank(query, fused[:self.rerank_top_k * 2])
@@ -162,16 +106,6 @@ class HybridRAG:
             "retrieved_docs": [did for did, _ in top_docs],
             "pull_count": 1,  # hybrid는 항상 1회 검색
         }
-
-    def _rrf_fusion(self, list_a: list, list_b: list, k: int = 60) -> list:
-        """Reciprocal Rank Fusion"""
-        scores = defaultdict(float)
-        for rank, (doc_id, _) in enumerate(list_a):
-            scores[doc_id] += 1.0 / (k + rank + 1)
-        for rank, (doc_id, _) in enumerate(list_b):
-            scores[doc_id] += 1.0 / (k + rank + 1)
-        ranked = sorted(scores.items(), key=lambda x: -x[1])
-        return ranked
 
     def _rerank(self, query: str, candidates: list) -> list:
         """Reranker로 재정렬"""

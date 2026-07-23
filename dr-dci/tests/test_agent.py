@@ -77,6 +77,17 @@ def test_answer_rejected_before_min_pulls():
     assert "answer_rejected_min_pull_rule" in out["rule_violations"]
 
 
+def test_answer_is_not_accepted_on_last_turn_before_min_pulls():
+    script = [
+        [("pull", {"query": "q1"})],
+        [("answer", {"text": "must not escape the rule"})],
+    ]
+    out = make_agent(script, max_turns=2).run("question")
+    assert out["answer"] == ""
+    assert out["budget_exhausted"] is True
+    assert "answer_rejected_min_pull_rule" in out["rule_violations"]
+
+
 def test_duplicate_pull_queries_flagged():
     script = [
         [("pull", {"query": "same"})],

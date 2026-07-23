@@ -30,6 +30,9 @@ models:
 agent:
   max_turns: 10
   pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
   workspace_max_docs: 100
   min_pulls: 2          # harness가 강제하는 최소 pull 횟수 (P0-3)
   dci_tools: ["grep", "find", "read", "filter"]
@@ -90,12 +93,6 @@ parts:
         prefix: false
         metadata: true
       # 적층
-      - name: "stack_tax"
-        description: "Stacked: +Taxonomy"
-        taxonomy: true
-        tags: false
-        prefix: false
-        metadata: false
       - name: "stack_tax_tags"
         description: "Stacked: +Taxonomy +Tags"
         taxonomy: true
@@ -129,6 +126,17 @@ parts:
   part4_generalization:
     datasets: ["fiqa", "ko-strategyqa"]
     methods: ["dr-dci-final", "hybrid-rag"]
+
+  # Keep Peter's final augmentation stack fixed and change only the pull backend.
+  part5_pull_backend:
+    dataset: "trec-covid"
+    subset: 20000
+    backends: ["dense", "hybrid_rrf"]
+    fixed_augmentations:
+      taxonomy: true
+      tags: "A"
+      prefix: true
+      metadata: true
 
 # Evaluation
 evaluation:

@@ -18,6 +18,8 @@ import requests
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.retrieval import BM25, reciprocal_rank_fusion
+
 
 CACHE_DIR = Path(__file__).parent.parent.parent / "cache" / "embeddings"
 
@@ -36,8 +38,15 @@ class RetrieverConfig:
     taxonomy_boost: float = 1.5
     reranker_url: str = None
     reranker_model: str = None
-    query_instruction: str = DEFAULT_QUERY_INSTRUCTION  # None이면 instruction 미적용
-    embedding_api_key: str = None  # OpenAI 등 인증이 필요한 임베딩 endpoint용
+    # 모델별 instruction은 비교 arm 모두에 동일하게 주입해야 한다.
+    # 기본값을 숨은 GTE 전용 전처리로 두지 않는다.
+    query_instruction: str = None
+    api_key: str = None
+    embedding_api_key: str = None  # 기존 pilot 호환 별칭
+    backend: str = "dense"
+    bm25_top_k: int = 20
+    rrf_k: int = 60
+    max_top_k: int = 200
 
 
 class PullRetriever:
@@ -49,6 +58,7 @@ class PullRetriever:
         self.doc_taxonomy: dict[str, dict] = {}
         self.doc_titles: dict[str, str] = {}
         self.doc_raw_texts: dict[str, str] = {}  # for reranker
+        self.bm25 = BM25()
 
     def _cache_key(self, doc_ids: list[str], texts: list[str]) -> str:
         """모델/전처리/본문이 바뀌면 무효화되는 cache key (P2-3)."""
@@ -63,6 +73,12 @@ class PullRetriever:
 
     def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
         """문서를 인덱싱. 디스크 캐시 활용."""
+        if self.config.backend not in {"dense", "hybrid_rrf"}:
+            raise ValueError(f"unsupported retrieval backend: {self.config.backend}")
+        self.doc_embeddings.clear()
+        self.doc_taxonomy.clear()
+        self.doc_titles.clear()
+        self.doc_raw_texts.clear()
         doc_ids = []
         texts = []
         for doc in documents:
@@ -76,8 +92,12 @@ class PullRetriever:
             texts.append(embed_text[:4096])
             self.doc_titles[doc_id] = title
             self.doc_raw_texts[doc_id] = f"{title} {text}"[:4096]
+            self.doc_titles[doc_id] = title
             if taxonomy and doc_id in taxonomy:
                 self.doc_taxonomy[doc_id] = taxonomy[doc_id]
+
+        if self.config.backend == "hybrid_rrf":
+            self.bm25.fit(documents)
 
         cache_key = self._cache_key(doc_ids, texts)
         cache_path = CACHE_DIR / f"{cache_key}.npz"
@@ -116,6 +136,25 @@ class PullRetriever:
 
         결과: [{doc_id, score, rank}] — rank는 1부터.
         """
+        sims = self._dense_scores(query, taxonomy_filter)
+        order = np.argsort(-sims, kind="stable")
+        dense = [
+            {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": r + 1}
+            for r, i in enumerate(order)
+        ]
+        if self.config.backend == "dense":
+            return dense
+
+        lexical = self.bm25.search(query, self.config.bm25_top_k)
+        fused = reciprocal_rank_fusion(
+            [dense, lexical], k=self.config.rrf_k, top_k=len(dense)
+        )
+        for rank, row in enumerate(fused, 1):
+            row["rank"] = rank
+        return fused
+
+    def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
+        """질의와 문서 행렬의 cosine score를 계산한다."""
         query_text = query
         if self.config.query_instruction:
             query_text = f"{self.config.query_instruction}{query}"
@@ -130,12 +169,7 @@ class PullRetriever:
                 tax = self.doc_taxonomy.get(did, {})
                 if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
                     sims[i] *= self.config.taxonomy_boost
-
-        order = np.argsort(-sims)
-        return [
-            {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": r + 1}
-            for r, i in enumerate(order)
-        ]
+        return sims
 
     def pull(self, query: str, taxonomy_filter: dict = None,
              top_k: int = None, exclude_ids: set = None) -> dict:
@@ -152,15 +186,46 @@ class PullRetriever:
           "duplicates_excluded": m,             # top 후보 중 workspace 중복으로 건너뛴 수
         }
         """
-        k = top_k or self.config.top_k
+        k = self.config.top_k if top_k is None else top_k
+        if isinstance(k, bool) or not isinstance(k, int):
+            raise ValueError("top_k must be an integer")
+        if k < 1 or k > self.config.max_top_k:
+            raise ValueError(f"top_k must be between 1 and {self.config.max_top_k}")
         exclude_ids = exclude_ids or set()
 
-        ranked = self.rank_all(query, taxonomy_filter=taxonomy_filter)
+        # reranker가 있으면 여유 있게 후보를 모은 뒤 rerank
+        gather_k = k * 4 if self.config.reranker_url else k
+        if self.config.backend == "dense":
+            sims = self._dense_scores(query, taxonomy_filter)
+            order = np.argsort(-sims, kind="stable")
+            ranked = (
+                {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
+                for rank, i in enumerate(order, 1)
+            )
+        else:
+            # Agent pull은 전량 JSON을 만들지 않고, workspace 중복을
+            # backfill할 수 있는 범위만 fusion한다. 전체 순위가 필요한
+            # retrieval-only 평가는 rank_all()을 사용한다.
+            sims = self._dense_scores(query, taxonomy_filter)
+            budget = min(
+                len(self.doc_ids),
+                gather_k + len(exclude_ids) + self.config.bm25_top_k,
+            )
+            dense_order = np.argsort(-sims, kind="stable")[:budget]
+            dense = [
+                {"doc_id": self.doc_ids[i], "score": float(sims[i])}
+                for i in dense_order
+            ]
+            lexical = self.bm25.search(query, max(self.config.bm25_top_k, budget))
+            fused = reciprocal_rank_fusion(
+                [dense, lexical], k=self.config.rrf_k, top_k=budget
+            )
+            for rank, row in enumerate(fused, 1):
+                row["rank"] = rank
+            ranked = iter(fused)
 
         results = []
         duplicates = 0
-        # reranker가 있으면 여유 있게 후보를 모은 뒤 rerank
-        gather_k = k * 4 if self.config.reranker_url else k
         for item in ranked:
             if item["doc_id"] in exclude_ids:
                 # 원래 top 구간에서의 중복만 카운트 (backfill 이전 기준)
@@ -206,8 +271,9 @@ class PullRetriever:
         """vLLM embedding endpoint 호출 (batch=256)"""
         all_embeddings = []
         headers = {"Content-Type": "application/json"}
-        if self.config.embedding_api_key:
-            headers["Authorization"] = f"Bearer {self.config.embedding_api_key}"
+        api_key = self.config.api_key or self.config.embedding_api_key
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             payload = {"model": self.config.embedding_model, "input": batch}
