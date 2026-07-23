@@ -1,0 +1,740 @@
+{
+  "schema_version": "dr-dci.new-dataset-eda.v1",
+  "generated_at_utc": "2026-07-23T05:59:39.099542+00:00",
+  "network_or_model_calls": false,
+  "datasets": [
+    {
+      "dataset_key": "law_case",
+      "integrity_gate": {
+        "status": "blocked_for_full_dataset_eda",
+        "reason": "one expected Training labelled ZIP has no central directory; the outer archive is valid, but the dataset is not an immutable, fully extractable corpus",
+        "outer_archive": {
+          "path": "/Users/donggyu/Documents/논문/신한라이프/115.법률-규정 텍스트 분석 데이터_고도화_상황에 따른 판례 데이터.zip",
+          "size_bytes": 533538608,
+          "sha256": "c343c29715d8d586b81f6f7a9ab2a35cedbc9f2b38a76b3c5c19cea296f683d8",
+          "file_type": "zip archive (validated by Python zipfile)",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "central_directory_present": true,
+          "central_directory_entries": 65,
+          "regular_file_entries_expected": 55,
+          "archive_test": {
+            "status": "passed",
+            "bad_member": null
+          },
+          "regular_file_entries_verified_readable": 55
+        },
+        "nested_zip_count": 55,
+        "nested_zip_passed": 54,
+        "nested_zip_failed_or_noncanonical": 1,
+        "required_redownload_or_replacement": [
+          {
+            "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_01.민사.zip",
+            "sha256_of_received_member": "9726f1fc8f987e238c2d6b6bfd339fb8a373611ff0045bb202406b34b3e214fc",
+            "failure": "File is not a zip file"
+          }
+        ]
+      },
+      "numeric_scope": {
+        "status": "not_performed",
+        "reason": "numeric inventory, duplicate rates, length distributions, and query counts are withheld because the supplied dataset is incomplete"
+      },
+      "schema_reference_only": {
+        "scope": "field presence observed in canonical readable components; not dataset-level counts",
+        "file_formats": {
+          "outer": "zip",
+          "canonical_nested": "zip",
+          "leaf": "json"
+        },
+        "splits_observed": [
+          "Training",
+          "Validation",
+          "Other",
+          "Sublabel"
+        ],
+        "source_case_top_level_fields": [
+          "법원명",
+          "법원종류코드",
+          "사건명",
+          "사건번호",
+          "사건종류명",
+          "사건종류코드",
+          "선고",
+          "선고일자",
+          "의결일자",
+          "이유",
+          "재결구분명",
+          "재결구분코드",
+          "재결요지",
+          "재결청",
+          "주문",
+          "참조조문",
+          "참조판례",
+          "처분일자",
+          "처분청",
+          "청구취지",
+          "판결요지",
+          "판결유형",
+          "판례내용",
+          "판례상세링크",
+          "판례일련번호",
+          "판시사항",
+          "행정심판례상세링크",
+          "행정심판재결례일련번호"
+        ],
+        "label_record_top_level_fields": [
+          "Class_info",
+          "Reference_info",
+          "Summary",
+          "info",
+          "jdgmn",
+          "jdgmnInfo",
+          "keyword_tagg"
+        ],
+        "qa_record_top_level_fields": [
+          "answer",
+          "commentary",
+          "id",
+          "keyword",
+          "question",
+          "reference_court_case",
+          "reference_general",
+          "reference_rules",
+          "title"
+        ],
+        "field_descriptions": {
+          "source_case": {
+            "판례일련번호": "source case serial identifier",
+            "사건번호": "case number; candidate linkage only, not a qrel",
+            "사건명": "case title",
+            "판시사항/판결요지/판례내용": "legal decision body sections",
+            "참조조문/참조판례": "cited statutes and cases"
+          },
+          "label_record": {
+            "info": "case metadata including id and caseNoID",
+            "jdgmnInfo": "question/answer-style objects",
+            "Summary": "case summary objects",
+            "keyword_tagg": "keyword objects",
+            "Class_info": "class_name and instance_name taxonomy candidates"
+          },
+          "qa_record": {
+            "id": "QA record id",
+            "question/answer/commentary": "query-like and answer text",
+            "reference_rules/reference_court_case": "reference metadata"
+          }
+        }
+      },
+      "search_evaluation": {
+        "status": "not_certified_due_to_integrity_gate",
+        "query_like_fields_observed": [
+          "jdgmnInfo.question",
+          "question"
+        ],
+        "explicit_qrels_or_gold_mapping_observed": false,
+        "candidate_link_field": "info.caseNoID ↔ source 사건번호",
+        "judgment": "do not infer qrels from case-number overlap. A complete replacement archive and an explicit qid-to-gold contract are both required before retrieval evaluation.",
+        "leakage_risk": "high if label summaries, answers, or questions are indexed as evidence for the same cases"
+      },
+      "taxonomy_and_structure": {
+        "candidate_taxonomy_fields": [
+          "Class_info.class_name",
+          "Class_info.instance_name",
+          "keyword_tagg.keyword",
+          "Reference_info.reference_rules",
+          "사건종류명"
+        ],
+        "semantic_structure": [
+          "판시사항",
+          "판결요지",
+          "참조조문",
+          "참조판례",
+          "판례내용",
+          "Summary"
+        ],
+        "label_circularity_note": "taxonomy/category labels must remain separate from qrel construction and must not be indexed as gold evidence for their own questions"
+      },
+      "license_and_sensitive_data": {
+        "license_artifact_found": false,
+        "license_status": "unknown; obtain provider license and permitted-use terms",
+        "sensitive_data_note": "legal judgments and QA may contain names, addresses, or case-specific facts; screening has not established safe handling status"
+      }
+    },
+    {
+      "dataset_key": "medical_legal_books",
+      "integrity_gate": {
+        "status": "passed",
+        "outer_archive": {
+          "path": "/Users/donggyu/Documents/논문/신한라이프/154.의료, 법률 전문 서적 말뭉치.zip",
+          "size_bytes": 723086416,
+          "sha256": "697f32d7901982520dfb8ea03c0a92b8509f9670c6b66af070191ecaee94031b",
+          "file_type": "zip archive (validated by Python zipfile)",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "central_directory_present": true,
+          "central_directory_entries": 15,
+          "regular_file_entries_expected": 8,
+          "archive_test": {
+            "status": "passed",
+            "bad_member": null
+          },
+          "regular_file_entries_verified_readable": 8
+        },
+        "nested_zip_count": 8,
+        "nested_zip_passed": 8,
+        "nested_zip_failed_or_noncanonical": 0,
+        "safe_virtual_extraction": {
+          "expected_outer_regular_files": 8,
+          "verified_outer_regular_files": 8,
+          "note": "all nested ZIPs are canonical and CRC-tested"
+        }
+      },
+      "numeric_scope": {
+        "includes": "all 8 canonical nested ZIP components",
+        "excludes": []
+      },
+      "inventory": {
+        "file_formats": {
+          "outer": "zip",
+          "canonical_nested": "zip",
+          "source_leaf": "txt",
+          "label_leaf": "json"
+        },
+        "splits_observed": [
+          "Training",
+          "Validation"
+        ],
+        "source_documents": {
+          "documents": 113862,
+          "unique_ids": 113862,
+          "duplicate_id_documents": 0,
+          "duplicate_content_documents": 10,
+          "duplicate_content_document_rate": 8.8e-05,
+          "empty_documents": 0,
+          "empty_document_rate": 0.0,
+          "title_present_documents": 0,
+          "character_length": {
+            "count": 113862,
+            "min": 39,
+            "mean": 3551.3049,
+            "p25": 2128.0,
+            "p50": 2597.0,
+            "p75": 3875.0,
+            "p90": 6748.0,
+            "p95": 8100.0,
+            "p99": 13057.17,
+            "max": 133165
+          },
+          "heuristic_token_length": {
+            "count": 113862,
+            "min": 8,
+            "mean": 824.1279,
+            "p25": 482.0,
+            "p50": 583.0,
+            "p75": 865.0,
+            "p90": 1656.0,
+            "p95": 1987.0,
+            "p99": 2968.39,
+            "max": 31171
+          },
+          "paragraph_count": {
+            "count": 113862,
+            "min": 1,
+            "mean": 1.0,
+            "p25": 1.0,
+            "p50": 1.0,
+            "p75": 1.0,
+            "p90": 1.0,
+            "p95": 1.0,
+            "p99": 1.0,
+            "max": 1
+          },
+          "sensitive_pattern_document_hits": {
+            "phone_like": 4034,
+            "email": 23,
+            "resident_registration_like": 16
+          }
+        },
+        "source_documents_by_split_domain": {
+          "Training_legal": {
+            "documents": 63704,
+            "unique_ids": 63704,
+            "duplicate_id_documents": 0,
+            "duplicate_content_documents": 8,
+            "duplicate_content_document_rate": 0.000126,
+            "empty_documents": 0,
+            "empty_document_rate": 0.0,
+            "title_present_documents": 0,
+            "character_length": {
+              "count": 63704,
+              "min": 51,
+              "mean": 2980.3718,
+              "p25": 2040.0,
+              "p50": 2359.0,
+              "p75": 3179.0,
+              "p90": 3879.7,
+              "p95": 5873.0,
+              "p99": 14553.52,
+              "max": 133165
+            },
+            "heuristic_token_length": {
+              "count": 63704,
+              "min": 11,
+              "mean": 677.8725,
+              "p25": 463.0,
+              "p50": 534.0,
+              "p75": 716.0,
+              "p90": 882.0,
+              "p95": 1361.0,
+              "p99": 3331.82,
+              "max": 31171
+            },
+            "paragraph_count": {
+              "count": 63704,
+              "min": 1,
+              "mean": 1.0,
+              "p25": 1.0,
+              "p50": 1.0,
+              "p75": 1.0,
+              "p90": 1.0,
+              "p95": 1.0,
+              "p99": 1.0,
+              "max": 1
+            },
+            "sensitive_pattern_document_hits": {
+              "phone_like": 1368,
+              "email": 14,
+              "resident_registration_like": 13
+            }
+          },
+          "Training_medical": {
+            "documents": 37507,
+            "unique_ids": 37507,
+            "duplicate_id_documents": 0,
+            "duplicate_content_documents": 0,
+            "duplicate_content_document_rate": 0.0,
+            "empty_documents": 0,
+            "empty_document_rate": 0.0,
+            "title_present_documents": 0,
+            "character_length": {
+              "count": 37507,
+              "min": 56,
+              "mean": 4527.1339,
+              "p25": 2418.0,
+              "p50": 3903.0,
+              "p75": 6224.0,
+              "p90": 7868.0,
+              "p95": 8543.4,
+              "p99": 11668.94,
+              "max": 105216
+            },
+            "heuristic_token_length": {
+              "count": 37507,
+              "min": 15,
+              "mean": 1073.8921,
+              "p25": 539.0,
+              "p50": 857.0,
+              "p75": 1545.0,
+              "p90": 1943.0,
+              "p95": 2126.0,
+              "p99": 2647.94,
+              "max": 20227
+            },
+            "paragraph_count": {
+              "count": 37507,
+              "min": 1,
+              "mean": 1.0,
+              "p25": 1.0,
+              "p50": 1.0,
+              "p75": 1.0,
+              "p90": 1.0,
+              "p95": 1.0,
+              "p99": 1.0,
+              "max": 1
+            },
+            "sensitive_pattern_document_hits": {
+              "phone_like": 2184,
+              "email": 8,
+              "resident_registration_like": 2
+            }
+          },
+          "Validation_legal": {
+            "documents": 7963,
+            "unique_ids": 7963,
+            "duplicate_id_documents": 0,
+            "duplicate_content_documents": 0,
+            "duplicate_content_document_rate": 0.0,
+            "empty_documents": 0,
+            "empty_document_rate": 0.0,
+            "title_present_documents": 0,
+            "character_length": {
+              "count": 7963,
+              "min": 39,
+              "mean": 2939.5107,
+              "p25": 2039.0,
+              "p50": 2358.0,
+              "p75": 3178.0,
+              "p90": 3884.0,
+              "p95": 5603.2,
+              "p99": 14438.92,
+              "max": 76751
+            },
+            "heuristic_token_length": {
+              "count": 7963,
+              "min": 8,
+              "mean": 667.9804,
+              "p25": 463.0,
+              "p50": 535.0,
+              "p75": 711.0,
+              "p90": 875.8,
+              "p95": 1290.8,
+              "p99": 3291.54,
+              "max": 18182
+            },
+            "paragraph_count": {
+              "count": 7963,
+              "min": 1,
+              "mean": 1.0,
+              "p25": 1.0,
+              "p50": 1.0,
+              "p75": 1.0,
+              "p90": 1.0,
+              "p95": 1.0,
+              "p99": 1.0,
+              "max": 1
+            },
+            "sensitive_pattern_document_hits": {
+              "phone_like": 181,
+              "email": 1
+            }
+          },
+          "Validation_medical": {
+            "documents": 4688,
+            "unique_ids": 4688,
+            "duplicate_id_documents": 0,
+            "duplicate_content_documents": 0,
+            "duplicate_content_document_rate": 0.0,
+            "empty_documents": 0,
+            "empty_document_rate": 0.0,
+            "title_present_documents": 0,
+            "character_length": {
+              "count": 4688,
+              "min": 50,
+              "mean": 4541.4981,
+              "p25": 2409.0,
+              "p50": 3887.5,
+              "p75": 6257.5,
+              "p90": 7925.3,
+              "p95": 8546.65,
+              "p99": 11820.9,
+              "max": 51579
+            },
+            "heuristic_token_length": {
+              "count": 4688,
+              "min": 14,
+              "mean": 1078.5113,
+              "p25": 539.0,
+              "p50": 853.5,
+              "p75": 1552.0,
+              "p90": 1967.0,
+              "p95": 2152.3,
+              "p99": 2659.24,
+              "max": 11377
+            },
+            "paragraph_count": {
+              "count": 4688,
+              "min": 1,
+              "mean": 1.0,
+              "p25": 1.0,
+              "p50": 1.0,
+              "p75": 1.0,
+              "p90": 1.0,
+              "p95": 1.0,
+              "p99": 1.0,
+              "max": 1
+            },
+            "sensitive_pattern_document_hits": {
+              "phone_like": 301,
+              "resident_registration_like": 1
+            }
+          }
+        },
+        "source_documents_by_domain": {
+          "medical": 42195,
+          "legal": 71667
+        },
+        "label_records_by_split_domain": {
+          "Training_legal": 63704,
+          "Training_medical": 37507,
+          "Validation_legal": 7963,
+          "Validation_medical": 4688
+        },
+        "label_totalcount_declared": {
+          "Training_medical": 37507,
+          "Training_legal": 63704,
+          "Validation_medical": 4688,
+          "Validation_legal": 7963
+        },
+        "label_source_id_matches": 113862,
+        "label_source_exact_text_matches": 101024,
+        "parse_failures": {},
+        "category_distribution": {
+          "medical": {
+            "내과학": 6237,
+            "재활의학/물리치료학/작업치료학": 5190,
+            "방사선과학": 3452,
+            "약학/약리학": 3450,
+            "면역학/병리학/임상병리학": 2228,
+            "응급의학": 2057,
+            "이비인후과학": 1894,
+            "치의학": 1815,
+            "정형외과학": 1669,
+            "신경외과학": 1504,
+            "산부인과학": 1482,
+            "일반외과학": 1413,
+            "예방의학/직업환경의학": 1303,
+            "미생물학/기생충학": 1238,
+            "비뇨기과학": 987,
+            "소아과학": 845,
+            "안과학/임상안광학": 755,
+            "신경과학": 685,
+            "생화학": 607,
+            "성형외과학": 568,
+            "해부학": 561,
+            "정신과학": 452,
+            "가정의학": 401,
+            "마취과학": 385,
+            "흉부외과학": 377,
+            "생리학": 358,
+            "피부과학": 275,
+            "간호학": 7
+          },
+          "legal": {
+            "민법일반": 11590,
+            "헌법": 10938,
+            "형법/형사소송법등": 10527,
+            "상사법등": 10014,
+            "행정법": 8582,
+            "민사소송법": 4099,
+            "법학일반": 3807,
+            "지적재산권법": 2883,
+            "경제법": 1386,
+            "토지/부동산/주택/농지법": 1185,
+            "국제법(사법)": 1119,
+            "의료/보건법": 1091,
+            "조세/세법": 902,
+            "노동법등": 652,
+            "해사/해상/해상운송/해상보험법": 625,
+            "친족/상속법": 619,
+            "소비자/보호법": 497,
+            "지방자치법": 361,
+            "환경/교통법": 358,
+            "국제법(공법)": 283,
+            "교육법": 134,
+            "인권/국제인권법": 9,
+            "중재법": 6
+          }
+        },
+        "top_keywords": {
+          "대법원": 10550,
+          "헌법": 9627,
+          "민법": 4950,
+          "상법": 3357,
+          "투여": 3191,
+          "소유권": 2707,
+          "신경": 2598,
+          "형법": 2578,
+          "기본권": 2381,
+          "지방자치단체": 2050,
+          "헌법재판소": 1955,
+          "국회": 1931,
+          "관절": 1847,
+          "유전자": 1631,
+          "근육": 1531,
+          "손상": 1521,
+          "초음파": 1494,
+          "재산권": 1378,
+          "자본시장법": 1364,
+          "피부": 1287,
+          "의회": 1240,
+          "통증": 1230,
+          "치아": 1219,
+          "금융위원회": 1219,
+          "손해배상책임": 1190,
+          "주사": 1170,
+          "행정소송": 1170,
+          "종양": 1167,
+          "헌법소원": 1160,
+          "척추": 1099,
+          "행정처분": 1085,
+          "의결권": 1016,
+          "기각": 1011,
+          "저당권": 1008,
+          "머리": 1000,
+          "임플란트": 993,
+          "기도": 971,
+          "특허법": 962,
+          "변론": 928,
+          "혈청": 896,
+          "혈액": 893,
+          "절개": 886,
+          "형사소송법": 881,
+          "마사지": 872,
+          "특허권": 830,
+          "접종": 818,
+          "민사소송": 813,
+          "신장": 788,
+          "손가락": 765,
+          "치과": 759,
+          "민사소송법": 747,
+          "원심판결을 파기": 741,
+          "심장": 734,
+          "에탄올": 705,
+          "소멸시효": 695,
+          "손해배상청구": 668,
+          "백신": 659,
+          "동맥": 658,
+          "항생제": 651,
+          "골절": 624,
+          "부작위": 612,
+          "공정거래위원회": 607,
+          "이전등기": 606,
+          "심판청구": 599,
+          "스크류": 583,
+          "의료법": 582,
+          "법원": 576,
+          "취소소송": 567,
+          "유가증권": 566,
+          "출혈": 564,
+          "행정소송법": 527,
+          "평등권": 525,
+          "정맥": 505,
+          "염증": 505,
+          "지방법원": 502,
+          "지압": 496,
+          "행정절차법": 493,
+          "절제": 492,
+          "전원합의체": 490,
+          "재량권": 487,
+          "전립선암": 479,
+          "배임죄": 475,
+          "얼굴": 470,
+          "소를 제기": 468,
+          "당뇨병": 467,
+          "청구인": 463,
+          "치조골": 457,
+          "손해배상청구권": 454,
+          "신의칙": 453,
+          "형사소송": 450,
+          "어깨": 447,
+          "대리권": 447,
+          "항고소송": 446,
+          "공정거래법": 438,
+          "대장": 435,
+          "다리": 431,
+          "행정심판": 431,
+          "카테터": 428,
+          "림프": 427,
+          "지방자치법": 427
+        },
+        "entity_type_distribution": {
+          "CV_LAW": 1218016,
+          "TM_CELL_TISSUE_ORGAN": 920363,
+          "TMM_DISEASE": 616414,
+          "TML_PROVISION": 457864,
+          "TML_PARTY": 422541,
+          "TR_MED_PROCEDURE": 358464,
+          "OGG_LAW": 337162,
+          "TMM_SYMPTOM": 273993,
+          "AM_PART": 242879,
+          "TMM_DRUG": 214668,
+          "TML_PROCEDURAL_ACTS": 188470,
+          "TML_CASE": 168026,
+          "AFW_MED_DEVICE": 162275,
+          "TR_MED_MEASURE": 151648,
+          "TML_LITIGATION": 149273,
+          "TML_JUDGMENT": 139575,
+          "FD_MEDICINE": 39882,
+          "CV_TAX": 29775,
+          "EV_OTHERS": 11235,
+          "TR_MED_OBSERVATION": 10964,
+          "OGG_MEDICINE": 10225
+        },
+        "label_schema": {
+          "book_id": {
+            "string": 113862
+          },
+          "category": {
+            "string": 113862
+          },
+          "popularity": {
+            "number": 113862
+          },
+          "keyword": {
+            "array": 113862
+          },
+          "text": {
+            "string": 113862
+          },
+          "word_segment": {
+            "number": 113862
+          },
+          "publication_ymd": {
+            "string": 113862
+          },
+          "NE": {
+            "array": 113862
+          }
+        },
+        "source_leaf_content_hash_aggregate_sha256": "3f9ec23012f263a7f1b3a8b683dd5351dcfe2aaa49c06be0701d34b44abffb31",
+        "source_leaf_files_included": 113862
+      },
+      "search_evaluation": {
+        "query_provided": false,
+        "question_field_records": 0,
+        "qrels_provided": false,
+        "gold_document_connection_provided": false,
+        "relevance_grades_provided": false,
+        "judgment": "corpus candidate only; no provided query/gold evaluation contract",
+        "leakage_risk": "high if label JSON is indexed together with its matched source TXT because label records reproduce the source text"
+      },
+      "taxonomy_and_structure": {
+        "candidate_taxonomy_fields": [
+          "category",
+          "keyword",
+          "NE.type",
+          "popularity"
+        ],
+        "semantic_structure": [
+          "NE entity spans with begin/end offsets",
+          "word_segment"
+        ],
+        "field_descriptions": {
+          "book_id": "matches the source TXT filename stem; document identifier, not a query id",
+          "category": "provider category; candidate taxonomy field",
+          "keyword": "provider keyword array; candidate semantic tag field",
+          "NE": "entity objects with entity, type, begin, and end offsets",
+          "text": "label-side text; do not index alongside matching source TXT",
+          "word_segment": "provider numeric segmentation field",
+          "publication_ymd": "publication date string",
+          "popularity": "provider numeric metadata"
+        },
+        "note": "labels can support a taxonomy/semantic-tag treatment only after a separate, non-circular retrieval evaluation contract exists"
+      },
+      "license_and_sensitive_data": {
+        "license_artifact_found": false,
+        "license_status": "unknown; obtain provider license and permitted-use terms",
+        "sensitive_data_note": "medical and legal text can contain personal or sensitive facts; regex hits in the source-document report are screening only"
+      }
+    }
+  ]
+}

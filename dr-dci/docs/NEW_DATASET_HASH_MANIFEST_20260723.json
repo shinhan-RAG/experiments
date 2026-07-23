@@ -1,0 +1,1512 @@
+{
+  "schema_version": "dr-dci.new-dataset-eda.v1",
+  "generated_at_utc": "2026-07-23T05:59:39.099542+00:00",
+  "archives": {
+    "law_case": {
+      "outer_archive": {
+        "path": "/Users/donggyu/Documents/논문/신한라이프/115.법률-규정 텍스트 분석 데이터_고도화_상황에 따른 판례 데이터.zip",
+        "size_bytes": 533538608,
+        "sha256": "c343c29715d8d586b81f6f7a9ab2a35cedbc9f2b38a76b3c5c19cea296f683d8",
+        "file_type": "zip archive (validated by Python zipfile)",
+        "signature": {
+          "local_file_header_signature": "504b0304",
+          "has_local_file_header": true,
+          "has_eocd_signature": true,
+          "has_zip64_eocd_signature": false,
+          "has_zip64_locator_signature": false
+        },
+        "central_directory_present": true,
+        "central_directory_entries": 65,
+        "regular_file_entries_expected": 55,
+        "archive_test": {
+          "status": "passed",
+          "bad_member": null
+        },
+        "regular_file_entries_verified_readable": 55
+      },
+      "nested_members": [
+        {
+          "outer_index": 3,
+          "logical_path": "3.개방데이터/1.데이터/Other/Other.zip",
+          "compressed_size": 15682417,
+          "uncompressed_size": 17958801,
+          "sha256": "ddb1155388f6db4f30826888d25218c7af7502d3fd279f90919b4f10dbab9766",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 20160,
+          "inner_member_extensions": {
+            ".json": 20160
+          },
+          "inner_uncompressed_bytes": 37114380,
+          "eda_role": "qa",
+          "eda_parsed_regular_members": 20160
+        },
+        {
+          "outer_index": 5,
+          "logical_path": "3.개방데이터/1.데이터/Sublabel/SbL.zip",
+          "compressed_size": 245088022,
+          "uncompressed_size": 253074257,
+          "sha256": "df283163333c28f32b0ed6e06e08a01ed1471899ba6d313696c63684ca2aec36",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": true,
+            "has_zip64_locator_signature": true
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 71245,
+          "inner_member_extensions": {
+            ".json": 71245
+          },
+          "inner_uncompressed_bytes": 789958199,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 71245
+        },
+        {
+          "outer_index": 8,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_01.민사.zip",
+          "compressed_size": 44769160,
+          "uncompressed_size": 45851351,
+          "sha256": "bc4d9c3689efa1708bde6b410368b5bfd78f474109844544b7f639b871101047",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 13582,
+          "inner_member_extensions": {
+            ".json": 13582
+          },
+          "inner_uncompressed_bytes": 145420960,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 13582
+        },
+        {
+          "outer_index": 9,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_02.가사.zip",
+          "compressed_size": 5273994,
+          "uncompressed_size": 5397683,
+          "sha256": "ace756d5b150bf797c76e5cca485053440b073b8b4f6cc7a96c2a827e101ba96",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1655,
+          "inner_member_extensions": {
+            ".json": 1655
+          },
+          "inner_uncompressed_bytes": 15799678,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1655
+        },
+        {
+          "outer_index": 10,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_03.형사A(생활형).zip",
+          "compressed_size": 15271039,
+          "uncompressed_size": 15647060,
+          "sha256": "7565db11905b7f638334f623b38bb9abe8d131651a31d2c718c209b9167e81d1",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 4807,
+          "inner_member_extensions": {
+            ".json": 4807
+          },
+          "inner_uncompressed_bytes": 47628324,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 4807
+        },
+        {
+          "outer_index": 11,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_04.형사B(일반형).zip",
+          "compressed_size": 17955731,
+          "uncompressed_size": 18383923,
+          "sha256": "99ee03871c111155aea0b1bc51d8973f7d5eac6785138dacc1e024829b199de3",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 5476,
+          "inner_member_extensions": {
+            ".json": 5476
+          },
+          "inner_uncompressed_bytes": 58796489,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 5476
+        },
+        {
+          "outer_index": 12,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_05.행정.zip",
+          "compressed_size": 19303298,
+          "uncompressed_size": 19740571,
+          "sha256": "f14e3378583946018fa9500628c41a7c2cd202b64c46ddb411c29e321b01245a",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 5588,
+          "inner_member_extensions": {
+            ".json": 5588
+          },
+          "inner_uncompressed_bytes": 64207968,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 5588
+        },
+        {
+          "outer_index": 13,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_06.기업.zip",
+          "compressed_size": 7303862,
+          "uncompressed_size": 7410775,
+          "sha256": "29bfa36baf1acd1291441696e88a50d1f6a30e888e668d91ecc0207dbbd79a81",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1526,
+          "inner_member_extensions": {
+            ".json": 1526
+          },
+          "inner_uncompressed_bytes": 24862186,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1526
+        },
+        {
+          "outer_index": 14,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_07.근로자.zip",
+          "compressed_size": 5888392,
+          "uncompressed_size": 6000160,
+          "sha256": "e2d7dde9ab8c1693152df174852c272ac23c97c68cdfc90abfb2ccc222d2002c",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1532,
+          "inner_member_extensions": {
+            ".json": 1532
+          },
+          "inner_uncompressed_bytes": 19262388,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1532
+        },
+        {
+          "outer_index": 15,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_08.특허.저작권.zip",
+          "compressed_size": 7010191,
+          "uncompressed_size": 7195228,
+          "sha256": "2f65d3f73149b9488dfb1dc5f5f19fa238511db51d9cfbbc3f75ca65f62a8718",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2402,
+          "inner_member_extensions": {
+            ".json": 2402
+          },
+          "inner_uncompressed_bytes": 22370796,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 2402
+        },
+        {
+          "outer_index": 16,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_09.금융조세.zip",
+          "compressed_size": 7269757,
+          "uncompressed_size": 7457614,
+          "sha256": "25f1a1749087598137dafb6c9f24d5afca512d0f5de93def9ddb1173d4aa9efd",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2406,
+          "inner_member_extensions": {
+            ".json": 2406
+          },
+          "inner_uncompressed_bytes": 23585658,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 2406
+        },
+        {
+          "outer_index": 17,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_1.판례_10.개인정보.ICT.zip",
+          "compressed_size": 3307265,
+          "uncompressed_size": 3380622,
+          "sha256": "a8ad4aa1747e196d67ee93c00def6d83a8ee4d5adbd0c26e10cc213cd86d4fd6",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 945,
+          "inner_member_extensions": {
+            ".json": 945
+          },
+          "inner_uncompressed_bytes": 10373027,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 945
+        },
+        {
+          "outer_index": 18,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_01.민사.zip",
+          "compressed_size": 157422,
+          "uncompressed_size": 160267,
+          "sha256": "80ce21525495e6c2776574ad017a4a267e0949f6afaf81f2759a895f6ac5f037",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 41,
+          "inner_member_extensions": {
+            ".json": 41
+          },
+          "inner_uncompressed_bytes": 519786,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 41
+        },
+        {
+          "outer_index": 19,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_04.형사B(일반형).zip",
+          "compressed_size": 34225,
+          "uncompressed_size": 35390,
+          "sha256": "6e310edd9a86d150ccc009aaa0675846374ecc4a6f3760e65994a04669e45ec1",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 15,
+          "inner_member_extensions": {
+            ".json": 15
+          },
+          "inner_uncompressed_bytes": 97447,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 15
+        },
+        {
+          "outer_index": 20,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_05.행정.zip",
+          "compressed_size": 33816892,
+          "uncompressed_size": 35487552,
+          "sha256": "399edc4e6723f4f69a5fddc32a07571c0d0396898c9460f86a3a32226b99ceb7",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 11482,
+          "inner_member_extensions": {
+            ".json": 11482
+          },
+          "inner_uncompressed_bytes": 103211860,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 11482
+        },
+        {
+          "outer_index": 21,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_06.기업.zip",
+          "compressed_size": 1154470,
+          "uncompressed_size": 1167291,
+          "sha256": "f922adc091596bbca1cf9d77ce75cfe806571f56e456931a1fbacd4f3d72ffe7",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 186,
+          "inner_member_extensions": {
+            ".json": 186
+          },
+          "inner_uncompressed_bytes": 4134268,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 186
+        },
+        {
+          "outer_index": 22,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_07.근로자.zip",
+          "compressed_size": 3777313,
+          "uncompressed_size": 3865245,
+          "sha256": "b825217d6cb86cbca98d6b5072529132975f602244b155b14beb167db784de6e",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 876,
+          "inner_member_extensions": {
+            ".json": 876
+          },
+          "inner_uncompressed_bytes": 12550336,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 876
+        },
+        {
+          "outer_index": 23,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_08.특허.저작권.zip",
+          "compressed_size": 16227,
+          "uncompressed_size": 16558,
+          "sha256": "79e2f41e42c378f58966adccee7bb73cdf0c31f09d3188f8db4a5f28c7c0cc12",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 5,
+          "inner_member_extensions": {
+            ".json": 5
+          },
+          "inner_uncompressed_bytes": 50062,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 5
+        },
+        {
+          "outer_index": 24,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_09.금융조세.zip",
+          "compressed_size": 100738,
+          "uncompressed_size": 102755,
+          "sha256": "f1fda9b73416fd006020211ef6172c0c008e5b8c17676bf225c8e85bc688fc4d",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 27,
+          "inner_member_extensions": {
+            ".json": 27
+          },
+          "inner_uncompressed_bytes": 331643,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 27
+        },
+        {
+          "outer_index": 25,
+          "logical_path": "3.개방데이터/1.데이터/Training/01.원천데이터/TS_2.심결례_10.개인정보.ICT.zip",
+          "compressed_size": 1924460,
+          "uncompressed_size": 1987174,
+          "sha256": "29e40f13682dbf26358c4c4ac75fe252ecbe6c7dc7962e2640d47481aed404f6",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 658,
+          "inner_member_extensions": {
+            ".json": 658
+          },
+          "inner_uncompressed_bytes": 6638294,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 658
+        },
+        {
+          "outer_index": 27,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_01.민사.zip",
+          "compressed_size": 17202493,
+          "uncompressed_size": 18409624,
+          "sha256": "9726f1fc8f987e238c2d6b6bfd339fb8a373611ff0045bb202406b34b3e214fc",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "noncanonical_no_central_directory",
+          "central_directory_present": false,
+          "error": "File is not a zip file"
+        },
+        {
+          "outer_index": 28,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_02.가사.zip",
+          "compressed_size": 1752442,
+          "uncompressed_size": 1892669,
+          "sha256": "61b90ecff77d068ec54dd776d47e873c45530d504ff2fd322b2f7b973170e675",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1655,
+          "inner_member_extensions": {
+            ".json": 1655
+          },
+          "inner_uncompressed_bytes": 4559342,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 1655
+        },
+        {
+          "outer_index": 29,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_03.형사A(생활형).zip",
+          "compressed_size": 5614266,
+          "uncompressed_size": 6035268,
+          "sha256": "9c70701963b65fd81f8c7f49f82a737310e1b782c3505ec3fed9eb0f6a9c9620",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 4807,
+          "inner_member_extensions": {
+            ".json": 4807
+          },
+          "inner_uncompressed_bytes": 14672308,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 4807
+        },
+        {
+          "outer_index": 30,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_04.형사B(일반형).zip",
+          "compressed_size": 6909744,
+          "uncompressed_size": 7392423,
+          "sha256": "5b255aa2e2b0dc076f7489be6fa4f25a083002d51a71a0eca200cd0a965e4b21",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 5491,
+          "inner_member_extensions": {
+            ".json": 5491
+          },
+          "inner_uncompressed_bytes": 19045718,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 5491
+        },
+        {
+          "outer_index": 31,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_05.행정.zip",
+          "compressed_size": 20700654,
+          "uncompressed_size": 22420153,
+          "sha256": "9922020cd0c4038dc54b17e0bf5b7061bba199e78845be34f0e7e0205a9f4183",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 17070,
+          "inner_member_extensions": {
+            ".json": 17070
+          },
+          "inner_uncompressed_bytes": 57795875,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 17070
+        },
+        {
+          "outer_index": 32,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_06.기업.zip",
+          "compressed_size": 2141328,
+          "uncompressed_size": 2287674,
+          "sha256": "a9b4580fd123fa79e7d8ee8d84a66f75bbfe6b73762dd67805d158ff6fb6f537",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1712,
+          "inner_member_extensions": {
+            ".json": 1712
+          },
+          "inner_uncompressed_bytes": 5954015,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 1712
+        },
+        {
+          "outer_index": 33,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_07.근로자.zip",
+          "compressed_size": 2894254,
+          "uncompressed_size": 3110569,
+          "sha256": "be476a5b6e04121bf2563f6e89c7f02eeeff256287106bc891b3f5fbeadca856",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2408,
+          "inner_member_extensions": {
+            ".json": 2408
+          },
+          "inner_uncompressed_bytes": 7994238,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 2408
+        },
+        {
+          "outer_index": 34,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_08.특허.저작권.zip",
+          "compressed_size": 2915053,
+          "uncompressed_size": 3121475,
+          "sha256": "3effe0eb1c17c046d73eebf7baea6a908b50047848a292bcd55c69901f670af4",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2407,
+          "inner_member_extensions": {
+            ".json": 2407
+          },
+          "inner_uncompressed_bytes": 8107619,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 2407
+        },
+        {
+          "outer_index": 35,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_09.금융조세.zip",
+          "compressed_size": 3013346,
+          "uncompressed_size": 3222239,
+          "sha256": "f5b62af4987a2b3ef8a3c9e8ccf781859ae1bf87c56c7e7aecd5a00d76f4bcb4",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2433,
+          "inner_member_extensions": {
+            ".json": 2433
+          },
+          "inner_uncompressed_bytes": 8654922,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 2433
+        },
+        {
+          "outer_index": 36,
+          "logical_path": "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_10.개인정보.ICT.zip",
+          "compressed_size": 1935459,
+          "uncompressed_size": 2083372,
+          "sha256": "69a33845d0d88179051307428a3c9f4bfca773b5a191153413c8674d60b7ae42",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1603,
+          "inner_member_extensions": {
+            ".json": 1603
+          },
+          "inner_uncompressed_bytes": 5174745,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 1603
+        },
+        {
+          "outer_index": 39,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_01.민사.zip",
+          "compressed_size": 7966538,
+          "uncompressed_size": 8088842,
+          "sha256": "7f36d2ed587b8518056f90e6e7ca21bcfb8214a93bb60470063249c9bafb6c19",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1704,
+          "inner_member_extensions": {
+            ".json": 1704
+          },
+          "inner_uncompressed_bytes": 26304936,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1704
+        },
+        {
+          "outer_index": 40,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_02.가사.zip",
+          "compressed_size": 697855,
+          "uncompressed_size": 712592,
+          "sha256": "dc1351757c0b0de754b6cc0eaaff73af0d822c453440bda0b3c90b56809bd410",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 208,
+          "inner_member_extensions": {
+            ".json": 208
+          },
+          "inner_uncompressed_bytes": 2126553,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 208
+        },
+        {
+          "outer_index": 41,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_03.형사A(생활형).zip",
+          "compressed_size": 1663293,
+          "uncompressed_size": 1709168,
+          "sha256": "c00ff4d770ed9cb071a7fa2d93432b677a3736c6153d0e5ae894935fc6832a3b",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 597,
+          "inner_member_extensions": {
+            ".json": 597
+          },
+          "inner_uncompressed_bytes": 5009716,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 597
+        },
+        {
+          "outer_index": 42,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_04.형사B(일반형).zip",
+          "compressed_size": 1919053,
+          "uncompressed_size": 1970536,
+          "sha256": "814ee24b72fdcdf4784feb631b14e27542d2cd60a9df00d4430679ed3ac04813",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 681,
+          "inner_member_extensions": {
+            ".json": 681
+          },
+          "inner_uncompressed_bytes": 5895956,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 681
+        },
+        {
+          "outer_index": 43,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_05.행정.zip",
+          "compressed_size": 1445080,
+          "uncompressed_size": 1472082,
+          "sha256": "52587009756e033c00999cd53ad4ca5267ab7040dc4c08d100f5e8335283abc9",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 375,
+          "inner_member_extensions": {
+            ".json": 375
+          },
+          "inner_uncompressed_bytes": 4677457,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 375
+        },
+        {
+          "outer_index": 44,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_06.기업.zip",
+          "compressed_size": 2073958,
+          "uncompressed_size": 2085277,
+          "sha256": "7bc05fe9ae918568b61453fb58b7a17a3cf7533656710d3b788eda8a98cde773",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 209,
+          "inner_member_extensions": {
+            ".json": 209
+          },
+          "inner_uncompressed_bytes": 7199547,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 209
+        },
+        {
+          "outer_index": 45,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_07.근로자.zip",
+          "compressed_size": 1061488,
+          "uncompressed_size": 1079524,
+          "sha256": "75ebcd8c1577d2f23e57aed6f0698dbcb2d37e42914a72d6938666e3938106b8",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 261,
+          "inner_member_extensions": {
+            ".json": 261
+          },
+          "inner_uncompressed_bytes": 3493990,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 261
+        },
+        {
+          "outer_index": 46,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_08.특허.저작권.zip",
+          "compressed_size": 1237519,
+          "uncompressed_size": 1258915,
+          "sha256": "27f5337e39fb43f8d1e2ece5f6b90bd0c615ab97ebed6956e6642717e8ee3fd7",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 303,
+          "inner_member_extensions": {
+            ".json": 303
+          },
+          "inner_uncompressed_bytes": 4278332,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 303
+        },
+        {
+          "outer_index": 47,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_09.금융조세.zip",
+          "compressed_size": 937329,
+          "uncompressed_size": 960133,
+          "sha256": "1a40e673751f1c6bbef4996f31f169815c9f2ba0f62c33f1fbd99e4975d6f68e",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 303,
+          "inner_member_extensions": {
+            ".json": 303
+          },
+          "inner_uncompressed_bytes": 3243514,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 303
+        },
+        {
+          "outer_index": 48,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_1.판례_10.개인정보.ICT.zip",
+          "compressed_size": 485965,
+          "uncompressed_size": 496592,
+          "sha256": "4c959eeafb79f6330af68904bcf51213f3b27fbe0111346ad4bd5a7803d0b2dc",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 145,
+          "inner_member_extensions": {
+            ".json": 145
+          },
+          "inner_uncompressed_bytes": 1491303,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 145
+        },
+        {
+          "outer_index": 49,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_2.심결례_05.행정.zip",
+          "compressed_size": 5483146,
+          "uncompressed_size": 5627158,
+          "sha256": "46e2fef9174b735063ebb095d87754140c6a85e13d174d2c1387e3d84446b971",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1761,
+          "inner_member_extensions": {
+            ".json": 1761
+          },
+          "inner_uncompressed_bytes": 16598496,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1761
+        },
+        {
+          "outer_index": 50,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_2.심결례_06.기업.zip",
+          "compressed_size": 32987,
+          "uncompressed_size": 33324,
+          "sha256": "e2a6405fab215e70a7d74571330d84698e2865e3729a74ad9043ba33cbd3ad7f",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 6,
+          "inner_member_extensions": {
+            ".json": 6
+          },
+          "inner_uncompressed_bytes": 103556,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 6
+        },
+        {
+          "outer_index": 51,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_2.심결례_07.근로자.zip",
+          "compressed_size": 153118,
+          "uncompressed_size": 156008,
+          "sha256": "7ee2c36c3e328fed7a008b91775a738547cf0672f5f724b38f5ca71bfdf70b53",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 41,
+          "inner_member_extensions": {
+            ".json": 41
+          },
+          "inner_uncompressed_bytes": 486758,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 41
+        },
+        {
+          "outer_index": 52,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_2.심결례_09.금융조세.zip",
+          "compressed_size": 2444,
+          "uncompressed_size": 2439,
+          "sha256": "3692214d2907a246062c82e7d9881e97926c1b92e02058af5d72a4c1d255abd6",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1,
+          "inner_member_extensions": {
+            ".json": 1
+          },
+          "inner_uncompressed_bytes": 6131,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 1
+        },
+        {
+          "outer_index": 53,
+          "logical_path": "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_2.심결례_10.개인정보.ICT.zip",
+          "compressed_size": 157953,
+          "uncompressed_size": 163147,
+          "sha256": "6e110f7f50bcac13cada1c4221ef6352ed246e841f2216aa645a5f472b456049",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 56,
+          "inner_member_extensions": {
+            ".json": 56
+          },
+          "inner_uncompressed_bytes": 561004,
+          "eda_role": "source",
+          "eda_parsed_regular_members": 56
+        },
+        {
+          "outer_index": 55,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_01.민사.zip",
+          "compressed_size": 2049809,
+          "uncompressed_size": 2196538,
+          "sha256": "e27ac0f43b162616b806ca78d544481787b113246e43184707bcd726fba7ead4",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1704,
+          "inner_member_extensions": {
+            ".json": 1704
+          },
+          "inner_uncompressed_bytes": 5623174,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 1704
+        },
+        {
+          "outer_index": 56,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_02.가사.zip",
+          "compressed_size": 209525,
+          "uncompressed_size": 226862,
+          "sha256": "09a3b53328771837d2a4db46add1730685e3ddf7416db852a8829d8e1e154378",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 208,
+          "inner_member_extensions": {
+            ".json": 208
+          },
+          "inner_uncompressed_bytes": 541264,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 208
+        },
+        {
+          "outer_index": 57,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_03.형사A(생활형).zip",
+          "compressed_size": 652929,
+          "uncompressed_size": 702840,
+          "sha256": "b68aeb698ce1eb135398267b3c9904079186f771ff493939818214dd08a6f2d8",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 597,
+          "inner_member_extensions": {
+            ".json": 597
+          },
+          "inner_uncompressed_bytes": 1695169,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 597
+        },
+        {
+          "outer_index": 58,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_04.형사B(일반형).zip",
+          "compressed_size": 830239,
+          "uncompressed_size": 887293,
+          "sha256": "6a105e8d17257ecc7ca210bde654136f29e3715aa121d431393d143240d3a398",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 681,
+          "inner_member_extensions": {
+            ".json": 681
+          },
+          "inner_uncompressed_bytes": 2284804,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 681
+        },
+        {
+          "outer_index": 59,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_05.행정.zip",
+          "compressed_size": 2720275,
+          "uncompressed_size": 2921938,
+          "sha256": "9c33a5583c6ef57f87d85791dfeddb6066250aa203d2bfff20e9f15779ef5319",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 2136,
+          "inner_member_extensions": {
+            ".json": 2136
+          },
+          "inner_uncompressed_bytes": 7577445,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 2136
+        },
+        {
+          "outer_index": 60,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_06.기업.zip",
+          "compressed_size": 230446,
+          "uncompressed_size": 248699,
+          "sha256": "6f35bef613e6a4199d59a78d6adc1e07fda437ef296438cf8a4690f262bf134e",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 215,
+          "inner_member_extensions": {
+            ".json": 215
+          },
+          "inner_uncompressed_bytes": 615020,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 215
+        },
+        {
+          "outer_index": 61,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_07.근로자.zip",
+          "compressed_size": 360982,
+          "uncompressed_size": 385750,
+          "sha256": "4e6a8d3f42b8a9c7ce954328af91665a3d63923c7a5840a1b9d88c73ab3aad52",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 302,
+          "inner_member_extensions": {
+            ".json": 302
+          },
+          "inner_uncompressed_bytes": 962223,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 302
+        },
+        {
+          "outer_index": 62,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_08.특허.저작권.zip",
+          "compressed_size": 349825,
+          "uncompressed_size": 375392,
+          "sha256": "d7fd2746fdc54117befb771c1a1f328be5da0fdcdd1ba3fa88199e2777e714ac",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 303,
+          "inner_member_extensions": {
+            ".json": 303
+          },
+          "inner_uncompressed_bytes": 936411,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 303
+        },
+        {
+          "outer_index": 63,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_09.금융조세.zip",
+          "compressed_size": 369472,
+          "uncompressed_size": 394482,
+          "sha256": "55bb37bd64620b64bf7018fdd66883e5766b5b061425a79a03708b14cc1d8581",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 304,
+          "inner_member_extensions": {
+            ".json": 304
+          },
+          "inner_uncompressed_bytes": 1056927,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 304
+        },
+        {
+          "outer_index": 64,
+          "logical_path": "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_10.개인정보.ICT.zip",
+          "compressed_size": 236452,
+          "uncompressed_size": 254218,
+          "sha256": "71b59eed31d6da15106f27d16bad174829efa63322736d045529eeeb813ff504",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 201,
+          "inner_member_extensions": {
+            ".json": 201
+          },
+          "inner_uncompressed_bytes": 639962,
+          "eda_role": "label",
+          "eda_parsed_regular_members": 201
+        }
+      ]
+    },
+    "medical_legal_books": {
+      "outer_archive": {
+        "path": "/Users/donggyu/Documents/논문/신한라이프/154.의료, 법률 전문 서적 말뭉치.zip",
+        "size_bytes": 723086416,
+        "sha256": "697f32d7901982520dfb8ea03c0a92b8509f9670c6b66af070191ecaee94031b",
+        "file_type": "zip archive (validated by Python zipfile)",
+        "signature": {
+          "local_file_header_signature": "504b0304",
+          "has_local_file_header": true,
+          "has_eocd_signature": true,
+          "has_zip64_eocd_signature": false,
+          "has_zip64_locator_signature": false
+        },
+        "central_directory_present": true,
+        "central_directory_entries": 15,
+        "regular_file_entries_expected": 8,
+        "archive_test": {
+          "status": "passed",
+          "bad_member": null
+        },
+        "regular_file_entries_verified_readable": 8
+      },
+      "nested_members": [
+        {
+          "outer_index": 3,
+          "logical_path": "01-1.정식개방데이터/Training/01.원천데이터/TS_01.의료.zip",
+          "compressed_size": 127979510,
+          "uncompressed_size": 128183765,
+          "sha256": "a3372f89686f0dd22d16cf7a10d081cbc320637ac3ddf6caef943187972c73b8",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 37507,
+          "inner_member_extensions": {
+            ".txt": 37507
+          },
+          "inner_uncompressed_bytes": 367801595,
+          "eda_role": "source",
+          "split": "Training",
+          "domain": "medical",
+          "eda_parsed_regular_members": 37507
+        },
+        {
+          "outer_index": 4,
+          "logical_path": "01-1.정식개방데이터/Training/01.원천데이터/TS_02.법률.zip",
+          "compressed_size": 162790468,
+          "uncompressed_size": 163005079,
+          "sha256": "3379baeea51161519dc16354e9429230848c34b4390133807eef6f04d16ce3db",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 63704,
+          "inner_member_extensions": {
+            ".txt": 63704
+          },
+          "inner_uncompressed_bytes": 450106100,
+          "eda_role": "source",
+          "split": "Training",
+          "domain": "legal",
+          "eda_parsed_regular_members": 63704
+        },
+        {
+          "outer_index": 6,
+          "logical_path": "01-1.정식개방데이터/Training/02.라벨링데이터/TL_01.의료.zip",
+          "compressed_size": 163339959,
+          "uncompressed_size": 163309832,
+          "sha256": "5f6f3d0cba61e4594e50b22a27d9b7275e284d54433dd097d3d3848c000ce70a",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1,
+          "inner_member_extensions": {
+            ".json": 1
+          },
+          "inner_uncompressed_bytes": 1001244299,
+          "eda_role": "label",
+          "split": "Training",
+          "domain": "medical"
+        },
+        {
+          "outer_index": 7,
+          "logical_path": "01-1.정식개방데이터/Training/02.라벨링데이터/TL_02.법률.zip",
+          "compressed_size": 189781982,
+          "uncompressed_size": 189753816,
+          "sha256": "c9ff965d51a50f85cc6777186fcc3c13e3dd0c3c53f796addf6af88d8bea7e48",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1,
+          "inner_member_extensions": {
+            ".json": 1
+          },
+          "inner_uncompressed_bytes": 1118766525,
+          "eda_role": "label",
+          "split": "Training",
+          "domain": "legal"
+        },
+        {
+          "outer_index": 10,
+          "logical_path": "01-1.정식개방데이터/Validation/01.원천데이터/VS_01.의료.zip",
+          "compressed_size": 15733207,
+          "uncompressed_size": 16076446,
+          "sha256": "57b9c4782e57421d138cebcdb5323c0eed2c1ce86918d575e66ea98af31cd8f1",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 4688,
+          "inner_member_extensions": {
+            ".txt": 4688
+          },
+          "inner_uncompressed_bytes": 46012734,
+          "eda_role": "source",
+          "split": "Validation",
+          "domain": "medical",
+          "eda_parsed_regular_members": 4688
+        },
+        {
+          "outer_index": 11,
+          "logical_path": "01-1.정식개방데이터/Validation/01.원천데이터/VS_02.법률.zip",
+          "compressed_size": 19552728,
+          "uncompressed_size": 20159786,
+          "sha256": "beeb7a0cfbb0588779f4b7d0a8790479ce8bd39854b324aa780cf5103430b1d4",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 7963,
+          "inner_member_extensions": {
+            ".txt": 7963
+          },
+          "inner_uncompressed_bytes": 55533228,
+          "eda_role": "source",
+          "split": "Validation",
+          "domain": "legal",
+          "eda_parsed_regular_members": 7963
+        },
+        {
+          "outer_index": 13,
+          "logical_path": "01-1.정식개방데이터/Validation/02.라벨링데이터/VL_01.의료.zip",
+          "compressed_size": 20420591,
+          "uncompressed_size": 20414093,
+          "sha256": "0ca8a90595d6fcfea781dac5feccc0ff16fe55e99ab82186d724bc3908ce13e3",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1,
+          "inner_member_extensions": {
+            ".json": 1
+          },
+          "inner_uncompressed_bytes": 124443436,
+          "eda_role": "label",
+          "split": "Validation",
+          "domain": "medical"
+        },
+        {
+          "outer_index": 14,
+          "logical_path": "01-1.정식개방데이터/Validation/02.라벨링데이터/VL_02.법률.zip",
+          "compressed_size": 23482697,
+          "uncompressed_size": 23475445,
+          "sha256": "128d55a47d455cabc007a31d94fe29591b87ba0475dba28a3f2c17d842ef3c20",
+          "signature": {
+            "local_file_header_signature": "504b0304",
+            "has_local_file_header": true,
+            "has_eocd_signature": true,
+            "has_zip64_eocd_signature": false,
+            "has_zip64_locator_signature": false
+          },
+          "status": "passed",
+          "central_directory_present": true,
+          "inner_regular_members": 1,
+          "inner_member_extensions": {
+            ".json": 1
+          },
+          "inner_uncompressed_bytes": 138788862,
+          "eda_role": "label",
+          "split": "Validation",
+          "domain": "legal"
+        }
+      ]
+    }
+  },
+  "scope_note": "Nested component hashes are hashes of the files virtually extracted from each outer archive. Leaf-file aggregate hashes cover the canonical components scanned for EDA; no raw source text is written to this manifest."
+}
