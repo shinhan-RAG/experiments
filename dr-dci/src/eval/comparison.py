@@ -3,12 +3,15 @@
 import numpy as np
 
 
+DEFAULT_BOOTSTRAP_ITERATIONS = 10_000
+
+
 def paired_bootstrap_delta(
     control: list[float],
     treatment: list[float],
     *,
     seed: int,
-    iterations: int = 10_000,
+    iterations: int = DEFAULT_BOOTSTRAP_ITERATIONS,
 ) -> dict:
     if len(control) != len(treatment):
         raise ValueError("paired samples must have the same length")
@@ -124,6 +127,7 @@ def compare_result_rows(
     treatment: list[dict],
     *,
     seed: int,
+    bootstrap_iterations: int = DEFAULT_BOOTSTRAP_ITERATIONS,
 ) -> dict:
     """Compare agent runs query by query instead of comparing aggregate means.
 
@@ -146,6 +150,7 @@ def compare_result_rows(
             [float(control_by_id[qid].get(key, 0.0) or 0.0) for qid in shared_ids],
             [float(treatment_by_id[qid].get(key, 0.0) or 0.0) for qid in shared_ids],
             seed=seed,
+            iterations=bootstrap_iterations,
         )
 
     judged_ids = [
@@ -160,6 +165,7 @@ def compare_result_rows(
             [1.0 if treatment_by_id[qid]["judgment"] == "correct" else 0.0
              for qid in judged_ids],
             seed=seed,
+            iterations=bootstrap_iterations,
         )
         if judged_ids else None
     )

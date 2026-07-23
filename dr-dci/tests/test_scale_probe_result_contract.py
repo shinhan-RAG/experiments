@@ -103,12 +103,26 @@ class ScaleProbeResultContractTests(unittest.TestCase):
             self.assertEqual(manifest["dataset_provenance"]["counts"]["positive_gold_documents"], 1)
             self.assertEqual(manifest["dataset_provenance"]["subsets"][0]["sha256"].__len__(), 64)
             self.assertEqual(manifest["experiment_config"]["sha256"].__len__(), 64)
+            self.assertEqual(manifest["experiment_contract_sha256"].__len__(), 64)
+            contract_paths = {
+                item["path"] for item in manifest["experiment_contract_files"]
+            }
+            self.assertTrue({
+                "src/agent/retriever.py",
+                "src/agent/dci_agent.py",
+                "src/eval/judge.py",
+                "src/eval/comparison.py",
+                "src/eval/part12_result_contract.py",
+                "config/judge_prompt.txt",
+                "config/taxonomy_schemas/fixture.yaml",
+            } <= contract_paths)
             self.assertEqual(manifest["controls"]["query_instruction"], None)
             self.assertEqual(manifest["controls"]["analysis_bootstrap_seed"], 42)
             self.assertEqual(
                 manifest["controls"]["analysis_seed_purpose"],
                 "paired_bootstrap",
             )
+            self.assertEqual(manifest["controls"]["analysis_bootstrap_iterations"], 10_000)
             self.assertEqual(manifest["controls"]["agent_max_tokens"], 2048)
             self.assertEqual(manifest["controls"]["judge_max_tokens"], 512)
             self.assertEqual(manifest["controls"]["agent_generation_seed"], 17)

@@ -23,17 +23,17 @@ def write_jsonl(path: Path, rows):
     path.write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 
-def focused_agent_row(query_id="q1"):
+def focused_agent_row(query_id="q1", recall=0.2):
     return {
         "query_id": query_id,
-        "gold_recall": 0.2,
+        "gold_recall": recall,
         "latency_seconds": 1.0,
         "latency_without_taxonomy_boost_telemetry_seconds": 1.0,
         "taxonomy_boost_telemetry_seconds": 0.0,
         "pull_count": 1,
         "pull_queries": ["query"],
         "pull_traces": [{"workspace_document_ids_after": ["d1"]}],
-        "first_pull_document_gold_recall": 0.2,
+        "first_pull_document_gold_recall": recall,
         "workspace_expansion_document_gold_recall": 0.0,
     }
 
@@ -99,6 +99,8 @@ class Part12ContractTests(unittest.TestCase):
 
         self.assertTrue(run_experiment.focused_decision_rule_blockers(provisional))
         approved = {"parts": {"part1_stacking": {
+            "minimum_practical_effect_size": 0.01,
+            "minimum_practical_effect_version": "v1",
             "minimum_practical_effect_status": "approved",
         }}}
         self.assertEqual(run_experiment.focused_decision_rule_blockers(approved), [])
@@ -141,15 +143,31 @@ class Part12ContractTests(unittest.TestCase):
                 "agent": {"pull_top_k": 20, "workspace_max_docs": 100, "max_turns": 10,
                           "taxonomy_boost": 1.5},
                 "parts": {
-                    "part1_stacking": {"dataset": "fixture", "subset": 1000},
+                    "part1_stacking": {
+                        "dataset": "fixture",
+                        "subset": 1000,
+                        "minimum_practical_effect_size": 0.01,
+                        "minimum_practical_effect_version": "v1",
+                    },
                     "part2_scaling": {"dataset": "fixture", "subsets": [1000, 2000]},
                 },
             }
             controls = {
                 "analysis_bootstrap_seed": 42,
                 "analysis_seed_purpose": "paired_bootstrap",
+                "analysis_bootstrap_iterations": 10_000,
+                "minimum_practical_effect_size": 0.01,
+                "minimum_practical_effect_version": "v1",
                 **run_experiment.focused_control_snapshot(config),
             }
+            baseline_rows = [focused_agent_row(recall=0.2)]
+            taxonomy_rows = [focused_agent_row(recall=0.3)]
+            comparison = compare_result_rows(
+                baseline_rows, taxonomy_rows, seed=42, bootstrap_iterations=10_000,
+            )
+            comparison["document_gold_recall_decision"] = classify_practical_effect(
+                comparison["gold_recall"], minimum_effect_size=0.01,
+            )
             part1_payload = {
                 "manifest": {
                     "schema_version": "dr-dci.part1-taxonomy.v2",
@@ -159,7 +177,11 @@ class Part12ContractTests(unittest.TestCase):
                     "primary_endpoint": "workspace_document_gold_recall",
                     "taxonomy_action_point": "pull score soft boost only",
                     "taxonomy_prompt_schema_shared": True,
-                    "decision_rule": {"minimum_practical_effect_size": 0.01, "status": "approved"},
+                    "decision_rule": {
+                        "minimum_practical_effect_size": 0.01,
+                        "minimum_practical_effect_version": "v1",
+                        "status": "approved",
+                    },
                     "arms": [
                         {"name": "baseline", "taxonomy": False,
                          "taxonomy_prompt_schema": True, "workspace_taxonomy": False},
@@ -177,6 +199,9 @@ class Part12ContractTests(unittest.TestCase):
                     "experiment_config": {},
                     "execution_environment": {},
                     "git_commit": "a" * 40,
+                    "experiment_contract_sha256": run_experiment.experiment_contract_fingerprint(
+                        "fixture"
+                    )["sha256"],
                     "preflight": {"status": "ready", "augmentations": {"artifacts": [{
                         "feature": "taxonomy", "size": 1000, "present": True,
                         "sha256": taxonomy_sha256,
@@ -184,14 +209,10 @@ class Part12ContractTests(unittest.TestCase):
                     "controls": controls,
                 },
                 "full_results": {
-                    "baseline": {"results": [focused_agent_row()]},
-                    "taxonomy_only": {"results": [focused_agent_row()]},
+                    "baseline": {"results": baseline_rows},
+                    "taxonomy_only": {"results": taxonomy_rows},
                 },
-                "analysis": {"taxonomy_only_minus_baseline": {
-                    "paired_query_count": 1,
-                    "gold_recall": {"n": 1, "mean_delta": 0.02, "ci95_low": 0.02, "ci95_high": 0.03},
-                    "document_gold_recall_decision": "positive_practical_signal",
-                }},
+                "analysis": {"taxonomy_only_minus_baseline": comparison},
             }
             result_path = data / "approved-part1.json"
             write_json(result_path, part1_payload)
@@ -211,6 +232,75 @@ class Part12ContractTests(unittest.TestCase):
                 changed_config["models"]["agent_llm"]["max_tokens"] = 1024
                 with self.assertRaisesRegex(RuntimeError, "model/retrieval controls differ"):
                     run_experiment.approved_part1_result_gate(changed_config, part2_preflight)
+                changed_effect_config = copy.deepcopy(config)
+                changed_effect_config["parts"]["part1_stacking"][
+                    "minimum_practical_effect_size"
+                ] = 0.05
+                with self.assertRaisesRegex(RuntimeError, "minimum practical effect size"):
+                    run_experiment.approved_part1_result_gate(
+                        changed_effect_config, part2_preflight
+                    )
+                changed_version_config = copy.deepcopy(config)
+                changed_version_config["parts"]["part1_stacking"][
+                    "minimum_practical_effect_version"
+                ] = "v2"
+                with self.assertRaisesRegex(RuntimeError, "minimum practical effect version"):
+                    run_experiment.approved_part1_result_gate(
+                        changed_version_config, part2_preflight
+                    )
+
+                incompatible_contract = copy.deepcopy(part1_payload)
+                incompatible_contract["manifest"]["experiment_contract_sha256"] = "0" * 64
+                incompatible_contract_path = data / "approved-part1-incompatible-contract.json"
+                write_json(incompatible_contract_path, incompatible_contract)
+                incompatible_contract_config = copy.deepcopy(config)
+                incompatible_contract_config["parts"]["part2_scaling"][
+                    "approved_part1_result"
+                ] = {
+                    "status": "approved",
+                    "path": str(incompatible_contract_path),
+                    "sha256": run_experiment.sha256_file(incompatible_contract_path),
+                }
+                with self.assertRaisesRegex(RuntimeError, "experiment contract hash"):
+                    run_experiment.approved_part1_result_gate(
+                        incompatible_contract_config, part2_preflight
+                    )
+
+                inconsistent_analysis = copy.deepcopy(part1_payload)
+                inconsistent_analysis["full_results"]["baseline"]["results"][0].update({
+                    "gold_recall": 0.9,
+                    "first_pull_document_gold_recall": 0.9,
+                })
+                inconsistent_analysis["full_results"]["taxonomy_only"]["results"][0].update({
+                    "gold_recall": 0.1,
+                    "first_pull_document_gold_recall": 0.1,
+                })
+                inconsistent_analysis["analysis"]["taxonomy_only_minus_baseline"] = {
+                    "paired_query_count": 1,
+                    "gold_recall": {
+                        "n": 1,
+                        "mean_delta": 0.02,
+                        "ci95_low": 0.02,
+                        "ci95_high": 0.03,
+                        "iterations": 10_000,
+                        "seed": 42,
+                    },
+                    "document_gold_recall_decision": "positive_practical_signal",
+                }
+                inconsistent_analysis_path = data / "approved-part1-inconsistent-analysis.json"
+                write_json(inconsistent_analysis_path, inconsistent_analysis)
+                inconsistent_analysis_config = copy.deepcopy(config)
+                inconsistent_analysis_config["parts"]["part2_scaling"][
+                    "approved_part1_result"
+                ] = {
+                    "status": "approved",
+                    "path": str(inconsistent_analysis_path),
+                    "sha256": run_experiment.sha256_file(inconsistent_analysis_path),
+                }
+                with self.assertRaisesRegex(RuntimeError, "does not match raw rows"):
+                    run_experiment.approved_part1_result_gate(
+                        inconsistent_analysis_config, part2_preflight
+                    )
 
             self.assertEqual(report["decision"], "positive_practical_signal")
             self.assertEqual(report["compatibility"]["taxonomy_artifact_sha256"], taxonomy_sha256)

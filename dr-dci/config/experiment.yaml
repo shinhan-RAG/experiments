@@ -90,6 +90,9 @@ parts:
     # focused-screening signal; statistical significance alone is insufficient.
     # This is an internal provisional threshold, not a TREC or Shinhan standard.
     minimum_practical_effect_size: 0.01
+    # Bump this identifier whenever the threshold definition or decision rule
+    # changes; Part 2 accepts only a Part 1 result with the same criterion.
+    minimum_practical_effect_version: "v1"
     # Set to "approved" together with the approval record before any focused
     # model-backed Part 1 or Part 2 run. The default protects against treating
     # an unapproved screening threshold as a pre-agreed operating criterion.

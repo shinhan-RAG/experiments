@@ -3,23 +3,30 @@ import unittest
 from src.eval.part12_result_contract import validate_focused_part12_result
 
 
-def agent_row(query_id="q1"):
+def agent_row(query_id="q1", recall=0.2):
     return {
         "query_id": query_id,
-        "gold_recall": 0.2,
+        "gold_recall": recall,
         "latency_seconds": 1.0,
         "latency_without_taxonomy_boost_telemetry_seconds": 1.0,
         "taxonomy_boost_telemetry_seconds": 0.0,
         "pull_count": 1,
         "pull_queries": ["query"],
         "pull_traces": [{"workspace_document_ids_after": ["d1"]}],
-        "first_pull_document_gold_recall": 0.2,
+        "first_pull_document_gold_recall": recall,
         "workspace_expansion_document_gold_recall": 0.0,
     }
 
 
 def paired():
-    return {"n": 1, "mean_delta": 0.0, "ci95_low": 0.0, "ci95_high": 0.0}
+    return {
+        "n": 1,
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "iterations": 10_000,
+        "seed": 42,
+    }
 
 
 def part1_manifest():
@@ -29,6 +36,7 @@ def part1_manifest():
         "primary_endpoint": "workspace_document_gold_recall",
         "decision_rule": {
             "minimum_practical_effect_size": 0.01,
+            "minimum_practical_effect_version": "v1",
             "status": "approved",
         },
         "arms": [{"name": "baseline"}, {"name": "taxonomy_only"}],
@@ -36,10 +44,14 @@ def part1_manifest():
         "experiment_config": {},
         "execution_environment": {},
         "git_commit": "a" * 40,
+        "experiment_contract_sha256": "c" * 64,
         "preflight": {"status": "ready"},
         "controls": {
             "analysis_bootstrap_seed": 42,
             "analysis_seed_purpose": "paired_bootstrap",
+            "analysis_bootstrap_iterations": 10_000,
+            "minimum_practical_effect_size": 0.01,
+            "minimum_practical_effect_version": "v1",
             "embedding_model": "embed",
             "agent_model": "agent",
             "agent_temperature": 0,
@@ -119,6 +131,32 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
         self.assertTrue(any("latency_without" in error for error in errors))
         self.assertTrue(any("workspace expansion" in error for error in errors))
 
+    def test_part1_rejects_positive_analysis_inconsistent_with_raw_rows(self):
+        errors = validate_focused_part12_result(
+            part1_manifest(),
+            {
+                "baseline": {"results": [agent_row(recall=0.9)]},
+                "taxonomy_only": {"results": [agent_row(recall=0.1)]},
+            },
+            {
+                "taxonomy_only_minus_baseline": {
+                    "paired_query_count": 1,
+                    "gold_recall": {
+                        "n": 1,
+                        "mean_delta": 0.02,
+                        "ci95_low": 0.02,
+                        "ci95_high": 0.03,
+                        "iterations": 10_000,
+                        "seed": 42,
+                    },
+                    "document_gold_recall_decision": "positive_practical_signal",
+                },
+            },
+        )
+
+        self.assertTrue(any("does not match raw rows" in error for error in errors))
+        self.assertTrue(any("decision does not match raw rows" in error for error in errors))
+
     def test_part2_requires_primary_scale_and_dynamic_single_comparisons(self):
         manifest = {
             **part1_manifest(),
@@ -143,7 +181,13 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
                 "configured_path": "/results/approved-part1.json",
                 "sha256": "b" * 64,
                 "decision": "positive_practical_signal",
-                "compatibility": {"model_and_retrieval_controls": "matched"},
+                "compatibility": {
+                    "model_and_retrieval_controls": "matched",
+                    "minimum_practical_effect_size": 0.01,
+                    "minimum_practical_effect_version": "v1",
+                    "experiment_contract_sha256": "c" * 64,
+                    "part1_primary_analysis": "recomputed_matched",
+                },
             },
         }
         full_results = {

@@ -6,6 +6,11 @@ from itertools import combinations
 import math
 from typing import Any
 
+from src.eval.comparison import (
+    classify_practical_effect,
+    compare_result_rows,
+)
+
 
 REQUIRED_MANIFEST_KEYS = (
     "focused",
@@ -13,13 +18,17 @@ REQUIRED_MANIFEST_KEYS = (
     "experiment_config",
     "execution_environment",
     "git_commit",
+    "experiment_contract_sha256",
     "preflight",
     "arms",
 )
 
 REQUIRED_CONTROL_KEYS = (
     "analysis_bootstrap_seed",
+    "analysis_bootstrap_iterations",
     "analysis_seed_purpose",
+    "minimum_practical_effect_size",
+    "minimum_practical_effect_version",
     "embedding_model",
     "agent_model",
     "agent_temperature",
@@ -111,6 +120,13 @@ def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> No
             errors.append(f"manifest missing {key}")
     if manifest.get("focused") is not True:
         errors.append("manifest focused must be true")
+    contract_sha256 = manifest.get("experiment_contract_sha256")
+    if (
+        not isinstance(contract_sha256, str)
+        or len(contract_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in contract_sha256.lower())
+    ):
+        errors.append("manifest experiment_contract_sha256 must be a SHA-256 digest")
     arm_names = [arm.get("name") for arm in manifest.get("arms", []) if isinstance(arm, dict)]
     if arm_names != ["baseline", "taxonomy_only"]:
         errors.append("manifest arms must be baseline then taxonomy_only")
@@ -123,6 +139,18 @@ def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> No
         errors.append(f"manifest controls missing {', '.join(missing_controls)}")
     if controls.get("analysis_seed_purpose") != "paired_bootstrap":
         errors.append("manifest controls must distinguish the analysis seed purpose")
+    if not isinstance(controls.get("analysis_bootstrap_seed"), int):
+        errors.append("manifest controls analysis_bootstrap_seed must be an integer")
+    iterations = controls.get("analysis_bootstrap_iterations")
+    if not isinstance(iterations, int) or iterations <= 0:
+        errors.append("manifest controls analysis_bootstrap_iterations must be a positive integer")
+    minimum_effect = controls.get("minimum_practical_effect_size")
+    if not _is_finite_number(minimum_effect) or minimum_effect < 0:
+        errors.append("manifest controls minimum_practical_effect_size must be non-negative")
+    if not isinstance(controls.get("minimum_practical_effect_version"), str) or not controls[
+        "minimum_practical_effect_version"
+    ]:
+        errors.append("manifest controls minimum_practical_effect_version is required")
 
 
 def _validate_rows(label: str, arm: Any, errors: list[str]) -> set[str]:
@@ -178,6 +206,66 @@ def _validate_comparison(label: str, analysis: dict[str, Any], expected_n: int,
         errors.append(f"{label}.gold_recall lacks paired delta and confidence interval")
 
 
+def recompute_part1_primary_analysis(
+    manifest: dict[str, Any], full_results: dict[str, Any],
+) -> tuple[dict[str, Any], str]:
+    """Recalculate the focused Part 1 primary endpoint from its raw rows.
+
+    Approval must not trust a handwritten aggregate or decision.  The analysis
+    seed, bootstrap iterations, and effect threshold are all taken from the
+    result manifest so the saved artifact is its own reproducibility contract.
+    """
+    controls = manifest["controls"]
+    decision_rule = manifest["decision_rule"]
+    comparison = compare_result_rows(
+        full_results["baseline"]["results"],
+        full_results["taxonomy_only"]["results"],
+        seed=controls["analysis_bootstrap_seed"],
+        bootstrap_iterations=controls["analysis_bootstrap_iterations"],
+    )
+    decision = classify_practical_effect(
+        comparison["gold_recall"],
+        minimum_effect_size=decision_rule["minimum_practical_effect_size"],
+    )
+    return comparison, decision
+
+
+def _validate_part1_raw_analysis(
+    manifest: dict[str, Any], full_results: dict[str, Any], analysis: dict[str, Any],
+    errors: list[str],
+) -> None:
+    """Require stored Part 1 primary statistics and decision to match raw rows."""
+    label = "taxonomy_only_minus_baseline"
+    stored = analysis.get(label)
+    if not isinstance(stored, dict):
+        return
+    try:
+        recalculated, recalculated_decision = recompute_part1_primary_analysis(
+            manifest, full_results
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        errors.append(f"{label} cannot be recalculated from raw rows: {error}")
+        return
+
+    stored_delta = stored.get("gold_recall")
+    recalculated_delta = recalculated["gold_recall"]
+    expected_delta_keys = (
+        "n", "mean_delta", "ci95_low", "ci95_high", "iterations", "seed",
+    )
+    if (
+        not isinstance(stored_delta, dict)
+        or any(stored_delta.get(key) != recalculated_delta[key] for key in expected_delta_keys)
+        or stored.get("paired_query_count") != recalculated["paired_query_count"]
+    ):
+        errors.append(
+            f"{label}.gold_recall does not match raw rows under manifest bootstrap controls"
+        )
+    if stored.get("document_gold_recall_decision") != recalculated_decision:
+        errors.append(
+            f"{label} decision does not match raw rows under manifest decision rule"
+        )
+
+
 def validate_focused_part12_result(
     manifest: dict[str, Any],
     full_results: dict[str, Any],
@@ -205,6 +293,10 @@ def validate_focused_part12_result(
         )
         if not isinstance(minimum_effect, (int, float)) or minimum_effect < 0:
             errors.append("Part 1 decision_rule lacks a non-negative minimum_practical_effect_size")
+        if not isinstance(decision_rule, dict) or not isinstance(
+            decision_rule.get("minimum_practical_effect_version"), str
+        ) or not decision_rule["minimum_practical_effect_version"]:
+            errors.append("Part 1 decision_rule lacks minimum_practical_effect_version")
         if not isinstance(decision_rule, dict) or decision_rule.get("status") != "approved":
             errors.append("Part 1 decision_rule must record approved threshold status")
         baseline_ids = _validate_rows("baseline", full_results.get("baseline"), errors)
@@ -218,6 +310,21 @@ def validate_focused_part12_result(
             "positive_practical_signal", "negative_practical_signal", "inconclusive",
         }:
             errors.append(f"{comparison_label} lacks document_gold_recall_decision")
+        if (
+            isinstance(manifest.get("controls"), dict)
+            and isinstance(decision_rule, dict)
+            and manifest["controls"].get("minimum_practical_effect_size")
+            != decision_rule.get("minimum_practical_effect_size")
+        ):
+            errors.append("Part 1 controls and decision_rule minimum effect size differ")
+        if (
+            isinstance(manifest.get("controls"), dict)
+            and isinstance(decision_rule, dict)
+            and manifest["controls"].get("minimum_practical_effect_version")
+            != decision_rule.get("minimum_practical_effect_version")
+        ):
+            errors.append("Part 1 controls and decision_rule minimum effect version differ")
+        _validate_part1_raw_analysis(manifest, full_results, analysis, errors)
         return errors
 
     if schema == "dr-dci.part2-taxonomy-scaling.v1":
@@ -232,6 +339,16 @@ def validate_focused_part12_result(
             or not isinstance(part1_gate.get("compatibility"), dict)
         ):
             errors.append("Part 2 approved Part 1 result gate is incomplete")
+        else:
+            compatibility = part1_gate["compatibility"]
+            required_compatibility = (
+                "minimum_practical_effect_size",
+                "minimum_practical_effect_version",
+                "experiment_contract_sha256",
+                "part1_primary_analysis",
+            )
+            if any(key not in compatibility for key in required_compatibility):
+                errors.append("Part 2 approved Part 1 result gate is incomplete")
         sizes = manifest.get("subsets")
         if not isinstance(sizes, list) or len(sizes) < 2 or any(
             not isinstance(size, int) for size in sizes

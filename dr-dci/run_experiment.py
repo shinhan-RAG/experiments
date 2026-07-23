@@ -27,6 +27,7 @@ from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
 from src.eval.comparison import (
+    DEFAULT_BOOTSTRAP_ITERATIONS,
     classify_practical_effect,
     compare_paired_results,
     compare_probe_rows,
@@ -522,14 +523,31 @@ def dataset_provenance_blockers(config: dict, dataset: str) -> list[str]:
 def focused_decision_rule_blockers(config: dict) -> list[str]:
     """Require explicit approval before a focused agent run applies its threshold."""
     part1 = config.get("parts", {}).get("part1_stacking", {})
+    blockers = []
     status = part1.get("minimum_practical_effect_status")
     if status != "approved":
-        return [
+        blockers.append(
             "focused Part 1/2 execution requires "
             "parts.part1_stacking.minimum_practical_effect_status=approved; "
             f"current status is {status!r}"
-        ]
-    return []
+        )
+    minimum_effect = part1.get("minimum_practical_effect_size")
+    if (
+        not isinstance(minimum_effect, (int, float))
+        or isinstance(minimum_effect, bool)
+        or minimum_effect < 0
+    ):
+        blockers.append(
+            "focused Part 1/2 execution requires a non-negative "
+            "parts.part1_stacking.minimum_practical_effect_size"
+        )
+    minimum_effect_version = part1.get("minimum_practical_effect_version")
+    if not isinstance(minimum_effect_version, str) or not minimum_effect_version:
+        blockers.append(
+            "focused Part 1/2 execution requires "
+            "parts.part1_stacking.minimum_practical_effect_version"
+        )
+    return blockers
 
 
 PART1_TO_PART2_CONTROL_KEYS = (
@@ -549,6 +567,17 @@ PART1_TO_PART2_CONTROL_KEYS = (
     "taxonomy_boost",
     "workspace_max_docs",
     "max_turns",
+)
+
+
+EXPERIMENT_CONTRACT_RELATIVE_PATHS = (
+    Path("run_experiment.py"),
+    Path("src/agent/retriever.py"),
+    Path("src/agent/dci_agent.py"),
+    Path("src/eval/judge.py"),
+    Path("src/eval/comparison.py"),
+    Path("src/eval/part12_result_contract.py"),
+    Path("config/judge_prompt.txt"),
 )
 
 
@@ -743,6 +772,28 @@ def approved_part1_result_gate(config: dict, part2_preflight: dict) -> dict:
             + ", ".join(changed_controls)
         )
 
+    result_decision_rule = manifest.get("decision_rule")
+    if not isinstance(result_decision_rule, dict):
+        result_decision_rule = {}
+    current_minimum_effect = part1_cfg.get("minimum_practical_effect_size")
+    if result_decision_rule.get("minimum_practical_effect_size") != current_minimum_effect:
+        blockers.append(
+            "approved Part 1 result minimum practical effect size differs from current config"
+        )
+    current_minimum_effect_version = part1_cfg.get("minimum_practical_effect_version")
+    if result_decision_rule.get(
+        "minimum_practical_effect_version"
+    ) != current_minimum_effect_version:
+        blockers.append(
+            "approved Part 1 result minimum practical effect version differs from current config"
+        )
+
+    current_contract = experiment_contract_fingerprint(dataset)
+    if manifest.get("experiment_contract_sha256") != current_contract["sha256"]:
+        blockers.append(
+            "approved Part 1 experiment contract hash does not match current execution"
+        )
+
     if blockers:
         details = "\n".join(f"- {item}" for item in blockers)
         raise RuntimeError(f"focused Part 2 approved Part 1 result gate failed:\n{details}")
@@ -758,6 +809,10 @@ def approved_part1_result_gate(config: dict, part2_preflight: dict) -> dict:
             "subset_hash": "matched",
             "taxonomy_artifact_sha256": result_taxonomy_sha256,
             "model_and_retrieval_controls": "matched",
+            "minimum_practical_effect_size": current_minimum_effect,
+            "minimum_practical_effect_version": current_minimum_effect_version,
+            "experiment_contract_sha256": current_contract["sha256"],
+            "part1_primary_analysis": "recomputed_matched",
         },
     }
 
@@ -867,10 +922,11 @@ def run_part1(config: dict, *, focused: bool = False):
             all_results["baseline"]["results"],
             all_results["taxonomy_only"]["results"],
             seed=config["seed"],
+            bootstrap_iterations=DEFAULT_BOOTSTRAP_ITERATIONS,
         )
         if focused:
             minimum_effect_size = float(
-                part_cfg.get("minimum_practical_effect_size", 0.01)
+                part_cfg["minimum_practical_effect_size"]
             )
             comparison["document_gold_recall_decision"] = classify_practical_effect(
                 comparison["gold_recall"],
@@ -893,8 +949,11 @@ def run_part1(config: dict, *, focused: bool = False):
             {
                 "comparison": "taxonomy_only_minus_baseline",
                 "minimum_practical_effect_size": float(
-                    part_cfg.get("minimum_practical_effect_size", 0.01)
+                    part_cfg["minimum_practical_effect_size"]
                 ),
+                "minimum_practical_effect_version": part_cfg[
+                    "minimum_practical_effect_version"
+                ],
                 "status": part_cfg.get("minimum_practical_effect_status"),
                 "positive": "ci95_low > minimum_practical_effect_size",
                 "negative": "ci95_high < -minimum_practical_effect_size",
@@ -1387,6 +1446,36 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def experiment_contract_fingerprint(dataset: str) -> dict:
+    """Fingerprint code and prompts that determine focused Part 1/2 behavior.
+
+    The mutable experiment YAML is intentionally excluded: an approval path or
+    other operational setting may change after Part 1.  The taxonomy schema,
+    judge prompt, retrieval/agent code, and analysis/decision code are instead
+    fixed by this digest and must match before a Part 2 taxonomy expansion.
+    """
+    paths = [
+        *EXPERIMENT_CONTRACT_RELATIVE_PATHS,
+        Path("config/taxonomy_schemas") / f"{dataset}.yaml",
+    ]
+    digest = hashlib.sha256()
+    files = []
+    for relative_path in paths:
+        path = BASE_DIR / relative_path
+        present = path.is_file()
+        file_digest = sha256_file(path) if present else None
+        digest.update(str(relative_path).encode("utf-8"))
+        digest.update(b"\0")
+        digest.update((file_digest or "missing").encode("ascii"))
+        digest.update(b"\n")
+        files.append({
+            "path": str(relative_path),
+            "present": present,
+            "sha256": file_digest,
+        })
+    return {"sha256": digest.hexdigest(), "files": files}
+
+
 def _dataset_counts(raw_dir: Path) -> dict:
     corpus_documents = 0
     queries = 0
@@ -1447,7 +1536,11 @@ def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *
     source = config.get("data_provenance", {}).get(dataset, {
         "status": "not_recorded_in_existing_local_snapshot",
     })
+    contract = experiment_contract_fingerprint(dataset)
+    part1 = config.get("parts", {}).get("part1_stacking", {})
     return {
+        "experiment_contract_sha256": contract["sha256"],
+        "experiment_contract_files": contract["files"],
         "dataset_provenance": {
             "source": source,
             "files": {
@@ -1464,10 +1557,15 @@ def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *
         },
         "controls": {
             "analysis_bootstrap_seed": config.get("seed"),
+            "analysis_bootstrap_iterations": DEFAULT_BOOTSTRAP_ITERATIONS,
             "analysis_seed_purpose": "paired_bootstrap",
-            "minimum_practical_effect_status": config.get("parts", {}).get(
-                "part1_stacking", {}
-            ).get("minimum_practical_effect_status"),
+            "minimum_practical_effect_size": part1.get("minimum_practical_effect_size"),
+            "minimum_practical_effect_version": part1.get(
+                "minimum_practical_effect_version"
+            ),
+            "minimum_practical_effect_status": part1.get(
+                "minimum_practical_effect_status"
+            ),
             "embedding_model": embedding.get("name"),
             "embedding_endpoint": embedding.get("url"),
             "query_instruction": embedding.get("query_instruction"),
