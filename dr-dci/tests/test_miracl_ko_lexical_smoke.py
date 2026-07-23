@@ -134,6 +134,7 @@ class MiraclKoLexicalSmokeTests(unittest.TestCase):
             "language": "ko",
             "retrieval_unit": "passage",
             "scale": 20_000,
+            "source_git_commit": "e" * 40,
             "raw_rows": rows,
             "metrics": metrics,
             "provenance": {
@@ -142,12 +143,16 @@ class MiraclKoLexicalSmokeTests(unittest.TestCase):
                 "backend_config_sha256": sha256_json(smoke_config()),
                 "backend_runtime_sha256": "d" * 64,
                 "raw_rows_sha256": sha256_json(rows),
+                "container_recipe_sha256": "f" * 64,
             },
         }
         validate_standalone_smoke_result(result, config=smoke_config())
         broken = {**result, "provenance": {**result["provenance"], "backend_config_sha256": "bad"}}
         with self.assertRaisesRegex(ValueError, "backend_config_sha256"):
             validate_standalone_smoke_result(broken, config=smoke_config())
+        missing_commit = {key: value for key, value in result.items() if key != "source_git_commit"}
+        with self.assertRaisesRegex(ValueError, "source_git_commit"):
+            validate_standalone_smoke_result(missing_commit, config=smoke_config())
 
     def test_scale_comparison_is_paired_and_has_no_practical_effect_decision(self):
         def row(qid, recall):

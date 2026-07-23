@@ -74,6 +74,22 @@ def load_json(path: Path) -> dict[str, Any]:
     return data
 
 
+def resolve_source_git_commit(value: str | None) -> str:
+    if value is None:
+        try:
+            value = subprocess.run(
+                ["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError("source_git_commit is required when the smoke directory has no Git metadata") from error
+    if len(value) != 40 or any(character not in "0123456789abcdef" for character in value):
+        raise ValueError("source_git_commit must be a 40-character lowercase Git SHA-1")
+    return value
+
+
 def require_file_record(data_dir: Path, record: dict[str, Any], *, label: str) -> Path:
     relative_path = record.get("relative_path")
     if not isinstance(relative_path, str) or not relative_path:
@@ -212,6 +228,8 @@ def run_scale(
     qrels: dict[str, dict[str, int | float]],
     query_qrel_sha256: str,
     runtime: dict[str, Any],
+    source_git_commit: str,
+    container_recipe_sha256: str,
 ) -> dict[str, Any]:
     subset = subset_manifest["subsets"][str(scale)]
     corpus_path = require_file_record(data_dir, subset["corpus"], label=f"{scale} passage corpus")
@@ -282,6 +300,7 @@ def run_scale(
         "language": "ko",
         "retrieval_unit": "passage",
         "scale": scale,
+        "source_git_commit": source_git_commit,
         "backend": config["backend"],
         "runtime": runtime,
         "retrieval": config["retrieval"],
@@ -296,6 +315,7 @@ def run_scale(
             "subset_manifest_sha256": sha256_file(data_dir / "subsets" / "manifest.json"),
             "runner_code_sha256": sha256_file(Path(__file__).resolve()),
             "contract_code_sha256": sha256_file(REPO_ROOT / "src" / "miracl_ko" / "lexical_smoke.py"),
+            "container_recipe_sha256": container_recipe_sha256,
         },
     }
     validate_standalone_smoke_result(result, config=config)
@@ -324,6 +344,7 @@ def write_report(
         "language": "ko",
         "retrieval_unit": "passage",
         "scope": "standalone lexical plumbing smoke; not a focused Part 1/2 or Agentic RAG result",
+        "source_git_commit": outputs[20_000]["result"]["source_git_commit"],
         "backend_config": config,
         "backend_runtime": runtime,
         "scales": {
@@ -385,6 +406,7 @@ def main() -> None:
     parser.add_argument("--docs-dir", type=Path, default=Path("docs"))
     parser.add_argument("--config", type=Path, default=Path("config/miracl_ko_lexical_smoke.json"))
     parser.add_argument("--stamp", default="20260723")
+    parser.add_argument("--source-git-commit", help="40-character source commit; required outside a Git checkout")
     args = parser.parse_args()
     data_dir = (REPO_ROOT / args.data_dir).resolve() if not args.data_dir.is_absolute() else args.data_dir
     output_dir = (REPO_ROOT / args.output_dir).resolve() if not args.output_dir.is_absolute() else args.output_dir
@@ -392,6 +414,8 @@ def main() -> None:
     config_path = (REPO_ROOT / args.config).resolve() if not args.config.is_absolute() else args.config
     config = load_json(config_path)
     validate_lexical_smoke_config(config)
+    source_git_commit = resolve_source_git_commit(args.source_git_commit)
+    container_recipe_sha256 = sha256_file(REPO_ROOT / "docker" / "miracl_ko_lexical_smoke.Dockerfile")
 
     subset_manifest = load_json(data_dir / "subsets" / "manifest.json")
     validate_miracl_ko_subset_files(data_dir, subset_manifest)
@@ -408,6 +432,8 @@ def main() -> None:
             qrels=qrels,
             query_qrel_sha256=query_qrel_sha256,
             runtime=runtime,
+            source_git_commit=source_git_commit,
+            container_recipe_sha256=container_recipe_sha256,
         )
         for scale in SCALE_SIZES
     }

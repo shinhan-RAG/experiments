@@ -253,6 +253,9 @@ def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str
             raise ValueError(f"MIRACL lexical smoke result has invalid {key}")
     if result.get("scale") not in {20_000, 50_000, 110_000}:
         raise ValueError("MIRACL lexical smoke result has invalid scale")
+    source_git_commit = result.get("source_git_commit")
+    if not isinstance(source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_git_commit):
+        raise ValueError("MIRACL lexical smoke result requires source_git_commit")
     rows = result.get("raw_rows")
     if not isinstance(rows, list) or not rows:
         raise ValueError("MIRACL lexical smoke result requires raw per-query rows")
@@ -269,7 +272,7 @@ def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str
         raise ValueError("MIRACL lexical smoke result requires provenance")
     for key in (
         "subset_sha256", "query_qrel_sha256", "backend_config_sha256",
-        "backend_runtime_sha256", "raw_rows_sha256",
+        "backend_runtime_sha256", "raw_rows_sha256", "container_recipe_sha256",
     ):
         _require_sha256(provenance.get(key), label=f"MIRACL lexical smoke {key}")
     if provenance["backend_config_sha256"] != sha256_json(config):
