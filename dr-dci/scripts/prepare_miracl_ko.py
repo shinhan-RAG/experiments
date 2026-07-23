@@ -15,6 +15,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from src.miracl_ko.preparation import (
     acquire_miracl_ko,
+    build_preparation_contract,
     build_miracl_ko_subsets,
     load_current_miracl_ko_eda_report,
     load_revision_lock,
@@ -22,9 +23,11 @@ from src.miracl_ko.preparation import (
     load_verified_normalization_manifest,
     normalize_miracl_ko,
     raw_data_paths_are_ignored,
+    require_clean_git_source,
     validate_miracl_ko,
     validate_miracl_ko_subset_files,
     validate_nested_subset_manifest,
+    validate_preparation_contract,
     write_miracl_ko_eda_report,
     write_miracl_pretest_artifacts,
 )
@@ -56,7 +59,10 @@ def main() -> None:
         (repo_root / args.revision_lock).resolve()
         if not args.revision_lock.is_absolute() else args.revision_lock
     )
-    revision_lock = load_revision_lock(revision_lock_path)
+    source_git_commit = require_clean_git_source(repo_root)
+    preparation_contract = build_preparation_contract(repo_root)
+    validate_preparation_contract(preparation_contract, repo_root=repo_root)
+    revision_lock = load_revision_lock(revision_lock_path, repo_root=repo_root)
     if not raw_data_paths_are_ignored(repo_root, data_dir):
         raise RuntimeError("MIRACL raw data directory must remain below ignored data/")
 
@@ -67,35 +73,68 @@ def main() -> None:
 
     if args.command in {"acquire", "all"}:
         acquisition = acquire_miracl_ko(
-            data_dir, acquisition_script=script_path, revision_lock=revision_lock
+            data_dir,
+            acquisition_script=script_path,
+            revision_lock=revision_lock,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
         )
         print(f"acquired {len(acquisition['files'])} official MIRACL-ko files")
     elif not acquisition_path.exists():
         raise FileNotFoundError("run acquire first: missing acquisition_manifest.json")
     elif args.command == "report":
-        acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
+        acquisition = load_verified_acquisition_manifest(
+            data_dir,
+            revision_lock,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
 
     if args.command in {"normalize", "all"}:
-        normalization = normalize_miracl_ko(data_dir, revision_lock=revision_lock)
+        normalization = normalize_miracl_ko(
+            data_dir,
+            revision_lock=revision_lock,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
         print("normalized MIRACL-ko raw artifacts")
     elif args.command in {"validate", "subsets", "report"} and not normalization_path.exists():
         raise FileNotFoundError("run normalize first: missing normalization_manifest.json")
     elif args.command == "report":
-        normalization = load_verified_normalization_manifest(data_dir)
+        normalization = load_verified_normalization_manifest(
+            data_dir,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
 
     if args.command in {"validate", "all"}:
-        eda = validate_miracl_ko(data_dir, revision_lock=revision_lock)
+        eda = validate_miracl_ko(
+            data_dir,
+            revision_lock=revision_lock,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
         if eda["integrity_status"] != "passed":
             raise RuntimeError(f"MIRACL-ko integrity blocked: {eda['violations']}")
         write_miracl_ko_eda_report(data_dir, eda)
         print("validated MIRACL-ko passage/query/qrel integrity")
     elif args.command in {"subsets", "report"}:
-        eda = load_current_miracl_ko_eda_report(data_dir)
+        eda = load_current_miracl_ko_eda_report(
+            data_dir,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
     else:
         eda = None
 
     if args.command == "subsets":
-        subsets = build_miracl_ko_subsets(data_dir, eda, revision_lock=revision_lock)
+        subsets = build_miracl_ko_subsets(
+            data_dir,
+            eda,
+            revision_lock=revision_lock,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
         print("built deterministic 20K/50K/110K passage subsets")
     elif args.command == "all":
         subprocess.run(
@@ -120,7 +159,12 @@ def main() -> None:
             raise FileNotFoundError("run subsets first: missing MIRACL subset manifest")
         subsets = load_json(subset_path)
         validate_nested_subset_manifest(subsets, data_dir=data_dir)
-        validate_miracl_ko_subset_files(data_dir, subsets)
+        validate_miracl_ko_subset_files(
+            data_dir,
+            subsets,
+            preparation_contract=preparation_contract,
+            source_git_commit=source_git_commit,
+        )
     elif subset_path.exists():
         subsets = load_json(subset_path)
     else:

@@ -16,7 +16,8 @@
   "approval_record": {
     "status": "reviewed_for_m0_preparation",
     "reviewed_at": "2026-07-23",
-    "evidence": "MIRACL_KO_M0_REVIEW_20260723.md (PageIndex project root)",
+    "evidence_path": "docs/MIRACL_KO_REVISION_APPROVAL_20260723.md",
+    "evidence_sha256": "7c5a5892a15d18ee924d3f1b994f1340e5d20888d5579d0cec5853f6a054cbcf",
     "scope": "immutable source revision lock only; not approval for taxonomy, Agent/LLM, or focused Part 1/2 execution"
   }
 }

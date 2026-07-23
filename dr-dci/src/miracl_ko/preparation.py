@@ -23,12 +23,18 @@ from typing import Any, Iterable, Iterator
 import unicodedata
 
 
-PREPARATION_VERSION = "miracl-ko-preparation-v1"
+PREPARATION_VERSION = "miracl-ko-preparation-v2"
 NORMALIZATION_VERSION = "miracl-ko-nfc-v1"
-SCALE_VERSION = "miracl-ko-scale-v1"
+SCALE_VERSION = "miracl-ko-scale-v2"
 SCALE_SIZES = (20_000, 50_000, 110_000)
 RETRIEVAL_UNIT = "passage"
 REVISION_LOCK_SCHEMA_VERSION = "dr-dci.miracl-ko-revision-lock.v1"
+PREPARATION_CONTRACT_VERSION = "dr-dci.miracl-ko-preparation-contract.v1"
+PREPARATION_CONTRACT_FILES = (
+    "scripts/prepare_miracl_ko.py",
+    "src/miracl_ko/preparation.py",
+    "config/miracl_ko_revision_lock.json",
+)
 NORMALIZED_SCHEMA = {
     "corpus": {
         "corpus_id": "article_id#passage_index (preserved MIRACL docid)",
@@ -106,6 +112,94 @@ def file_record(path: Path, *, relative_to: Path | None = None) -> dict[str, Any
     }
 
 
+def _require_sha256(value: Any, *, label: str) -> str:
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+        raise ValueError(f"{label} must be a SHA-256 hex digest")
+    return value
+
+
+def _repository_file_path(repo_root: Path, relative_path: Any, *, label: str) -> Path:
+    if not isinstance(relative_path, str) or not relative_path:
+        raise ValueError(f"{label} has invalid relative_path")
+    root = repo_root.resolve()
+    candidate = (root / relative_path).resolve()
+    if not candidate.is_relative_to(root):
+        raise ValueError(f"{label} escapes repository root")
+    return candidate
+
+
+def build_preparation_contract(repo_root: Path) -> dict[str, Any]:
+    """Hash every committed input that defines MIRACL preparation semantics."""
+    repo_root = repo_root.resolve()
+    records = []
+    for relative_path in PREPARATION_CONTRACT_FILES:
+        path = _repository_file_path(repo_root, relative_path, label="preparation contract")
+        if not path.is_file():
+            raise FileNotFoundError(f"MIRACL preparation contract file is missing: {relative_path}")
+        records.append(file_record(path, relative_to=repo_root))
+    payload = {
+        "contract_version": PREPARATION_CONTRACT_VERSION,
+        "preparation_version": PREPARATION_VERSION,
+        "scale_version": SCALE_VERSION,
+        "files": records,
+    }
+    return {**payload, "preparation_contract_sha256": sha256_json(payload)}
+
+
+def validate_preparation_contract(contract: dict[str, Any], *, repo_root: Path) -> None:
+    if not isinstance(contract, dict):
+        raise ValueError("MIRACL preparation contract must be an object")
+    if contract.get("contract_version") != PREPARATION_CONTRACT_VERSION:
+        raise ValueError("MIRACL preparation contract has unsupported contract_version")
+    if contract.get("preparation_version") != PREPARATION_VERSION:
+        raise ValueError("MIRACL preparation contract has unsupported preparation_version")
+    if contract.get("scale_version") != SCALE_VERSION:
+        raise ValueError("MIRACL preparation contract has unsupported scale_version")
+    records = contract.get("files")
+    if not isinstance(records, list) or len(records) != len(PREPARATION_CONTRACT_FILES):
+        raise ValueError("MIRACL preparation contract has invalid files")
+    by_path = {record.get("relative_path"): record for record in records if isinstance(record, dict)}
+    if set(by_path) != set(PREPARATION_CONTRACT_FILES):
+        raise ValueError("MIRACL preparation contract must include wrapper, algorithm module, and revision lock")
+    for relative_path in PREPARATION_CONTRACT_FILES:
+        record = by_path[relative_path]
+        _require_sha256(record.get("sha256"), label="preparation contract file sha256")
+        path = _repository_file_path(repo_root, relative_path, label="preparation contract")
+        if not path.is_file():
+            raise ValueError(f"MIRACL preparation contract file is missing: {relative_path}")
+        if record.get("byte_size") != path.stat().st_size:
+            raise ValueError(f"MIRACL preparation contract file byte_size does not match: {relative_path}")
+        if record["sha256"] != sha256_file(path):
+            raise ValueError(f"MIRACL preparation contract file sha256 does not match: {relative_path}")
+    payload = {
+        "contract_version": contract["contract_version"],
+        "preparation_version": contract["preparation_version"],
+        "scale_version": contract["scale_version"],
+        "files": records,
+    }
+    if contract.get("preparation_contract_sha256") != sha256_json(payload):
+        raise ValueError("MIRACL preparation contract sha256 does not match its recorded files")
+
+
+def require_clean_git_source(repo_root: Path) -> str:
+    """Return the exact source commit and reject uncommitted preparation code."""
+    status = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain"],
+        capture_output=True, text=True, check=False,
+    )
+    if status.returncode:
+        raise ValueError("MIRACL preparation source provenance requires a Git worktree")
+    if status.stdout.strip():
+        raise ValueError("MIRACL preparation requires a clean Git worktree before execution")
+    commit = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        capture_output=True, text=True, check=False,
+    )
+    if commit.returncode or not re.fullmatch(r"[0-9a-f]{40}", commit.stdout.strip()):
+        raise ValueError("MIRACL preparation source provenance requires a Git commit")
+    return commit.stdout.strip()
+
+
 def _manifest_file_path(data_dir: Path, relative_path: Any) -> Path:
     if not isinstance(relative_path, str) or not relative_path:
         raise ValueError("manifest file record has invalid relative_path")
@@ -129,7 +223,7 @@ def _validate_file_record(record: dict[str, Any], *, data_dir: Path, label: str)
         raise ValueError(f"{label} sha256 does not match manifest: {record['relative_path']}")
 
 
-def validate_revision_lock(lock: dict[str, Any]) -> None:
+def validate_revision_lock(lock: dict[str, Any], *, repo_root: Path | None = None) -> None:
     if lock.get("schema_version") != REVISION_LOCK_SCHEMA_VERSION:
         raise ValueError("MIRACL revision lock has unsupported schema_version")
     if lock.get("dataset") != "MIRACL" or lock.get("language") != "ko":
@@ -139,9 +233,18 @@ def validate_revision_lock(lock: dict[str, Any]) -> None:
     approval = lock.get("approval_record")
     if not isinstance(approval, dict) or not all(
         isinstance(approval.get(key), str) and approval[key]
-        for key in ("status", "reviewed_at", "evidence", "scope")
+        for key in ("status", "reviewed_at", "evidence_path", "evidence_sha256", "scope")
     ):
         raise ValueError("MIRACL revision lock is missing an approval_record")
+    _require_sha256(approval["evidence_sha256"], label="MIRACL revision-lock evidence sha256")
+    if repo_root is not None:
+        evidence = _repository_file_path(
+            repo_root, approval["evidence_path"], label="MIRACL revision-lock evidence"
+        )
+        if not evidence.is_file():
+            raise ValueError("MIRACL revision-lock evidence file is missing")
+        if sha256_file(evidence) != approval["evidence_sha256"]:
+            raise ValueError("MIRACL revision-lock evidence sha256 does not match")
     expected_repositories = {
         "topics_qrels": TOPICS_QRELS_REPO,
         "corpus": CORPUS_REPO,
@@ -158,7 +261,7 @@ def validate_revision_lock(lock: dict[str, Any]) -> None:
             raise ValueError(f"MIRACL revision lock has invalid revision for {key}")
 
 
-def load_revision_lock(path: Path) -> dict[str, Any]:
+def load_revision_lock(path: Path, *, repo_root: Path | None = None) -> dict[str, Any]:
     if not path.is_file():
         raise FileNotFoundError(f"MIRACL revision lock is missing: {path}")
     try:
@@ -167,7 +270,7 @@ def load_revision_lock(path: Path) -> dict[str, Any]:
         raise ValueError(f"MIRACL revision lock is invalid JSON: {path}") from error
     if not isinstance(lock, dict):
         raise ValueError("MIRACL revision lock must be a JSON object")
-    validate_revision_lock(lock)
+    validate_revision_lock(lock, repo_root=repo_root)
     return lock
 
 
@@ -350,6 +453,20 @@ def validate_nested_subset_manifest(manifest: dict[str, Any], *, data_dir: Path 
     """Guard scale-invariant query/qrel provenance in the persisted fixture manifest."""
     if manifest.get("retrieval_unit") != RETRIEVAL_UNIT:
         raise ValueError("MIRACL nested subset manifest must be passage-level")
+    if manifest.get("scale_version") != SCALE_VERSION:
+        raise ValueError("MIRACL nested subset manifest must use miracl-ko-scale-v2")
+    _require_sha256(
+        manifest.get("preparation_contract_sha256"),
+        label="MIRACL nested subset preparation_contract_sha256",
+    )
+    if not isinstance(manifest.get("source_git_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", manifest["source_git_commit"]
+    ):
+        raise ValueError("MIRACL nested subset manifest has invalid source_git_commit")
+    if manifest.get("output_order_definition") != (
+        f"SHA256({SCALE_VERSION}\\0 + corpus_id), independent of relevance"
+    ):
+        raise ValueError("MIRACL nested subset manifest has inconsistent global rank definition")
     subsets = manifest.get("subsets")
     if not isinstance(subsets, dict) or set(subsets) != {str(size) for size in SCALE_SIZES}:
         raise ValueError("MIRACL nested subset manifest must contain exactly 20K/50K/110K")
@@ -387,9 +504,19 @@ def validate_nested_subset_manifest(manifest: dict[str, Any], *, data_dir: Path 
             _validate_file_record(record, data_dir=data_dir, label=f"subset query/qrel input {name}")
 
 
-def validate_miracl_ko_subset_files(data_dir: Path, manifest: dict[str, Any]) -> None:
+def validate_miracl_ko_subset_files(
+    data_dir: Path,
+    manifest: dict[str, Any],
+    *,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> None:
     """Recheck persisted fixture membership, global ordering, and shared contents."""
     validate_nested_subset_manifest(manifest, data_dir=data_dir)
+    if preparation_contract is not None:
+        expected_contract_sha = preparation_contract.get("preparation_contract_sha256")
+        if manifest.get("preparation_contract_sha256") != expected_contract_sha:
+            raise ValueError("subset manifest preparation contract does not match current preparation source")
     paths = normalized_paths(data_dir)
     judged_ids = judged_passage_ids(
         list(iter_jsonl(paths["qrels_train"])) + list(iter_jsonl(paths["qrels_dev"]))
@@ -433,12 +560,16 @@ def validate_miracl_ko_subset_files(data_dir: Path, manifest: dict[str, Any]) ->
 
 
 def validate_acquisition_manifest(
-    manifest: dict[str, Any], *, data_dir: Path | None = None, revision_lock: dict[str, Any] | None = None
+    manifest: dict[str, Any], *, data_dir: Path | None = None,
+    revision_lock: dict[str, Any] | None = None,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
 ) -> None:
     required = (
         "dataset", "language", "source_urls", "resolved_revision", "downloaded_at",
         "license", "underlying_content_license", "acquisition_script_version",
-        "acquisition_script_sha256", "python_version", "files",
+        "acquisition_script_sha256", "preparation_contract_sha256", "source_git_commit",
+        "python_version", "files",
     )
     for key in required:
         if not manifest.get(key):
@@ -456,6 +587,17 @@ def validate_acquisition_manifest(
             raise ValueError("acquisition manifest revisions do not match the approved revision lock")
         if manifest.get("revision_lock_sha256") != sha256_json(revision_lock):
             raise ValueError("acquisition manifest revision_lock_sha256 does not match the approved revision lock")
+    _require_sha256(
+        manifest.get("preparation_contract_sha256"),
+        label="acquisition manifest preparation_contract_sha256",
+    )
+    if not isinstance(manifest.get("source_git_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", manifest["source_git_commit"]
+    ):
+        raise ValueError("acquisition manifest has invalid source_git_commit")
+    if preparation_contract is not None:
+        if manifest["preparation_contract_sha256"] != preparation_contract.get("preparation_contract_sha256"):
+            raise ValueError("acquisition manifest preparation contract does not match current preparation source")
     for record in manifest["files"]:
         for key in ("source_url", "source_key", "resolved_revision", "relative_path", "byte_size", "sha256"):
             if key not in record:
@@ -475,10 +617,15 @@ def validate_acquisition_manifest(
             _validate_file_record(record, data_dir=data_dir, label="acquisition manifest")
 
 
-def validate_normalization_manifest(manifest: dict[str, Any], *, data_dir: Path) -> None:
+def validate_normalization_manifest(
+    manifest: dict[str, Any], *, data_dir: Path,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> None:
     required = (
         "dataset", "language", "retrieval_unit", "transformation_version", "generated_at",
-        "acquisition_manifest_sha256", "revision_lock_sha256", "inputs", "outputs",
+        "acquisition_manifest_sha256", "revision_lock_sha256", "preparation_contract_sha256",
+        "source_git_commit", "inputs", "outputs",
         "unicode_nfc_changed_fields",
     )
     for key in required:
@@ -486,6 +633,17 @@ def validate_normalization_manifest(manifest: dict[str, Any], *, data_dir: Path)
             raise ValueError(f"normalization manifest missing {key}")
     if manifest.get("retrieval_unit") != RETRIEVAL_UNIT:
         raise ValueError("normalization manifest must be passage-level")
+    _require_sha256(
+        manifest.get("preparation_contract_sha256"),
+        label="normalization manifest preparation_contract_sha256",
+    )
+    if not isinstance(manifest.get("source_git_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", manifest["source_git_commit"]
+    ):
+        raise ValueError("normalization manifest has invalid source_git_commit")
+    if preparation_contract is not None:
+        if manifest["preparation_contract_sha256"] != preparation_contract.get("preparation_contract_sha256"):
+            raise ValueError("normalization manifest preparation contract does not match current preparation source")
     for section in ("inputs", "outputs"):
         records = manifest[section]
         if not isinstance(records, dict) or not records:
@@ -575,21 +733,43 @@ def normalized_paths(data_dir: Path) -> dict[str, Path]:
     }
 
 
-def load_verified_acquisition_manifest(data_dir: Path, revision_lock: dict[str, Any]) -> dict[str, Any]:
+def load_verified_acquisition_manifest(
+    data_dir: Path,
+    revision_lock: dict[str, Any],
+    *,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> dict[str, Any]:
     path = data_dir / "acquisition_manifest.json"
     if not path.is_file():
         raise FileNotFoundError("MIRACL preparation requires acquisition_manifest.json")
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    validate_acquisition_manifest(manifest, data_dir=data_dir, revision_lock=revision_lock)
+    validate_acquisition_manifest(
+        manifest,
+        data_dir=data_dir,
+        revision_lock=revision_lock,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     return manifest
 
 
-def load_verified_normalization_manifest(data_dir: Path) -> dict[str, Any]:
+def load_verified_normalization_manifest(
+    data_dir: Path,
+    *,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> dict[str, Any]:
     path = data_dir / "normalization_manifest.json"
     if not path.is_file():
         raise FileNotFoundError("MIRACL preparation requires normalization_manifest.json")
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    validate_normalization_manifest(manifest, data_dir=data_dir)
+    validate_normalization_manifest(
+        manifest,
+        data_dir=data_dir,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     return manifest
 
 
@@ -640,13 +820,22 @@ def write_miracl_ko_eda_report(data_dir: Path, report: dict[str, Any]) -> None:
     _atomic_write_json(eda_report_path(data_dir), report)
 
 
-def load_current_miracl_ko_eda_report(data_dir: Path) -> dict[str, Any]:
+def load_current_miracl_ko_eda_report(
+    data_dir: Path,
+    *,
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> dict[str, Any]:
     path = eda_report_path(data_dir)
     if not path.is_file():
         raise FileNotFoundError("run validate first: missing MIRACL EDA report")
     report = json.loads(path.read_text(encoding="utf-8"))
     if report.get("normalization_manifest_sha256") != sha256_file(data_dir / "normalization_manifest.json"):
         raise ValueError("MIRACL EDA report does not match the current normalization manifest")
+    if preparation_contract is not None and report.get("preparation_contract_sha256") != preparation_contract.get(
+        "preparation_contract_sha256"
+    ):
+        raise ValueError("MIRACL EDA report does not match current preparation source")
     if report.get("integrity_status") != "passed":
         raise ValueError("MIRACL EDA report is not passing")
     validate_eda_blocking_conditions(report)
@@ -665,8 +854,19 @@ def _normalize_field(value: Any, name: str, changes: Counter[str]) -> str:
     return normalized
 
 
-def normalize_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict[str, Any]:
-    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
+def normalize_miracl_ko(
+    data_dir: Path,
+    *,
+    revision_lock: dict[str, Any],
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> dict[str, Any]:
+    acquisition = load_verified_acquisition_manifest(
+        data_dir,
+        revision_lock,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     raw = raw_paths(data_dir)
     missing = [name for name, path in raw.items() if not path.is_file()]
     if missing:
@@ -740,6 +940,8 @@ def normalize_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dic
         "generated_at": utc_now(),
         "acquisition_manifest_sha256": sha256_file(data_dir / "acquisition_manifest.json"),
         "revision_lock_sha256": sha256_json(revision_lock),
+        "preparation_contract_sha256": acquisition["preparation_contract_sha256"],
+        "source_git_commit": acquisition["source_git_commit"],
         "inputs": {name: file_record(path, relative_to=data_dir) for name, path in raw.items()},
         "outputs": {name: {**record, "relative_path": str(output[name].relative_to(data_dir))}
                     for name, record in outputs.items()},
@@ -866,14 +1068,35 @@ def _load_qrel_splits(paths: dict[str, Path]) -> dict[str, Any]:
     }
 
 
-def validate_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict[str, Any]:
+def validate_miracl_ko(
+    data_dir: Path,
+    *,
+    revision_lock: dict[str, Any],
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
+) -> dict[str, Any]:
     """Compute passage-level EDA and fail-loud integrity findings from normalized data."""
-    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
-    verified_normalization = load_verified_normalization_manifest(data_dir)
+    acquisition = load_verified_acquisition_manifest(
+        data_dir,
+        revision_lock,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
+    verified_normalization = load_verified_normalization_manifest(
+        data_dir,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     if verified_normalization.get("acquisition_manifest_sha256") != sha256_file(data_dir / "acquisition_manifest.json"):
         raise ValueError("normalization manifest does not match the verified acquisition manifest")
     if verified_normalization.get("revision_lock_sha256") != sha256_json(revision_lock):
         raise ValueError("normalization manifest does not match the approved revision lock")
+    if verified_normalization.get("preparation_contract_sha256") != acquisition.get(
+        "preparation_contract_sha256"
+    ):
+        raise ValueError("normalization manifest does not match the preparation contract")
+    if verified_normalization.get("source_git_commit") != acquisition.get("source_git_commit"):
+        raise ValueError("normalization manifest does not match the source Git commit")
     paths = normalized_paths(data_dir)
     missing = [name for name, path in paths.items() if not path.is_file()]
     if missing:
@@ -1013,6 +1236,8 @@ def validate_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict
         "language": "ko",
         "retrieval_unit": RETRIEVAL_UNIT,
         "generated_at": utc_now(),
+        "preparation_contract_sha256": acquisition["preparation_contract_sha256"],
+        "source_git_commit": acquisition["source_git_commit"],
         "normalization_manifest_sha256": sha256_file(normalization_manifest_path)
         if normalization_manifest_path.exists() else None,
         "corpus": {
@@ -1097,7 +1322,12 @@ def validate_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict
 
 
 def build_miracl_ko_subsets(
-    data_dir: Path, eda: dict[str, Any], *, revision_lock: dict[str, Any]
+    data_dir: Path,
+    eda: dict[str, Any],
+    *,
+    revision_lock: dict[str, Any],
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
 ) -> dict[str, Any]:
     """Create nested memberships, then serialize each scale by global passage hash rank."""
     if eda.get("retrieval_unit") != RETRIEVAL_UNIT:
@@ -1106,14 +1336,27 @@ def build_miracl_ko_subsets(
         raise ValueError("MIRACL subset builder requires passing integrity EDA")
     paths = normalized_paths(data_dir)
     acquisition_path = data_dir / "acquisition_manifest.json"
-    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
-    normalization = load_verified_normalization_manifest(data_dir)
+    acquisition = load_verified_acquisition_manifest(
+        data_dir,
+        revision_lock,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
+    normalization = load_verified_normalization_manifest(
+        data_dir,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     if normalization.get("acquisition_manifest_sha256") != sha256_file(acquisition_path):
         raise ValueError("subset builder requires normalization tied to the verified acquisition manifest")
     if normalization.get("revision_lock_sha256") != sha256_json(revision_lock):
         raise ValueError("subset builder requires normalization tied to the approved revision lock")
     if eda.get("normalization_manifest_sha256") != sha256_file(data_dir / "normalization_manifest.json"):
         raise ValueError("subset builder requires EDA from the current verified normalization manifest")
+    if eda.get("preparation_contract_sha256") != acquisition["preparation_contract_sha256"]:
+        raise ValueError("subset builder requires EDA from the current preparation contract")
+    if eda.get("source_git_commit") != acquisition["source_git_commit"]:
+        raise ValueError("subset builder requires EDA from the current source Git commit")
     qrels = list(iter_jsonl(paths["qrels_train"])) + list(iter_jsonl(paths["qrels_dev"]))
     positive_ids = positive_passage_ids(qrels)
     judged_ids = judged_passage_ids(qrels)
@@ -1125,20 +1368,34 @@ def build_miracl_ko_subsets(
     manifest_path = root / "manifest.json"
     if manifest_path.is_file():
         existing = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if existing.get("scale_version") != SCALE_VERSION:
-            raise ValueError("existing MIRACL subset fixture uses a different scale contract")
-        if existing.get("source_revisions") != acquisition["resolved_revision"]:
+        if existing.get("scale_version") == SCALE_VERSION and existing.get("source_revisions") != acquisition["resolved_revision"]:
             raise ValueError("existing MIRACL subset fixture uses different source revisions")
-        validate_miracl_ko_subset_files(data_dir, existing)
-        # Source bytes, normalized query/qrels, and persisted fixture have all
-        # been revalidated.  Rebind provenance without rewriting identical
-        # large passage files solely because manifest metadata changed.
-        existing["acquisition_manifest_sha256"] = sha256_file(acquisition_path)
-        existing["normalization_manifest_sha256"] = sha256_file(data_dir / "normalization_manifest.json")
-        existing["normalized_corpus_input"] = file_record(paths["corpus"], relative_to=data_dir)
-        _atomic_write_json(manifest_path, existing)
-        validate_miracl_ko_subset_files(data_dir, existing)
-        return existing
+        can_reuse_existing = (
+            existing.get("scale_version") == SCALE_VERSION
+            and existing.get("preparation_contract_sha256") == acquisition["preparation_contract_sha256"]
+        )
+        if can_reuse_existing:
+            validate_miracl_ko_subset_files(
+                data_dir,
+                existing,
+                preparation_contract=preparation_contract,
+                source_git_commit=source_git_commit,
+            )
+            # Source bytes, normalized query/qrels, and persisted fixture have all
+            # been revalidated.  Rebind provenance without rewriting identical
+            # large passage files solely because manifest metadata changed.
+            existing["acquisition_manifest_sha256"] = sha256_file(acquisition_path)
+            existing["normalization_manifest_sha256"] = sha256_file(data_dir / "normalization_manifest.json")
+            existing["normalized_corpus_input"] = file_record(paths["corpus"], relative_to=data_dir)
+            existing["source_git_commit"] = acquisition["source_git_commit"]
+            _atomic_write_json(manifest_path, existing)
+            validate_miracl_ko_subset_files(
+                data_dir,
+                existing,
+                preparation_contract=preparation_contract,
+                source_git_commit=source_git_commit,
+            )
+            return existing
     ordered_ids = stream_nested_subset_ids(paths["corpus"], judged_ids)
     canonical_ids = ordered_ids[SCALE_SIZES[-1]]
     canonical_set = set(canonical_ids)
@@ -1179,12 +1436,14 @@ def build_miracl_ko_subsets(
         "retrieval_unit": RETRIEVAL_UNIT,
         "design": "controlled distractor scaling; all judged passages fixed, unjudged distractors increase",
         "scale_version": SCALE_VERSION,
+        "preparation_contract_sha256": acquisition["preparation_contract_sha256"],
+        "source_git_commit": acquisition["source_git_commit"],
         "acquisition_manifest_sha256": sha256_file(acquisition_path),
         "normalization_manifest_sha256": sha256_file(data_dir / "normalization_manifest.json"),
         "normalized_corpus_input": file_record(paths["corpus"], relative_to=data_dir),
         "source_revisions": acquisition["resolved_revision"],
         "mandatory_set_definition": "all unique corpus IDs in normalized train and dev qrels, regardless of relevance",
-        "output_order_definition": "SHA256(miracl-ko-scale-v1\\0 + corpus_id), independent of relevance",
+        "output_order_definition": f"SHA256({SCALE_VERSION}\\0 + corpus_id), independent of relevance",
         "positive_passage_count": len(positive_ids),
         "positive_passage_id_sha256": sha256_json(sorted(positive_ids)),
         "judged_passage_count": len(judged_ids),
@@ -1195,7 +1454,12 @@ def build_miracl_ko_subsets(
     validate_nested_subset_manifest(manifest)
     _atomic_write_json(root / "manifest.json", manifest)
     validate_nested_subset_manifest(manifest, data_dir=data_dir)
-    validate_miracl_ko_subset_files(data_dir, manifest)
+    validate_miracl_ko_subset_files(
+        data_dir,
+        manifest,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     return manifest
 
 
@@ -1204,12 +1468,19 @@ def _repository_files(info: Any) -> dict[str, Any]:
 
 
 def acquire_miracl_ko(
-    data_dir: Path, *, acquisition_script: Path, revision_lock: dict[str, Any]
+    data_dir: Path,
+    *,
+    acquisition_script: Path,
+    revision_lock: dict[str, Any],
+    preparation_contract: dict[str, Any] | None = None,
+    source_git_commit: str | None = None,
 ) -> dict[str, Any]:
     """Verify/download only the revisions explicitly named in the approved lock."""
     from huggingface_hub import HfApi, hf_hub_download
 
     validate_revision_lock(revision_lock)
+    if preparation_contract is None or source_git_commit is None:
+        raise ValueError("MIRACL acquisition requires preparation contract and source Git commit")
     api = HfApi()
     topics_revision = revision_lock["sources"]["topics_qrels"]["revision"]
     corpus_revision = revision_lock["sources"]["corpus"]["revision"]
@@ -1277,11 +1548,19 @@ def acquire_miracl_ko(
         },
         "acquisition_script_version": PREPARATION_VERSION,
         "acquisition_script_sha256": sha256_file(acquisition_script),
+        "preparation_contract_sha256": preparation_contract["preparation_contract_sha256"],
+        "source_git_commit": source_git_commit,
         "python_version": os.sys.version,
         "transformation_version": NORMALIZATION_VERSION,
         "files": files,
     }
-    validate_acquisition_manifest(manifest, data_dir=data_dir, revision_lock=revision_lock)
+    validate_acquisition_manifest(
+        manifest,
+        data_dir=data_dir,
+        revision_lock=revision_lock,
+        preparation_contract=preparation_contract,
+        source_git_commit=source_git_commit,
+    )
     _atomic_write_json(data_dir / "acquisition_manifest.json", manifest)
     return manifest
 
@@ -1314,7 +1593,7 @@ def write_miracl_pretest_artifacts(
     stamp: str,
 ) -> tuple[Path, Path, Path]:
     summary = {
-        "schema_version": "dr-dci.miracl-ko-pretest.v2",
+        "schema_version": "dr-dci.miracl-ko-pretest.v3",
         "generated_at": utc_now(),
         "dataset": "MIRACL",
         "language": "ko",
@@ -1342,7 +1621,7 @@ def write_miracl_pretest_artifacts(
         },
     }
     hash_manifest = {
-        "schema_version": "dr-dci.miracl-ko-hash-manifest.v2",
+        "schema_version": "dr-dci.miracl-ko-hash-manifest.v3",
         "generated_at": utc_now(),
         "dataset": "MIRACL",
         "language": "ko",
@@ -1370,6 +1649,7 @@ def write_miracl_pretest_artifacts(
         f"- Topics/qrels revision: `{acquisition['resolved_revision']['topics_qrels']}`",
         f"- Corpus revision: `{acquisition['resolved_revision']['corpus']}`",
         f"- Approved revision-lock SHA-256: `{acquisition['revision_lock_sha256']}`; acquisition requests only these revisions and never adopts remote HEAD.",
+        f"- Preparation contract SHA-256: `{acquisition['preparation_contract_sha256']}`; source Git commit: `{acquisition['source_git_commit']}`. The contract hashes the wrapper, preparation algorithm module, and revision lock.",
         f"- MIRACL artifact license: {acquisition['license']}; underlying Wikipedia terms are recorded separately in the hash manifest.",
         "- Retrieval unit: **passage** (`article_id#passage_index`); article aggregation is not used.",
         f"- Raw artifacts are under ignored `data/`; no raw or normalized passage text is committed.", "",
@@ -1387,7 +1667,7 @@ def write_miracl_pretest_artifacts(
         "",
         "## Controlled distractor fixtures", "",
         "All judged passages (including relevance=0) are fixed across 20K/50K/110K; only unjudged SHA-256-ranked distractor passages increase.",
-        "The deterministic rank is `SHA256(\"miracl-ko-scale-v1\\0\" + corpus_id)`. Qrels choose mandatory membership only; every serialized scale is independently sorted by this relevance-independent rank.",
+        f"The deterministic rank is `{subsets['output_order_definition']}`. Qrels choose mandatory membership only; every serialized scale is independently sorted by this relevance-independent rank.",
         "Thus scale nesting is set inclusion rather than file-prefix inclusion, while every shared passage keeps the same relative order across scales.",
         "Before reporting, the persisted files are reread to verify their SHA-256, all-judged membership, global rank order, set nesting, and shared-passage content invariance.",
         *[f"- {size}: {subset_rows[str(size)]['passage_count']:,} passages; judged preservation `{subset_rows[str(size)]['judged_passages_preserved']}`; positive preservation `{subset_rows[str(size)]['positive_passages_preserved']}`; corpus SHA-256 `{subset_rows[str(size)]['corpus']['sha256']}`" for size in SCALE_SIZES],

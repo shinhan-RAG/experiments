@@ -1,15 +1,20 @@
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
 from src.miracl_ko.preparation import (
+    PREPARATION_CONTRACT_FILES,
     SCALE_SIZES,
+    SCALE_VERSION,
+    build_preparation_contract,
     build_nested_subset_ids,
     derive_passage_fields,
     judged_passage_ids,
     positive_passage_ids,
     raw_data_paths_are_ignored,
+    require_clean_git_source,
     validate_acquisition_manifest,
     validate_eda_blocking_conditions,
     validate_leakage_inputs,
@@ -23,6 +28,7 @@ from src.miracl_ko.preparation import (
     sha256_file,
     sha256_json,
     stream_nested_subset_ids,
+    validate_preparation_contract,
 )
 
 
@@ -77,10 +83,17 @@ class MiraclKoPreparationTests(unittest.TestCase):
             build_nested_subset_ids(corpus_ids, judged)
 
     def test_subset_payload_validator_rejects_relevance_ordered_rows(self):
+        reversed_ids = list(reversed(sorted(["a#1", "a#2"], key=scale_rank)))
         payloads = {
             20_000: [
-                {"corpus_id": "a#2", "article_id": "a", "passage_index": 2, "title": "A", "text": "two"},
-                {"corpus_id": "a#1", "article_id": "a", "passage_index": 1, "title": "A", "text": "one"},
+                {
+                    "corpus_id": corpus_id,
+                    "article_id": "a",
+                    "passage_index": int(corpus_id.rsplit("#", 1)[1]),
+                    "title": "A",
+                    "text": corpus_id,
+                }
+                for corpus_id in reversed_ids
             ],
         }
         with self.assertRaisesRegex(ValueError, "global hash rank"):
@@ -90,6 +103,10 @@ class MiraclKoPreparationTests(unittest.TestCase):
         inputs = {"queries_dev": {"sha256": "a" * 64}}
         manifest = {
             "retrieval_unit": "passage",
+            "scale_version": SCALE_VERSION,
+            "preparation_contract_sha256": "c" * 64,
+            "source_git_commit": "d" * 40,
+            "output_order_definition": f"SHA256({SCALE_VERSION}\\0 + corpus_id), independent of relevance",
             "all_judged_qrels_forced_into_mandatory_set": True,
             "subsets": {
                 str(size): {
@@ -108,6 +125,25 @@ class MiraclKoPreparationTests(unittest.TestCase):
         manifest["subsets"]["50000"]["query_qrel_inputs"] = inputs
         manifest["all_judged_qrels_forced_into_mandatory_set"] = False
         with self.assertRaisesRegex(ValueError, "all judged"):
+            validate_nested_subset_manifest(manifest)
+
+    def test_v1_subset_manifest_cannot_be_reused_under_v2_contract(self):
+        manifest = {
+            "retrieval_unit": "passage",
+            "scale_version": "miracl-ko-scale-v1",
+            "preparation_contract_sha256": "c" * 64,
+            "all_judged_qrels_forced_into_mandatory_set": True,
+            "subsets": {
+                str(size): {
+                    "passage_count": size,
+                    "positive_passages_preserved": True,
+                    "judged_passages_preserved": True,
+                    "query_qrel_inputs": {"queries_dev": {"sha256": "a" * 64}},
+                }
+                for size in SCALE_SIZES
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "scale-v2"):
             validate_nested_subset_manifest(manifest)
 
     def test_nested_payload_validator_rejects_changed_shared_passage(self):
@@ -141,6 +177,8 @@ class MiraclKoPreparationTests(unittest.TestCase):
             "underlying_content_license": {"content": "Wikipedia"},
             "acquisition_script_version": "test",
             "acquisition_script_sha256": "b" * 64,
+            "preparation_contract_sha256": "c" * 64,
+            "source_git_commit": "d" * 40,
             "python_version": "test",
             "files": [],
         }
@@ -169,7 +207,8 @@ class MiraclKoPreparationTests(unittest.TestCase):
             "change_control": "test",
             "approval_record": {
                 "status": "test", "reviewed_at": "2026-07-23",
-                "evidence": "test", "scope": "test",
+                "evidence_path": "docs/evidence.md", "evidence_sha256": "c" * 64,
+                "scope": "test",
             },
             "sources": {
                 "topics_qrels": {"repository": "miracl/miracl", "revision": "a" * 40},
@@ -193,6 +232,8 @@ class MiraclKoPreparationTests(unittest.TestCase):
                 "underlying_content_license": {"content": "Wikipedia"},
                 "acquisition_script_version": "test",
                 "acquisition_script_sha256": "c" * 64,
+                "preparation_contract_sha256": "d" * 64,
+                "source_git_commit": "e" * 40,
                 "python_version": "test",
                 "files": [{
                     "source_url": "https://example.test/topics",
@@ -209,6 +250,68 @@ class MiraclKoPreparationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "sha256"):
                 validate_acquisition_manifest(manifest, data_dir=root, revision_lock=lock)
 
+    def test_revision_lock_rechecks_repository_evidence_hash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / "docs" / "revision-evidence.md"
+            evidence.parent.mkdir()
+            evidence.write_text("approved revision evidence\n", encoding="utf-8")
+            lock = {
+                "schema_version": "dr-dci.miracl-ko-revision-lock.v1",
+                "dataset": "MIRACL",
+                "language": "ko",
+                "change_control": "test",
+                "approval_record": {
+                    "status": "test",
+                    "reviewed_at": "2026-07-23",
+                    "evidence_path": "docs/revision-evidence.md",
+                    "evidence_sha256": sha256_file(evidence),
+                    "scope": "test",
+                },
+                "sources": {
+                    "topics_qrels": {"repository": "miracl/miracl", "revision": "a" * 40},
+                    "corpus": {"repository": "miracl/miracl-corpus", "revision": "b" * 40},
+                },
+            }
+            validate_revision_lock(lock, repo_root=root)
+            evidence.write_text("altered evidence\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "evidence sha256"):
+                validate_revision_lock(lock, repo_root=root)
+
+    def test_preparation_contract_hashes_wrapper_module_and_revision_lock(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative_path in PREPARATION_CONTRACT_FILES:
+                path = root / relative_path
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(relative_path + "\n", encoding="utf-8")
+            contract = build_preparation_contract(root)
+            validate_preparation_contract(contract, repo_root=root)
+            module_path = root / "src/miracl_ko/preparation.py"
+            original = module_path.read_text(encoding="utf-8")
+            module_path.write_text("X" + original[1:], encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "preparation contract file sha256"):
+                validate_preparation_contract(contract, repo_root=root)
+
+    def test_preparation_execution_rejects_dirty_source_tree(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            source = root / "source.txt"
+            source.write_text("committed\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "add", "source.txt"], check=True)
+            subprocess.run(
+                [
+                    "git", "-C", str(root), "-c", "user.name=test", "-c",
+                    "user.email=test@example.invalid", "commit", "-qm", "fixture",
+                ],
+                check=True,
+            )
+            self.assertRegex(require_clean_git_source(root), r"^[0-9a-f]{40}$")
+            (root / "uncommitted.txt").write_text("dirty\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "clean Git worktree"):
+                require_clean_git_source(root)
+
     def test_normalized_manifest_hash_is_rechecked(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -223,6 +326,8 @@ class MiraclKoPreparationTests(unittest.TestCase):
                 "transformation_version": "test", "generated_at": "2026-07-23T00:00:00+00:00",
                 "acquisition_manifest_sha256": "a" * 64,
                 "revision_lock_sha256": "b" * 64,
+                "preparation_contract_sha256": "c" * 64,
+                "source_git_commit": "d" * 40,
                 "inputs": {"source": {"relative_path": "raw/source", "byte_size": raw.stat().st_size, "sha256": sha256_file(raw)}},
                 "outputs": {"corpus": {"relative_path": "normalized/output.jsonl", "byte_size": output.stat().st_size, "sha256": sha256_file(output), "rows": 1}},
                 "unicode_nfc_changed_fields": {"title": 0, "text": 0, "query": 0},
