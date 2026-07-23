@@ -83,7 +83,7 @@ def resolve_source_git_commit(value: str | None) -> str:
                 text=True,
                 check=True,
             ).stdout.strip()
-        except subprocess.CalledProcessError as error:
+        except (OSError, subprocess.CalledProcessError) as error:
             raise RuntimeError("source_git_commit is required when the smoke directory has no Git metadata") from error
     if len(value) != 40 or any(character not in "0123456789abcdef" for character in value):
         raise ValueError("source_git_commit must be a 40-character lowercase Git SHA-1")
