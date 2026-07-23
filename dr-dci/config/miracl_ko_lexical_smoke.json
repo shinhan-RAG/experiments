@@ -5,10 +5,14 @@
   "retrieval_unit": "passage",
   "scope": "standalone_lexical_plumbing_smoke_only",
   "backend": {
-    "name": "pyserini_lucene_cjk",
-    "package": "pyserini",
-    "version": "2.1.0",
-    "source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
+    "name": "anserini_lucene_cjk",
+    "package": "anserini",
+    "version": "2.1.1",
+    "distribution_package": "pyserini",
+    "distribution_version": "2.1.0",
+    "distribution_source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
+    "jar_relative_path": "pyserini/resources/jars/anserini-2.1.1-fatjar.jar",
+    "jar_sha256": "3c83883246d0fb2326c8a9291572b969467cf478d1fc65f517cbf37fd9b0d914",
     "analyzer_language": "ko",
     "analyzer_class": "org.apache.lucene.analysis.cjk.CJKAnalyzer"
   },
@@ -16,19 +20,15 @@
     "container_base_image": "python:3.12-slim-trixie",
     "container_base_image_sha256": "57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de",
     "java_runtime_version": "21.0.11+10-1~deb13u2",
-    "dependency_mode": "sparse_minimal_runtime",
-    "sparse_runtime_packages": {
-      "numpy": "2.4.2",
-      "pandas": "2.3.3",
-      "pyjnius": "1.7.0",
-      "scipy": "1.17.0",
-      "tqdm": "4.67.1"
-    }
+    "execution_mode": "anserini_java_cli_via_pyserini_distribution"
   },
   "retrieval": {
     "top_k": 100,
     "bm25_k1": 0.9,
-    "bm25_b": 0.4
+    "bm25_b": 0.4,
+    "index_threads": 1,
+    "index_memory_buffer_mb": 256,
+    "search_threads": 1
   },
   "evaluation": {
     "split": "dev",
@@ -37,8 +37,8 @@
     "precision_at_20_denominator": 20
   },
   "official_sources": [
+    "https://github.com/castorini/anserini",
     "https://github.com/castorini/pyserini",
-    "https://github.com/castorini/pyserini/blob/v2.1.0/docs/usage-index.md",
-    "https://raw.githubusercontent.com/castorini/pyserini/v2.1.0/pyserini/analysis/_base.py"
+    "https://raw.githubusercontent.com/castorini/anserini/anserini-2.1.1/src/main/java/io/anserini/analysis/AnalyzerMap.java"
   ]
 }

@@ -10,15 +10,9 @@ RUN apt-get update \
     && ln -s "/usr/lib/jvm/java-21-openjdk-$(dpkg --print-architecture)" "${JAVA_HOME}" \
     && rm -rf /var/lib/apt/lists/*
 
-# Pyserini declares model-serving dependencies too.  This smoke pins only the
-# import closure needed by its Lucene sparse index/search API; no model package
-# or external model/API client is installed or called.
-RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0 \
-    && python -m pip install --no-cache-dir \
-        numpy==2.4.2 \
-        pandas==2.3.3 \
-        pyjnius==1.7.0 \
-        scipy==1.17.0 \
-        tqdm==4.67.1
+# The Pyserini distribution carries the pinned Anserini fat JAR.  Run that JAR
+# directly: this avoids importing Pyserini's dense/impact modules and installs
+# neither model frameworks nor external model/API clients.
+RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0
 
 WORKDIR /work

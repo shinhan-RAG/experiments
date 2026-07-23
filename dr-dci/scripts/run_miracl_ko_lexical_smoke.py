@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run only the pinned Pyserini lexical plumbing smoke for MIRACL Korean.
+"""Run only the pinned Anserini lexical plumbing smoke for MIRACL Korean.
 
 Run this script inside docker/miracl_ko_lexical_smoke.Dockerfile.  It does not
 create taxonomy, embeddings, agent traces, answers, or focused Part 1/2 output.
@@ -27,6 +27,7 @@ if str(REPO_ROOT) not in sys.path:
 from src.miracl_ko.lexical_smoke import (
     compare_smoke_scales,
     evaluate_passage_rankings,
+    parse_anserini_trec_run,
     sha256_json,
     validate_lexical_smoke_config,
     validate_standalone_smoke_result,
@@ -89,30 +90,29 @@ def require_file_record(data_dir: Path, record: dict[str, Any], *, label: str) -
 
 def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
     java = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True)
-    from pyserini.analysis import Analyzer, get_lucene_analyzer
-
-    analyzer = Analyzer(get_lucene_analyzer(config["backend"]["analyzer_language"]))
-    analyzed_probe = [str(token) for token in analyzer.analyze("한국어 검색 검증")]
-    if not analyzed_probe:
-        raise RuntimeError("Pyserini Korean CJK analyzer returned no probe tokens")
-    packages = {"pyserini": importlib.metadata.version("pyserini")}
-    packages.update({
-        name: importlib.metadata.version(name)
-        for name in config["runtime"]["sparse_runtime_packages"]
-    })
-    if packages["pyserini"] != config["backend"]["version"]:
-        raise RuntimeError("installed Pyserini version does not match pinned smoke config")
-    for name, expected_version in config["runtime"]["sparse_runtime_packages"].items():
-        if packages[name] != expected_version:
-            raise RuntimeError(f"installed {name} does not match pinned smoke config")
+    backend = config["backend"]
+    distribution = importlib.metadata.distribution(backend["distribution_package"])
+    if distribution.version != backend["distribution_version"]:
+        raise RuntimeError("installed Pyserini distribution does not match pinned smoke config")
+    jar_path = Path(distribution.locate_file(backend["jar_relative_path"])).resolve()
+    if not jar_path.is_file() or sha256_file(jar_path) != backend["jar_sha256"]:
+        raise RuntimeError("pinned Anserini fat JAR is missing or has an unexpected SHA-256")
     return {
         "python_version": sys.version,
         "java_version_output": java.stderr.strip() or java.stdout.strip(),
-        "packages": packages,
-        "analyzer_language": config["backend"]["analyzer_language"],
-        "analyzer_class": config["backend"]["analyzer_class"],
-        "analyzer_probe_tokens": analyzed_probe,
-        "dependency_mode": config["runtime"]["dependency_mode"],
+        "pyserini_distribution": {
+            "package": backend["distribution_package"],
+            "version": distribution.version,
+            "source_archive_sha256": backend["distribution_source_archive_sha256"],
+        },
+        "anserini": {
+            "version": backend["version"],
+            "jar_relative_path": backend["jar_relative_path"],
+            "jar_sha256": sha256_file(jar_path),
+            "analyzer_language": backend["analyzer_language"],
+            "analyzer_class": backend["analyzer_class"],
+        },
+        "execution_mode": config["runtime"]["execution_mode"],
     }
 
 
@@ -138,6 +138,66 @@ def load_dev_inputs(data_dir: Path, subset_manifest: dict[str, Any]) -> tuple[li
     return queries, dict(qrels), query_qrel_sha256
 
 
+def anserini_jar_path(config: dict[str, Any]) -> Path:
+    backend = config["backend"]
+    distribution = importlib.metadata.distribution(backend["distribution_package"])
+    jar_path = Path(distribution.locate_file(backend["jar_relative_path"])).resolve()
+    if not jar_path.is_file() or sha256_file(jar_path) != backend["jar_sha256"]:
+        raise RuntimeError("pinned Anserini fat JAR is missing or has an unexpected SHA-256")
+    return jar_path
+
+
+def write_anserini_index_input(corpus_path: Path, input_dir: Path, *, scale: int) -> set[str]:
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_path = input_dir / "documents.jsonl"
+    corpus_ids: set[str] = set()
+    with output_path.open("w", encoding="utf-8") as stream:
+        for row in iter_jsonl(corpus_path):
+            corpus_id = str(row["corpus_id"])
+            if corpus_id in corpus_ids:
+                raise ValueError(f"duplicate passage ID in {scale} corpus: {corpus_id}")
+            corpus_ids.add(corpus_id)
+            json.dump(
+                {
+                    "id": corpus_id,
+                    "contents": f"{row.get('title', '')}\n{row.get('text', '')}",
+                },
+                stream,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            stream.write("\n")
+    if len(corpus_ids) != scale:
+        raise ValueError(f"{scale} corpus row count does not match fixture")
+    return corpus_ids
+
+
+def write_anserini_topics(queries: list[dict[str, Any]], path: Path) -> set[str]:
+    qids: set[str] = set()
+    with path.open("w", encoding="utf-8") as stream:
+        for row in queries:
+            qid = str(row["qid"])
+            query = str(row["query"])
+            if not qid or qid in qids:
+                raise ValueError(f"invalid or duplicate dev query ID for Anserini topics: {qid}")
+            if any(character in qid for character in "\t\r\n") or any(character in query for character in "\t\r\n"):
+                raise ValueError(f"Anserini TSV topic cannot losslessly represent dev query {qid}")
+            qids.add(qid)
+            stream.write(f"{qid}\t{query}\n")
+    return qids
+
+
+def run_anserini(command: list[str], *, log_path: Path, label: str) -> float:
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    started = time.perf_counter()
+    with log_path.open("w", encoding="utf-8") as log_stream:
+        try:
+            subprocess.run(command, stdout=log_stream, stderr=subprocess.STDOUT, check=True)
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError(f"Anserini {label} failed; inspect {log_path}") from error
+    return time.perf_counter() - started
+
+
 def run_scale(
     *,
     config: dict[str, Any],
@@ -150,52 +210,56 @@ def run_scale(
     query_qrel_sha256: str,
     runtime: dict[str, Any],
 ) -> dict[str, Any]:
-    from pyserini.index.lucene import LuceneIndexer
-    from pyserini.search.lucene import LuceneSearcher
-
     subset = subset_manifest["subsets"][str(scale)]
     corpus_path = require_file_record(data_dir, subset["corpus"], label=f"{scale} passage corpus")
     scale_root = data_dir / "lexical_smoke_work" / f"{scale // 1000}k"
     index_path = scale_root / "lucene_index"
-    if index_path.exists():
-        shutil.rmtree(index_path)
+    if scale_root.exists():
+        shutil.rmtree(scale_root)
     scale_root.mkdir(parents=True, exist_ok=True)
-
-    started = time.perf_counter()
-    indexer = LuceneIndexer(
-        args=[
+    input_dir = scale_root / "index_input"
+    corpus_ids = write_anserini_index_input(corpus_path, input_dir, scale=scale)
+    topics_path = scale_root / "topics.tsv"
+    qids = write_anserini_topics(queries, topics_path)
+    if qids != {str(row["qid"]) for row in queries}:
+        raise ValueError("Anserini topic qids do not match dev queries")
+    run_path = scale_root / "anserini.run"
+    jar_path = anserini_jar_path(config)
+    backend = config["backend"]
+    retrieval = config["retrieval"]
+    index_build_seconds = run_anserini(
+        [
+            "java", "-cp", str(jar_path), "io.anserini.index.IndexCollection",
+            "-collection", "JsonCollection",
+            "-input", str(input_dir),
             "-index", str(index_path),
-            "-storePositions", "-storeDocvectors", "-storeRaw",
-            "-language", config["backend"]["analyzer_language"],
+            "-language", backend["analyzer_language"],
+            "-threads", str(retrieval["index_threads"]),
+            "-memoryBuffer", str(retrieval["index_memory_buffer_mb"]),
         ],
-        threads=1,
+        log_path=output_dir / "logs" / f"anserini_index_{scale // 1000}k.log",
+        label=f"{scale} index",
     )
-    corpus_ids: set[str] = set()
-    for row in iter_jsonl(corpus_path):
-        corpus_id = str(row["corpus_id"])
-        if corpus_id in corpus_ids:
-            raise ValueError(f"duplicate passage ID in {scale} corpus: {corpus_id}")
-        corpus_ids.add(corpus_id)
-        indexer.add_doc_dict({
-            "id": corpus_id,
-            "contents": f"{row.get('title', '')}\n{row.get('text', '')}",
-        })
-    indexer.close()
-    index_build_seconds = time.perf_counter() - started
-    if len(corpus_ids) != scale:
-        raise ValueError(f"{scale} corpus row count does not match fixture")
-
-    searcher = LuceneSearcher(str(index_path))
-    searcher.set_language(config["backend"]["analyzer_language"])
-    searcher.set_bm25(config["retrieval"]["bm25_k1"], config["retrieval"]["bm25_b"])
-    rankings: dict[str, list[tuple[str, float]]] = {}
-    latencies: dict[str, float] = {}
-    for query in queries:
-        qid = str(query["qid"])
-        query_started = time.perf_counter()
-        hits = searcher.search(str(query["query"]), k=config["retrieval"]["top_k"])
-        latencies[qid] = time.perf_counter() - query_started
-        rankings[qid] = [(str(hit.docid), float(hit.score)) for hit in hits]
+    search_batch_seconds = run_anserini(
+        [
+            "java", "-cp", str(jar_path), "io.anserini.search.SearchCollection",
+            "-index", str(index_path),
+            "-topics", str(topics_path),
+            "-topicReader", "TsvString",
+            "-output", str(run_path),
+            "-language", backend["analyzer_language"],
+            "-hits", str(retrieval["top_k"]),
+            "-bm25",
+            "-bm25.k1", str(retrieval["bm25_k1"]),
+            "-bm25.b", str(retrieval["bm25_b"]),
+            "-threads", str(retrieval["search_threads"]),
+            "-runtag", "miracl_ko_lexical_smoke",
+        ],
+        log_path=output_dir / "logs" / f"anserini_search_{scale // 1000}k.log",
+        label=f"{scale} search",
+    )
+    rankings = parse_anserini_trec_run(run_path, query_ids=qids)
+    latencies = {qid: search_batch_seconds / len(qids) for qid in qids}
 
     raw_rows, metrics = evaluate_passage_rankings(
         queries, qrels, rankings, corpus_ids=corpus_ids, latencies_by_qid=latencies
@@ -205,6 +269,8 @@ def run_scale(
         "index_build_seconds": round(index_build_seconds, 6),
         "index_size_bytes": index_size_bytes,
         "orphan_retrieval_id_count": 0,
+        "search_batch_seconds": round(search_batch_seconds, 6),
+        "query_latency_measurement": "batch_elapsed_seconds_divided_by_dev_query_count",
     })
     result = {
         "schema_version": "dr-dci.miracl-ko-lexical-smoke-result.v1",
@@ -225,13 +291,18 @@ def run_scale(
             "backend_runtime_sha256": sha256_json(runtime),
             "raw_rows_sha256": sha256_json(raw_rows),
             "subset_manifest_sha256": sha256_file(data_dir / "subsets" / "manifest.json"),
-            "code_sha256": sha256_file(Path(__file__).resolve()),
+            "runner_code_sha256": sha256_file(Path(__file__).resolve()),
+            "contract_code_sha256": sha256_file(REPO_ROOT / "src" / "miracl_ko" / "lexical_smoke.py"),
         },
     }
     validate_standalone_smoke_result(result, config=config)
-    result_path = output_dir / f"miracl_ko_pyserini_smoke_{scale // 1000}k.json"
+    result_path = output_dir / f"miracl_ko_anserini_smoke_{scale // 1000}k.json"
     atomic_write_json(result_path, result)
-    return {"path": str(result_path), "sha256": sha256_file(result_path), "result": result}
+    return {
+        "path": str(result_path.relative_to(REPO_ROOT)),
+        "sha256": sha256_file(result_path),
+        "result": result,
+    }
 
 
 def write_report(
@@ -286,9 +357,9 @@ def write_report(
         "This is a standalone passage-retrieval plumbing smoke. It is not a taxonomy, Agentic RAG, focused Part 1/2, insurance-domain, or physical-document operations result.",
         "",
         "## Pinned backend", "",
-        f"- Backend: `{config['backend']['package']}=={config['backend']['version']}` with `{config['backend']['analyzer_class']}` for `ko`.",
+        f"- Backend: `{config['backend']['package']}=={config['backend']['version']}` fat JAR distributed in `{config['backend']['distribution_package']}=={config['backend']['distribution_version']}`, with `{config['backend']['analyzer_class']}` for `ko`.",
         f"- Container base: `{config['runtime']['container_base_image']}@sha256:{config['runtime']['container_base_image_sha256']}`; Java package `{config['runtime']['java_runtime_version']}`.",
-        f"- Runtime dependency mode: `{config['runtime']['dependency_mode']}`; no embedding, model, or external API client is invoked.",
+        f"- Runtime execution mode: `{config['runtime']['execution_mode']}`; no embedding, model, or external API client is installed or invoked.",
         "",
         "## Completed checks", "",
         "- Passage IDs returned by Lucene were checked against each scale corpus.",

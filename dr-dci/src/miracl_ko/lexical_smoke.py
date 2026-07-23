@@ -1,7 +1,7 @@
 """Standalone lexical plumbing contract for MIRACL Korean passage retrieval.
 
 This module deliberately stays outside the focused Part 1/2 runner.  It
-validates a single pinned Pyserini/Lucene CJK backend and computes only
+validates a single pinned Anserini/Lucene CJK backend and computes only
 passage-level retrieval plumbing metrics from already-produced rankings.
 """
 
@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from pathlib import Path
 import re
 from typing import Any, Iterable
 
@@ -20,14 +21,18 @@ LEXICAL_SMOKE_CONFIG_SCHEMA = "dr-dci.miracl-ko-lexical-smoke.v1"
 LEXICAL_SMOKE_RESULT_SCHEMA = "dr-dci.miracl-ko-lexical-smoke-result.v1"
 RETRIEVAL_UNIT = "passage"
 EXPECTED_BACKEND = {
-    "name": "pyserini_lucene_cjk",
-    "package": "pyserini",
-    "version": "2.1.0",
+    "name": "anserini_lucene_cjk",
+    "package": "anserini",
+    "version": "2.1.1",
+    "distribution_package": "pyserini",
+    "distribution_version": "2.1.0",
     "analyzer_language": "ko",
     "analyzer_class": "org.apache.lucene.analysis.cjk.CJKAnalyzer",
-    "source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
+    "distribution_source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
+    "jar_relative_path": "pyserini/resources/jars/anserini-2.1.1-fatjar.jar",
+    "jar_sha256": "3c83883246d0fb2326c8a9291572b969467cf478d1fc65f517cbf37fd9b0d914",
 }
-EXPECTED_RUNTIME_DEPENDENCY_MODE = "sparse_minimal_runtime"
+EXPECTED_RUNTIME_EXECUTION_MODE = "anserini_java_cli_via_pyserini_distribution"
 SMOKE_METRIC_KEYS = (
     "passage_ndcg_at_10",
     "passage_recall_at_5",
@@ -70,7 +75,7 @@ def validate_lexical_smoke_config(config: dict[str, Any]) -> None:
         raise ValueError("MIRACL lexical smoke config is missing backend")
     for key, expected in EXPECTED_BACKEND.items():
         if backend.get(key) != expected:
-            raise ValueError("MIRACL lexical smoke requires pinned Pyserini Lucene CJK backend")
+            raise ValueError("MIRACL lexical smoke requires pinned Anserini Lucene CJK backend")
     runtime = config.get("runtime")
     if not isinstance(runtime, dict):
         raise ValueError("MIRACL lexical smoke config is missing runtime")
@@ -78,13 +83,8 @@ def validate_lexical_smoke_config(config: dict[str, Any]) -> None:
         if not isinstance(runtime.get(key), str) or not runtime[key]:
             raise ValueError(f"MIRACL lexical smoke config is missing runtime {key}")
     _require_sha256(runtime["container_base_image_sha256"], label="MIRACL lexical smoke base image sha256")
-    if runtime.get("dependency_mode") != EXPECTED_RUNTIME_DEPENDENCY_MODE:
-        raise ValueError("MIRACL lexical smoke must use the declared sparse minimal runtime")
-    runtime_packages = runtime.get("sparse_runtime_packages")
-    if not isinstance(runtime_packages, dict) or set(runtime_packages) != {
-        "numpy", "pandas", "pyjnius", "scipy", "tqdm",
-    } or not all(isinstance(version, str) and version for version in runtime_packages.values()):
-        raise ValueError("MIRACL lexical smoke must pin its sparse runtime packages")
+    if runtime.get("execution_mode") != EXPECTED_RUNTIME_EXECUTION_MODE:
+        raise ValueError("MIRACL lexical smoke must use the declared Anserini Java CLI runtime")
     retrieval = config.get("retrieval")
     if not isinstance(retrieval, dict):
         raise ValueError("MIRACL lexical smoke config is missing retrieval controls")
@@ -93,6 +93,13 @@ def validate_lexical_smoke_config(config: dict[str, Any]) -> None:
     for key in ("bm25_k1", "bm25_b"):
         if not isinstance(retrieval.get(key), (float, int)):
             raise ValueError(f"MIRACL lexical smoke retrieval is missing {key}")
+    for key, expected in {
+        "index_threads": 1,
+        "index_memory_buffer_mb": 256,
+        "search_threads": 1,
+    }.items():
+        if retrieval.get(key) != expected:
+            raise ValueError(f"MIRACL lexical smoke retrieval must fix {key} at {expected}")
     evaluation = config.get("evaluation")
     if not isinstance(evaluation, dict) or evaluation.get("split") != "dev":
         raise ValueError("MIRACL lexical smoke must score the fixed dev split")
@@ -199,6 +206,36 @@ def evaluate_passage_rankings(
         },
     }
     return rows, aggregate
+
+
+def parse_anserini_trec_run(path: Path, *, query_ids: set[str]) -> dict[str, list[tuple[str, float]]]:
+    """Parse one Anserini TREC run without silently accepting foreign IDs."""
+    rankings: dict[str, list[tuple[str, float]]] = {qid: [] for qid in query_ids}
+    previous_rank: dict[str, int] = {}
+    seen_ids: dict[str, set[str]] = {qid: set() for qid in query_ids}
+    with path.open(encoding="utf-8") as stream:
+        for line_number, line in enumerate(stream, start=1):
+            fields = line.split()
+            if len(fields) != 6:
+                raise ValueError(f"invalid Anserini TREC line at {path}:{line_number}")
+            qid, _q0, corpus_id, rank_text, score_text, _run_tag = fields
+            if qid not in rankings:
+                raise ValueError(f"Anserini run contains unknown query ID: {qid}")
+            try:
+                rank = int(rank_text)
+                score = float(score_text)
+            except ValueError as error:
+                raise ValueError(f"invalid Anserini rank or score at {path}:{line_number}") from error
+            if rank < 1 or not math.isfinite(score):
+                raise ValueError(f"invalid Anserini rank or score at {path}:{line_number}")
+            if qid in previous_rank and rank <= previous_rank[qid]:
+                raise ValueError(f"Anserini ranks are not strictly increasing for query {qid}")
+            if corpus_id in seen_ids[qid]:
+                raise ValueError(f"Anserini run has duplicate passage ID for query {qid}: {corpus_id}")
+            previous_rank[qid] = rank
+            seen_ids[qid].add(corpus_id)
+            rankings[qid].append((corpus_id, score))
+    return rankings
 
 
 def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str, Any]) -> None:
