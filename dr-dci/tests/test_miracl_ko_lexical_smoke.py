@@ -36,6 +36,7 @@ def smoke_config():
             "container_base_image_sha256": "57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de",
             "java_runtime_version": "21.0.11+10-1~deb13u2",
             "execution_mode": "anserini_java_cli_via_pyserini_distribution",
+            "supporting_runtime_packages": {"numpy": "2.4.2"},
         },
         "retrieval": {
             "top_k": 100,

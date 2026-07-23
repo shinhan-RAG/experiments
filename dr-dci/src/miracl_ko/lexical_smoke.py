@@ -85,6 +85,8 @@ def validate_lexical_smoke_config(config: dict[str, Any]) -> None:
     _require_sha256(runtime["container_base_image_sha256"], label="MIRACL lexical smoke base image sha256")
     if runtime.get("execution_mode") != EXPECTED_RUNTIME_EXECUTION_MODE:
         raise ValueError("MIRACL lexical smoke must use the declared Anserini Java CLI runtime")
+    if runtime.get("supporting_runtime_packages") != {"numpy": "2.4.2"}:
+        raise ValueError("MIRACL lexical smoke must pin NumPy for paired bootstrap")
     retrieval = config.get("retrieval")
     if not isinstance(retrieval, dict):
         raise ValueError("MIRACL lexical smoke config is missing retrieval controls")

@@ -97,6 +97,12 @@ def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
     jar_path = Path(distribution.locate_file(backend["jar_relative_path"])).resolve()
     if not jar_path.is_file() or sha256_file(jar_path) != backend["jar_sha256"]:
         raise RuntimeError("pinned Anserini fat JAR is missing or has an unexpected SHA-256")
+    supporting_packages = {
+        name: importlib.metadata.version(name)
+        for name in config["runtime"]["supporting_runtime_packages"]
+    }
+    if supporting_packages != config["runtime"]["supporting_runtime_packages"]:
+        raise RuntimeError("installed numerical runtime package does not match pinned smoke config")
     return {
         "python_version": sys.version,
         "java_version_output": java.stderr.strip() or java.stdout.strip(),
@@ -112,6 +118,7 @@ def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
             "analyzer_language": backend["analyzer_language"],
             "analyzer_class": backend["analyzer_class"],
         },
+        "supporting_runtime_packages": supporting_packages,
         "execution_mode": config["runtime"]["execution_mode"],
     }
 
@@ -359,7 +366,7 @@ def write_report(
         "## Pinned backend", "",
         f"- Backend: `{config['backend']['package']}=={config['backend']['version']}` fat JAR distributed in `{config['backend']['distribution_package']}=={config['backend']['distribution_version']}`, with `{config['backend']['analyzer_class']}` for `ko`.",
         f"- Container base: `{config['runtime']['container_base_image']}@sha256:{config['runtime']['container_base_image_sha256']}`; Java package `{config['runtime']['java_runtime_version']}`.",
-        f"- Runtime execution mode: `{config['runtime']['execution_mode']}`; no embedding, model, or external API client is installed or invoked.",
+        f"- Runtime execution mode: `{config['runtime']['execution_mode']}`; only NumPy is added for paired bootstrap. No embedding, model, or external API client is installed or invoked.",
         "",
         "## Completed checks", "",
         "- Passage IDs returned by Lucene were checked against each scale corpus.",

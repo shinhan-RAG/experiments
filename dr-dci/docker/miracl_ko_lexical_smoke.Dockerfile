@@ -12,7 +12,9 @@ RUN apt-get update \
 
 # The Pyserini distribution carries the pinned Anserini fat JAR.  Run that JAR
 # directly: this avoids importing Pyserini's dense/impact modules and installs
-# neither model frameworks nor external model/API clients.
-RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0
+# neither model frameworks nor external model/API clients. NumPy supports the
+# repository's existing paired-bootstrap evaluator only.
+RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0 \
+    && python -m pip install --no-cache-dir numpy==2.4.2
 
 WORKDIR /work
