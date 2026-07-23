@@ -64,6 +64,8 @@ RESULT_METRIC_KEYS = (
     "efficiency",
     "pull_count",
     "taxonomy_filtered_pulls",
+    "taxonomy_boost_eligible_documents",
+    "taxonomy_boosted_returned_documents",
     "latency_seconds",
     "llm_prompt_tokens",
     "llm_completion_tokens",

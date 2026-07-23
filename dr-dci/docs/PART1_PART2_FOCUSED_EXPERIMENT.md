@@ -31,7 +31,8 @@ PDF에는 baseline Gold Recall `0.0392`, taxonomy-only `0.0484`, stack-all `0.05
 1. `taxonomy_only`와 `stack_tax`는 이름만 다르고 treatment 설정이 완전히 같다.
 2. `stack_all`과 `stack_tax`의 차이는 `0.0004`이지만 질의별 paired 신뢰구간이 없다. 따라서 `stack_all`을 통계적으로 확인된 최적 설정이라고 부를 근거가 부족하다.
 3. taxonomy는 agent가 `taxonomy_filter`를 실제 호출할 때만 pull score에 영향을 준다. 기존 결과에는 taxonomy-filter 사용 횟수가 기록되지 않아 효과의 작동 경로를 확인할 수 없었다.
-4. 로컬 워크스페이스에는 taxonomy, tags, prefix, metadata 산출물이 없다. 이전 로더는 파일이 없어도 `None`으로 계속 진행하므로 arm 이름과 실제 treatment가 달라질 수 있었다.
+4. 로컬 워크스페이스에는 taxonomy, tags, prefix, metadata 산출물이 없다. `feature_ralph`의 로더는 파일이 없어도 `None`으로 계속 진행해 arm 이름과 실제 treatment가 달라질 수 있었다. 이제 요청한 artifact가 없으면 모델 호출 전에 실패한다.
+5. 기존 taxonomy-only는 taxonomy category schema를 treatment prompt에만 넣고 pull score 1.5배 boost도 함께 켰다. prompt expansion과 boost를 분리하지 못하므로, focused run에서는 두 arm 모두 같은 category schema를 받고 taxonomy artifact/score boost만 달리한다.
 
 ### 3.2 Part 2
 
@@ -74,14 +75,14 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 
 | Arm | 설정 |
 |---|---|
-| Control | DR-DCI baseline, augmentation 없음 |
-| Treatment | baseline + taxonomy |
+| Control | DR-DCI baseline. taxonomy category schema와 pull tool contract는 보이되 taxonomy document artifact는 없음 |
+| Treatment | control + taxonomy document artifact에 일치하는 pull score 1.5배 soft boost. workspace `find()` taxonomy는 양 arm에서 비활성화 |
 
 고정 변수:
 
 - TREC-COVID 20K subset
 - 같은 50개 질의와 qrels
-- 같은 embedding, agent LLM, prompt, max turns, pull Top-K, workspace cap
+- 같은 embedding, agent LLM, **taxonomy category schema를 포함한 prompt**, max turns, pull Top-K, workspace cap
 - 같은 실행 코드와 seed
 
 주 평가:
@@ -93,6 +94,8 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 - answer accuracy와 judge 유효 표본 수
 - pull 수, latency, prompt/completion token
 - taxonomy-filter가 적용된 pull 횟수
+- taxonomy artifact의 subset/gold-document coverage와 유효 L1 label coverage
+- boost eligible corpus documents 및 그중 실제 pull 결과에 포함된 문서 수
 - API가 제공하는 경우 `system_fingerprint`
 - efficiency는 보조 지표로만 사용한다. recall을 pull 수로 나눈 파생값이므로 단독 품질 지표로 해석하지 않는다.
 
@@ -102,7 +105,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 - CI가 0을 포함하면 불확실로 판정하고, `stack_all` 확대 대신 질의별 승패와 taxonomy 사용 여부만 분석한다.
 - CI가 0보다 작으면 taxonomy 확대 실험을 중단한다.
 
-1회 실행의 paired bootstrap은 질의 간 변동만 반영하고 LLM 실행 간 변동은 반영하지 않는다. OpenAI Chat Completions의 `seed`도 공식 문서상 best-effort이며 결정성이 보장되지 않는다. 따라서 1회 실행은 screening으로 취급하고, 긍정 신호가 확인될 때만 같은 두 arm을 반복 실행해 확인한다. 반복 횟수는 비용 승인 전에 확정하며, 서로 다른 backend fingerprint가 섞이면 별도로 표기한다.
+1회 실행의 paired bootstrap은 질의 간 변동만 반영하고 LLM 실행 간 변동은 반영하지 않는다. OpenAI Chat Completions의 `seed`도 공식 문서상 best-effort이며 결정성이 보장되지 않는다. 따라서 1회 실행은 screening으로 취급하고, 긍정 신호가 확인될 때만 같은 두 arm을 반복 실행해 확인한다. 반복 횟수는 비용 승인 전에 확정하며, 서로 다른 backend fingerprint가 섞이면 별도로 표기한다. Gold qrel은 taxonomy prompt/filter 생성에 입력하지 않는다.
 
 ### 5.2 Part 2: 같은 메커니즘의 규모 확장
 
@@ -124,6 +127,7 @@ Part 1을 통과한 경우에만 taxonomy arm을 확장한다.
 - 평균/p50/p95 latency
 - pull 수, workspace 문서 수, token 사용량
 - taxonomy-filter pull 사용률
+- same-arm dynamic multi-pull − single-pull paired delta. `pull_queries` 원시 trace로 original-query retrieval probe와 agent rewrite를 후속 분해한다.
 
 공유 문서의 taxonomy 값은 규모별로 같아야 한다. 110K 정본에서 50K·20K subset을 필터링해 파생하는 방식을 우선한다. 별도 생성본을 사용하면 사전검사가 공유 문서의 값 변경을 차단한다.
 
@@ -199,20 +203,36 @@ gold가 희소한 코퍼스(FiQA류·실무 문서)에 그대로 일반화하지
 임베딩은 자가 서빙 gte-Qwen2 단일 모델이고, CI는 질의 간 변동만 반영할 뿐
 distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nested 표본 실측).
 원시 결과 JSON은 현재 인스턴스에만 보관돼 있으므로, 결과 bundle과 SHA-256
-해시를 회수·보존해야 재현 검증이 완결된다.
+해시를 회수·보존해야 재현 검증이 완결된다. 수치 표는 보존하되, 원시 JSON이
+회수되어 `validate_scale_probe_result.py`를 통과하기 전에는 재현 검증 완료로
+표현하지 않는다.
 
 ## 6. 구현된 보호 장치
 
 - `scripts/audit_part12.py`: 모델 호출 전 subset·gold·augmentation 계약 검사
-- `src/eval/part12_contracts.py`: duplicate arm, nested subset, gold 보존, 산출물 존재·coverage, 공유 문서 augmentation 일치 검사
+- `src/eval/part12_contracts.py`: selected duplicate arm 차단, nested subset, gold 보존율, artifact의 subset/gold coverage와 taxonomy L1 coverage, 공유 문서 augmentation 일치 검사
 - `compare_result_rows()`: 집계 평균이 아니라 query ID를 맞춘 paired bootstrap 비교
-- `taxonomy_filtered_pulls`: taxonomy가 실제로 사용됐는지 계측
+- `taxonomy_filtered_pulls`: taxonomy filter가 요청된 pull 횟수
+- `taxonomy_boost_eligible_documents` / `taxonomy_boosted_returned_documents`: taxonomy score boost가 적용 가능한 corpus 수와 실제 반환 후보 수를 분리 계측
 - `system_fingerprint`: 제공되는 backend 변경 식별자를 결과에 보존
 - `python run_experiment.py --part 1 --focused`: baseline 대 taxonomy-only만 실행
 - `python run_experiment.py --part 2 --focused`: baseline·taxonomy-only의 20K·50K·110K 확장만 실행
 - `python run_experiment.py --part 2 --scale-probe`: agent/LLM 없는 dense retrieval scale probe (nDCG@10·P@20 주 지표, scale 쌍별 paired CI)
+- `scripts/validate_scale_probe_result.py`: 저장된 scale probe raw rows, paired CI, config/data hash, 환경 manifest를 무비용 검증
 
-기존 Part 1·2·5 결과 디렉터리는 수정하지 않는다. 집중 실험은 별도 결과 디렉터리에 저장한다.
+새 Part 1·2 결과에는 raw per-query rows와 함께 raw corpus/query/qrels SHA-256, subset SHA-256, 코드 commit, config SHA-256, 모델·query instruction·top-k·workspace/turn controls, 실행 환경을 기록한다. 기존 Part 1·2·5 결과 디렉터리는 수정하지 않는다. 집중 실험은 별도 결과 디렉터리에 저장한다.
+
+### 6.1 실제 실행 구조와 arm 차이 (2026-07-23 `feature_ralph`)
+
+| Part | 기존 경로 | 실제 비교 | 현재 해석 |
+|---|---|---|---|
+| 1 | `run_part1()` | baseline, taxonomy/tags/prefix/metadata 단독, 동일 taxonomy의 `stack_tax`, 각 적층 arm | historical 9-arm 경로. `taxonomy_only == stack_tax`이므로 focused에서는 실행하지 않음. |
+| 1 focused | `run_part1(..., focused=True)` | baseline vs taxonomy-only | 동일 taxonomy schema prompt, score soft boost 단일변수. |
+| 2 | `run_part2()` | `stack_all` DR-DCI vs Hybrid RAG, 20K/50K/110K | historical 복합 처치이므로 taxonomy 인과 주장에 사용하지 않음. |
+| 2 focused | `run_part2(..., focused=True)` | baseline vs taxonomy-only × 3 nested scales, 각 arm의 single-pull static workspace | Part 1 양성 screening 이후에만 실행; dynamic−single paired delta가 multi-pull 축. |
+| 2 scale probe | `run_part2_scale_probe()` | original query 1회 dense pull × 3 nested scales | LLM/agent 없이 distractor count만 변경; retrieval degradation 국소화용. |
+| 3 | `run_part3()` | taxonomy+prefix+metadata 고정, tags A/B/C | 이번 범위 밖. |
+| 4 | `run_part4()` | final DR-DCI stack vs Hybrid RAG | 이번 범위 밖; Part 1/2 taxonomy 효과와 합산 해석 금지. |
 
 ## 7. 현재 실행 판정
 
@@ -220,17 +240,25 @@ distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nest
 
 - subset/gold 계약: 통과
 - duplicate arm 경고: `taxonomy_only == stack_tax`
-- taxonomy 20K 산출물: 없음
+- taxonomy 20K/50K/110K 산출물: 없음
 - Peter의 augmentation 저장소는 현재 인증 없이 조회되지 않음
 - 원 생성기는 `Qwen/Qwen3-8B`를 `localhost:8100`에서 호출하지만 현재 해당 endpoint가 없음
 - retrieval-only scale probe: **실측 완료** (5.3 결과 참조 — 검색단 degradation 지지)
 - Part 1 집중 실행: 차단
+- Part 1~4 원시 결과 JSON과 scale probe 원시 JSON: 로컬 부재. 현재 표의 과거 수치는 재계산·result-contract 검증 불가.
+- TREC-COVID local snapshot은 source ID/split은 기록돼 있지만 immutable Hugging Face revision은 기존 수집 시 기록되지 않음. 새 공유 실험 전 revision을 받아 manifest에 채워야 함.
+- 따라서 `run_experiment.py`의 model-backed Part 1·2 preflight도 현재 revision 누락으로 중단된다. `audit_part12.py`의 subset/artifact 진단은 계속 무비용으로 실행 가능하다.
 
 따라서 지금 숫자를 새로 만들 수는 없다. Peter가 사용한 taxonomy artifact를 원 실행 환경에서 가져오거나 동일 모델·prompt·subset 계약으로 복원한 뒤 다음 순서로 진행한다. 환경에 존재하는 다른 API key로 taxonomy를 새로 생성하면 생성 모델까지 바뀌므로 원 결과의 단일변수 재검증이 아니다.
 
 ```bash
 # 산출물 없이 지금 실행 가능 (임베딩 endpoint만 필요)
 python run_experiment.py --part 2 --scale-probe
+# 생성 직후 또는 인스턴스에서 받은 JSON을 무비용 검증
+python scripts/validate_scale_probe_result.py results/part2_scale_probe/<timestamp>.json
+
+# H200에는 git pull 대신 필요한 code/config만 묶어 전송한다 (data/key/result 제외).
+bash scripts/package_part12_h200_bundle.sh /tmp/part12_h200_bundle.tar.gz
 
 # taxonomy artifact 확보 후
 python scripts/audit_part12.py --size 20000

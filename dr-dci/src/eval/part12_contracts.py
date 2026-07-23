@@ -109,6 +109,7 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
         "subsets": reports,
         "blockers": blockers,
         "_ids": subset_ids_by_size,
+        "_positive_gold": positive_gold,
     }
 
 
@@ -129,7 +130,8 @@ def _artifact_by_doc(path: Path, feature: str) -> dict[str, Any]:
 
 def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
                         steps: list[dict[str, Any]],
-                        subset_ids: dict[int, set[str]]) -> dict[str, Any]:
+                        subset_ids: dict[int, set[str]],
+                        positive_gold: set[str]) -> dict[str, Any]:
     required = required_features(steps)
     reports = []
     blockers = []
@@ -154,6 +156,8 @@ def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
             by_doc = _artifact_by_doc(path, feature)
             expected = subset_ids.get(size, set())
             missing = expected - set(by_doc)
+            gold_in_subset = positive_gold & expected
+            covered_gold = gold_in_subset & set(by_doc)
             shared_changes = 0
             if previous is not None:
                 shared = set(previous) & set(by_doc)
@@ -163,15 +167,34 @@ def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
                         f"{feature} changes {shared_changes} shared documents between "
                         f"{previous_size} and {size}; scale is not the only variable"
                     )
-            reports.append({
+            report = {
                 "feature": feature,
                 "variant": variant,
                 "size": size,
                 "present": True,
                 "document_count": len(by_doc),
                 "missing_subset_document_count": len(missing),
+                "positive_gold_document_count": len(gold_in_subset),
+                "positive_gold_covered_document_count": len(covered_gold),
+                "positive_gold_coverage_rate": (
+                    len(covered_gold) / len(gold_in_subset) if gold_in_subset else None
+                ),
                 "changed_shared_document_count": shared_changes,
-            })
+            }
+            if feature == "taxonomy":
+                labeled = sum(
+                    isinstance(value, dict) and bool(value.get("L1"))
+                    for doc_id, value in by_doc.items() if doc_id in expected
+                )
+                report["l1_labeled_subset_document_count"] = labeled
+                report["l1_labeled_subset_coverage_rate"] = (
+                    labeled / len(expected) if expected else None
+                )
+                if labeled != len(expected):
+                    blockers.append(
+                        f"taxonomy {size} has {len(expected) - labeled} subset documents without L1 labels"
+                    )
+            reports.append(report)
             # Taxonomy/prefix/metadata are defined per document. Tags can be
             # legitimately absent when no element was annotated, so report but
             # do not block that case.
@@ -202,18 +225,26 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
         raise ValueError("no Part 1 treatment arms selected")
     subset_report = audit_subsets(data_dir, dataset, sizes)
     duplicates = duplicate_arms(part1["steps"])
+    selected_duplicates = duplicate_arms(selected_steps)
     augmentation_report = audit_augmentations(
         data_dir,
         dataset,
         sizes,
         selected_steps,
         subset_report.pop("_ids"),
+        subset_report.pop("_positive_gold"),
     )
     blockers = [*subset_report["blockers"], *augmentation_report["blockers"]]
+    for duplicate in selected_duplicates:
+        blockers.append(
+            "duplicate treatment arms selected for execution: "
+            + ", ".join(duplicate["arms"])
+        )
     return {
         "status": "blocked" if blockers else "ready",
         "selected_arms": [str(step["name"]) for step in selected_steps],
         "part1_duplicate_arms": duplicates,
+        "selected_duplicate_arms": selected_duplicates,
         "subsets": subset_report,
         "augmentations": augmentation_report,
         "blockers": blockers,

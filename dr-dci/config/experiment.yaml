@@ -2,6 +2,28 @@
 
 seed: 42
 
+# Existing local snapshots predate provenance capture. These source IDs and
+# splits are recorded; their immutable HF revisions must be supplied before a
+# new shared benchmark result is treated as externally reproducible.
+data_provenance:
+  trec-covid:
+    corpus:
+      dataset: "BeIR/trec-covid"
+      subset: "corpus"
+      split: "corpus"
+      revision: null
+    queries:
+      dataset: "BeIR/trec-covid"
+      subset: "queries"
+      split: "queries"
+      revision: null
+    qrels:
+      dataset: "BeIR/trec-covid-qrels"
+      subset: null
+      split: "test"
+      revision: null
+    revision_status: "not_recorded_in_existing_local_snapshot"
+
 # Model endpoints (H200 server)
 models:
   agent_llm:
@@ -30,6 +52,7 @@ models:
 agent:
   max_turns: 10
   pull_top_k: 20
+  taxonomy_boost: 1.5
   bm25_top_k: 20
   rrf_k: 60
   workspace_max_docs: 100
@@ -120,6 +143,7 @@ parts:
     dataset: "trec-covid"
     methods: ["dr-dci-final", "hybrid-rag"]
     subsets: [20000, 50000, 110000]
+    include_single_pull: true
 
   part3_tags:
     dataset: "trec-covid"

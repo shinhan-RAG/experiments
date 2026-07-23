@@ -29,7 +29,8 @@ IMPORTANT RULES:
 - More pulls with diverse queries = better coverage = better answer."""
 
 
-def build_system_prompt(taxonomy_schema: dict = None, metadata_schema: dict = None, tags_enabled: bool = False) -> str:
+def build_system_prompt(taxonomy_schema: dict = None, metadata_schema: dict = None,
+                        tags_enabled: bool = False, single_pull: bool = False) -> str:
     """Build system prompt with available schema information for workspace tools."""
     prompt = AGENT_SYSTEM_BASE
 
@@ -59,6 +60,18 @@ def build_system_prompt(taxonomy_schema: dict = None, metadata_schema: dict = No
         prompt += "\n\n## Semantic Tags (for grep tool)\n"
         prompt += "Use tag_filter in grep() to search specific element types in documents.\n"
         prompt += "Available tags: @el:definition, @el:condition, @el:procedure, @el:example, @el:exception, @el:comparison, @el:summary, @el:evidence, @el:criteria\n"
+
+    if single_pull:
+        prompt = prompt.replace(
+            "3. Pull AGAIN with a DIFFERENT query or different taxonomy category to get more diverse results\n"
+            "4. Repeat until you have covered multiple angles, then answer",
+            "3. Inspect the documents from your one pull with grep/find/read\n"
+            "4. Answer from that fixed workspace",
+        )
+        prompt = prompt.replace(
+            "- You MUST pull at least 2 times with different queries before answering.",
+            "- This is a single-pull ablation: call pull exactly once; further pull calls are blocked.",
+        )
 
     return prompt
 
@@ -152,7 +165,8 @@ class DCIAgent:
                  max_turns: int = 10,
                  workspace_max_docs: int = 100,
                  taxonomy_schema: dict = None, metadata_schema: dict = None,
-                 api_key: str = None):
+                 api_key: str = None, single_pull: bool = False,
+                 taxonomy_boost_data: dict = None):
         self.llm_url = llm_url
         self.model_name = model_name
         self.api_key = api_key
@@ -160,14 +174,19 @@ class DCIAgent:
         self.corpus = corpus
         self.tags_data = tags_data
         self.taxonomy_data = taxonomy_data
+        self.taxonomy_boost_data = (
+            taxonomy_boost_data if taxonomy_boost_data is not None else taxonomy_data
+        )
         self.metadata_data = metadata_data
         self.prefix_data = prefix_data
         self.max_turns = max_turns
         self.workspace_max_docs = workspace_max_docs
+        self.single_pull = single_pull
         self.system_prompt = build_system_prompt(
             taxonomy_schema=taxonomy_schema,
             metadata_schema=metadata_schema,
             tags_enabled=tags_data is not None,
+            single_pull=single_pull,
         )
 
     def run(self, query: str) -> dict:
@@ -190,6 +209,9 @@ class DCIAgent:
         prompt_tokens = 0
         completion_tokens = 0
         taxonomy_filtered_pulls = 0
+        taxonomy_boost_eligible_documents = 0
+        taxonomy_boosted_returned_documents = 0
+        pull_queries = []
         system_fingerprints = set()
 
         for turn in range(self.max_turns):
@@ -220,14 +242,33 @@ class DCIAgent:
                 except json.JSONDecodeError:
                     args = {}
 
-                result = self._execute_tool(func_name, args, workspace)
+                if func_name == "pull" and self.single_pull and pull_count >= 1:
+                    result = {
+                        "error": "single-pull ablation allows exactly one executed pull",
+                        "retrieved": 0,
+                        "added_to_workspace": 0,
+                        "total_in_workspace": len(workspace.docs),
+                        "pull_executed": False,
+                        "taxonomy_boost_eligible_documents": 0,
+                        "taxonomy_boosted_returned_documents": 0,
+                    }
+                else:
+                    result = self._execute_tool(func_name, args, workspace)
 
                 if func_name == "pull":
-                    pull_count += 1
-                    if args.get("taxonomy_filter"):
-                        taxonomy_filtered_pulls += 1
-                    retrieved_candidates += result.get("retrieved", 0)
-                    added_documents += result.get("added_to_workspace", 0)
+                    if result.get("pull_executed", True):
+                        pull_count += 1
+                        pull_queries.append(str(args.get("query", "")))
+                        if args.get("taxonomy_filter"):
+                            taxonomy_filtered_pulls += 1
+                        taxonomy_boost_eligible_documents += result.get(
+                            "taxonomy_boost_eligible_documents", 0
+                        )
+                        taxonomy_boosted_returned_documents += result.get(
+                            "taxonomy_boosted_returned_documents", 0
+                        )
+                        retrieved_candidates += result.get("retrieved", 0)
+                        added_documents += result.get("added_to_workspace", 0)
                 elif func_name == "answer":
                     final_answer = args.get("text", "")
                     messages.append({
@@ -247,6 +288,9 @@ class DCIAgent:
                         "llm_prompt_tokens": prompt_tokens,
                         "llm_completion_tokens": completion_tokens,
                         "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
+                        "taxonomy_boost_eligible_documents": taxonomy_boost_eligible_documents,
+                        "taxonomy_boosted_returned_documents": taxonomy_boosted_returned_documents,
+                        "pull_queries": pull_queries,
                         "system_fingerprints": sorted(system_fingerprints),
                     }
 
@@ -268,15 +312,27 @@ class DCIAgent:
             "llm_prompt_tokens": prompt_tokens,
             "llm_completion_tokens": completion_tokens,
             "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
+            "taxonomy_boost_eligible_documents": taxonomy_boost_eligible_documents,
+            "taxonomy_boosted_returned_documents": taxonomy_boosted_returned_documents,
+            "pull_queries": pull_queries,
             "system_fingerprints": sorted(system_fingerprints),
         }
 
     def _execute_tool(self, name: str, args: dict, workspace: Workspace) -> dict:
         if name == "pull":
+            taxonomy_filter = args.get("taxonomy_filter")
             results = self.retriever.pull(
                 query=args["query"],
-                taxonomy_filter=args.get("taxonomy_filter"),
+                taxonomy_filter=taxonomy_filter,
             )
+            eligible_ids = set()
+            if taxonomy_filter and self.taxonomy_boost_data:
+                eligible_ids = {
+                    doc_id for doc_id, taxonomy in self.taxonomy_boost_data.items()
+                    if isinstance(taxonomy, dict)
+                    and all(taxonomy.get(key) == value
+                            for key, value in taxonomy_filter.items())
+                }
             added = 0
             for r in results:
                 doc_id = r["doc_id"]
@@ -293,7 +349,19 @@ class DCIAgent:
                     )
                     if workspace.add(doc):
                         added += 1
-            return {"retrieved": len(results), "added_to_workspace": added, "total_in_workspace": len(workspace.docs)}
+            return {
+                "retrieved": len(results),
+                "added_to_workspace": added,
+                "total_in_workspace": len(workspace.docs),
+                # A supplied filter is not evidence that the treatment acted.
+                # Record both the corpus population eligible for boosting and
+                # how many of those documents were returned by that pull.
+                "taxonomy_boost_eligible_documents": len(eligible_ids),
+                "taxonomy_boosted_returned_documents": sum(
+                    row["doc_id"] in eligible_ids for row in results
+                ),
+                "pull_executed": True,
+            }
 
         elif name == "grep":
             results = workspace.grep(args["pattern"], args.get("tag_filter"))

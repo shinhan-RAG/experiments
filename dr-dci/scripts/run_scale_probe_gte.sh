@@ -37,6 +37,8 @@ python3 run_experiment.py --part 2 --scale-probe
 echo "[5/5] 결과 수집"
 STAMP=$(date +%Y%m%d_%H%M%S)
 OUT="scale_probe_results_${STAMP}.tar.gz"
+LATEST_RESULT=$(ls -t results/part2_scale_probe/*.json | head -n 1)
+python3 scripts/validate_scale_probe_result.py "$LATEST_RESULT"
 tar czf "$OUT" results/part2_scale_probe/
 echo ""
 echo "완료 — 회신 파일: dr-dci/$OUT"

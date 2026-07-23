@@ -13,6 +13,9 @@ import yaml
 import argparse
 import subprocess
 import time
+import hashlib
+import platform
+import sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -31,6 +34,7 @@ from src.eval.comparison import (
 from src.eval.judge import Judge, compute_metrics
 from src.eval.part12_contracts import audit_part12
 from src.eval.retrieval_metrics import rank_metrics
+from src.eval.scale_probe_contract import validate_scale_probe_result
 
 
 BASE_DIR = Path(__file__).parent
@@ -78,7 +82,11 @@ def load_queries(dataset: str):
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
-    """step 설정에 따라 augmentation 데이터 로드"""
+    """step 설정에 따라 augmentation을 로드한다.
+
+    요청한 처치의 산출물이 없으면 같은 arm 이름으로 baseline을 실행하는
+    오류가 생긴다. 따라서 누락은 즉시 실패한다.
+    """
     taxonomy = None
     tags = None
     prefix = None
@@ -89,39 +97,63 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
 
     size_key = f"{subset_size // 1000}k"
 
+    def required(path: Path, feature: str) -> Path:
+        if not path.exists():
+            raise FileNotFoundError(
+                f"requested augmentation '{feature}' is missing: {path}"
+            )
+        return path
+
     if step_config.get("taxonomy"):
         path = DATA_DIR / "taxonomy" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                taxonomy = json.load(f)
+        with required(path, "taxonomy").open(encoding="utf-8") as f:
+            taxonomy = json.load(f)
 
     if step_config.get("tags"):
         approach = step_config["tags"].lower()
         path = DATA_DIR / "tags" / dataset / f"approach_{approach}" / f"{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                raw_tags = json.load(f)
-            # doc_id별로 그룹핑
-            tags = {}
-            for elem in raw_tags:
-                did = elem["doc_id"]
-                if did not in tags:
-                    tags[did] = []
-                tags[did].append(elem)
+        with required(path, f"tags({approach})").open(encoding="utf-8") as f:
+            raw_tags = json.load(f)
+        # doc_id별로 그룹핑
+        tags = {}
+        for elem in raw_tags:
+            did = elem["doc_id"]
+            if did not in tags:
+                tags[did] = []
+            tags[did].append(elem)
 
     if step_config.get("prefix"):
         path = DATA_DIR / "prefix" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                prefix = json.load(f)
+        with required(path, "prefix").open(encoding="utf-8") as f:
+            prefix = json.load(f)
 
     if step_config.get("metadata"):
         path = DATA_DIR / "metadata" / f"{dataset}_{size_key}.json"
-        if path.exists():
-            with open(path) as f:
-                metadata = json.load(f)
+        with required(path, "metadata").open(encoding="utf-8") as f:
+            metadata = json.load(f)
 
     return taxonomy, tags, prefix, metadata
+
+
+def focused_taxonomy_steps(steps: list[dict]) -> list[dict]:
+    """Return the only two Part 1 arms with a shared taxonomy prompt.
+
+    Both arms expose the same category schema and tool contract.  The sole
+    treatment difference is whether matching document scores receive the
+    taxonomy soft boost; this prevents prompt expansion from being credited to
+    the boost.
+    """
+    focused_names = {"baseline", "taxonomy_only"}
+    return [
+        {
+            **step,
+            "taxonomy_prompt_schema": True,
+            # The focused hypothesis is retrieval score boosting only, not
+            # workspace find() behavior over document taxonomy.
+            "workspace_taxonomy": False,
+        }
+        for step in steps if step["name"] in focused_names
+    ]
 
 
 def build_pull_retriever(config: dict, step_config: dict, corpus: list,
@@ -137,6 +169,7 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
         embedding_url=models["embedding"]["url"],
         embedding_model=models["embedding"]["name"],
         top_k=agent_cfg["pull_top_k"],
+        taxonomy_boost=agent_cfg.get("taxonomy_boost", 1.5),
         use_prefix=step_config.get("prefix", False),
         backend=pull_backend,
         bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
@@ -198,7 +231,8 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
 
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                ref_answers: dict, step_config: dict, subset_size: int,
-               dataset: str, cached_retriever: PullRetriever = None) -> list:
+               dataset: str, cached_retriever: PullRetriever = None,
+               single_pull: bool = False) -> list:
     """DR-DCI 에이전트 실행"""
     models = config["models"]
     agent_cfg = config["agent"]
@@ -221,7 +255,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     # Load schemas for agent prompt
     taxonomy_schema = None
     metadata_schema = None
-    if step_config.get("taxonomy"):
+    if step_config.get("taxonomy") or step_config.get("taxonomy_prompt_schema"):
         schema_path = CONFIG_DIR / "taxonomy_schemas" / f"{dataset}.yaml"
         if schema_path.exists():
             with open(schema_path) as f:
@@ -239,7 +273,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         retriever=retriever,
         corpus=corpus_dict,
         tags_data=tags,
-        taxonomy_data=taxonomy,
+        taxonomy_data=(taxonomy if step_config.get("workspace_taxonomy", True) else None),
+        taxonomy_boost_data=taxonomy,
         metadata_data=metadata,
         prefix_data=prefix,
         max_turns=agent_cfg["max_turns"],
@@ -247,6 +282,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         taxonomy_schema=taxonomy_schema,
         metadata_schema=metadata_schema,
         api_key=os.getenv("OPENAI_API_KEY", ""),
+        single_pull=single_pull,
     )
 
     # Judge
@@ -292,8 +328,16 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "llm_prompt_tokens": result.get("llm_prompt_tokens", 0),
             "llm_completion_tokens": result.get("llm_completion_tokens", 0),
             "taxonomy_filtered_pulls": result.get("taxonomy_filtered_pulls", 0),
+            "taxonomy_boost_eligible_documents": result.get(
+                "taxonomy_boost_eligible_documents", 0
+            ),
+            "taxonomy_boosted_returned_documents": result.get(
+                "taxonomy_boosted_returned_documents", 0
+            ),
+            "pull_queries": result.get("pull_queries", []),
             "system_fingerprints": result.get("system_fingerprints", []),
             "latency_seconds": latency_seconds,
+            "single_pull": single_pull,
         }
 
     results = [None] * len(queries)
@@ -397,6 +441,29 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     return results
 
 
+def dataset_provenance_blockers(config: dict, dataset: str) -> list[str]:
+    """Require an immutable source revision before any model-backed Part 1/2 run."""
+    source = config.get("data_provenance", {}).get(dataset)
+    if not isinstance(source, dict):
+        return [f"missing data provenance for {dataset}"]
+    blockers = []
+    for component in ("corpus", "queries", "qrels"):
+        entry = source.get(component)
+        if not isinstance(entry, dict):
+            blockers.append(f"missing data provenance for {dataset}.{component}")
+            continue
+        if not entry.get("dataset") or not entry.get("split"):
+            blockers.append(
+                f"data provenance lacks dataset or split for {dataset}.{component}"
+            )
+        if not entry.get("revision"):
+            blockers.append(
+                f"immutable source revision required before model-backed execution: "
+                f"{dataset}.{component}"
+            )
+    return blockers
+
+
 def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
     report = audit_part12(
         config,
@@ -404,8 +471,13 @@ def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
         step_names=step_names,
         sizes=sizes,
     )
-    if report["blockers"]:
-        details = "\n".join(f"- {item}" for item in report["blockers"])
+    provenance_blockers = dataset_provenance_blockers(
+        config, report["subsets"]["dataset"]
+    )
+    report["provenance_blockers"] = provenance_blockers
+    blockers = [*report["blockers"], *provenance_blockers]
+    if blockers:
+        details = "\n".join(f"- {item}" for item in blockers)
         raise RuntimeError(f"Part 1/2 preflight failed:\n{details}")
     return report
 
@@ -417,8 +489,7 @@ def run_part1(config: dict, *, focused: bool = False):
     subset_size = part_cfg["subset"]
     steps = part_cfg["steps"]
     if focused:
-        focused_names = {"baseline", "taxonomy_only"}
-        steps = [step for step in steps if step["name"] in focused_names]
+        steps = focused_taxonomy_steps(steps)
 
     print("\n" + "=" * 60)
     print(f"Part 1: Technique Stacking ({dataset}, {subset_size // 1000}K)")
@@ -453,6 +524,7 @@ def run_part1(config: dict, *, focused: bool = False):
             embedding_url=models["embedding"]["url"],
             embedding_model=models["embedding"]["name"],
             top_k=agent_cfg["pull_top_k"],
+            taxonomy_boost=agent_cfg.get("taxonomy_boost", 1.5),
             use_prefix=False,
         ))
         retriever_no_prefix.index(corpus)
@@ -467,6 +539,7 @@ def run_part1(config: dict, *, focused: bool = False):
             embedding_url=models["embedding"]["url"],
             embedding_model=models["embedding"]["name"],
             top_k=agent_cfg["pull_top_k"],
+            taxonomy_boost=agent_cfg.get("taxonomy_boost", 1.5),
             use_prefix=True,
         ))
         retriever_with_prefix.index(corpus, prefixes=prefix_data)
@@ -490,17 +563,35 @@ def run_part1(config: dict, *, focused: bool = False):
             all_results["taxonomy_only"]["results"],
             seed=config["seed"],
         )
+    manifest = build_part12_manifest(config, dataset, [subset_size])
+    manifest.update({
+        "schema_version": "dr-dci.part1-taxonomy.v1",
+        "hypothesis": (
+            "With the taxonomy category schema held constant in both arms, "
+            "taxonomy soft boosting improves workspace gold recall."
+        ),
+        "single_variable": "taxonomy_soft_boost",
+        "taxonomy_action_point": "pull score soft boost only",
+        "taxonomy_prompt_schema_shared": bool(focused),
+        "git_commit": current_git_commit(),
+        "dataset": dataset,
+        "subset_size": subset_size,
+        "focused": focused,
+        "arms": [
+            {
+                "name": str(step["name"]),
+                "taxonomy": bool(step.get("taxonomy")),
+                "taxonomy_prompt_schema": bool(step.get("taxonomy_prompt_schema")),
+                "workspace_taxonomy": bool(step.get("workspace_taxonomy", True)),
+            }
+            for step in steps
+        ],
+        "preflight": preflight,
+    })
     save_results(
         "part1_taxonomy_focused" if focused else "part1_stacking",
         all_results,
-        manifest={
-            "git_commit": current_git_commit(),
-            "dataset": dataset,
-            "subset_size": subset_size,
-            "focused": focused,
-            "arms": [str(step["name"]) for step in steps],
-            "preflight": preflight,
-        },
+        manifest=manifest,
         analysis=analysis,
     )
 
@@ -527,9 +618,11 @@ def run_part2(config: dict, *, focused: bool = False):
     best_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
     focused_arms = [
         {"name": "baseline", "taxonomy": False, "tags": False,
-         "prefix": False, "metadata": False},
+         "prefix": False, "metadata": False, "taxonomy_prompt_schema": True,
+         "workspace_taxonomy": False},
         {"name": "taxonomy_only", "taxonomy": True, "tags": False,
-         "prefix": False, "metadata": False},
+         "prefix": False, "metadata": False, "taxonomy_prompt_schema": True,
+         "workspace_taxonomy": False},
     ]
     selected_steps = focused_arms if focused else [{"name": "stack_all", **best_config}]
     preflight = _part12_preflight(
@@ -555,6 +648,19 @@ def run_part2(config: dict, *, focused: bool = False):
                 "metrics": metrics,
             }
             print(f"    Metrics: {metrics}")
+
+            if part_cfg.get("include_single_pull", True):
+                print(f"\n  --- Single Pull {arm['name']} @ {size_key} ---")
+                single_results = run_dr_dci(
+                    config, corpus, queries, qrels, ref_answers,
+                    arm, subset_size, dataset, single_pull=True,
+                )
+                single_key = f"single-pull_{arm['name']}_{size_key}"
+                all_results[single_key] = {
+                    "results": single_results,
+                    "metrics": compute_metrics(single_results),
+                }
+                print(f"    Metrics: {all_results[single_key]['metrics']}")
 
         if not focused:
             print(f"\n  --- Hybrid RAG @ {size_key} ---")
@@ -582,18 +688,40 @@ def run_part2(config: dict, *, focused: bool = False):
                     all_results[f"{arm}_{size_key}"]["results"],
                     seed=config["seed"],
                 )
+    if part_cfg.get("include_single_pull", True):
+        for arm in selected_steps:
+            arm_name = arm["name"]
+            for size in sizes:
+                size_key = f"{size // 1000}k"
+                analysis[f"dynamic_minus_single_{arm_name}_{size_key}"] = compare_result_rows(
+                    all_results[f"single-pull_{arm_name}_{size_key}"]["results"],
+                    all_results[f"{arm_name}_{size_key}"]["results"],
+                    seed=config["seed"],
+                )
 
+    manifest = build_part12_manifest(config, dataset, sizes)
+    manifest.update({
+        "schema_version": "dr-dci.part2-taxonomy-scaling.v1",
+        "git_commit": current_git_commit(),
+        "dataset": dataset,
+        "subsets": sizes,
+        "focused": focused,
+        "include_single_pull": part_cfg.get("include_single_pull", True),
+        "arms": [
+            {
+                "name": str(step["name"]),
+                "taxonomy": bool(step.get("taxonomy")),
+                "taxonomy_prompt_schema": bool(step.get("taxonomy_prompt_schema")),
+                "workspace_taxonomy": bool(step.get("workspace_taxonomy", True)),
+            }
+            for step in selected_steps
+        ],
+        "preflight": preflight,
+    })
     save_results(
         "part2_taxonomy_scaling_focused" if focused else "part2_scaling",
         all_results,
-        manifest={
-            "git_commit": current_git_commit(),
-            "dataset": dataset,
-            "subsets": sizes,
-            "focused": focused,
-            "arms": [str(step["name"]) for step in selected_steps],
-            "preflight": preflight,
-        },
+        manifest=manifest,
         analysis=analysis,
     )
 
@@ -641,7 +769,9 @@ def run_part2_scale_probe(config: dict):
                 probes[size_keys[i]], probes[size_keys[j]], seed=config["seed"]
             )
 
-    manifest = {
+    manifest = build_part12_manifest(config, dataset, sizes)
+    manifest.update({
+        "schema_version": "dr-dci.part2-scale-probe.v1",
         "hypothesis": (
             "Top-rank dense retrieval quality degrades as distractors grow "
             "from 20K to 110K over fixed queries and fixed gold."
@@ -665,7 +795,18 @@ def run_part2_scale_probe(config: dict):
             "model": config["models"]["embedding"]["name"],
         },
         "preflight": preflight,
+    })
+    result_payload = {
+        "manifest": manifest,
+        "analysis": analysis,
+        "full_results": all_results,
     }
+    contract_errors = validate_scale_probe_result(result_payload)
+    if contract_errors:
+        raise RuntimeError(
+            "Part 2 scale-probe result contract failed:\n- "
+            + "\n- ".join(contract_errors)
+        )
     save_results("part2_scale_probe", all_results, manifest=manifest,
                  analysis=analysis)
 
@@ -849,6 +990,109 @@ def current_git_commit() -> str:
         ).strip()
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _dataset_counts(raw_dir: Path) -> dict:
+    corpus_documents = 0
+    queries = 0
+    qrel_rows = 0
+    positive_gold_documents = set()
+    positive_gold_queries = set()
+    with (raw_dir / "corpus.jsonl").open(encoding="utf-8") as stream:
+        for line in stream:
+            if line.strip():
+                corpus_documents += 1
+    with (raw_dir / "queries.jsonl").open(encoding="utf-8") as stream:
+        for line in stream:
+            if line.strip():
+                queries += 1
+    with (raw_dir / "qrels.jsonl").open(encoding="utf-8") as stream:
+        for line in stream:
+            if not line.strip():
+                continue
+            qrel_rows += 1
+            row = json.loads(line)
+            if float(row.get("score", 0)) >= 1:
+                positive_gold_documents.add(str(row["corpus-id"]))
+                positive_gold_queries.add(str(row["query-id"]))
+    return {
+        "corpus_documents": corpus_documents,
+        "queries": queries,
+        "qrel_rows": qrel_rows,
+        "positive_gold_documents": len(positive_gold_documents),
+        "positive_gold_queries": len(positive_gold_queries),
+    }
+
+
+def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *,
+                          config_path: Path | None = None) -> dict:
+    """Build the non-secret provenance contract shared by Part 1 and Part 2.
+
+    Local content hashes are authoritative for the exact files used.  A remote
+    source revision is preserved when it was recorded at acquisition time; an
+    explicit ``not_recorded`` value is not treated as a revision claim.
+    """
+    raw_dir = DATA_DIR / "raw" / dataset
+    config_path = config_path or CONFIG_DIR / "experiment.yaml"
+    subsets = []
+    for size in subset_sizes:
+        path = DATA_DIR / "subsets" / dataset / f"{size // 1000}k.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        subsets.append({
+            "size": int(size),
+            "declared_size": payload.get("subset_size"),
+            "document_count": len(set(str(doc_id) for doc_id in payload.get("doc_ids", []))),
+            "sha256": sha256_file(path),
+        })
+    models = config.get("models", {})
+    embedding = models.get("embedding", {})
+    agent = models.get("agent_llm", {})
+    judge = models.get("judge_llm", {})
+    agent_cfg = config.get("agent", {})
+    source = config.get("data_provenance", {}).get(dataset, {
+        "status": "not_recorded_in_existing_local_snapshot",
+    })
+    return {
+        "dataset_provenance": {
+            "source": source,
+            "files": {
+                "corpus": sha256_file(raw_dir / "corpus.jsonl"),
+                "queries": sha256_file(raw_dir / "queries.jsonl"),
+                "qrels": sha256_file(raw_dir / "qrels.jsonl"),
+            },
+            "subsets": subsets,
+            "counts": _dataset_counts(raw_dir),
+        },
+        "experiment_config": {
+            "path": str(config_path),
+            "sha256": sha256_file(config_path),
+        },
+        "controls": {
+            "seed": config.get("seed"),
+            "embedding_model": embedding.get("name"),
+            "embedding_endpoint": embedding.get("url"),
+            "query_instruction": embedding.get("query_instruction"),
+            "agent_model": agent.get("name"),
+            "judge_model": judge.get("name"),
+            "pull_top_k": agent_cfg.get("pull_top_k"),
+            "pull_backend": agent_cfg.get("pull_backend", "dense"),
+            "taxonomy_boost": agent_cfg.get("taxonomy_boost", 1.5),
+            "workspace_max_docs": agent_cfg.get("workspace_max_docs"),
+            "max_turns": agent_cfg.get("max_turns"),
+        },
+        "execution_environment": {
+            "python": sys.version,
+            "platform": platform.platform(),
+        },
+    }
 
 
 def save_results(

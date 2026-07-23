@@ -124,6 +124,97 @@ class ExperimentContractTests(unittest.TestCase):
         self.assertEqual(result["added_documents"], 1)
         self.assertEqual(result["turns"], 2)
 
+    def test_taxonomy_telemetry_records_an_effectual_boost_population(self):
+        import json as _json
+
+        agent = DCIAgent(
+            llm_url="unused",
+            model_name="unused",
+            retriever=StaticPullRetriever(),
+            corpus={
+                "d1": {"title": "one", "text": "first"},
+                "d2": {"title": "two", "text": "second"},
+            },
+            taxonomy_data={
+                "d1": {"L1": "Treatment"},
+                "d2": {"L1": "Diagnosis"},
+            },
+            max_turns=2,
+        )
+        responses = iter([
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-1",
+                    "function": {
+                        "name": "pull",
+                        "arguments": _json.dumps({
+                            "query": "test", "taxonomy_filter": {"L1": "Treatment"},
+                        }),
+                    },
+                }],
+            },
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-2",
+                    "function": {"name": "answer", "arguments": '{"text": "done"}'},
+                }],
+            },
+        ])
+        agent._call_llm = lambda messages: next(responses)
+
+        result = agent.run("question")
+
+        self.assertEqual(result["taxonomy_filtered_pulls"], 1)
+        self.assertEqual(result["taxonomy_boost_eligible_documents"], 1)
+        self.assertEqual(result["taxonomy_boosted_returned_documents"], 1)
+
+    def test_single_pull_ablation_keeps_only_the_first_agent_query(self):
+        import json as _json
+
+        agent = DCIAgent(
+            llm_url="unused",
+            model_name="unused",
+            retriever=StaticPullRetriever(),
+            corpus={
+                "d1": {"title": "one", "text": "first"},
+                "d2": {"title": "two", "text": "second"},
+            },
+            max_turns=3,
+            single_pull=True,
+        )
+        responses = iter([
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-1",
+                    "function": {"name": "pull", "arguments": _json.dumps({"query": "first"})},
+                }],
+            },
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-2",
+                    "function": {"name": "pull", "arguments": _json.dumps({"query": "second"})},
+                }],
+            },
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-3",
+                    "function": {"name": "answer", "arguments": '{"text": "done"}'},
+                }],
+            },
+        ])
+        agent._call_llm = lambda messages: next(responses)
+
+        result = agent.run("question")
+
+        self.assertEqual(result["pull_count"], 1)
+        self.assertEqual(result["tool_call_counts"]["pull"], 2)
+        self.assertEqual(result["pull_queries"], ["first"])
+
     def test_metrics_exclude_judge_transport_errors_from_accuracy(self):
         metrics = compute_metrics([
             {

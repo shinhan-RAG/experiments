@@ -108,6 +108,12 @@ def compute_metrics(results: list[dict]) -> dict:
     avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
     avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
     avg_taxonomy_pulls = sum(r.get("taxonomy_filtered_pulls", 0) for r in results) / n
+    avg_taxonomy_eligible = sum(
+        r.get("taxonomy_boost_eligible_documents", 0) for r in results
+    ) / n
+    avg_taxonomy_returned = sum(
+        r.get("taxonomy_boosted_returned_documents", 0) for r in results
+    ) / n
     avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
     avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
     avg_turns = sum(r.get("turns", 0) for r in results) / n
@@ -128,6 +134,8 @@ def compute_metrics(results: list[dict]) -> dict:
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
         "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
+        "avg_taxonomy_boost_eligible_documents": round(avg_taxonomy_eligible, 2),
+        "avg_taxonomy_boosted_returned_documents": round(avg_taxonomy_returned, 2),
         "avg_retrieved_candidates": round(avg_candidates, 2),
         "avg_workspace_docs": round(avg_workspace_docs, 2),
         "avg_turns": round(avg_turns, 2),
