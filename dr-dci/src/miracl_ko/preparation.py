@@ -436,9 +436,10 @@ def validate_nested_subset_payloads(
         if ids != sorted(ids, key=scale_rank):
             raise ValueError("subset output is not ordered by qrel-independent global hash rank")
         if previous_ids is not None:
+            previous_id_set = set(previous_ids)
             if not set(previous_ids) < set(ids):
                 raise ValueError("nested subsets do not preserve strict set inclusion")
-            if previous_ids != [corpus_id for corpus_id in ids if corpus_id in set(previous_ids)]:
+            if previous_ids != [corpus_id for corpus_id in ids if corpus_id in previous_id_set]:
                 raise ValueError("shared passages do not preserve global hash rank across scales")
         for row in rows:
             corpus_id = str(row["corpus_id"])
