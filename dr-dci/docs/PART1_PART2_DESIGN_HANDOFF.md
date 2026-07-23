@@ -1,0 +1,164 @@
+# Part 1·2 설계 인수인계
+
+기준일: 2026-07-23  
+기준 코드: `feature_ralph`의 `99c8ffe8c88b12c1532881e9546685681ca095ff`
+
+## 1. 이 문서의 목적
+
+이 문서는 Peter의 DR-DCI 실험을 새 Agentic RAG나 DocNav 아키텍처로 재설계하기 위한 문서가 아니다. 설계 담당자는 이미 존재하는 Part 1·2를 아래의 좁은 질문으로 재검증할 수 있도록 실험 계약과 다음 결정을 검토한다.
+
+1. Part 1에서 taxonomy soft score boost가 검색 워크스페이스의 gold coverage를 높이는가.
+2. Part 2에서 corpus 규모 증가에 따른 검색기·query rewrite·multi-pull 영향을 분리할 수 있는가.
+
+현재는 외부 모델, 임베딩 endpoint, H200 인스턴스를 실행할 승인이나 재현에 필요한 입력이 완비되지 않았다. 따라서 이 문서의 상태는 **설계·하네스 구현 완료, 실험 실행 대기**다.
+
+## 2. 범위와 불변 조건
+
+### 범위
+
+- Part 1: `baseline` 대 `taxonomy_only` 한 쌍만 비교한다.
+- Part 2: retrieval-only scale probe를 먼저 검증하고, 이후 동일 두 arm을 20K·50K·110K에서 비교한다.
+- 기존 pull backend 비교와 Part 3·4·5 결과는 보존하고 확장하지 않는다.
+
+### 범위 밖
+
+- DocNav, Deep Connect, Docurator, Airflow, 저장소 구조를 변경하지 않는다.
+- tags, prefix, metadata를 새 treatment에 추가하지 않는다.
+- graph/agent framework를 추가하지 않는다.
+- gold/qrel을 검색 입력, taxonomy 생성, 필터 생성에 사용하지 않는다.
+- 공개 TREC-COVID 결과를 신한라이프 운영 성능으로 해석하지 않는다.
+
+## 3. 확인된 현재 사실
+
+| 항목 | 확인 결과 | 설계상 의미 |
+|---|---|---|
+| Git | 현재 작업 브랜치는 `feature_ralph`, 기준 커밋은 `99c8ffe` | 새 작업 브랜치를 만들지 않는다. 현재 로컬은 origin보다 1 commit 앞서 있으며 push하지 않았다. |
+| 통합 PR | PR #2는 open, `feature_ralph_noah_integration` → `dev`, head `e83d044` | 해당 PR을 병합하거나 기준 브랜치를 바꾸지 않는다. |
+| Part 1 기존 arm | `taxonomy_only`와 `stack_tax`의 treatment 설정이 동일 | 두 arm을 독립적인 비교로 사용하지 않는다. |
+| Part 1 기존 작동점 | taxonomy schema prompt, score boost, workspace taxonomy 탐색이 함께 바뀌었다 | 기존 향상 수치를 taxonomy 단일 효과로 귀속할 수 없다. |
+| TREC-COVID | corpus 171,332, queries 50, qrels 66,336, positive-gold documents 17,537 | 작은 표본과 다수 gold 구조를 명시한다. |
+| Scale subset | 20K·50K·110K가 nested이며 모든 positive-gold document를 포함 | corpus 규모가 아니라 distractor 수만 바꾸는 controlled scale 조건이다. |
+| 원시 결과 | Part 1~4와 기존 scale probe의 raw result JSON이 로컬에 없음 | 문서의 기존 숫자는 보존하되 재현·paired 검정 완료로 표현하지 않는다. |
+| 재현 provenance | HF source ID/split은 알지만 immutable revision이 기록되지 않음 | 새 model-backed 실행은 revision을 입력하기 전 차단한다. |
+| taxonomy artifact | 20K·50K·110K artifact가 로컬에 없음 | taxonomy treatment는 artifact가 없으면 fail-loud로 중단해야 한다. |
+| 신한 PDF | 지정된 PDF 경로가 로컬에 없음 | 다른 PPTX 등으로 추정 대체하지 않는다. |
+
+## 4. 실제 실행 경로
+
+| 경로 | 목적 | 현재 설계 판단 |
+|---|---|---|
+| `run_part1()` | Peter의 historical 9-arm stacking | 기록 보존용이다. taxonomy 인과 비교로 쓰지 않는다. |
+| `run_part1(..., focused=True)` | baseline 대 taxonomy-only | Part 1의 유일한 신규 비교다. |
+| `run_part2()` | historical `stack_all` DR-DCI 대 Hybrid | 복합 처치이므로 Part 1 taxonomy 효과와 합산 해석하지 않는다. |
+| `run_part2(..., focused=True)` | 두 arm × 20K·50K·110K | Part 1 screening 이후에만 실행한다. |
+| `run_part2_scale_probe()` | original query 1회 dense retrieval × 3 scale | LLM 없이 distractor 증가에 따른 retrieval degradation을 먼저 측정한다. |
+
+## 5. 확정된 Part 1 실험 계약
+
+### 단일 가설
+
+**H1: taxonomy와 일치하는 문서에 대한 soft score boost가 baseline보다 질의별 workspace gold recall을 높인다.**
+
+| 조건 | Control | Treatment |
+|---|---|---|
+| taxonomy category schema prompt | 동일하게 제공 | 동일하게 제공 |
+| workspace `find()` taxonomy 탐색 | 비활성화 | 비활성화 |
+| taxonomy document artifact | score에 사용하지 않음 | score boost에만 사용 |
+| 그 외 모델·seed·top-k·turn·workspace cap | 동일 | 동일 |
+
+따라서 treatment의 유일한 변경점은 retriever score의 soft boost다. taxonomy는 hard filter가 아니며, gold는 taxonomy 생성이나 query/pull 입력에 전달되지 않는다.
+
+### 평가와 판정
+
+- 주 지표: 질의별 workspace chunk gold recall의 `treatment - control`, paired bootstrap 95% CI
+- 합의 지표: chunk Recall@5/20, Hit@5/10
+- 보조 지표: nDCG@10, P@20, multi-gold macro recall, answer accuracy, judge 유효 분모
+- 운영 지표: latency, pull 수, token, workspace 문서 수, 실패·제외 질의 수
+- 작동점 telemetry: boost eligible corpus documents, boost eligible returned documents, actual pull query trace
+- CI 전체가 0보다 크면 긍정 신호 후보, 0을 포함하면 불확실, 0보다 작으면 taxonomy 확대를 중단한다.
+
+한 실행의 CI는 질의 간 차이만 반영한다. 긍정 신호가 있어도 비용 승인 전에는 반복 횟수나 새 treatment를 늘리지 않는다.
+
+## 6. 확정된 Part 2 실험 계약
+
+### 6.1 retrieval-only probe 우선
+
+동일 query·dense model·retrieval parameter에서 nested 20K/50K/110K corpus만 바꾼다. 주 지표는 graded nDCG@10과 P@20이고, Recall@5/20·Hit@5/10·latency는 보조로 기록한다. 모든 scale 쌍은 같은 query ID를 맞춘 paired bootstrap CI를 기록한다.
+
+이 probe는 검색단 성능 저하를 국소화할 뿐, agent 성능 저하의 원인을 확정하지 않는다. 기존 H200 수치가 문서에 있더라도 raw JSON과 manifest를 회수해 validator를 통과하기 전에는 미검증 historical observation이다.
+
+### 6.2 agent 단계
+
+Part 1의 두 arm을 각 scale에 적용한다. 각 arm·scale에서 다음을 분리한다.
+
+1. retrieval-only original-query 결과
+2. dynamic multi-pull agent 결과
+3. single-pull static workspace 결과
+
+보고할 비교는 각 arm의 scale 간 paired delta와 같은 arm·scale의 `dynamic multi-pull - single-pull` paired delta다. query rewrite의 영향은 `pull_queries` 원시 trace와 original-query probe를 함께 보며, 이 둘을 동일한 수치로 혼합하지 않는다.
+
+공유 문서의 taxonomy 값은 scale마다 같아야 한다. 110K 정본을 만든 뒤 50K·20K를 필터링해 파생하는 방식을 우선하며, 별도 생성 artifact를 쓰면 공유 문서 값의 hash/동일성 검사를 통과해야 한다.
+
+## 7. 이미 구현된 보호 장치
+
+- 선택된 duplicate arm을 blocker로 처리한다.
+- 요청된 augmentation이 없으면 baseline으로 무음 강등하지 않고 즉시 실패한다.
+- model-backed Part 1·2 실행 전 corpus/query/qrels의 immutable source revision을 검사한다.
+- Part 1 focused arm은 prompt schema를 고정하고 workspace taxonomy 탐색을 양쪽에서 끈다.
+- single-pull은 실제 첫 pull만 실행하고 attempted pull과 실제 pull을 분리해 기록한다.
+- 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, seed, model/instruction/control, 실행 환경을 보존한다.
+- scale result validator는 raw per-query rows, provenance, metric, paired CI 계약이 빠지면 실패한다.
+- H200 전송은 git pull이 아닌 code/config/manifest bundle만 사용하며 data, key, cache, result를 넣지 않는다.
+
+관련 구현은 `run_experiment.py`, `src/agent/dci_agent.py`, `src/eval/part12_contracts.py`, `src/eval/scale_probe_contract.py`에 있다.
+
+## 8. 설계 담당자가 유지할 해석 원칙
+
+- 기존 Part 1 수치의 상승은 prompt·boost·workspace 탐색이 혼재돼 있어 taxonomy 단일 효과가 아니다.
+- historical scale 수치는 삭제하지 않되 raw result 부재 상태에서는 재현된 증거가 아니다.
+- TREC-COVID는 질의당 gold가 많아 Hit@5/10이 포화될 수 있다. Hit를 주 결론으로 쓰지 않는다.
+- 20K에서 gold를 전부 포함한 scale 구성은 운영 corpus의 무작위 확장을 뜻하지 않는다. 검색기 순도 희석을 통제한 probe일 뿐이다.
+- DR-DCI의 controlled distractor scaling 원칙은 차용하되 Peter 구현을 논문의 공식 재현으로 표현하지 않는다.
+- 최종 근거는 원문 section과 좌표이며, taxonomy·관계·트리는 navigation 보조 신호다.
+
+## 9. 실행 전 필요한 외부 입력
+
+다음 중 하나라도 없으면 새 model-backed 결과를 만들지 않는다.
+
+1. `BeIR/trec-covid` corpus/query 및 `BeIR/trec-covid-qrels` test의 immutable revision, subset, split, row count가 든 acquisition manifest
+2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash
+3. 가능하면 110K 정본 taxonomy artifact와 20K/50K 파생 규칙
+4. Part 1~4 및 2026-07-22 scale probe의 원시 result JSON과 당시 코드 commit/config
+5. 지정된 신한 PDF 파일 또는 정확한 접근 경로
+6. H200/외부 모델 실행에 대한 명시적 승인
+
+## 10. 재현과 인수 기준
+
+무비용 검증:
+
+```bash
+cd /Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci
+PYTHONPATH=. python -m unittest discover -s tests -v
+PYTHONPATH=. python scripts/audit_part12.py --step baseline --size 20000
+PYTHONPATH=. python scripts/audit_part12.py --step taxonomy_only --size 20000
+bash scripts/package_part12_h200_bundle.sh /private/tmp/dr-dci-part12.tar.gz
+```
+
+현재 taxonomy audit이 `blocked`로 끝나는 것은 정상이다. 누락 artifact 경로를 명시해야 하며, 그 상태에서 모델을 호출해서는 안 된다.
+
+외부 입력과 승인이 갖춰진 뒤에만 다음 순서로 진행한다.
+
+1. acquisition manifest와 taxonomy artifact를 추가하고 preflight를 통과시킨다.
+2. retrieval-only scale probe를 실행하고 raw result validator를 통과시킨다.
+3. baseline 대 taxonomy-only Part 1을 한 번 실행한다.
+4. paired 결과와 telemetry를 검토해 H1의 방향만 판정한다.
+5. 긍정 신호가 있어도 별도 승인 전에는 Part 2 확대나 반복 실행을 시작하지 않는다.
+
+## 11. 설계 검토에서 내려야 할 결정
+
+- immutable revision과 artifact provenance를 확보한 뒤에도 H1의 score boost를 유지할지
+- Part 1 screening의 최소 유효 질의 수와 실패 query 처리 규칙을 실행 전에 확정할지
+- Part 1 양성 신호에 필요한 반복 실행 수와 비용 상한을 별도 승인 항목으로 둘지
+- raw historical result가 회수되지 않을 경우, 기존 수치를 참고 부록으로만 남길지
+
+이 네 결정 외에 새로운 retrieval·agent 기법을 추가하는 제안은 Part 1·2 범위 밖으로 보류한다.
