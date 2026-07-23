@@ -25,10 +25,14 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from src.miracl_ko.lexical_smoke import (
+    EXPERIMENT_CONTRACT_PATHS,
+    SmokeResultValidationInputs,
+    build_experiment_contract,
     compare_smoke_scales,
     evaluate_passage_rankings,
     parse_anserini_trec_run,
     sha256_json,
+    validate_source_archive_manifest,
     validate_lexical_smoke_config,
     validate_standalone_smoke_result,
 )
@@ -74,20 +78,65 @@ def load_json(path: Path) -> dict[str, Any]:
     return data
 
 
-def resolve_source_git_commit(value: str | None) -> str:
-    if value is None:
-        try:
-            value = subprocess.run(
-                ["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"],
-                capture_output=True,
-                text=True,
-                check=True,
-            ).stdout.strip()
-        except (OSError, subprocess.CalledProcessError) as error:
-            raise RuntimeError("source_git_commit is required when the smoke directory has no Git metadata") from error
-    if len(value) != 40 or any(character not in "0123456789abcdef" for character in value):
-        raise ValueError("source_git_commit must be a 40-character lowercase Git SHA-1")
-    return value
+def resolve_source_provenance(
+    value: str | None,
+    *,
+    source_manifest_path: Path | None,
+    source_archive_path: Path | None,
+) -> dict[str, Any]:
+    try:
+        actual_head = subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        dirty = subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    except FileNotFoundError:
+        actual_head = None
+    except subprocess.CalledProcessError as error:
+        actual_head = None
+    else:
+        if dirty:
+            raise RuntimeError("MIRACL lexical smoke rejects a dirty Git checkout")
+        if value is not None and value != actual_head:
+            raise RuntimeError("source_git_commit does not match the clean checkout HEAD")
+        if len(actual_head) != 40 or any(character not in "0123456789abcdef" for character in actual_head):
+            raise ValueError("source_git_commit must be a 40-character lowercase Git SHA-1")
+        return {
+            "mode": "git_checkout",
+            "source_git_commit": actual_head,
+            "git_clean": True,
+        }
+
+    if source_manifest_path is None or source_archive_path is None:
+        raise RuntimeError("Git-free smoke execution requires --source-manifest and --source-archive")
+    if not source_archive_path.is_file():
+        raise RuntimeError("Git-free smoke execution source archive is missing")
+    source_manifest = load_json(source_manifest_path)
+    source_archive_sha256 = sha256_file(source_archive_path)
+    source_git_commit = source_manifest.get("source_git_commit")
+    if value is not None and value != source_git_commit:
+        raise RuntimeError("source_git_commit does not match the source manifest")
+    return {
+        "mode": "source_archive_manifest",
+        "source_git_commit": source_git_commit,
+        "source_manifest": source_manifest,
+        "source_manifest_sha256": sha256_file(source_manifest_path),
+        "source_archive_sha256": source_archive_sha256,
+    }
+
+
+def build_current_experiment_contract(data_dir: Path) -> dict[str, Any]:
+    return build_experiment_contract(
+        {relative_path: sha256_file(REPO_ROOT / relative_path) for relative_path in EXPERIMENT_CONTRACT_PATHS},
+        subset_manifest_sha256=sha256_file(data_dir / "subsets" / "manifest.json"),
+    )
 
 
 def require_file_record(data_dir: Path, record: dict[str, Any], *, label: str) -> Path:
@@ -229,7 +278,9 @@ def run_scale(
     query_qrel_sha256: str,
     runtime: dict[str, Any],
     source_git_commit: str,
+    source_provenance: dict[str, Any],
     container_recipe_sha256: str,
+    experiment_contract: dict[str, Any],
 ) -> dict[str, Any]:
     subset = subset_manifest["subsets"][str(scale)]
     corpus_path = require_file_record(data_dir, subset["corpus"], label=f"{scale} passage corpus")
@@ -280,10 +331,9 @@ def run_scale(
         label=f"{scale} search",
     )
     rankings = parse_anserini_trec_run(run_path, query_ids=qids)
-    latencies = {qid: search_batch_seconds / len(qids) for qid in qids}
 
     raw_rows, metrics = evaluate_passage_rankings(
-        queries, qrels, rankings, corpus_ids=corpus_ids, latencies_by_qid=latencies
+        queries, qrels, rankings, corpus_ids=corpus_ids
     )
     index_size_bytes = sum(path.stat().st_size for path in index_path.rglob("*") if path.is_file())
     metrics.update({
@@ -291,7 +341,6 @@ def run_scale(
         "index_size_bytes": index_size_bytes,
         "orphan_retrieval_id_count": 0,
         "search_batch_seconds": round(search_batch_seconds, 6),
-        "query_latency_measurement": "batch_elapsed_seconds_divided_by_dev_query_count",
     })
     result = {
         "schema_version": "dr-dci.miracl-ko-lexical-smoke-result.v1",
@@ -301,11 +350,20 @@ def run_scale(
         "retrieval_unit": "passage",
         "scale": scale,
         "source_git_commit": source_git_commit,
+        "source_provenance": source_provenance,
+        "experiment_contract_sha256": experiment_contract["experiment_contract_sha256"],
         "backend": config["backend"],
         "runtime": runtime,
         "retrieval": config["retrieval"],
         "raw_rows": raw_rows,
         "metrics": metrics,
+        "latency": {
+            "measurement": "search_batch_elapsed_seconds_only",
+            "search_batch_seconds": round(search_batch_seconds, 6),
+            "batch_mean_per_query_seconds": round(search_batch_seconds / len(qids), 6),
+            "query_count": len(qids),
+            "paired_bootstrap_allowed": False,
+        },
         "provenance": {
             "subset_sha256": subset["corpus"]["sha256"],
             "query_qrel_sha256": query_qrel_sha256,
@@ -318,7 +376,17 @@ def run_scale(
             "container_recipe_sha256": container_recipe_sha256,
         },
     }
-    validate_standalone_smoke_result(result, config=config)
+    validate_standalone_smoke_result(
+        result,
+        config=config,
+        inputs=SmokeResultValidationInputs(
+            queries=queries,
+            qrels_by_qid=qrels,
+            corpus_ids=corpus_ids,
+            expected_provenance=result["provenance"],
+            expected_experiment_contract_sha256=experiment_contract["experiment_contract_sha256"],
+        ),
+    )
     result_path = output_dir / f"miracl_ko_anserini_smoke_{scale // 1000}k.json"
     atomic_write_json(result_path, result)
     return {
@@ -345,6 +413,9 @@ def write_report(
         "retrieval_unit": "passage",
         "scope": "standalone lexical plumbing smoke; not a focused Part 1/2 or Agentic RAG result",
         "source_git_commit": outputs[20_000]["result"]["source_git_commit"],
+        "smoke_run_git_commit": outputs[20_000]["result"]["source_git_commit"],
+        "source_provenance": outputs[20_000]["result"]["source_provenance"],
+        "experiment_contract_sha256": outputs[20_000]["result"]["experiment_contract_sha256"],
         "backend_config": config,
         "backend_runtime": runtime,
         "scales": {
@@ -384,11 +455,12 @@ def write_report(
         f"- Backend: `{config['backend']['package']}=={config['backend']['version']}` fat JAR distributed in `{config['backend']['distribution_package']}=={config['backend']['distribution_version']}`, with `{config['backend']['analyzer_class']}` for `ko`.",
         f"- Container base: `{config['runtime']['container_base_image']}@sha256:{config['runtime']['container_base_image_sha256']}`; Java package `{config['runtime']['java_runtime_version']}`.",
         f"- Runtime execution mode: `{config['runtime']['execution_mode']}`; only NumPy is added for paired bootstrap. No embedding, model, or external API client is installed or invoked.",
+        f"- Smoke-run source commit: `{outputs[20_000]['result']['source_git_commit']}`; experiment contract SHA-256 `{outputs[20_000]['result']['experiment_contract_sha256']}`.",
         "",
         "## Completed checks", "",
         "- Passage IDs returned by Lucene were checked against each scale corpus.",
-        "- Dev qids, qrels, raw per-query rows, metrics, latency, index size, and raw-result hashes were recorded.",
-        "- 110K−20K comparison is paired by query and is a plumbing diagnostic only.",
+        "- Dev qids, qrels, raw per-query rows, retrieval metrics, batch latency, index size, and raw-result hashes were recorded.",
+        "- 110K−20K comparison is paired by query for retrieval metrics only; batch latency has no paired confidence interval.",
         *rows,
         "",
         "## Interpretation boundary", "",
@@ -407,6 +479,8 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=Path("config/miracl_ko_lexical_smoke.json"))
     parser.add_argument("--stamp", default="20260723")
     parser.add_argument("--source-git-commit", help="40-character source commit; required outside a Git checkout")
+    parser.add_argument("--source-manifest", type=Path, help="Git-free source manifest generated before bundling")
+    parser.add_argument("--source-archive", type=Path, help="Git-free source archive whose SHA-256 is in the manifest")
     args = parser.parse_args()
     data_dir = (REPO_ROOT / args.data_dir).resolve() if not args.data_dir.is_absolute() else args.data_dir
     output_dir = (REPO_ROOT / args.output_dir).resolve() if not args.output_dir.is_absolute() else args.output_dir
@@ -414,13 +488,38 @@ def main() -> None:
     config_path = (REPO_ROOT / args.config).resolve() if not args.config.is_absolute() else args.config
     config = load_json(config_path)
     validate_lexical_smoke_config(config)
-    source_git_commit = resolve_source_git_commit(args.source_git_commit)
+    source_manifest_path = (
+        (REPO_ROOT / args.source_manifest).resolve()
+        if args.source_manifest is not None and not args.source_manifest.is_absolute()
+        else args.source_manifest
+    )
+    source_archive_path = (
+        (REPO_ROOT / args.source_archive).resolve()
+        if args.source_archive is not None and not args.source_archive.is_absolute()
+        else args.source_archive
+    )
+    source_provenance = resolve_source_provenance(
+        args.source_git_commit,
+        source_manifest_path=source_manifest_path,
+        source_archive_path=source_archive_path,
+    )
+    source_git_commit = source_provenance["source_git_commit"]
     container_recipe_sha256 = sha256_file(REPO_ROOT / "docker" / "miracl_ko_lexical_smoke.Dockerfile")
 
     subset_manifest = load_json(data_dir / "subsets" / "manifest.json")
     validate_miracl_ko_subset_files(data_dir, subset_manifest)
     queries, qrels, query_qrel_sha256 = load_dev_inputs(data_dir, subset_manifest)
     runtime = runtime_provenance(config)
+    experiment_contract = build_current_experiment_contract(data_dir)
+    if source_provenance["mode"] == "source_archive_manifest":
+        validate_source_archive_manifest(
+            source_provenance["source_manifest"],
+            source_archive_sha256=source_provenance["source_archive_sha256"],
+            expected_experiment_contract_sha256=experiment_contract["experiment_contract_sha256"],
+        )
+        source_provenance = {
+            key: value for key, value in source_provenance.items() if key != "source_manifest"
+        }
     outputs = {
         scale: run_scale(
             config=config,
@@ -433,7 +532,9 @@ def main() -> None:
             query_qrel_sha256=query_qrel_sha256,
             runtime=runtime,
             source_git_commit=source_git_commit,
+            source_provenance=source_provenance,
             container_recipe_sha256=container_recipe_sha256,
+            experiment_contract=experiment_contract,
         )
         for scale in SCALE_SIZES
     }

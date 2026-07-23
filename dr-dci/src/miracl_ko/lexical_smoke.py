@@ -7,12 +7,13 @@ passage-level retrieval plumbing metrics from already-produced rankings.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 import hashlib
 import json
 import math
 from pathlib import Path
 import re
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 from src.eval.comparison import paired_bootstrap_delta
 
@@ -34,7 +35,7 @@ EXPECTED_BACKEND = {
     "jar_sha256": "3c83883246d0fb2326c8a9291572b969467cf478d1fc65f517cbf37fd9b0d914",
 }
 EXPECTED_RUNTIME_EXECUTION_MODE = "anserini_java_cli_via_pyserini_distribution"
-SMOKE_METRIC_KEYS = (
+RETRIEVAL_METRIC_KEYS = (
     "passage_ndcg_at_10",
     "passage_recall_at_5",
     "passage_recall_at_20",
@@ -43,13 +44,74 @@ SMOKE_METRIC_KEYS = (
     "passage_hit_at_10",
     "passage_precision_at_20",
     "passage_mrr",
-    "query_latency_seconds",
 )
+LEGACY_BATCH_LATENCY_MEASUREMENT = "batch_elapsed_seconds_divided_by_dev_query_count"
+EXPERIMENT_CONTRACT_SCHEMA = "dr-dci.miracl-ko-lexical-smoke-contract.v1"
+SOURCE_MANIFEST_SCHEMA = "dr-dci.miracl-ko-lexical-smoke-source-manifest.v1"
+EXPERIMENT_CONTRACT_PATHS = (
+    "scripts/run_miracl_ko_lexical_smoke.py",
+    "src/miracl_ko/lexical_smoke.py",
+    "src/eval/comparison.py",
+    "src/miracl_ko/preparation.py",
+    "config/miracl_ko_lexical_smoke.json",
+    "docker/miracl_ko_lexical_smoke.Dockerfile",
+    "config/miracl_ko_revision_lock.json",
+)
+
+
+@dataclass(frozen=True)
+class SmokeResultValidationInputs:
+    queries: list[dict[str, Any]]
+    qrels_by_qid: dict[str, dict[str, int | float]]
+    corpus_ids: set[str]
+    expected_provenance: Mapping[str, str]
+    expected_experiment_contract_sha256: str | None = None
+    allow_legacy_contract: bool = False
 
 
 def sha256_json(value: Any) -> str:
     encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_experiment_contract(
+    file_sha256: Mapping[str, str],
+    *,
+    subset_manifest_sha256: str,
+) -> dict[str, Any]:
+    """Build the immutable code/config/data contract for a smoke execution."""
+    if set(file_sha256) != set(EXPERIMENT_CONTRACT_PATHS):
+        raise ValueError("MIRACL lexical smoke contract has an unexpected file set")
+    for path in EXPERIMENT_CONTRACT_PATHS:
+        _require_sha256(file_sha256[path], label=f"MIRACL lexical smoke contract {path}")
+    _require_sha256(subset_manifest_sha256, label="MIRACL lexical smoke contract subset manifest")
+    payload = {
+        "schema_version": EXPERIMENT_CONTRACT_SCHEMA,
+        "files": [{"path": path, "sha256": file_sha256[path]} for path in EXPERIMENT_CONTRACT_PATHS],
+        "subset_manifest_sha256": subset_manifest_sha256,
+    }
+    return {**payload, "experiment_contract_sha256": sha256_json(payload)}
+
+
+def validate_source_archive_manifest(
+    manifest: Mapping[str, Any],
+    *,
+    source_archive_sha256: str,
+    expected_experiment_contract_sha256: str,
+) -> str:
+    """Validate the Git-free source evidence used by an execution bundle."""
+    if manifest.get("schema_version") != SOURCE_MANIFEST_SCHEMA:
+        raise ValueError("MIRACL lexical smoke source manifest schema is invalid")
+    source_git_commit = manifest.get("source_git_commit")
+    if not isinstance(source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_git_commit):
+        raise ValueError("MIRACL lexical smoke source manifest requires source_git_commit")
+    _require_sha256(source_archive_sha256, label="MIRACL lexical smoke source archive")
+    if manifest.get("source_archive_sha256") != source_archive_sha256:
+        raise ValueError("MIRACL lexical smoke source archive does not match source manifest")
+    _require_sha256(expected_experiment_contract_sha256, label="MIRACL lexical smoke expected experiment contract")
+    if manifest.get("experiment_contract_sha256") != expected_experiment_contract_sha256:
+        raise ValueError("MIRACL lexical smoke source manifest does not match experiment contract")
+    return source_git_commit
 
 
 def _require_sha256(value: Any, *, label: str) -> None:
@@ -177,7 +239,7 @@ def evaluate_passage_rankings(
         first_positive_rank = next(
             (rank for rank, corpus_id in enumerate(ranked_ids, start=1) if corpus_id in positives), None
         )
-        rows.append({
+        row = {
             "query_id": qid,
             "retrieval_unit": RETRIEVAL_UNIT,
             "ranked_passage_ids": ranked_ids,
@@ -192,8 +254,10 @@ def evaluate_passage_rankings(
             "passage_hit_at_10": _round(hit_at(10)),
             "passage_precision_at_20": _round(len(set(ranked_ids[:20]) & positives) / 20),
             "passage_mrr": _round(1.0 / first_positive_rank if first_positive_rank else 0.0),
-            "query_latency_seconds": _round(float(latencies_by_qid.get(qid, 0.0))),
-        })
+        }
+        if latencies_by_qid:
+            row["query_latency_seconds"] = _round(float(latencies_by_qid.get(qid, 0.0)))
+        rows.append(row)
     unexpected = sorted(set(rankings_by_qid) - seen_qids)
     if unexpected:
         raise ValueError(f"ranking input contains unknown query ID: {unexpected[0]}")
@@ -205,7 +269,7 @@ def evaluate_passage_rankings(
         "precision_at_20_denominator": 20,
         **{
             key: _round(sum(float(row[key]) for row in rows) / len(rows))
-            for key in SMOKE_METRIC_KEYS
+            for key in RETRIEVAL_METRIC_KEYS
         },
     }
     return rows, aggregate
@@ -241,7 +305,45 @@ def parse_anserini_trec_run(path: Path, *, query_ids: set[str]) -> dict[str, lis
     return rankings
 
 
-def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str, Any]) -> None:
+def _validate_latency_observation(result: dict[str, Any], rows: list[dict[str, Any]]) -> None:
+    """Accept batch latency as descriptive metadata, never as paired samples."""
+    latency = result.get("latency")
+    if isinstance(latency, dict):
+        if latency.get("measurement") != "search_batch_elapsed_seconds_only":
+            raise ValueError("MIRACL lexical smoke latency measurement is invalid")
+        if latency.get("paired_bootstrap_allowed") is not False:
+            raise ValueError("MIRACL lexical smoke batch latency cannot allow paired bootstrap")
+        batch_seconds = latency.get("search_batch_seconds")
+        mean_seconds = latency.get("batch_mean_per_query_seconds")
+        if not isinstance(batch_seconds, (float, int)) or not math.isfinite(float(batch_seconds)) or float(batch_seconds) < 0:
+            raise ValueError("MIRACL lexical smoke batch latency is invalid")
+        if not isinstance(mean_seconds, (float, int)) or not math.isfinite(float(mean_seconds)) or float(mean_seconds) < 0:
+            raise ValueError("MIRACL lexical smoke batch mean latency is invalid")
+        if latency.get("query_count") != len(rows):
+            raise ValueError("MIRACL lexical smoke batch latency query count is invalid")
+        if not math.isclose(float(mean_seconds), _round(float(batch_seconds) / len(rows)), abs_tol=1e-6):
+            raise ValueError("MIRACL lexical smoke batch mean latency does not match batch duration")
+        if any("query_latency_seconds" in row for row in rows):
+            raise ValueError("MIRACL lexical smoke batch latency must not be copied into raw query rows")
+        return
+
+    metrics = result.get("metrics")
+    if not isinstance(metrics, dict) or metrics.get("query_latency_measurement") != LEGACY_BATCH_LATENCY_MEASUREMENT:
+        raise ValueError("MIRACL lexical smoke result is missing explicit batch latency metadata")
+    batch_seconds = metrics.get("search_batch_seconds")
+    if not isinstance(batch_seconds, (float, int)) or not math.isfinite(float(batch_seconds)) or float(batch_seconds) < 0:
+        raise ValueError("MIRACL lexical smoke legacy batch latency is invalid")
+    expected_latency = _round(float(batch_seconds) / len(rows))
+    if any(row.get("query_latency_seconds") != expected_latency for row in rows):
+        raise ValueError("MIRACL lexical smoke legacy query latency must equal batch/query descriptive mean")
+
+
+def validate_standalone_smoke_result(
+    result: dict[str, Any],
+    *,
+    config: dict[str, Any],
+    inputs: SmokeResultValidationInputs,
+) -> None:
     validate_lexical_smoke_config(config)
     for key, expected in {
         "schema_version": LEXICAL_SMOKE_RESULT_SCHEMA,
@@ -256,6 +358,22 @@ def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str
     source_git_commit = result.get("source_git_commit")
     if not isinstance(source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_git_commit):
         raise ValueError("MIRACL lexical smoke result requires source_git_commit")
+    source_provenance = result.get("source_provenance")
+    if source_provenance is None:
+        if not inputs.allow_legacy_contract:
+            raise ValueError("MIRACL lexical smoke result requires source provenance")
+    elif not isinstance(source_provenance, dict):
+        raise ValueError("MIRACL lexical smoke source provenance is invalid")
+    elif source_provenance.get("source_git_commit") != source_git_commit:
+        raise ValueError("MIRACL lexical smoke source provenance commit does not match result")
+    elif source_provenance.get("mode") == "git_checkout":
+        if source_provenance.get("git_clean") is not True:
+            raise ValueError("MIRACL lexical smoke source Git checkout must be clean")
+    elif source_provenance.get("mode") == "source_archive_manifest":
+        _require_sha256(source_provenance.get("source_manifest_sha256"), label="MIRACL lexical smoke source manifest")
+        _require_sha256(source_provenance.get("source_archive_sha256"), label="MIRACL lexical smoke source archive")
+    else:
+        raise ValueError("MIRACL lexical smoke source provenance mode is invalid")
     rows = result.get("raw_rows")
     if not isinstance(rows, list) or not rows:
         raise ValueError("MIRACL lexical smoke result requires raw per-query rows")
@@ -265,20 +383,60 @@ def validate_standalone_smoke_result(result: dict[str, Any], *, config: dict[str
     if not all(qids) or len(qids) != len(set(qids)):
         raise ValueError("MIRACL lexical smoke raw rows require unique query IDs")
     metrics = result.get("metrics")
-    if not isinstance(metrics, dict) or any(key not in metrics for key in SMOKE_METRIC_KEYS[:-1]):
+    if not isinstance(metrics, dict) or any(key not in metrics for key in RETRIEVAL_METRIC_KEYS):
         raise ValueError("MIRACL lexical smoke result is missing passage metrics")
+    _validate_latency_observation(result, rows)
     provenance = result.get("provenance")
     if not isinstance(provenance, dict):
         raise ValueError("MIRACL lexical smoke result requires provenance")
     for key in (
         "subset_sha256", "query_qrel_sha256", "backend_config_sha256",
-        "backend_runtime_sha256", "raw_rows_sha256", "container_recipe_sha256",
+        "backend_runtime_sha256", "raw_rows_sha256", "subset_manifest_sha256",
+        "runner_code_sha256", "contract_code_sha256", "container_recipe_sha256",
     ):
         _require_sha256(provenance.get(key), label=f"MIRACL lexical smoke {key}")
     if provenance["backend_config_sha256"] != sha256_json(config):
         raise ValueError("MIRACL lexical smoke backend_config_sha256 does not match config")
     if provenance["raw_rows_sha256"] != sha256_json(rows):
         raise ValueError("MIRACL lexical smoke raw_rows_sha256 does not match raw rows")
+    expected_provenance = dict(inputs.expected_provenance)
+    for key, expected in expected_provenance.items():
+        _require_sha256(expected, label=f"MIRACL lexical smoke expected {key}")
+        if provenance.get(key) != expected:
+            raise ValueError(f"MIRACL lexical smoke {key} does not match verified input")
+    if provenance["backend_runtime_sha256"] != sha256_json(result.get("runtime")):
+        raise ValueError("MIRACL lexical smoke backend_runtime_sha256 does not match runtime")
+
+    stored_latencies = {
+        str(row["query_id"]): float(row["query_latency_seconds"])
+        for row in rows
+        if "query_latency_seconds" in row
+    }
+    recomputed_rows, recomputed_metrics = evaluate_passage_rankings(
+        inputs.queries,
+        inputs.qrels_by_qid,
+        {
+            str(row["query_id"]): list(zip(row["ranked_passage_ids"], row["scores"]))
+            for row in rows
+        },
+        corpus_ids=inputs.corpus_ids,
+        latencies_by_qid=stored_latencies or None,
+    )
+    recomputed_by_qid = {str(row["query_id"]): row for row in recomputed_rows}
+    for row in rows:
+        recomputed = recomputed_by_qid[str(row["query_id"])]
+        for key, expected in recomputed.items():
+            if row.get(key) != expected:
+                raise ValueError(f"MIRACL lexical smoke raw row {key} does not match rankings/qrels")
+    for key, expected in recomputed_metrics.items():
+        if metrics.get(key) != expected:
+            raise ValueError(f"MIRACL lexical smoke aggregate {key} does not match raw rows")
+    expected_contract = inputs.expected_experiment_contract_sha256
+    if expected_contract is not None:
+        _require_sha256(expected_contract, label="MIRACL lexical smoke expected experiment contract")
+        if result.get("experiment_contract_sha256") != expected_contract:
+            if not inputs.allow_legacy_contract or result.get("experiment_contract_sha256") is not None:
+                raise ValueError("MIRACL lexical smoke experiment contract does not match verified source")
 
 
 def compare_smoke_scales(
@@ -305,7 +463,7 @@ def compare_smoke_scales(
                 seed=seed,
                 iterations=iterations,
             )
-            for key in SMOKE_METRIC_KEYS
+            for key in RETRIEVAL_METRIC_KEYS
         },
         "interpretation": "plumbing diagnostic only; no practical-effect decision or Part 2 claim",
     }

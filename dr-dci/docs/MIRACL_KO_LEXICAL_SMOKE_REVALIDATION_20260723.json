@@ -1,0 +1,231 @@
+{
+  "dataset": "MIRACL",
+  "generated_at": "2026-07-23T12:53:46.918392+00:00",
+  "historical_experiment_contract": {
+    "experiment_contract_sha256": "0dca1cb4decfe79d9fb28a121418e83e809760c7aac5d03cfa03d38c985b88ff",
+    "files": [
+      {
+        "path": "scripts/run_miracl_ko_lexical_smoke.py",
+        "sha256": "0cdef19ecf982e9cb87f685faf0b8360d3e4efdd042030a2b51de3e5d62f1ece"
+      },
+      {
+        "path": "src/miracl_ko/lexical_smoke.py",
+        "sha256": "d9beb823b522eddb4313eb9cdc23109bcea670f8bac747840c74884fdcf43f1d"
+      },
+      {
+        "path": "src/eval/comparison.py",
+        "sha256": "6ef48badd3b9d0b7e290c189d1a9bb32fe7a38560a93a4859da7952ddff9fa74"
+      },
+      {
+        "path": "src/miracl_ko/preparation.py",
+        "sha256": "b207fbd2521a0643a3ed9f8a1bea6bba57a293865b48d0e23166c27085ab6014"
+      },
+      {
+        "path": "config/miracl_ko_lexical_smoke.json",
+        "sha256": "614034113dfe67132c6fdae839f0be06a9165dc5d7caa2c37426f4dc478eceb7"
+      },
+      {
+        "path": "docker/miracl_ko_lexical_smoke.Dockerfile",
+        "sha256": "cfc2ec9e1fbc9bcb66916229efd05a6ae3a49d37a17fd7797fbf460a0c2350e5"
+      },
+      {
+        "path": "config/miracl_ko_revision_lock.json",
+        "sha256": "cc27c0a53a6eb002620a2dc03a16d5cd0dcf1663ab04983cf5d1032c4f356783"
+      }
+    ],
+    "schema_version": "dr-dci.miracl-ko-lexical-smoke-contract.v1",
+    "subset_manifest_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b"
+  },
+  "interpretation_limits": [
+    "controlled distractor scaling only; judged passages are fixed across scales",
+    "no taxonomy, embedding, query rewrite, Agent/LLM, or focused Part 1/2 treatment",
+    "no insurance-domain or physical-document operations claim"
+  ],
+  "language": "ko",
+  "original_report_git_commit": "ee916d3f4e8858521d83df5388021f50f1b2ede6",
+  "original_report_sha256": "efd61f7d2778e04e739e7139e9883002eda7eaafb14afb856b0ee0cb1d999d45",
+  "paired_110k_minus_20k": {
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 42,
+    "delta_direction": "110k_minus_20k",
+    "interpretation": "plumbing diagnostic only; no practical-effect decision or Part 2 claim",
+    "metrics": {
+      "passage_hit_at_10": {
+        "ci95_high": -0.00939,
+        "ci95_low": -0.051643,
+        "iterations": 10000,
+        "mean_delta": -0.028169,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_hit_at_5": {
+        "ci95_high": 0.00939,
+        "ci95_low": -0.037559,
+        "iterations": 10000,
+        "mean_delta": -0.014085,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_mrr": {
+        "ci95_high": 0.002967,
+        "ci95_low": -0.023506,
+        "iterations": 10000,
+        "mean_delta": -0.009868,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_ndcg_at_10": {
+        "ci95_high": -0.007718,
+        "ci95_low": -0.031569,
+        "iterations": 10000,
+        "mean_delta": -0.019143,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_precision_at_20": {
+        "ci95_high": -0.006573,
+        "ci95_low": -0.012911,
+        "iterations": 10000,
+        "mean_delta": -0.009624,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_recall_at_100": {
+        "ci95_high": -0.004617,
+        "ci95_low": -0.024413,
+        "iterations": 10000,
+        "mean_delta": -0.013537,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_recall_at_20": {
+        "ci95_high": -0.047463,
+        "ci95_low": -0.102176,
+        "iterations": 10000,
+        "mean_delta": -0.07373,
+        "n": 213,
+        "seed": 42
+      },
+      "passage_recall_at_5": {
+        "ci95_high": 0.009077,
+        "ci95_low": -0.02019,
+        "iterations": 10000,
+        "mean_delta": -0.006182,
+        "n": 213,
+        "seed": 42
+      }
+    },
+    "paired_query_count": 213
+  },
+  "retrieval_unit": "passage",
+  "scales": {
+    "110000": {
+      "latency": {
+        "batch_mean_per_query_seconds": 0.011031,
+        "measurement": "legacy_batch_elapsed_seconds_only",
+        "note": "legacy raw rows repeat this batch/query descriptive mean; no query-latency CI is reported",
+        "paired_bootstrap_allowed": false,
+        "query_count": 213,
+        "search_batch_seconds": 2.349579
+      },
+      "metrics": {
+        "passage_hit_at_10": 0.779343,
+        "passage_hit_at_5": 0.676056,
+        "passage_mrr": 0.516411,
+        "passage_ndcg_at_10": 0.494221,
+        "passage_precision_at_20": 0.09061,
+        "passage_recall_at_100": 0.937324,
+        "passage_recall_at_20": 0.732751,
+        "passage_recall_at_5": 0.489653
+      },
+      "provenance": {
+        "backend_config_sha256": "2869d8f1f99e55304b78005d828f31693b10cb033fcbe911c2ce3f2c5db7c1bb",
+        "backend_runtime_sha256": "4f80d94d25bf75238d360b340612ddc2b83d5eb1d6c956b50e443fcfc4f3abcb",
+        "container_recipe_sha256": "cfc2ec9e1fbc9bcb66916229efd05a6ae3a49d37a17fd7797fbf460a0c2350e5",
+        "contract_code_sha256": "d9beb823b522eddb4313eb9cdc23109bcea670f8bac747840c74884fdcf43f1d",
+        "query_qrel_sha256": "698507d7c82063ef5c789fb1d30794f2d6fb9ce682a7bab3823e7d88aaf7f77e",
+        "raw_rows_sha256": "9f54f1f8c4a40d235bbc97ae1b272083ce55507e3c30cc16b28c352ddee85256",
+        "runner_code_sha256": "0cdef19ecf982e9cb87f685faf0b8360d3e4efdd042030a2b51de3e5d62f1ece",
+        "subset_manifest_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b",
+        "subset_sha256": "76fc195065f29b96f02e1fc3d7bb8c1e2330c4e701c8c472602fa5ced9626030"
+      },
+      "raw_result_path": "results/miracl_ko_lexical_smoke/20260723/miracl_ko_anserini_smoke_110k.json",
+      "raw_result_sha256": "9b9e036b08e48d51e295b0e6ba60da5e3ff5a86a5391538e7e531989e67ff7aa"
+    },
+    "20000": {
+      "latency": {
+        "batch_mean_per_query_seconds": 0.022604,
+        "measurement": "legacy_batch_elapsed_seconds_only",
+        "note": "legacy raw rows repeat this batch/query descriptive mean; no query-latency CI is reported",
+        "paired_bootstrap_allowed": false,
+        "query_count": 213,
+        "search_batch_seconds": 4.814675
+      },
+      "metrics": {
+        "passage_hit_at_10": 0.807512,
+        "passage_hit_at_5": 0.690141,
+        "passage_mrr": 0.526279,
+        "passage_ndcg_at_10": 0.513364,
+        "passage_precision_at_20": 0.100235,
+        "passage_recall_at_100": 0.950861,
+        "passage_recall_at_20": 0.806481,
+        "passage_recall_at_5": 0.495835
+      },
+      "provenance": {
+        "backend_config_sha256": "2869d8f1f99e55304b78005d828f31693b10cb033fcbe911c2ce3f2c5db7c1bb",
+        "backend_runtime_sha256": "4f80d94d25bf75238d360b340612ddc2b83d5eb1d6c956b50e443fcfc4f3abcb",
+        "container_recipe_sha256": "cfc2ec9e1fbc9bcb66916229efd05a6ae3a49d37a17fd7797fbf460a0c2350e5",
+        "contract_code_sha256": "d9beb823b522eddb4313eb9cdc23109bcea670f8bac747840c74884fdcf43f1d",
+        "query_qrel_sha256": "698507d7c82063ef5c789fb1d30794f2d6fb9ce682a7bab3823e7d88aaf7f77e",
+        "raw_rows_sha256": "765448ee3821eceab269866278e16aa05772ad19aacf67251ad5281cb855d047",
+        "runner_code_sha256": "0cdef19ecf982e9cb87f685faf0b8360d3e4efdd042030a2b51de3e5d62f1ece",
+        "subset_manifest_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b",
+        "subset_sha256": "1ffc669b3b912473a7d7fdcf50d696a2d39a05bcb9bc3f436b4b6d1bac0d7498"
+      },
+      "raw_result_path": "results/miracl_ko_lexical_smoke/20260723/miracl_ko_anserini_smoke_20k.json",
+      "raw_result_sha256": "c6d2c807eb33eab01c9219a59cffd503f04c65bc18fb23b8ab6eb1d7b287de64"
+    },
+    "50000": {
+      "latency": {
+        "batch_mean_per_query_seconds": 0.009753,
+        "measurement": "legacy_batch_elapsed_seconds_only",
+        "note": "legacy raw rows repeat this batch/query descriptive mean; no query-latency CI is reported",
+        "paired_bootstrap_allowed": false,
+        "query_count": 213,
+        "search_batch_seconds": 2.077328
+      },
+      "metrics": {
+        "passage_hit_at_10": 0.798122,
+        "passage_hit_at_5": 0.680751,
+        "passage_mrr": 0.522653,
+        "passage_ndcg_at_10": 0.506106,
+        "passage_precision_at_20": 0.09554,
+        "passage_recall_at_100": 0.944992,
+        "passage_recall_at_20": 0.767391,
+        "passage_recall_at_5": 0.495175
+      },
+      "provenance": {
+        "backend_config_sha256": "2869d8f1f99e55304b78005d828f31693b10cb033fcbe911c2ce3f2c5db7c1bb",
+        "backend_runtime_sha256": "4f80d94d25bf75238d360b340612ddc2b83d5eb1d6c956b50e443fcfc4f3abcb",
+        "container_recipe_sha256": "cfc2ec9e1fbc9bcb66916229efd05a6ae3a49d37a17fd7797fbf460a0c2350e5",
+        "contract_code_sha256": "d9beb823b522eddb4313eb9cdc23109bcea670f8bac747840c74884fdcf43f1d",
+        "query_qrel_sha256": "698507d7c82063ef5c789fb1d30794f2d6fb9ce682a7bab3823e7d88aaf7f77e",
+        "raw_rows_sha256": "6cc49cd1376160aee56cbe760c0301f55edb34a054d60bbdc14b4d3e165e14a4",
+        "runner_code_sha256": "0cdef19ecf982e9cb87f685faf0b8360d3e4efdd042030a2b51de3e5d62f1ece",
+        "subset_manifest_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b",
+        "subset_sha256": "66e3f5ccdc7fc5b608c93eceff2345765f253fa0d64d3547f6a90b04e64b0dfc"
+      },
+      "raw_result_path": "results/miracl_ko_lexical_smoke/20260723/miracl_ko_anserini_smoke_50k.json",
+      "raw_result_sha256": "69ac1b9e8d48a2d006638c41f8ac135c423030099be5f35773bc6d3ee756fb0b"
+    }
+  },
+  "schema_version": "dr-dci.miracl-ko-lexical-smoke-revalidation.v1",
+  "scope": "existing raw lexical smoke revalidation only; no Anserini rerun",
+  "smoke_run_git_commit": "39ff3d21dae821170c1b77e0572c92b769999adc",
+  "validation": {
+    "anserini_rerun": false,
+    "legacy_batch_latency_excluded_from_paired_bootstrap": true,
+    "raw_rows_and_aggregate_metrics_recomputed": true,
+    "runtime_and_source_data_provenance_verified": true
+  }
+}
