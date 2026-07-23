@@ -1,0 +1,574 @@
+{
+  "acquisition": {
+    "acquisition_script_sha256": "d02b7dd01777aac3606e98756b8e948d94480d2046aaf7f2b16a56094be2e701",
+    "acquisition_script_version": "miracl-ko-preparation-v1",
+    "dataset": "MIRACL",
+    "downloaded_at": "2026-07-23T07:34:00.470334+00:00",
+    "files": [
+      {
+        "byte_size": 53825,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": null,
+        "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-train.tsv",
+        "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
+        "sha256": "552c5fe3c6d71fa35150172a160a6cea144f8b73b478795059dbf97aa294b2b7",
+        "source_key": "topics_qrels",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl"
+      },
+      {
+        "byte_size": 12597,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": null,
+        "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-dev.tsv",
+        "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
+        "sha256": "a365552cfc997a8915e948a3b5994883f641e7c3f12b6af87bbfaf89729e32a8",
+        "source_key": "topics_qrels",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl"
+      },
+      {
+        "byte_size": 232882,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": null,
+        "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-train.tsv",
+        "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
+        "sha256": "7719e296a61f599a64fd102f62a1ce0d257199c8da2aca90e1c66ddcb9644a93",
+        "source_key": "topics_qrels",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl"
+      },
+      {
+        "byte_size": 55675,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": null,
+        "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-dev.tsv",
+        "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
+        "sha256": "88827ccc5b64e531b25f70eef30202d33daa9bfa3ac8cceadf5cdbd5ca5034df",
+        "source_key": "topics_qrels",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl"
+      },
+      {
+        "byte_size": 87965596,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d",
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-0.jsonl.gz",
+        "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
+        "sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d",
+        "source_key": "corpus",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl-corpus"
+      },
+      {
+        "byte_size": 75422723,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd",
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-1.jsonl.gz",
+        "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
+        "sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd",
+        "source_key": "corpus",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl-corpus"
+      },
+      {
+        "byte_size": 62582229,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "official_lfs_sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9",
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-2.jsonl.gz",
+        "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
+        "sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9",
+        "source_key": "corpus",
+        "source_url": "https://huggingface.co/datasets/miracl/miracl-corpus"
+      }
+    ],
+    "language": "ko",
+    "license": "Apache-2.0 (MIRACL repository and dataset cards)",
+    "python_version": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 11:23:37) [Clang 14.0.6 ]",
+    "resolved_revision": {
+      "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
+      "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
+    },
+    "source_urls": {
+      "corpus": "https://huggingface.co/datasets/miracl/miracl-corpus",
+      "topics_qrels": "https://huggingface.co/datasets/miracl/miracl"
+    },
+    "transformation_version": "miracl-ko-nfc-v1",
+    "underlying_content_license": {
+      "content": "Wikipedia text corpus",
+      "source_url": "https://en.wikipedia.org/wiki/Wikipedia:Reusing_Wikipedia_content",
+      "terms": "CC BY-SA reuse terms: attribution, share-alike, change indication, and license notice apply"
+    }
+  },
+  "dataset": "MIRACL",
+  "eda": {
+    "corpus": {
+      "article_count": 437373,
+      "conflicting_passage_content": 0,
+      "duplicate_passage_id_rows": 0,
+      "empty_text_count": 0,
+      "empty_title_count": 0,
+      "passage_count": 1486752,
+      "passages_per_article": {
+        "count": 437373,
+        "max": 1220,
+        "mean": 3.3993,
+        "min": 1,
+        "p50": 1.0,
+        "p90": 7.0,
+        "p95": 11.0,
+        "p99": 28.0
+      },
+      "text_characters": {
+        "count": 1486752,
+        "max": 25243,
+        "mean": 166.6267,
+        "min": 1,
+        "p50": 125.0,
+        "p90": 343.0,
+        "p95": 442.0,
+        "p99": 726.0
+      },
+      "title_characters": {
+        "count": 1486752,
+        "max": 96,
+        "mean": 7.3498,
+        "min": 1,
+        "p50": 6.0,
+        "p90": 13.0,
+        "p95": 16.0,
+        "p99": 23.0
+      },
+      "unicode_nfc_changed_on_recheck": 0,
+      "unique_passage_id_count": 1486752
+    },
+    "dataset": "MIRACL",
+    "generated_at": "2026-07-23T07:34:37.459190+00:00",
+    "integrity_status": "passed",
+    "language": "ko",
+    "leakage_diagnostics": {
+      "evaluated_positive_query_count": 1081,
+      "query_positive_max_normalized_character_coverage": {
+        "count": 1081,
+        "max": 0.9861,
+        "mean": 0.76865,
+        "min": 0.2727,
+        "p50": 0.7857,
+        "p90": 0.9091,
+        "p95": 0.9286,
+        "p99": 0.963,
+        "unit": "fraction_of_unique_query_characters"
+      },
+      "query_with_positive_passage_exact_20_char_ngram_count": 132,
+      "query_with_positive_title_exact_match_count": 0,
+      "scope": "diagnostic only; not a discard threshold"
+    },
+    "normalization": {
+      "query": 0,
+      "text": 5,
+      "title": 0
+    },
+    "normalization_manifest_sha256": "af719efddfeb705529ecd8eb2c4e2cf1cae99c14e53c5a82b7940fab55d51dd8",
+    "official_reference_count_comparison": {
+      "actual": {
+        "corpus": {
+          "article_count": 437373,
+          "passage_count": 1486752
+        },
+        "qrels": {
+          "dev": 3057,
+          "train": 12767
+        },
+        "queries": {
+          "dev": 213,
+          "train": 868
+        }
+      },
+      "expected": {
+        "corpus": {
+          "article_count": 437373,
+          "passage_count": 1486752
+        },
+        "qrels": {
+          "dev": 3057,
+          "train": 12767
+        },
+        "queries": {
+          "dev": 213,
+          "train": 868
+        }
+      },
+      "mismatches": {},
+      "source": "MIRACL official repository and dataset card",
+      "status": "matches"
+    },
+    "qrels": {
+      "conflicting_duplicate_qrels": {
+        "dev": 0,
+        "train": 0
+      },
+      "dev_count": 3057,
+      "duplicate_qrel_rows": {
+        "dev": 0,
+        "train": 0
+      },
+      "label_distribution": {
+        "dev": {
+          "0": 2510,
+          "1": 547
+        },
+        "train": {
+          "0": 10794,
+          "1": 1973
+        }
+      },
+      "orphan_corpus_ids": 0,
+      "orphan_qids": {
+        "dev": 0,
+        "train": 0
+      },
+      "per_split_positive_structure": {
+        "dev": {
+          "multi_positive_query_count": 111,
+          "multi_positive_query_rate": 0.521127,
+          "positive_passages_per_query": {
+            "count": 213,
+            "max": 12,
+            "mean": 2.5681,
+            "min": 1,
+            "p50": 2.0,
+            "p90": 5.0,
+            "p95": 7.0,
+            "p99": 10.0
+          },
+          "queries_with_positive": 213
+        },
+        "train": {
+          "multi_positive_query_count": 439,
+          "multi_positive_query_rate": 0.50576,
+          "positive_passages_per_query": {
+            "count": 868,
+            "max": 12,
+            "mean": 2.273,
+            "min": 1,
+            "p50": 2.0,
+            "p90": 5.0,
+            "p95": 6.0,
+            "p99": 9.33
+          },
+          "queries_with_positive": 868
+        }
+      },
+      "positive_passage_count": 2105,
+      "positive_passage_id_sha256": "53b7b3e0652aba68b22c55df1ab73837aa1d48c24efa4ee4a5b5233dffc98480",
+      "train_count": 12767
+    },
+    "queries": {
+      "dev_query_count": 213,
+      "dev_query_row_count": 213,
+      "duplicate_qid_rows": {
+        "dev": 0,
+        "train": 0
+      },
+      "empty_query_count": {
+        "dev": 0,
+        "train": 0
+      },
+      "query_characters": {
+        "dev": {
+          "count": 213,
+          "max": 92,
+          "mean": 21.6244,
+          "min": 5,
+          "p50": 19.0,
+          "p90": 29.0,
+          "p95": 46.2,
+          "p99": 82.76
+        },
+        "train": {
+          "count": 868,
+          "max": 142,
+          "mean": 22.7707,
+          "min": 4,
+          "p50": 19.0,
+          "p90": 33.0,
+          "p95": 49.0,
+          "p99": 94.33
+        }
+      },
+      "train_dev_exact_normalized_query_count": 0,
+      "train_dev_near_duplicate_query_candidates": [
+        {
+          "char_trigram_jaccard": 0.8,
+          "dev_qid": "130",
+          "train_qid": "172"
+        },
+        {
+          "char_trigram_jaccard": 0.875,
+          "dev_qid": "252",
+          "train_qid": "1210"
+        }
+      ],
+      "train_dev_shared_qids": 0,
+      "train_query_count": 868,
+      "train_query_row_count": 868
+    },
+    "retrieval_unit": "passage",
+    "split_overlap": {
+      "dev_positive_article_count": 433,
+      "shared_positive_article_count": 155,
+      "train_positive_article_count": 1352
+    },
+    "violations": []
+  },
+  "gate_decision": {
+    "not_evidence_for": [
+      "taxonomy effect",
+      "Agentic RAG improvement",
+      "insurance-domain transfer",
+      "110K physical-document operations"
+    ],
+    "scope": "Korean passage-retrieval algorithm screening only",
+    "status": "suitable"
+  },
+  "generated_at": "2026-07-23T07:35:02.101007+00:00",
+  "language": "ko",
+  "lexical_plumbing_smoke": {
+    "reason": "no existing Korean lexical retrieval dependency is approved for MIRACL; the repository's small regex BM25 helper is not promoted to a Korean tokenizer",
+    "status": "blocked"
+  },
+  "nested_subsets": {
+    "acquisition_manifest_sha256": "367c9bc8b8bccd9e37eb78b088da2ebee7c8a8e3a39a95064907d9f56ce1741c",
+    "dataset": "MIRACL",
+    "design": "controlled distractor scaling; positive passages fixed, distractors increase",
+    "language": "ko",
+    "negative_qrels_forced_into_mandatory_set": false,
+    "positive_passage_count": 2105,
+    "positive_passage_id_sha256": "53b7b3e0652aba68b22c55df1ab73837aa1d48c24efa4ee4a5b5233dffc98480",
+    "positive_set_definition": "relevance > 0 across normalized train and dev qrels only",
+    "retrieval_unit": "passage",
+    "scale_version": "miracl-ko-scale-v1",
+    "source_revisions": {
+      "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
+      "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
+    },
+    "subsets": {
+      "110000": {
+        "corpus": {
+          "byte_size": 55698197,
+          "relative_path": "subsets/110k/corpus.jsonl",
+          "rows": 110000,
+          "sha256": "fd3088c041916f4bc98f21e54689c2a3eab3fd6ec45daac45fa46591c511217c"
+        },
+        "ordered_passage_id_sha256": "8e440885a8ff5b77baf86947d9022bd42c314c6f92e035d700c80a8a0ae75ce7",
+        "passage_content_aggregate_sha256": "9a98e7eb45b154e98f31f14a7e93197daed742960c9bb39fc9ed3815dbb5e6c4",
+        "passage_count": 110000,
+        "positive_passage_count": 2105,
+        "positive_passages_preserved": true,
+        "query_qrel_inputs": {
+          "qrels_dev": {
+            "byte_size": 220753,
+            "relative_path": "normalized/qrels_dev.jsonl",
+            "sha256": "5ff786ffc7e11d3de49b3301f3c53f3b3e0f49f957f30f78dfcfd8a2c4f100da"
+          },
+          "qrels_train": {
+            "byte_size": 947834,
+            "relative_path": "normalized/qrels_train.jsonl",
+            "sha256": "518c74e166cd3ebbc1a467bed8e8dc6c2c0c77995ba844e841f28032cdca54a5"
+          },
+          "queries_dev": {
+            "byte_size": 20904,
+            "relative_path": "normalized/queries_dev.jsonl",
+            "sha256": "c1f660f8c0e4f8b8f55f64e9569a84942088a82b9998757c7e87ed7958f1d8ae"
+          },
+          "queries_train": {
+            "byte_size": 89415,
+            "relative_path": "normalized/queries_train.jsonl",
+            "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
+          }
+        }
+      },
+      "20000": {
+        "corpus": {
+          "byte_size": 10494855,
+          "relative_path": "subsets/20k/corpus.jsonl",
+          "rows": 20000,
+          "sha256": "4ff8dc4803db997aef56414bfe857537e69c3f2dd71397976dbefbb003985a78"
+        },
+        "ordered_passage_id_sha256": "69ea56d28994ad2950a7b517a2c04dd1390be65f054f32d0e7ec56e6bdf3db0e",
+        "passage_content_aggregate_sha256": "270d023c1754e79c8c6ba701f129c6e27b8bba258c943f3dcc50b1ac8da948d1",
+        "passage_count": 20000,
+        "positive_passage_count": 2105,
+        "positive_passages_preserved": true,
+        "query_qrel_inputs": {
+          "qrels_dev": {
+            "byte_size": 220753,
+            "relative_path": "normalized/qrels_dev.jsonl",
+            "sha256": "5ff786ffc7e11d3de49b3301f3c53f3b3e0f49f957f30f78dfcfd8a2c4f100da"
+          },
+          "qrels_train": {
+            "byte_size": 947834,
+            "relative_path": "normalized/qrels_train.jsonl",
+            "sha256": "518c74e166cd3ebbc1a467bed8e8dc6c2c0c77995ba844e841f28032cdca54a5"
+          },
+          "queries_dev": {
+            "byte_size": 20904,
+            "relative_path": "normalized/queries_dev.jsonl",
+            "sha256": "c1f660f8c0e4f8b8f55f64e9569a84942088a82b9998757c7e87ed7958f1d8ae"
+          },
+          "queries_train": {
+            "byte_size": 89415,
+            "relative_path": "normalized/queries_train.jsonl",
+            "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
+          }
+        }
+      },
+      "50000": {
+        "corpus": {
+          "byte_size": 25569181,
+          "relative_path": "subsets/50k/corpus.jsonl",
+          "rows": 50000,
+          "sha256": "ba7423a8de3a11f19c3eeb16d5c345cd418293265e6a427f2a02dbc51438c3b5"
+        },
+        "ordered_passage_id_sha256": "d58c66d30b1e902facbdb3bd6e03df1d96ccacc31131a7a5c6c00eb46ea34cf0",
+        "passage_content_aggregate_sha256": "00432b10ac23824f25ae0bb610b6871a9481b45fd70161cd2e6610f4efb665e8",
+        "passage_count": 50000,
+        "positive_passage_count": 2105,
+        "positive_passages_preserved": true,
+        "query_qrel_inputs": {
+          "qrels_dev": {
+            "byte_size": 220753,
+            "relative_path": "normalized/qrels_dev.jsonl",
+            "sha256": "5ff786ffc7e11d3de49b3301f3c53f3b3e0f49f957f30f78dfcfd8a2c4f100da"
+          },
+          "qrels_train": {
+            "byte_size": 947834,
+            "relative_path": "normalized/qrels_train.jsonl",
+            "sha256": "518c74e166cd3ebbc1a467bed8e8dc6c2c0c77995ba844e841f28032cdca54a5"
+          },
+          "queries_dev": {
+            "byte_size": 20904,
+            "relative_path": "normalized/queries_dev.jsonl",
+            "sha256": "c1f660f8c0e4f8b8f55f64e9569a84942088a82b9998757c7e87ed7958f1d8ae"
+          },
+          "queries_train": {
+            "byte_size": 89415,
+            "relative_path": "normalized/queries_train.jsonl",
+            "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
+          }
+        }
+      }
+    }
+  },
+  "normalization": {
+    "dataset": "MIRACL",
+    "generated_at": "2026-07-23T07:34:17.307328+00:00",
+    "inputs": {
+      "corpus_0": {
+        "byte_size": 87965596,
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-0.jsonl.gz",
+        "sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d"
+      },
+      "corpus_1": {
+        "byte_size": 75422723,
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-1.jsonl.gz",
+        "sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd"
+      },
+      "corpus_2": {
+        "byte_size": 62582229,
+        "relative_path": "raw/miracl-corpus-v1.0-ko/docs-2.jsonl.gz",
+        "sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9"
+      },
+      "qrels_dev": {
+        "byte_size": 55675,
+        "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-dev.tsv",
+        "sha256": "88827ccc5b64e531b25f70eef30202d33daa9bfa3ac8cceadf5cdbd5ca5034df"
+      },
+      "qrels_train": {
+        "byte_size": 232882,
+        "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-train.tsv",
+        "sha256": "7719e296a61f599a64fd102f62a1ce0d257199c8da2aca90e1c66ddcb9644a93"
+      },
+      "topics_dev": {
+        "byte_size": 12597,
+        "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-dev.tsv",
+        "sha256": "a365552cfc997a8915e948a3b5994883f641e7c3f12b6af87bbfaf89729e32a8"
+      },
+      "topics_train": {
+        "byte_size": 53825,
+        "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-train.tsv",
+        "sha256": "552c5fe3c6d71fa35150172a160a6cea144f8b73b478795059dbf97aa294b2b7"
+      }
+    },
+    "language": "ko",
+    "outputs": {
+      "corpus": {
+        "byte_size": 745841888,
+        "relative_path": "normalized/corpus.jsonl",
+        "rows": 1486752,
+        "sha256": "b2db7bfbf15c55bfb8acf240248426da20f5abb7c937252718d5651f2808342b"
+      },
+      "qrels_dev": {
+        "byte_size": 220753,
+        "relative_path": "normalized/qrels_dev.jsonl",
+        "rows": 3057,
+        "sha256": "5ff786ffc7e11d3de49b3301f3c53f3b3e0f49f957f30f78dfcfd8a2c4f100da"
+      },
+      "qrels_train": {
+        "byte_size": 947834,
+        "relative_path": "normalized/qrels_train.jsonl",
+        "rows": 12767,
+        "sha256": "518c74e166cd3ebbc1a467bed8e8dc6c2c0c77995ba844e841f28032cdca54a5"
+      },
+      "queries_dev": {
+        "byte_size": 20904,
+        "relative_path": "normalized/queries_dev.jsonl",
+        "rows": 213,
+        "sha256": "c1f660f8c0e4f8b8f55f64e9569a84942088a82b9998757c7e87ed7958f1d8ae"
+      },
+      "queries_train": {
+        "byte_size": 89415,
+        "relative_path": "normalized/queries_train.jsonl",
+        "rows": 868,
+        "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
+      }
+    },
+    "retrieval_unit": "passage",
+    "transformation_version": "miracl-ko-nfc-v1",
+    "unicode_nfc_changed_fields": {
+      "query": 0,
+      "text": 5,
+      "title": 0
+    }
+  },
+  "normalized_schema": {
+    "corpus": {
+      "article_id": "derived from corpus_id before #",
+      "corpus_id": "article_id#passage_index (preserved MIRACL docid)",
+      "passage_index": "integer derived from corpus_id after #",
+      "text": "Unicode NFC source passage text",
+      "title": "Unicode NFC source title"
+    },
+    "qrel": {
+      "corpus_id": "preserved MIRACL passage ID",
+      "qid": "preserved MIRACL topic ID",
+      "relevance": "preserved numeric relevance",
+      "split": "train or dev"
+    },
+    "query": {
+      "qid": "preserved MIRACL topic ID",
+      "query": "Unicode NFC topic text",
+      "split": "train or dev"
+    }
+  },
+  "part12_status": {
+    "agent_or_llm": "not_executed",
+    "focused_part1_part2": "not_approved",
+    "minimum_practical_effect_status": "unapproved",
+    "minimum_practical_effect_version": "pending-miracl-passage",
+    "taxonomy_artifact": "not_generated"
+  },
+  "retrieval_unit": "passage",
+  "schema_version": "dr-dci.miracl-ko-pretest.v1"
+}
