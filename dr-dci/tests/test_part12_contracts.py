@@ -197,7 +197,9 @@ class Part12ContractTests(unittest.TestCase):
                         "subsets": [{"size": 1000, "sha256": run_experiment.sha256_file(subset_path)}],
                     },
                     "experiment_config": {},
-                    "execution_environment": {},
+                    "execution_environment": {
+                        "dependencies": run_experiment.runtime_dependency_versions(),
+                    },
                     "git_commit": "a" * 40,
                     "experiment_contract_sha256": run_experiment.experiment_contract_fingerprint(
                         "fixture"
@@ -264,6 +266,25 @@ class Part12ContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "experiment contract hash"):
                     run_experiment.approved_part1_result_gate(
                         incompatible_contract_config, part2_preflight
+                    )
+
+                incompatible_dependencies = copy.deepcopy(part1_payload)
+                incompatible_dependencies["manifest"]["execution_environment"][
+                    "dependencies"
+                ]["numpy"] = "0.0.0"
+                incompatible_dependencies_path = data / "approved-part1-incompatible-dependencies.json"
+                write_json(incompatible_dependencies_path, incompatible_dependencies)
+                incompatible_dependencies_config = copy.deepcopy(config)
+                incompatible_dependencies_config["parts"]["part2_scaling"][
+                    "approved_part1_result"
+                ] = {
+                    "status": "approved",
+                    "path": str(incompatible_dependencies_path),
+                    "sha256": run_experiment.sha256_file(incompatible_dependencies_path),
+                }
+                with self.assertRaisesRegex(RuntimeError, "runtime dependency versions"):
+                    run_experiment.approved_part1_result_gate(
+                        incompatible_dependencies_config, part2_preflight
                     )
 
                 inconsistent_analysis = copy.deepcopy(part1_payload)

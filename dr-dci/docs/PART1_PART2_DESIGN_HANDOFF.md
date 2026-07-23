@@ -106,8 +106,9 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 - taxonomy boost는 양수 cosine에만 적용한다. dense-stage 전후 rank, Top-K 진입·이탈, score 분포와 bounded pull trace를 보존한다.
 - 순위 계측은 `argpartition`으로 뽑은 제한된 candidate 집합에서만 수행한다. baseline 또는 점수가 실제로 바뀌지 않은 pull에는 전후 순위 정렬·rank map을 만들지 않는다. agent raw row에는 전체 latency, rank-telemetry 추가 시간, 그리고 이를 뺀 latency를 함께 기록한다.
 - 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, 분석 paired-bootstrap seed의 용도, 실제 agent/judge temperature·max tokens·generation seed, model/instruction/control, 실행 환경을 보존한다.
-- Part 1 validator는 승인 파일의 raw baseline/taxonomy row에서 manifest의 bootstrap seed·반복 횟수로 `compare_result_rows()`를 재실행하고, 기록된 mean/CI·paired 수·판정을 모두 대조한다. 저장된 `positive_practical_signal` 문자열만으로는 통과하지 못한다.
-- `experiment_contract_sha256`은 runner, retriever, agent, judge, comparison/판정 코드, judge prompt, dataset별 taxonomy schema prompt의 파일 hash로 계산한다. mutable approval path가 있는 experiment YAML 자체는 제외하며, Part 2는 Part 1과 현재의 contract hash가 같아야 한다.
+- Part 1 validator는 승인 파일의 raw baseline/taxonomy row에서 manifest의 bootstrap seed와 고정된 **10,000회**로 `compare_result_rows()`를 재실행하고, 기록된 mean/CI·paired 수·판정을 모두 대조한다. 10,000 이외의 반복 횟수는 재계산 전에 차단하므로 저장된 `positive_practical_signal` 문자열이나 과도한 iteration 값만으로는 통과하지 못한다.
+- `experiment_contract_sha256`은 runner, retriever, agent, workspace, judge, comparison/판정 코드, retrieval의 BM25/cache/fusion/init, judge prompt, dataset별 taxonomy schema prompt의 파일 hash로 계산한다. mutable approval path가 있는 experiment YAML 자체는 제외하며, Part 2는 Part 1과 현재의 contract hash가 같아야 한다.
+- manifest는 실제 `numpy`·`requests`·`PyYAML` 버전을 기록한다. Part 2 gate는 이 세 버전도 Part 1 실행 환경과 정확히 대조한다.
 - scale probe와 focused Part 1·2 모두 raw per-query rows, provenance, metric, paired CI와 필수 telemetry 계약이 빠지면 저장 전 실패한다.
 - focused Part 2는 승인된 Part 1 result의 path/SHA-256, raw-row 재계산 validator, positive practical signal, focused arm 구성, data·subset·taxonomy artifact hash, model/retrieval control, minimum-effect 크기·버전, execution contract hash를 모두 대조한 뒤에만 query를 로드한다.
 - H200 전송은 git pull이 아닌 code/config/manifest bundle만 사용하며 data, key, cache, result를 넣지 않는다.
@@ -132,7 +133,7 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash. Part 2에는 110K 정본과 20K/50K 파생 규칙도 필요하다.
 3. H200/외부 모델 실행에 대한 명시적 승인
 4. `0.01` 최소 실질 효과 기준의 명시적 승인(`minimum_practical_effect_status: approved`) 또는 승인된 대체 기준
-5. Part 1의 승인된 focused 결과 파일 경로·SHA-256. Part 2는 이 결과가 raw-row 재계산 validator를 통과하고 `positive_practical_signal`이며, 현재 data revision·20K taxonomy artifact·model/retrieval controls·minimum-effect 크기/버전·execution contract hash와 일치할 때만 실행된다.
+5. Part 1의 승인된 focused 결과 파일 경로·SHA-256. Part 2는 이 결과가 raw-row 재계산 validator를 통과하고 `positive_practical_signal`이며, 현재 data revision·20K taxonomy artifact·model/retrieval controls·minimum-effect 크기/버전·execution contract hash·`numpy`/`requests`/`PyYAML` 실제 버전과 일치할 때만 실행된다.
 
 ### 과거 결과 재해석에만 필요한 입력
 

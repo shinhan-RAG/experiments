@@ -16,6 +16,7 @@ import time
 import hashlib
 import platform
 import sys
+from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -35,7 +36,10 @@ from src.eval.comparison import (
 )
 from src.eval.judge import Judge, compute_metrics
 from src.eval.part12_contracts import audit_part12
-from src.eval.part12_result_contract import validate_focused_part12_result
+from src.eval.part12_result_contract import (
+    REQUIRED_RUNTIME_DEPENDENCIES,
+    validate_focused_part12_result,
+)
 from src.eval.retrieval_metrics import rank_metrics
 from src.eval.scale_probe_contract import validate_scale_probe_result
 
@@ -574,9 +578,14 @@ EXPERIMENT_CONTRACT_RELATIVE_PATHS = (
     Path("run_experiment.py"),
     Path("src/agent/retriever.py"),
     Path("src/agent/dci_agent.py"),
+    Path("src/agent/workspace.py"),
     Path("src/eval/judge.py"),
     Path("src/eval/comparison.py"),
     Path("src/eval/part12_result_contract.py"),
+    Path("src/retrieval/bm25.py"),
+    Path("src/retrieval/cache.py"),
+    Path("src/retrieval/fusion.py"),
+    Path("src/retrieval/__init__.py"),
     Path("config/judge_prompt.txt"),
 )
 
@@ -794,6 +803,17 @@ def approved_part1_result_gate(config: dict, part2_preflight: dict) -> dict:
             "approved Part 1 experiment contract hash does not match current execution"
         )
 
+    result_environment = manifest.get("execution_environment")
+    result_dependencies = (
+        result_environment.get("dependencies")
+        if isinstance(result_environment, dict) else None
+    )
+    current_dependencies = runtime_dependency_versions()
+    if result_dependencies != current_dependencies:
+        blockers.append(
+            "approved Part 1 runtime dependency versions differ from current execution"
+        )
+
     if blockers:
         details = "\n".join(f"- {item}" for item in blockers)
         raise RuntimeError(f"focused Part 2 approved Part 1 result gate failed:\n{details}")
@@ -813,6 +833,7 @@ def approved_part1_result_gate(config: dict, part2_preflight: dict) -> dict:
             "minimum_practical_effect_version": current_minimum_effect_version,
             "experiment_contract_sha256": current_contract["sha256"],
             "part1_primary_analysis": "recomputed_matched",
+            "runtime_dependencies": "matched",
         },
     }
 
@@ -1476,6 +1497,17 @@ def experiment_contract_fingerprint(dataset: str) -> dict:
     return {"sha256": digest.hexdigest(), "files": files}
 
 
+def runtime_dependency_versions() -> dict[str, str]:
+    """Return installed dependency versions that can affect Part 1/2 results."""
+    versions = {}
+    for dependency in REQUIRED_RUNTIME_DEPENDENCIES:
+        try:
+            versions[dependency] = package_version(dependency)
+        except PackageNotFoundError:
+            versions[dependency] = "not_installed"
+    return versions
+
+
 def _dataset_counts(raw_dir: Path) -> dict:
     corpus_documents = 0
     queries = 0
@@ -1586,6 +1618,7 @@ def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *
         "execution_environment": {
             "python": sys.version,
             "platform": platform.platform(),
+            "dependencies": runtime_dependency_versions(),
         },
     }
 

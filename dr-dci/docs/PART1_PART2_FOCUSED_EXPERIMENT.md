@@ -110,7 +110,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 
 ### 5.2 Part 2: 같은 메커니즘의 규모 확장
 
-Part 1을 통과한 경우에만 taxonomy arm을 확장한다. focused Part 2는 config의 `approved_part1_result`에 사람이 승인한 Part 1 결과 파일 경로와 SHA-256이 있을 때만 시작한다. 이 gate는 해당 파일의 focused validator가 raw baseline/taxonomy row에서 manifest bootstrap 조건으로 mean/CI와 판정을 재계산해 대조하고, `positive_practical_signal` 판정, 현재의 data revision·raw/subset hash·20K taxonomy artifact hash·model/retrieval controls·minimum-effect 크기/버전·`experiment_contract_sha256` 정합성을 모두 확인한다. contract hash는 runner/retriever/agent/judge/comparison·판정 코드와 judge prompt, taxonomy schema prompt를 포함한다.
+Part 1을 통과한 경우에만 taxonomy arm을 확장한다. focused Part 2는 config의 `approved_part1_result`에 사람이 승인한 Part 1 결과 파일 경로와 SHA-256이 있을 때만 시작한다. 이 gate는 해당 파일의 focused validator가 raw baseline/taxonomy row에서 manifest seed와 고정 10,000회 bootstrap으로 mean/CI와 판정을 재계산해 대조하고, `positive_practical_signal` 판정, 현재의 data revision·raw/subset hash·20K taxonomy artifact hash·model/retrieval controls·minimum-effect 크기/버전·`experiment_contract_sha256`·실제 `numpy`/`requests`/`PyYAML` 버전 정합성을 모두 확인한다. contract hash는 runner/retriever/agent/workspace/judge/comparison·판정 코드, retrieval의 BM25/cache/fusion/init, judge prompt, taxonomy schema prompt를 포함한다.
 
 | Scale | Control | Treatment |
 |---|---|---|

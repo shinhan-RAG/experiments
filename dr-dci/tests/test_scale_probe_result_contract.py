@@ -110,12 +110,21 @@ class ScaleProbeResultContractTests(unittest.TestCase):
             self.assertTrue({
                 "src/agent/retriever.py",
                 "src/agent/dci_agent.py",
+                "src/agent/workspace.py",
                 "src/eval/judge.py",
                 "src/eval/comparison.py",
                 "src/eval/part12_result_contract.py",
+                "src/retrieval/bm25.py",
+                "src/retrieval/cache.py",
+                "src/retrieval/fusion.py",
+                "src/retrieval/__init__.py",
                 "config/judge_prompt.txt",
                 "config/taxonomy_schemas/fixture.yaml",
             } <= contract_paths)
+            self.assertEqual(
+                set(manifest["execution_environment"]["dependencies"]),
+                {"numpy", "requests", "PyYAML"},
+            )
             self.assertEqual(manifest["controls"]["query_instruction"], None)
             self.assertEqual(manifest["controls"]["analysis_bootstrap_seed"], 42)
             self.assertEqual(

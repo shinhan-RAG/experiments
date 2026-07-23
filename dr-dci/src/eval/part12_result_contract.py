@@ -7,6 +7,7 @@ import math
 from typing import Any
 
 from src.eval.comparison import (
+    DEFAULT_BOOTSTRAP_ITERATIONS,
     classify_practical_effect,
     compare_result_rows,
 )
@@ -57,6 +58,7 @@ REQUIRED_AGENT_ROW_KEYS = (
 )
 
 NUMERIC_TOLERANCE = 1e-6
+REQUIRED_RUNTIME_DEPENDENCIES = ("numpy", "requests", "PyYAML")
 
 
 def _is_finite_number(value: Any) -> bool:
@@ -120,6 +122,17 @@ def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> No
             errors.append(f"manifest missing {key}")
     if manifest.get("focused") is not True:
         errors.append("manifest focused must be true")
+    execution_environment = manifest.get("execution_environment")
+    dependencies = (
+        execution_environment.get("dependencies")
+        if isinstance(execution_environment, dict) else None
+    )
+    if not isinstance(dependencies, dict) or set(dependencies) != set(
+        REQUIRED_RUNTIME_DEPENDENCIES
+    ) or not all(isinstance(version, str) and version for version in dependencies.values()):
+        errors.append(
+            "manifest execution_environment must record numpy, requests, and PyYAML versions"
+        )
     contract_sha256 = manifest.get("experiment_contract_sha256")
     if (
         not isinstance(contract_sha256, str)
@@ -144,6 +157,11 @@ def _validate_manifest_common(manifest: dict[str, Any], errors: list[str]) -> No
     iterations = controls.get("analysis_bootstrap_iterations")
     if not isinstance(iterations, int) or iterations <= 0:
         errors.append("manifest controls analysis_bootstrap_iterations must be a positive integer")
+    elif iterations != DEFAULT_BOOTSTRAP_ITERATIONS:
+        errors.append(
+            "manifest controls analysis_bootstrap_iterations must equal "
+            f"{DEFAULT_BOOTSTRAP_ITERATIONS}"
+        )
     minimum_effect = controls.get("minimum_practical_effect_size")
     if not _is_finite_number(minimum_effect) or minimum_effect < 0:
         errors.append("manifest controls minimum_practical_effect_size must be non-negative")
@@ -217,11 +235,17 @@ def recompute_part1_primary_analysis(
     """
     controls = manifest["controls"]
     decision_rule = manifest["decision_rule"]
+    iterations = controls["analysis_bootstrap_iterations"]
+    if iterations != DEFAULT_BOOTSTRAP_ITERATIONS:
+        raise ValueError(
+            "analysis_bootstrap_iterations must equal "
+            f"{DEFAULT_BOOTSTRAP_ITERATIONS}"
+        )
     comparison = compare_result_rows(
         full_results["baseline"]["results"],
         full_results["taxonomy_only"]["results"],
         seed=controls["analysis_bootstrap_seed"],
-        bootstrap_iterations=controls["analysis_bootstrap_iterations"],
+        bootstrap_iterations=iterations,
     )
     decision = classify_practical_effect(
         comparison["gold_recall"],
@@ -346,6 +370,7 @@ def validate_focused_part12_result(
                 "minimum_practical_effect_version",
                 "experiment_contract_sha256",
                 "part1_primary_analysis",
+                "runtime_dependencies",
             )
             if any(key not in compatibility for key in required_compatibility):
                 errors.append("Part 2 approved Part 1 result gate is incomplete")

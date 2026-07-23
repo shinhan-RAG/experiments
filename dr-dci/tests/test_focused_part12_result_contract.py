@@ -42,7 +42,13 @@ def part1_manifest():
         "arms": [{"name": "baseline"}, {"name": "taxonomy_only"}],
         "dataset_provenance": {},
         "experiment_config": {},
-        "execution_environment": {},
+        "execution_environment": {
+            "dependencies": {
+                "numpy": "1.0",
+                "requests": "1.0",
+                "PyYAML": "1.0",
+            },
+        },
         "git_commit": "a" * 40,
         "experiment_contract_sha256": "c" * 64,
         "preflight": {"status": "ready"},
@@ -157,6 +163,29 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
         self.assertTrue(any("does not match raw rows" in error for error in errors))
         self.assertTrue(any("decision does not match raw rows" in error for error in errors))
 
+    def test_part1_rejects_noncanonical_bootstrap_iterations(self):
+        manifest = part1_manifest()
+        manifest["controls"]["analysis_bootstrap_iterations"] = 1_000
+        errors = validate_focused_part12_result(
+            manifest,
+            {
+                "baseline": {"results": [agent_row()]},
+                "taxonomy_only": {"results": [agent_row()]},
+            },
+            {
+                "taxonomy_only_minus_baseline": {
+                    "paired_query_count": 1,
+                    "gold_recall": {
+                        **paired(),
+                        "iterations": 1_000,
+                    },
+                    "document_gold_recall_decision": "inconclusive",
+                },
+            },
+        )
+
+        self.assertTrue(any("must equal 10000" in error for error in errors))
+
     def test_part2_requires_primary_scale_and_dynamic_single_comparisons(self):
         manifest = {
             **part1_manifest(),
@@ -187,6 +216,7 @@ class FocusedPart12ResultContractTests(unittest.TestCase):
                     "minimum_practical_effect_version": "v1",
                     "experiment_contract_sha256": "c" * 64,
                     "part1_primary_analysis": "recomputed_matched",
+                    "runtime_dependencies": "matched",
                 },
             },
         }
