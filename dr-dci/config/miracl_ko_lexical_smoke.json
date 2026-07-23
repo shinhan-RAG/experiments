@@ -1,0 +1,37 @@
+{
+  "schema_version": "dr-dci.miracl-ko-lexical-smoke.v1",
+  "dataset": "MIRACL",
+  "language": "ko",
+  "retrieval_unit": "passage",
+  "scope": "standalone_lexical_plumbing_smoke_only",
+  "backend": {
+    "name": "pyserini_lucene_cjk",
+    "package": "pyserini",
+    "version": "2.1.0",
+    "source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
+    "analyzer_language": "ko",
+    "analyzer_class": "org.apache.lucene.analysis.cjk.CJKAnalyzer"
+  },
+  "runtime": {
+    "container_base_image": "python:3.12-slim-trixie",
+    "container_base_image_sha256": "57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de",
+    "java_runtime_version": "21.0.11+10-1~deb13u2",
+    "dependency_mode": "sparse_minimal_runtime"
+  },
+  "retrieval": {
+    "top_k": 100,
+    "bm25_k1": 0.9,
+    "bm25_b": 0.4
+  },
+  "evaluation": {
+    "split": "dev",
+    "bootstrap_seed": 42,
+    "bootstrap_iterations": 10000,
+    "precision_at_20_denominator": 20
+  },
+  "official_sources": [
+    "https://github.com/castorini/pyserini",
+    "https://github.com/castorini/pyserini/blob/v2.1.0/docs/usage-index.md",
+    "https://raw.githubusercontent.com/castorini/pyserini/v2.1.0/pyserini/analysis/_base.py"
+  ]
+}
