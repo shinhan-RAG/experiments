@@ -26,7 +26,7 @@ SANITY_QUERIES = 5
 
 def load_config():
     import yaml
-    with open(CONFIG_DIR / "experiment.yaml") as f:
+    with open(CONFIG_DIR / "experiment.yaml", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -109,20 +109,20 @@ def run_sanity(config):
         return False
 
     corpus = []
-    with open(raw_dir / "corpus.jsonl") as f:
+    with open(raw_dir / "corpus.jsonl", encoding="utf-8") as f:
         for i, line in enumerate(f):
             if i >= SANITY_SIZE:
                 break
             corpus.append(json.loads(line))
 
     queries = []
-    with open(raw_dir / "queries.jsonl") as f:
+    with open(raw_dir / "queries.jsonl", encoding="utf-8") as f:
         for line in f:
             queries.append(json.loads(line))
     queries = queries[:SANITY_QUERIES]
 
     qrels = []
-    with open(raw_dir / "qrels.jsonl") as f:
+    with open(raw_dir / "qrels.jsonl", encoding="utf-8") as f:
         for line in f:
             qrels.append(json.loads(line))
 

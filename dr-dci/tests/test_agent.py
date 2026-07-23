@@ -1,0 +1,143 @@
+"""P0-3, P0-9, single-pull: agent harness 규칙 검증 (mock LLM + mock retriever)"""
+import numpy as np
+from src.agent.dci_agent import DCIAgent, normalize_query
+from src.agent.retriever import PullRetriever, RetrieverConfig
+
+
+class MockRetriever(PullRetriever):
+    def __init__(self, n_docs, config):
+        super().__init__(config)
+        self.n_docs = n_docs
+
+    def _embed_batch(self, texts, batch_size=256):
+        out = []
+        for t in texts:
+            idx = int("".join(ch for ch in t if ch.isdigit()) or 0)
+            vec = np.array([1.0 / (1 + abs(j - idx)) for j in range(self.n_docs)])
+            out.append(vec)
+        return out
+
+
+def build_retriever(n=30):
+    cfg = RetrieverConfig(embedding_url="mock", embedding_model="mock", top_k=5,
+                          query_instruction=None)
+    r = MockRetriever(n, cfg)
+    docs = [{"_id": f"d{i}", "title": f"d{i}", "text": f"doc text {i}"} for i in range(n)]
+    r.index(docs)
+    return r, {d["_id"]: d for d in docs}
+
+
+class ScriptedAgent(DCIAgent):
+    """_call_llm을 스크립트로 대체해 결정적 tool 호출 시퀀스를 재생한다."""
+
+    def __init__(self, script, **kw):
+        super().__init__(llm_url="mock", model_name="mock", **kw)
+        self.script = list(script)
+        self.step = 0
+
+    def _call_llm(self, messages):
+        if self.step >= len(self.script):
+            return {"content": "done", "tool_calls": None}
+        calls = self.script[self.step]
+        self.step += 1
+        if calls is None:
+            return {"content": "plain text answer", "tool_calls": None}
+        tool_calls = []
+        for i, (name, args) in enumerate(calls):
+            import json
+            tool_calls.append({
+                "id": f"c{self.step}_{i}",
+                "function": {"name": name, "arguments": json.dumps(args)},
+            })
+        return {"content": None, "tool_calls": tool_calls}
+
+
+def make_agent(script, single_pull=False, min_pulls=2, max_turns=10):
+    r, corpus = build_retriever()
+    return ScriptedAgent(
+        script,
+        retriever=r, corpus=corpus,
+        max_turns=max_turns, workspace_max_docs=100,
+        min_pulls=min_pulls, single_pull=single_pull,
+    )
+
+
+def test_answer_rejected_before_min_pulls():
+    # 첫 turn에 바로 answer 시도 → 거부되고, 이후 정상 흐름
+    script = [
+        [("answer", {"text": "too early"})],
+        [("pull", {"query": "q1"})],
+        [("pull", {"query": "q2"})],
+        [("answer", {"text": "final"})],
+    ]
+    agent = make_agent(script)
+    out = agent.run("question")
+    assert out["answer"] == "final"
+    assert out["pull_count"] == 2
+    assert "answer_rejected_min_pull_rule" in out["rule_violations"]
+
+
+def test_duplicate_pull_queries_flagged():
+    script = [
+        [("pull", {"query": "same"})],
+        [("pull", {"query": "SAME  "})],  # 정규화하면 동일
+        [("answer", {"text": "final"})],
+    ]
+    agent = make_agent(script)
+    out = agent.run("question")
+    assert out["distinct_pull_queries"] == 1
+    assert "duplicate_pull_queries" in out["rule_violations"]
+
+
+def test_normal_two_distinct_pulls_no_violation():
+    script = [
+        [("pull", {"query": "covid vaccine"})],
+        [("pull", {"query": "treatment options"})],
+        [("read", {"doc_id": "d0"})],
+        [("answer", {"text": "final"})],
+    ]
+    agent = make_agent(script)
+    out = agent.run("question")
+    assert out["answer"] == "final"
+    assert out["distinct_pull_queries"] == 2
+    assert out["rule_violations"] == []
+    assert "d0" in out["read_docs"]
+
+
+def test_pull_stats_recorded():
+    script = [
+        [("pull", {"query": "q0", "top_k": 5})],
+        [("pull", {"query": "q0", "top_k": 5})],  # 같은 query지만 dedup+backfill 동작 확인
+        [("answer", {"text": "final"})],
+    ]
+    agent = make_agent(script)
+    out = agent.run("question")
+    assert len(out["pull_stats"]) == 2
+    # 두 번째 pull은 새 문서로 채워지므로 newly_added > 0
+    assert out["pull_stats"][1]["newly_added"] > 0
+
+
+def test_single_pull_mode_blocks_second_pull():
+    script = [
+        [("pull", {"query": "q0"})],
+        [("pull", {"query": "q1"})],   # single-pull 모드에서 거부돼야 함
+        [("answer", {"text": "final"})],
+    ]
+    agent = make_agent(script, single_pull=True)
+    out = agent.run("question")
+    assert out["pull_count"] == 1
+    assert "extra_pull_in_single_pull_mode" in out["rule_violations"]
+    assert out["answer"] == "final"  # single-pull은 min_pulls=1이라 answer 허용
+
+
+def test_budget_exhausted_flag():
+    # answer 없이 pull만 반복 → turn 소진
+    script = [[("pull", {"query": f"q{i}"})] for i in range(10)]
+    agent = make_agent(script, max_turns=3)
+    out = agent.run("question")
+    assert out["turns"] == 3
+    assert out["budget_exhausted"] is True
+
+
+def test_normalize_query():
+    assert normalize_query("  COVID  Vaccine ") == "covid vaccine"
