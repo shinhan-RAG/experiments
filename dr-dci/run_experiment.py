@@ -34,6 +34,7 @@ from src.eval.comparison import (
 )
 from src.eval.judge import Judge, compute_metrics
 from src.eval.part12_contracts import audit_part12
+from src.eval.part12_result_contract import validate_focused_part12_result
 from src.eval.retrieval_metrics import rank_metrics
 from src.eval.scale_probe_contract import validate_scale_probe_result
 
@@ -284,6 +285,9 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         metadata_schema=metadata_schema,
         api_key=os.getenv("OPENAI_API_KEY", ""),
         single_pull=single_pull,
+        temperature=models["agent_llm"].get("temperature", 0.0),
+        llm_max_tokens=models["agent_llm"].get("max_tokens", 1024),
+        llm_seed=models["agent_llm"].get("seed"),
     )
 
     # Judge
@@ -293,6 +297,10 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         llm_url=models["judge_llm"]["url"],
         model_name=models["judge_llm"]["name"],
         prompt_template=judge_prompt,
+        api_key=os.getenv("OPENAI_API_KEY", ""),
+        temperature=models["judge_llm"].get("temperature", 0.0),
+        max_tokens=models["judge_llm"].get("max_tokens", 10),
+        llm_seed=models["judge_llm"].get("seed"),
     )
 
     # qrels → query별 gold docs
@@ -309,8 +317,20 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         started = time.perf_counter()
         result = agent.run(query_text)
         latency_seconds = time.perf_counter() - started
+        taxonomy_boost_telemetry_seconds = float(result.get(
+            "taxonomy_boost_telemetry_seconds", 0.0
+        ) or 0.0)
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
+        pull_traces = result.get("pull_traces", [])
+        first_pull_docs = (
+            pull_traces[0].get("workspace_document_ids_after", [])
+            if pull_traces else None
+        )
+        first_pull_gold_recall = (
+            Judge.gold_recall_at_workspace(first_pull_docs, gold_docs)
+            if first_pull_docs is not None else None
+        )
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -318,6 +338,11 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "query_text": query_text,
             "answer": result["answer"],
             "gold_recall": gold_recall,
+            "first_pull_document_gold_recall": first_pull_gold_recall,
+            "workspace_expansion_document_gold_recall": (
+                gold_recall - first_pull_gold_recall
+                if first_pull_gold_recall is not None else None
+            ),
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
             "retrieved_candidates": result["retrieved_candidates"],
@@ -359,10 +384,14 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "taxonomy_boost_target_score_max": result.get(
                 "taxonomy_boost_target_score_max"
             ),
+            "taxonomy_boost_telemetry_seconds": taxonomy_boost_telemetry_seconds,
             "pull_queries": result.get("pull_queries", []),
-            "pull_traces": result.get("pull_traces", []),
+            "pull_traces": pull_traces,
             "system_fingerprints": result.get("system_fingerprints", []),
             "latency_seconds": latency_seconds,
+            "latency_without_taxonomy_boost_telemetry_seconds": max(
+                0.0, latency_seconds - taxonomy_boost_telemetry_seconds
+            ),
             "single_pull": single_pull,
         }
 
@@ -490,7 +519,21 @@ def dataset_provenance_blockers(config: dict, dataset: str) -> list[str]:
     return blockers
 
 
-def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
+def focused_decision_rule_blockers(config: dict) -> list[str]:
+    """Require explicit approval before a focused agent run applies its threshold."""
+    part1 = config.get("parts", {}).get("part1_stacking", {})
+    status = part1.get("minimum_practical_effect_status")
+    if status != "approved":
+        return [
+            "focused Part 1/2 execution requires "
+            "parts.part1_stacking.minimum_practical_effect_status=approved; "
+            f"current status is {status!r}"
+        ]
+    return []
+
+
+def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int],
+                      require_focused_decision_rule: bool = False):
     report = audit_part12(
         config,
         DATA_DIR,
@@ -501,7 +544,12 @@ def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
         config, report["subsets"]["dataset"]
     )
     report["provenance_blockers"] = provenance_blockers
-    blockers = [*report["blockers"], *provenance_blockers]
+    decision_rule_blockers = (
+        focused_decision_rule_blockers(config)
+        if require_focused_decision_rule else []
+    )
+    report["decision_rule_blockers"] = decision_rule_blockers
+    blockers = [*report["blockers"], *provenance_blockers, *decision_rule_blockers]
     if blockers:
         details = "\n".join(f"- {item}" for item in blockers)
         raise RuntimeError(f"Part 1/2 preflight failed:\n{details}")
@@ -526,6 +574,7 @@ def run_part1(config: dict, *, focused: bool = False):
         config,
         step_names={str(step["name"]) for step in steps},
         sizes=[subset_size],
+        require_focused_decision_rule=focused,
     )
 
     corpus = load_corpus(dataset, subset_size)
@@ -616,6 +665,7 @@ def run_part1(config: dict, *, focused: bool = False):
                 "minimum_practical_effect_size": float(
                     part_cfg.get("minimum_practical_effect_size", 0.01)
                 ),
+                "status": part_cfg.get("minimum_practical_effect_status"),
                 "positive": "ci95_low > minimum_practical_effect_size",
                 "negative": "ci95_high < -minimum_practical_effect_size",
                 "otherwise": "inconclusive",
@@ -640,6 +690,13 @@ def run_part1(config: dict, *, focused: bool = False):
         ],
         "preflight": preflight,
     })
+    if focused:
+        errors = validate_focused_part12_result(manifest, all_results, analysis)
+        if errors:
+            raise RuntimeError(
+                "focused Part 1 result contract failed:\n"
+                + "\n".join(f"- {error}" for error in errors)
+            )
     save_results(
         "part1_taxonomy_focused" if focused else "part1_stacking",
         all_results,
@@ -681,6 +738,7 @@ def run_part2(config: dict, *, focused: bool = False):
         config,
         step_names={"baseline", "taxonomy_only"} if focused else {"stack_all"},
         sizes=[int(size) for size in part_cfg["subsets"]],
+        require_focused_decision_rule=focused,
     )
 
     all_results = {}
@@ -762,7 +820,9 @@ def run_part2(config: dict, *, focused: bool = False):
         "subsets": sizes,
         "focused": focused,
         "include_single_pull": part_cfg.get("include_single_pull", True),
-        "primary_scale_comparison": "110k_minus_20k within each arm",
+        "primary_scale_comparison": (
+            f"{max(sizes) // 1000}k_minus_{min(sizes) // 1000}k within each arm"
+        ),
         "exploratory_scale_comparisons": [
             "50k_minus_20k within each arm",
             "110k_minus_50k within each arm",
@@ -780,6 +840,19 @@ def run_part2(config: dict, *, focused: bool = False):
                 "it is not an independent replication"
             ),
         },
+        "single_pull_comparison": {
+            "classification": "exploratory_interface_ablation_not_pull_count_only",
+            "confounders": [
+                "single-pull-specific system prompt",
+                "independent LLM generation",
+                "potentially different first pull query",
+            ],
+            "within_dynamic_diagnostic": (
+                "first_pull_document_gold_recall and "
+                "workspace_expansion_document_gold_recall are measured within "
+                "each dynamic execution; they are descriptive, not causal."
+            ),
+        },
         "arms": [
             {
                 "name": str(step["name"]),
@@ -791,6 +864,13 @@ def run_part2(config: dict, *, focused: bool = False):
         ],
         "preflight": preflight,
     })
+    if focused:
+        errors = validate_focused_part12_result(manifest, all_results, analysis)
+        if errors:
+            raise RuntimeError(
+                "focused Part 2 result contract failed:\n"
+                + "\n".join(f"- {error}" for error in errors)
+            )
     save_results(
         "part2_taxonomy_scaling_focused" if focused else "part2_scaling",
         all_results,
@@ -1149,12 +1229,22 @@ def build_part12_manifest(config: dict, dataset: str, subset_sizes: list[int], *
             "sha256": sha256_file(config_path),
         },
         "controls": {
-            "seed": config.get("seed"),
+            "analysis_bootstrap_seed": config.get("seed"),
+            "analysis_seed_purpose": "paired_bootstrap_and_sign_flip",
+            "minimum_practical_effect_status": config.get("parts", {}).get(
+                "part1_stacking", {}
+            ).get("minimum_practical_effect_status"),
             "embedding_model": embedding.get("name"),
             "embedding_endpoint": embedding.get("url"),
             "query_instruction": embedding.get("query_instruction"),
             "agent_model": agent.get("name"),
+            "agent_temperature": agent.get("temperature"),
+            "agent_max_tokens": agent.get("max_tokens"),
+            "agent_generation_seed": agent.get("seed"),
             "judge_model": judge.get("name"),
+            "judge_temperature": judge.get("temperature"),
+            "judge_max_tokens": judge.get("max_tokens"),
+            "judge_generation_seed": judge.get("seed"),
             "pull_top_k": agent_cfg.get("pull_top_k"),
             "pull_backend": agent_cfg.get("pull_backend", "dense"),
             "taxonomy_boost": agent_cfg.get("taxonomy_boost", 1.5),

@@ -83,7 +83,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 - TREC-COVID 20K subset
 - 같은 50개 질의와 qrels
 - 같은 embedding, agent LLM, **taxonomy category schema를 포함한 prompt**, max turns, pull Top-K, workspace cap
-- 같은 실행 코드와 seed
+- 같은 실행 코드, analysis bootstrap/sign-flip seed, agent/judge temperature·max tokens·generation seed 설정
 
 주 평가:
 
@@ -92,7 +92,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 보조 평가:
 
 - answer accuracy와 judge 유효 표본 수
-- pull 수, latency, prompt/completion token
+- pull 수, raw latency, taxonomy rank-telemetry 시간, telemetry를 뺀 latency, prompt/completion token
 - taxonomy-filter가 적용된 pull 횟수
 - taxonomy artifact의 subset/gold-document coverage와 유효 L1 label coverage
 - 각 실제 pull의 boost eligible/positive-score document 수, dense-stage 전후 rank, Top-K 진입·이탈, target cosine의 최소·최대·음수 비율
@@ -101,7 +101,8 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 
 진행 기준:
 
-- macro workspace document Gold Recall delta의 95% CI 하한이 `0.01`보다 클 때 taxonomy의 긍정 신호로 본다.
+- `0.01`은 TREC·논문·신한 합의 기준이 아닌 잠정 내부 screening 기준이다. `minimum_practical_effect_status: approved`로 명시 승인하기 전에는 focused model-backed 실행을 하지 않는다.
+- 승인된 뒤 macro workspace document Gold Recall delta의 95% CI 하한이 `0.01`보다 클 때 taxonomy의 긍정 신호로 본다.
 - CI 상한이 `−0.01`보다 작으면 taxonomy 확대 실험을 중단한다.
 - 그 밖은 불확실로 판정하고, `stack_all` 확대 대신 질의별 승패와 taxonomy 작동 telemetry만 분석한다.
 
@@ -127,7 +128,7 @@ Part 1을 통과한 경우에만 taxonomy arm을 확장한다.
 - 평균/p50/p95 latency
 - pull 수, workspace 문서 수, token 사용량
 - taxonomy-filter pull 사용률
-- same-arm dynamic multi-pull − single-pull paired delta. `pull_traces`로 agent rewrite를 기록한다. 공통 dense original-query probe와 나란히 보되 taxonomy arm의 retrieval-only 결과로 해석하지 않는다.
+- same-arm dynamic multi-pull − single-pull paired delta. 이는 single-pull 전용 system prompt·독립 LLM generation·첫 pull query 차이가 함께 바뀌는 **exploratory interface ablation**이며 multi-pull의 단독 효과로 해석하지 않는다. 각 dynamic 실행에서는 첫 pull 직후 document gold recall과 최종 workspace recall의 차이도 기록한다. 이 값은 같은 실행 내부의 기술적 진단이며 인과 추정이 아니다. `pull_traces`로 agent rewrite를 기록하고 공통 dense original-query probe와 나란히 보되 taxonomy arm의 retrieval-only 결과로 해석하지 않는다.
 
 Part 1 screening과 Part 2는 같은 50개 질의를 쓰므로, Part 2를 독립 재현으로 표현하지 않는다.
 
@@ -170,7 +171,9 @@ python run_experiment.py --part 2 --scale-probe
 #### 실측 결과 (2026-07-22, H200·gte-Qwen2-1.5B-instruct)
 
 `results/part2_scale_probe/20260722_011134.json` (인스턴스 보관, 정책상
-미추적). preflight `ready`, 분모 50/50 질의, seed 42.
+미추적). preflight `ready`, 분모 50/50 질의, analysis seed 42.
+
+아래 latency 행은 **재측정 전 historical observation**이다. 당시 baseline pull도 전체 corpus의 중복 순위 정렬과 rank map 생성을 포함했으므로, 110K latency를 순수 검색 비용이나 현재 하네스의 latency와 비교해서는 안 된다. 현재 코드는 baseline 중복 정렬을 제거하고 taxonomy rank-telemetry 시간을 별도 보존한다. rank 품질 수치도 raw JSON을 회수해 validator를 통과하기 전에는 재현 검증 완료가 아니다.
 
 | 지표 | 20K | 50K | 110K | 110K−20K Δ | 95% CI |
 |---|---:|---:|---:|---:|---|
@@ -178,7 +181,7 @@ python run_experiment.py --part 2 --scale-probe
 | Precision@20 | 0.853 | 0.778 | 0.651 | **−0.202** | **[−0.240, −0.164]** |
 | Recall@20 | 0.0442 | 0.0399 | 0.0329 | **−0.011** | **[−0.015, −0.008]** |
 | Hit@5 / Hit@10 | 1.0 | 1.0 | 1.0 | 0 | 포화(예측대로) |
-| latency (s) | 0.118 | 0.256 | 0.528 | +0.410 | [+0.406, +0.414] |
+| latency (s, historical·계측 오염 가능) | 0.118 | 0.256 | 0.528 | +0.410 | [+0.406, +0.414] |
 
 세 scale 쌍(20↔50, 20↔110, 50↔110) 모두에서 주 지표 CI 전체가 0 아래다.
 질의별 분해는 단조성을 보인다: 상위 scale에서 nDCG@10이 좋아진 질의는
@@ -219,11 +222,14 @@ distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nest
 - `taxonomy_filtered_pulls`: taxonomy filter가 요청된 pull 횟수
 - `taxonomy_boost_eligible_documents` / `taxonomy_boosted_returned_documents`: taxonomy score boost가 적용 가능한 corpus 수와 dense-stage Top-K 반환 후보 수를 분리 계측
 - `taxonomy_boost_rank_changed_pulls`, Top-K 진입·이탈, target cosine 최소·최대·음수 비율, `pull_traces`: 양수 cosine에만 적용한 boost가 실제 순위를 바꿨는지 계측
+- `taxonomy_boost_telemetry_seconds`와 `latency_without_taxonomy_boost_telemetry_seconds`: rank-effect 계측 비용과 전체 agent latency를 분리. baseline은 중복 순위 비교를 하지 않는다.
+- `first_pull_document_gold_recall` / `workspace_expansion_document_gold_recall`: dynamic 실행 내부에서 첫 pull과 최종 workspace를 비교하는 기술적 진단
 - `system_fingerprint`: 제공되는 backend 변경 식별자를 결과에 보존
 - `python run_experiment.py --part 1 --focused`: baseline 대 taxonomy-only만 실행
 - `python run_experiment.py --part 2 --focused`: baseline·taxonomy-only의 20K·50K·110K 확장만 실행
 - `python run_experiment.py --part 2 --scale-probe`: agent/LLM 없는 dense retrieval scale probe (nDCG@10·P@20 주 지표, scale 쌍별 paired CI)
 - `scripts/validate_scale_probe_result.py`: 저장된 scale probe raw rows, paired CI, config/data hash, 환경 manifest를 무비용 검증
+- `src/eval/part12_result_contract.py`: focused Part 1·2의 raw agent rows, 실제 generation controls, 주 비교, CI 판정, telemetry와 dynamic/single-pull 해석 표기를 저장 전 검증
 
 새 Part 1·2 결과에는 raw per-query rows와 함께 raw corpus/query/qrels SHA-256, subset SHA-256, 코드 commit, config SHA-256, 모델·query instruction·top-k·workspace/turn controls, 실행 환경을 기록한다. 기존 Part 1·2·5 결과 디렉터리는 수정하지 않는다. 집중 실험은 별도 결과 디렉터리에 저장한다.
 

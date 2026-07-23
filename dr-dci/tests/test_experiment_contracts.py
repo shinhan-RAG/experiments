@@ -1,10 +1,11 @@
 import math
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
 from src.agent.dci_agent import DCIAgent
-from src.agent.retriever import PullRetriever, RetrieverConfig
+from src.agent.retriever import PullRetriever, RetrieverConfig, select_top_indices
 from src.eval.comparison import compare_paired_results
 from src.eval.judge import Judge, compute_metrics
 from src.retrieval import BM25, embedding_cache_key
@@ -53,6 +54,52 @@ class TelemetryPullRetriever:
 
 
 class ExperimentContractTests(unittest.TestCase):
+    def test_agent_and_judge_use_configured_generation_controls(self):
+        class Response:
+            status_code = 200
+
+            @staticmethod
+            def raise_for_status():
+                return None
+
+            @staticmethod
+            def json():
+                return {
+                    "choices": [{"message": {"content": "correct", "tool_calls": None}}],
+                    "usage": {},
+                }
+
+        agent = DCIAgent(
+            llm_url="https://example.test/v1/chat/completions",
+            model_name="agent-model",
+            retriever=StaticPullRetriever(),
+            corpus={},
+            temperature=0.2,
+            llm_max_tokens=2048,
+            llm_seed=17,
+        )
+        with patch("src.agent.dci_agent.requests.post", return_value=Response()) as post:
+            agent._call_llm([])
+        agent_payload = post.call_args.kwargs["json"]
+        self.assertEqual(agent_payload["temperature"], 0.2)
+        self.assertEqual(agent_payload["max_tokens"], 2048)
+        self.assertEqual(agent_payload["seed"], 17)
+
+        judge = Judge(
+            llm_url="https://example.test/v1/chat/completions",
+            model_name="judge-model",
+            prompt_template="{query} {reference_answer} {candidate_answer}",
+            temperature=0.3,
+            max_tokens=512,
+            llm_seed=19,
+        )
+        with patch("src.eval.judge.requests.post", return_value=Response()) as post:
+            self.assertEqual(judge.evaluate_accuracy("q", "r", "a"), "correct")
+        judge_payload = post.call_args.kwargs["json"]
+        self.assertEqual(judge_payload["temperature"], 0.3)
+        self.assertEqual(judge_payload["max_tokens"], 512)
+        self.assertEqual(judge_payload["seed"], 19)
+
     def test_judge_does_not_match_incorrect_as_correct(self):
         self.assertEqual(Judge.parse_judgment("correct"), "correct")
         self.assertEqual(Judge.parse_judgment("incorrect"), "incorrect")
@@ -154,6 +201,30 @@ class ExperimentContractTests(unittest.TestCase):
                 "score_before": 0.5, "score_after": 0.5,
             },
         ])
+
+    def test_baseline_pull_does_not_duplicate_ranking_for_taxonomy_telemetry(self):
+        retriever = StaticEmbeddingRetriever(
+            RetrieverConfig("unused", "model", top_k=1, backend="dense"),
+            query_embedding=[1.0, 0.0],
+        )
+        retriever.doc_ids = ["d1", "d2", "d3"]
+        retriever.embedding_matrix = np.asarray([
+            [0.8, 0.6], [0.5, np.sqrt(1 - 0.5 ** 2)], [0.2, np.sqrt(1 - 0.2 ** 2)],
+        ])
+
+        with patch("src.agent.retriever.np.argsort", wraps=np.argsort) as argsort:
+            results = retriever.pull("query")
+
+        self.assertEqual(argsort.call_count, 1)
+        self.assertEqual(results.telemetry["taxonomy_boost_telemetry_seconds"], 0.0)
+
+    def test_bounded_top_selection_matches_stable_full_ranking(self):
+        scores = np.asarray([0.2, 0.9, 0.9, -0.1, 0.5, 0.5, 0.3])
+
+        selected = select_top_indices(scores, 5)
+
+        expected = np.argsort(-scores, kind="stable")[:5]
+        np.testing.assert_array_equal(selected, expected)
 
     def test_workspace_limit_is_applied_by_agent(self):
         corpus = {
@@ -278,6 +349,7 @@ class ExperimentContractTests(unittest.TestCase):
             "doc_id": "d1", "rank_before": 2, "rank_after": 1,
             "score_before": 0.4, "score_after": 0.6,
         }])
+        self.assertEqual(result["pull_traces"][0]["workspace_document_ids_after"], ["d1"])
 
     def test_single_pull_ablation_keeps_only_the_first_agent_query(self):
         import json as _json

@@ -86,8 +86,10 @@ class ScaleProbeResultContractTests(unittest.TestCase):
             config = {
                 "seed": 42,
                 "models": {"embedding": {"name": "embed", "url": "http://embed"},
-                           "agent_llm": {"name": "agent", "url": "http://agent"},
-                           "judge_llm": {"name": "judge", "url": "http://judge"}},
+                           "agent_llm": {"name": "agent", "url": "http://agent",
+                                         "temperature": 0.2, "max_tokens": 2048, "seed": 17},
+                           "judge_llm": {"name": "judge", "url": "http://judge",
+                                         "temperature": 0.0, "max_tokens": 512, "seed": 19}},
                 "agent": {"pull_top_k": 20, "workspace_max_docs": 100, "max_turns": 10},
                 "evaluation": {"metrics": ["gold_recall_at_workspace"]},
             }
@@ -102,6 +104,14 @@ class ScaleProbeResultContractTests(unittest.TestCase):
             self.assertEqual(manifest["dataset_provenance"]["subsets"][0]["sha256"].__len__(), 64)
             self.assertEqual(manifest["experiment_config"]["sha256"].__len__(), 64)
             self.assertEqual(manifest["controls"]["query_instruction"], None)
+            self.assertEqual(manifest["controls"]["analysis_bootstrap_seed"], 42)
+            self.assertEqual(
+                manifest["controls"]["analysis_seed_purpose"],
+                "paired_bootstrap_and_sign_flip",
+            )
+            self.assertEqual(manifest["controls"]["agent_max_tokens"], 2048)
+            self.assertEqual(manifest["controls"]["judge_max_tokens"], 512)
+            self.assertEqual(manifest["controls"]["agent_generation_seed"], 17)
 
 
 if __name__ == "__main__":

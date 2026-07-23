@@ -1,5 +1,7 @@
 # DR-DCI Augmentation Experiment Config
 
+# Analysis-only seed for paired bootstrap and sign-flip calculations. It is
+# not forwarded to an LLM generation request.
 seed: 42
 
 # Existing local snapshots predate provenance capture. These source IDs and
@@ -31,6 +33,8 @@ models:
     name: "gpt-4o-mini"
     temperature: 0
     max_tokens: 2048
+    # Optional generation seed. This is distinct from the analysis bootstrap seed.
+    seed: null
 
   embedding:
     url: "http://localhost:8101/v1/embeddings"
@@ -47,6 +51,8 @@ models:
     name: "gpt-4o-mini"
     temperature: 0
     max_tokens: 512
+    # Optional generation seed. This is distinct from the analysis bootstrap seed.
+    seed: null
 
 # DR-DCI agent settings
 agent:
@@ -82,7 +88,12 @@ parts:
     subset: 20000
     # Absolute macro workspace-document recall delta required for a positive
     # focused-screening signal; statistical significance alone is insufficient.
+    # This is an internal provisional threshold, not a TREC or Shinhan standard.
     minimum_practical_effect_size: 0.01
+    # Set to "approved" together with the approval record before any focused
+    # model-backed Part 1 or Part 2 run. The default protects against treating
+    # an unapproved screening threshold as a pre-agreed operating criterion.
+    minimum_practical_effect_status: "provisional_pending_approval"
     steps:
       # Baseline
       - name: "baseline"

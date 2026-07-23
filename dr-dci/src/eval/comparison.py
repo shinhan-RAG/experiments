@@ -72,7 +72,9 @@ RESULT_METRIC_KEYS = (
     "taxonomy_boost_top_k_exited_documents",
     "taxonomy_boost_target_score_count",
     "taxonomy_boost_target_negative_score_count",
+    "taxonomy_boost_telemetry_seconds",
     "latency_seconds",
+    "latency_without_taxonomy_boost_telemetry_seconds",
     "llm_prompt_tokens",
     "llm_completion_tokens",
 )

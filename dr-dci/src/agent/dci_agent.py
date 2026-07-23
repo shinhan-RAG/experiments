@@ -166,7 +166,8 @@ class DCIAgent:
                  workspace_max_docs: int = 100,
                  taxonomy_schema: dict = None, metadata_schema: dict = None,
                  api_key: str = None, single_pull: bool = False,
-                 taxonomy_boost_data: dict = None):
+                 taxonomy_boost_data: dict = None, temperature: float = 0.0,
+                 llm_max_tokens: int = 1024, llm_seed: int = None):
         self.llm_url = llm_url
         self.model_name = model_name
         self.api_key = api_key
@@ -182,6 +183,9 @@ class DCIAgent:
         self.max_turns = max_turns
         self.workspace_max_docs = workspace_max_docs
         self.single_pull = single_pull
+        self.temperature = temperature
+        self.llm_max_tokens = llm_max_tokens
+        self.llm_seed = llm_seed
         self.system_prompt = build_system_prompt(
             taxonomy_schema=taxonomy_schema,
             metadata_schema=metadata_schema,
@@ -217,6 +221,7 @@ class DCIAgent:
         taxonomy_boost_top_k_exited_documents = 0
         taxonomy_boost_target_score_count = 0
         taxonomy_boost_target_negative_score_count = 0
+        taxonomy_boost_telemetry_seconds = 0.0
         taxonomy_boost_target_score_min = None
         taxonomy_boost_target_score_max = None
         pull_queries = []
@@ -266,6 +271,7 @@ class DCIAgent:
                         "taxonomy_boost_top_k_exited_documents": 0,
                         "taxonomy_boost_target_score_count": 0,
                         "taxonomy_boost_target_negative_score_count": 0,
+                        "taxonomy_boost_telemetry_seconds": 0.0,
                         "taxonomy_boost_target_score_min": None,
                         "taxonomy_boost_target_score_max": None,
                         "taxonomy_boost_rank_changes": [],
@@ -303,6 +309,9 @@ class DCIAgent:
                         taxonomy_boost_target_negative_score_count += result.get(
                             "taxonomy_boost_target_negative_score_count", 0
                         )
+                        taxonomy_boost_telemetry_seconds += float(result.get(
+                            "taxonomy_boost_telemetry_seconds", 0.0
+                        ) or 0.0)
                         pull_min = result.get("taxonomy_boost_target_score_min")
                         pull_max = result.get("taxonomy_boost_target_score_max")
                         if pull_min is not None:
@@ -337,10 +346,16 @@ class DCIAgent:
                             "taxonomy_boost_target_negative_score_count": result.get(
                                 "taxonomy_boost_target_negative_score_count", 0
                             ),
+                            "taxonomy_boost_telemetry_seconds": result.get(
+                                "taxonomy_boost_telemetry_seconds", 0.0
+                            ),
                             "taxonomy_boost_target_score_min": pull_min,
                             "taxonomy_boost_target_score_max": pull_max,
                             "taxonomy_boost_rank_changes": result.get(
                                 "taxonomy_boost_rank_changes", []
+                            ),
+                            "workspace_document_ids_after": result.get(
+                                "workspace_document_ids", []
                             ),
                         })
                         retrieved_candidates += result.get("retrieved", 0)
@@ -372,6 +387,7 @@ class DCIAgent:
                         "taxonomy_boost_top_k_exited_documents": taxonomy_boost_top_k_exited_documents,
                         "taxonomy_boost_target_score_count": taxonomy_boost_target_score_count,
                         "taxonomy_boost_target_negative_score_count": taxonomy_boost_target_negative_score_count,
+                        "taxonomy_boost_telemetry_seconds": taxonomy_boost_telemetry_seconds,
                         "taxonomy_boost_target_score_min": taxonomy_boost_target_score_min,
                         "taxonomy_boost_target_score_max": taxonomy_boost_target_score_max,
                         "pull_queries": pull_queries,
@@ -405,6 +421,7 @@ class DCIAgent:
             "taxonomy_boost_top_k_exited_documents": taxonomy_boost_top_k_exited_documents,
             "taxonomy_boost_target_score_count": taxonomy_boost_target_score_count,
             "taxonomy_boost_target_negative_score_count": taxonomy_boost_target_negative_score_count,
+            "taxonomy_boost_telemetry_seconds": taxonomy_boost_telemetry_seconds,
             "taxonomy_boost_target_score_min": taxonomy_boost_target_score_min,
             "taxonomy_boost_target_score_max": taxonomy_boost_target_score_max,
             "pull_queries": pull_queries,
@@ -448,6 +465,7 @@ class DCIAgent:
                 "retrieved": len(results),
                 "added_to_workspace": added,
                 "total_in_workspace": len(workspace.docs),
+                "workspace_document_ids": list(workspace.docs.keys()),
                 # A supplied filter is not evidence that the treatment acted.
                 # Record both the corpus population eligible for boosting and
                 # how many of those documents were returned by that pull.
@@ -476,6 +494,9 @@ class DCIAgent:
                 ),
                 "taxonomy_boost_target_negative_score_count": retriever_telemetry.get(
                     "taxonomy_boost_target_negative_score_count", 0
+                ),
+                "taxonomy_boost_telemetry_seconds": retriever_telemetry.get(
+                    "taxonomy_boost_telemetry_seconds", 0.0
                 ),
                 "taxonomy_boost_target_score_min": retriever_telemetry.get(
                     "taxonomy_boost_target_score_min"
@@ -511,9 +532,11 @@ class DCIAgent:
             "model": self.model_name,
             "messages": messages,
             "tools": TOOL_DEFINITIONS,
-            "temperature": 0,
-            "max_tokens": 1024,
+            "temperature": self.temperature,
+            "max_tokens": self.llm_max_tokens,
         }
+        if self.llm_seed is not None:
+            payload["seed"] = self.llm_seed
 
         # vLLM 로컬 서버면 thinking 비활성화
         if "openai.com" not in self.llm_url:

@@ -8,6 +8,7 @@ Pull Retriever: 에이전트가 호출하는 검색 함수
 
 import numpy as np
 import requests
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -41,6 +42,25 @@ class PullResult(list):
     def __init__(self, candidates: list[dict], telemetry: dict):
         super().__init__(candidates)
         self.telemetry = telemetry
+
+
+def select_top_indices(scores: np.ndarray, count: int) -> np.ndarray:
+    """Return an exact stable top-count ordering without sorting the full corpus."""
+    count = min(int(count), len(scores))
+    if count <= 0:
+        return np.asarray([], dtype=int)
+    if count == len(scores):
+        return np.argsort(-scores, kind="stable")
+
+    partition = np.argpartition(-scores, count - 1)[:count]
+    boundary_score = scores[partition].min()
+    strictly_above = np.flatnonzero(scores > boundary_score)
+    boundary_ties = np.flatnonzero(scores == boundary_score)
+    selected = np.concatenate((
+        strictly_above,
+        boundary_ties[:count - len(strictly_above)],
+    ))
+    return selected[np.argsort(-scores[selected], kind="stable")]
 
 
 class PullRetriever:
@@ -142,29 +162,58 @@ class PullRetriever:
 
         candidate_k = self.config.top_k * 4 if self.config.reranker_url else self.config.top_k
         dense_k = max(candidate_k, self.config.bm25_top_k)
-        baseline_order = np.argsort(-raw_sims, kind="stable")
-        boosted_order = np.argsort(-sims, kind="stable")
-        baseline_ranks = {int(index): rank + 1 for rank, index in enumerate(baseline_order)}
-        boosted_ranks = {int(index): rank + 1 for rank, index in enumerate(boosted_order)}
-        baseline_top_k = set(int(index) for index in baseline_order[:self.config.top_k])
-        boosted_top_k = set(int(index) for index in boosted_order[:self.config.top_k])
-
-        # Keep rank traces bounded to the union of candidate-stage documents.
-        # The top-k admission/ejection counts always refer to the dense stage
-        # because that is the point where the taxonomy score is modified.
-        trace_indices = set(int(index) for index in baseline_order[:dense_k])
-        trace_indices.update(int(index) for index in boosted_order[:dense_k])
-        rank_changes = [
-            {
-                "doc_id": self.doc_ids[index],
-                "rank_before": baseline_ranks[index],
-                "rank_after": boosted_ranks[index],
-                "score_before": round(float(raw_sims[index]), 6),
-                "score_after": round(float(sims[index]), 6),
+        boosted_order = select_top_indices(sims, dense_k)
+        boost_changed_scores = bool(len(positive_eligible_indices)) and (
+            self.config.taxonomy_boost != 1.0
+        )
+        telemetry_seconds = 0.0
+        if boost_changed_scores:
+            telemetry_started = time.perf_counter()
+            baseline_order = select_top_indices(raw_sims, dense_k)
+            baseline_ranks = {
+                int(index): rank + 1 for rank, index in enumerate(baseline_order)
             }
-            for index in sorted(trace_indices, key=lambda index: boosted_ranks[index])
-            if baseline_ranks[index] != boosted_ranks[index]
-        ]
+            boosted_ranks = {
+                int(index): rank + 1 for rank, index in enumerate(boosted_order)
+            }
+            baseline_top_k = set(
+                int(index) for index in baseline_order[:self.config.top_k]
+            )
+            boosted_top_k = set(
+                int(index) for index in boosted_order[:self.config.top_k]
+            )
+            # Keep rank traces bounded to the union of candidate-stage documents.
+            # A missing rank means that the document fell below the candidate
+            # envelope; the lower bound makes that loss explicit without a
+            # corpus-sized Python rank map.
+            trace_indices = set(int(index) for index in baseline_order)
+            trace_indices.update(int(index) for index in boosted_order)
+            rank_changes = []
+            for index in sorted(
+                trace_indices,
+                key=lambda item: (boosted_ranks.get(item, dense_k + 1), item),
+            ):
+                rank_before = baseline_ranks.get(index)
+                rank_after = boosted_ranks.get(index)
+                if rank_before == rank_after:
+                    continue
+                change = {
+                    "doc_id": self.doc_ids[index],
+                    "rank_before": rank_before,
+                    "rank_after": rank_after,
+                    "score_before": round(float(raw_sims[index]), 6),
+                    "score_after": round(float(sims[index]), 6),
+                }
+                if rank_before is None:
+                    change["rank_before_lower_bound"] = dense_k + 1
+                if rank_after is None:
+                    change["rank_after_lower_bound"] = dense_k + 1
+                rank_changes.append(change)
+            telemetry_seconds = time.perf_counter() - telemetry_started
+        else:
+            baseline_top_k = set(int(index) for index in boosted_order[:self.config.top_k])
+            boosted_top_k = baseline_top_k
+            rank_changes = []
         target_scores = raw_sims[eligible_indices]
         negative_target_scores = target_scores[target_scores < 0]
         telemetry = {
@@ -190,10 +239,11 @@ class PullRetriever:
                 round(float(target_scores.max()), 6) if len(target_scores) else None
             ),
             "taxonomy_boost_rank_changes": rank_changes,
+            "taxonomy_boost_telemetry_seconds": telemetry_seconds,
         }
 
         # Dense candidates are always built so the hybrid arm changes only the backend.
-        top_indices = boosted_order[:dense_k]
+        top_indices = boosted_order
         dense_candidates = [
             {"doc_id": self.doc_ids[i], "score": float(sims[i])}
             for i in top_indices

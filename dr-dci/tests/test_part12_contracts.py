@@ -76,6 +76,17 @@ class Part12ContractTests(unittest.TestCase):
         self.assertEqual(len(blockers), 1)
         self.assertIn("fixture.corpus", blockers[0])
 
+    def test_focused_execution_requires_approved_practical_effect_threshold(self):
+        provisional = {"parts": {"part1_stacking": {
+            "minimum_practical_effect_status": "provisional_pending_approval",
+        }}}
+
+        self.assertTrue(run_experiment.focused_decision_rule_blockers(provisional))
+        approved = {"parts": {"part1_stacking": {
+            "minimum_practical_effect_status": "approved",
+        }}}
+        self.assertEqual(run_experiment.focused_decision_rule_blockers(approved), [])
+
     def test_audit_blocks_missing_artifacts_but_accepts_nested_gold_subsets(self):
         with tempfile.TemporaryDirectory() as directory:
             data = Path(directory)
@@ -271,6 +282,7 @@ class Part12ContractTests(unittest.TestCase):
                 patch.object(run_experiment, "load_queries", return_value=([], [])), \
                 patch.object(run_experiment, "run_dr_dci", side_effect=fake_run) as run_agent, \
                 patch.object(run_experiment, "build_part12_manifest", return_value={}), \
+                patch.object(run_experiment, "validate_focused_part12_result", return_value=[]), \
                 patch.object(run_experiment, "save_results", side_effect=lambda *args, **kwargs: saved.update(kwargs)):
             run_experiment.run_part2(config, focused=True)
 

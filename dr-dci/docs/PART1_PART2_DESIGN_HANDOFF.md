@@ -76,7 +76,7 @@
 - retrieval-only 공통 dense probe: document Recall@5/20, document Hit@5/10, nDCG@10, P@20, latency
 - 신한 전이 평가: chunk Recall@5/20·chunk Hit@5/10은 DocNav chunk/qrel이 제공된 뒤 별도 계약으로 구현한다. TREC corpus-id 문서 지표와 혼용하지 않는다.
 - 작동점 telemetry: 각 실제 pull의 boost eligible/positive-score document 수, dense-stage 전후 rank, Top-K 진입·이탈, target cosine의 최소·최대·음수 비율, bounded pull trace
-- 최소 실질 효과 크기: macro workspace document gold recall **0.01**. CI 하한이 0.01보다 클 때만 긍정 신호로 분류하고, CI 상한이 −0.01보다 작으면 부정 신호로 분류한다. 그 밖은 불확실이다.
+- 최소 실질 효과 크기: macro workspace document gold recall **0.01**. 이는 TREC·논문·신한 합의 기준이 아닌 **잠정 내부 screening 기준**이다. config의 `minimum_practical_effect_status`를 `approved`로 명시하기 전에는 focused model-backed 실행을 차단한다. 승인 뒤 CI 하한이 0.01보다 클 때만 긍정 신호로 분류하고, CI 상한이 −0.01보다 작으면 부정 신호로 분류한다. 그 밖은 불확실이다.
 
 한 실행의 CI는 질의 간 차이만 반영한다. 긍정 신호가 있어도 비용 승인 전에는 반복 횟수나 새 treatment를 늘리지 않는다.
 
@@ -92,7 +92,7 @@
 
 Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic multi-pull agent**와 **single-pull static workspace**만 비교한다. 공통 dense probe를 taxonomy arm의 retrieval-only 결과로 표현하지 않는다.
 
-주 scale 비교는 각 arm의 **110K−20K workspace document gold recall** paired delta다. 20K−50K·50K−110K, scale별 taxonomy−baseline, 같은 arm·scale의 `dynamic multi-pull - single-pull`은 탐색 비교다. query rewrite의 영향은 agent `pull_traces`와 공통 original-query dense probe를 나란히 보되, 이 둘로 taxonomy 인과 효과를 계산하지 않는다. Part 1 screening과 Part 2는 같은 50 query를 쓰므로 Part 2를 독립 재현으로 표현하지 않는다.
+주 scale 비교는 각 arm의 **110K−20K workspace document gold recall** paired delta다. 20K−50K·50K−110K와 scale별 taxonomy−baseline은 탐색 비교다. `dynamic multi-pull - single-pull`도 **pull 횟수의 순수 ablation이 아닌 exploratory interface ablation**이다. single-pull은 별도 LLM 실행이며 system prompt와 첫 pull query가 달라질 수 있다. 따라서 두 arm의 차이를 multi-pull 단독 효과로 부르지 않는다. dynamic 실행 내부에서는 첫 실제 pull 직후의 document gold recall과 최종 workspace recall의 차이를 별도로 기록한다. 이 값도 기술적 진단이지 LLM·prompt를 통제한 인과 효과가 아니다. query rewrite의 영향은 `pull_traces`와 공통 original-query dense probe를 나란히 보되, 이 둘로 taxonomy 인과 효과를 계산하지 않는다. Part 1 screening과 Part 2는 같은 50 query를 쓰므로 Part 2를 독립 재현으로 표현하지 않는다.
 
 공유 문서의 taxonomy 값은 scale마다 같아야 한다. 110K 정본을 만든 뒤 50K·20K를 필터링해 파생하는 방식을 우선하며, 별도 생성 artifact를 쓰면 공유 문서 값의 hash/동일성 검사를 통과해야 한다.
 
@@ -104,11 +104,12 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 - Part 1 focused arm은 prompt schema를 고정하고 workspace taxonomy 탐색을 양쪽에서 끈다.
 - single-pull은 실제 첫 pull만 실행하고 attempted pull과 실제 pull을 분리해 기록한다.
 - taxonomy boost는 양수 cosine에만 적용한다. dense-stage 전후 rank, Top-K 진입·이탈, score 분포와 bounded pull trace를 보존한다.
-- 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, seed, model/instruction/control, 실행 환경을 보존한다.
-- scale result validator는 raw per-query rows, provenance, metric, paired CI 계약이 빠지면 실패한다.
+- 순위 계측은 `argpartition`으로 뽑은 제한된 candidate 집합에서만 수행한다. baseline 또는 점수가 실제로 바뀌지 않은 pull에는 전후 순위 정렬·rank map을 만들지 않는다. agent raw row에는 전체 latency, rank-telemetry 추가 시간, 그리고 이를 뺀 latency를 함께 기록한다.
+- 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, 분석 bootstrap/sign-flip seed의 용도, 실제 agent/judge temperature·max tokens·generation seed, model/instruction/control, 실행 환경을 보존한다.
+- scale probe와 focused Part 1·2 모두 raw per-query rows, provenance, metric, paired CI와 필수 telemetry 계약이 빠지면 저장 전 실패한다.
 - H200 전송은 git pull이 아닌 code/config/manifest bundle만 사용하며 data, key, cache, result를 넣지 않는다.
 
-관련 구현은 `run_experiment.py`, `src/agent/dci_agent.py`, `src/eval/part12_contracts.py`, `src/eval/scale_probe_contract.py`에 있다.
+관련 구현은 `run_experiment.py`, `src/agent/dci_agent.py`, `src/agent/retriever.py`, `src/eval/part12_contracts.py`, `src/eval/scale_probe_contract.py`, `src/eval/part12_result_contract.py`에 있다.
 
 ## 8. 설계 담당자가 유지할 해석 원칙
 
@@ -127,6 +128,7 @@ Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic m
 1. `BeIR/trec-covid` corpus/query 및 `BeIR/trec-covid-qrels` test의 immutable revision, subset, split, row count가 든 acquisition manifest
 2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash. Part 2에는 110K 정본과 20K/50K 파생 규칙도 필요하다.
 3. H200/외부 모델 실행에 대한 명시적 승인
+4. `0.01` 최소 실질 효과 기준의 명시적 승인(`minimum_practical_effect_status: approved`) 또는 승인된 대체 기준
 
 ### 과거 결과 재해석에만 필요한 입력
 
@@ -154,13 +156,13 @@ bash scripts/package_part12_h200_bundle.sh /private/tmp/dr-dci-part12.tar.gz
 
 1. acquisition manifest와 taxonomy artifact를 추가하고 preflight를 통과시킨다.
 2. retrieval-only scale probe를 실행하고 raw result validator를 통과시킨다.
-3. baseline 대 taxonomy-only Part 1을 한 번 실행한다.
+3. 승인된 최소 실질 효과 기준을 config에 기록한 뒤 baseline 대 taxonomy-only Part 1을 한 번 실행한다.
 4. paired 결과와 telemetry를 검토해 H1의 방향만 판정한다.
 5. 긍정 신호가 있어도 별도 승인 전에는 Part 2 확대나 반복 실행을 시작하지 않는다.
 
 ## 11. 설계 검토에서 확인할 결정
 
-- H1의 최소 실질 효과 크기 0.01 macro workspace document gold recall을 실행 전에 확정할지. 변경하면 config와 근거를 commit으로 남긴다.
+- H1의 최소 실질 효과 크기 0.01 macro workspace document gold recall을 승인할지. 현재는 잠정 내부 기준이며, 승인 또는 대체 기준을 config와 근거 commit으로 남긴다.
 - Part 1 screening의 최소 유효 질의 수와 실패 query 처리 규칙을 실행 전에 확정할지
 - Part 1 양성 신호에 필요한 반복 실행 수와 비용 상한을 별도 승인 항목으로 둘지
 - raw historical result가 회수되지 않을 경우, 기존 수치를 참고 부록으로만 남길지

@@ -13,11 +13,16 @@ import numpy as np
 
 
 class Judge:
-    def __init__(self, llm_url: str, model_name: str, prompt_template: str, api_key: str = None):
+    def __init__(self, llm_url: str, model_name: str, prompt_template: str,
+                 api_key: str = None, temperature: float = 0.0,
+                 max_tokens: int = 10, llm_seed: int = None):
         self.llm_url = llm_url
         self.model_name = model_name
         self.prompt_template = prompt_template
         self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
+        self.temperature = temperature
+        self.max_tokens = max_tokens
+        self.llm_seed = llm_seed
 
     def evaluate_accuracy(self, query: str, reference_answer: str, candidate_answer: str) -> str:
         """LLM-as-Judge로 정답 여부 판정 (retry with backoff)"""
@@ -34,9 +39,11 @@ class Judge:
         payload = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0,
-            "max_tokens": 10,
+            "temperature": self.temperature,
+            "max_tokens": self.max_tokens,
         }
+        if self.llm_seed is not None:
+            payload["seed"] = self.llm_seed
 
         for attempt in range(5):
             try:
@@ -105,6 +112,14 @@ def compute_metrics(results: list[dict]) -> dict:
         if judged else None
     )
     avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
+    first_pull_recalls = [
+        r["first_pull_document_gold_recall"] for r in results
+        if r.get("first_pull_document_gold_recall") is not None
+    ]
+    workspace_expansion_recalls = [
+        r["workspace_expansion_document_gold_recall"] for r in results
+        if r.get("workspace_expansion_document_gold_recall") is not None
+    ]
     avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
     avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
     avg_taxonomy_pulls = sum(r.get("taxonomy_filtered_pulls", 0) for r in results) / n
@@ -145,6 +160,13 @@ def compute_metrics(results: list[dict]) -> dict:
     avg_turns = sum(r.get("turns", 0) for r in results) / n
     avg_latency = sum(r.get("latency_seconds", 0) for r in results) / n
     latencies = [r.get("latency_seconds", 0) for r in results]
+    avg_telemetry_latency = sum(
+        r.get("taxonomy_boost_telemetry_seconds", 0) for r in results
+    ) / n
+    avg_latency_without_telemetry = sum(
+        r.get("latency_without_taxonomy_boost_telemetry_seconds", r.get("latency_seconds", 0))
+        for r in results
+    ) / n
     candidate_efficiencies = [
         r.get("gold_recall", 0) * 100 / r.get("retrieved_candidates", 0)
         for r in results
@@ -157,6 +179,12 @@ def compute_metrics(results: list[dict]) -> dict:
         "judged_n": len(judged),
         "judge_error_n": sum(1 for r in results if r.get("judgment") == "error"),
         "avg_gold_recall": round(avg_recall, 4),
+        "avg_first_pull_document_gold_recall": round(
+            sum(first_pull_recalls) / len(first_pull_recalls), 4
+        ) if first_pull_recalls else None,
+        "avg_workspace_expansion_document_gold_recall": round(
+            sum(workspace_expansion_recalls) / len(workspace_expansion_recalls), 4
+        ) if workspace_expansion_recalls else None,
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
         "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
@@ -183,6 +211,10 @@ def compute_metrics(results: list[dict]) -> dict:
         "avg_workspace_docs": round(avg_workspace_docs, 2),
         "avg_turns": round(avg_turns, 2),
         "avg_latency_seconds": round(avg_latency, 3),
+        "avg_taxonomy_boost_telemetry_seconds": round(avg_telemetry_latency, 6),
+        "avg_latency_without_taxonomy_boost_telemetry_seconds": round(
+            avg_latency_without_telemetry, 3
+        ),
         "p50_latency_seconds": round(float(np.percentile(latencies, 50)), 3),
         "p95_latency_seconds": round(float(np.percentile(latencies, 95)), 3),
         "avg_gold_recall_per_100_candidates": round(
