@@ -80,6 +80,11 @@ def validate_lexical_smoke_config(config: dict[str, Any]) -> None:
     _require_sha256(runtime["container_base_image_sha256"], label="MIRACL lexical smoke base image sha256")
     if runtime.get("dependency_mode") != EXPECTED_RUNTIME_DEPENDENCY_MODE:
         raise ValueError("MIRACL lexical smoke must use the declared sparse minimal runtime")
+    runtime_packages = runtime.get("sparse_runtime_packages")
+    if not isinstance(runtime_packages, dict) or set(runtime_packages) != {
+        "numpy", "pandas", "pyjnius", "scipy", "tqdm",
+    } or not all(isinstance(version, str) and version for version in runtime_packages.values()):
+        raise ValueError("MIRACL lexical smoke must pin its sparse runtime packages")
     retrieval = config.get("retrieval")
     if not isinstance(retrieval, dict):
         raise ValueError("MIRACL lexical smoke config is missing retrieval controls")

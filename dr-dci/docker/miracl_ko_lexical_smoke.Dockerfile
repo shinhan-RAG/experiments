@@ -18,6 +18,7 @@ RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0 \
         numpy==2.4.2 \
         pandas==2.3.3 \
         pyjnius==1.7.0 \
+        scipy==1.17.0 \
         tqdm==4.67.1
 
 WORKDIR /work

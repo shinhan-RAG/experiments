@@ -95,12 +95,16 @@ def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
     analyzed_probe = [str(token) for token in analyzer.analyze("한국어 검색 검증")]
     if not analyzed_probe:
         raise RuntimeError("Pyserini Korean CJK analyzer returned no probe tokens")
-    packages = {
+    packages = {"pyserini": importlib.metadata.version("pyserini")}
+    packages.update({
         name: importlib.metadata.version(name)
-        for name in ("pyserini", "pyjnius", "numpy", "pandas", "tqdm")
-    }
+        for name in config["runtime"]["sparse_runtime_packages"]
+    })
     if packages["pyserini"] != config["backend"]["version"]:
         raise RuntimeError("installed Pyserini version does not match pinned smoke config")
+    for name, expected_version in config["runtime"]["sparse_runtime_packages"].items():
+        if packages[name] != expected_version:
+            raise RuntimeError(f"installed {name} does not match pinned smoke config")
     return {
         "python_version": sys.version,
         "java_version_output": java.stderr.strip() or java.stdout.strip(),
