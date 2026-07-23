@@ -10,7 +10,7 @@ This is not a taxonomy result, Agentic RAG result, insurance-domain validation, 
 - Topics/qrels revision: `5be20db9509754dadad47689368639fcec739c00`
 - Corpus revision: `d921ec7e349ce0d28daf30b2da9da5ee698bef0d`
 - Approved revision-lock SHA-256: `84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa`; acquisition requests only these revisions and never adopts remote HEAD.
-- Preparation contract SHA-256: `4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7`; source Git commit: `dbee144bd86c1de81248308db68c8d15dd3ab29a`. The contract hashes the wrapper, preparation algorithm module, and revision lock.
+- Preparation contract SHA-256: `2c806cc432319f24e9b4fbcd34380bf117bd223bc3c299e64090b6a966a92b21`; source Git commit: `9fd2c84cce23dc673a095a051b17b4b025c2dd7b`. The contract hashes the wrapper, preparation algorithm module, and revision lock.
 - MIRACL artifact license: Apache-2.0 (MIRACL repository and dataset cards); underlying Wikipedia terms are recorded separately in the hash manifest.
 - Retrieval unit: **passage** (`article_id#passage_index`); article aggregation is not used.
 - Raw artifacts are under ignored `data/`; no raw or normalized passage text is committed.

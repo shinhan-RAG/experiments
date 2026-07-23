@@ -3,7 +3,7 @@
     "acquisition_script_sha256": "b3059182a72446037c63a34afbc5946fc644e0e983c02c7c473bd4391768025d",
     "acquisition_script_version": "miracl-ko-preparation-v2",
     "dataset": "MIRACL",
-    "downloaded_at": "2026-07-23T08:56:42.611621+00:00",
+    "downloaded_at": "2026-07-23T10:45:22.927793+00:00",
     "files": [
       {
         "byte_size": 53825,
@@ -106,14 +106,14 @@
     ],
     "language": "ko",
     "license": "Apache-2.0 (MIRACL repository and dataset cards)",
-    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
+    "preparation_contract_sha256": "2c806cc432319f24e9b4fbcd34380bf117bd223bc3c299e64090b6a966a92b21",
     "python_version": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 11:23:37) [Clang 14.0.6 ]",
     "resolved_revision": {
       "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
       "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
     },
     "revision_lock_sha256": "84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa",
-    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
+    "source_git_commit": "9fd2c84cce23dc673a095a051b17b4b025c2dd7b",
     "source_urls": {
       "corpus": "https://huggingface.co/datasets/miracl/miracl-corpus",
       "topics_qrels": "https://huggingface.co/datasets/miracl/miracl"
@@ -126,10 +126,10 @@
     }
   },
   "dataset": "MIRACL",
-  "generated_at": "2026-07-23T09:07:43.043229+00:00",
+  "generated_at": "2026-07-23T10:46:09.403875+00:00",
   "language": "ko",
   "nested_subsets": {
-    "acquisition_manifest_sha256": "9437a11ca19182999566a0d17e5b2b47d585eadd670efafa20228c3a9c3d2892",
+    "acquisition_manifest_sha256": "26c29a75505e8d0fffcf402c458bb52426ec8ee853960256c89cf4a610f18bd7",
     "all_judged_qrels_forced_into_mandatory_set": true,
     "dataset": "MIRACL",
     "design": "controlled distractor scaling; all judged passages fixed, unjudged distractors increase",
@@ -137,7 +137,7 @@
     "judged_passage_id_sha256": "b489df1d479a56273868744b79d5f4fbf0388b18d2a3d4d03ac4ba3146cc583f",
     "language": "ko",
     "mandatory_set_definition": "all unique corpus IDs in normalized train and dev qrels, regardless of relevance",
-    "normalization_manifest_sha256": "7808421b0d96808ab5336986b43bc2069e5a941cbee53eb0bb7c939db33156c2",
+    "normalization_manifest_sha256": "94799ffee7dc8d6a9133d017f5e9f4da14c224076cf9a586c3b84b63a8365539",
     "normalized_corpus_input": {
       "byte_size": 745841888,
       "relative_path": "normalized/corpus.jsonl",
@@ -146,10 +146,10 @@
     "output_order_definition": "SHA256(miracl-ko-scale-v2\\0 + corpus_id), independent of relevance",
     "positive_passage_count": 2105,
     "positive_passage_id_sha256": "53b7b3e0652aba68b22c55df1ab73837aa1d48c24efa4ee4a5b5233dffc98480",
-    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
+    "preparation_contract_sha256": "2c806cc432319f24e9b4fbcd34380bf117bd223bc3c299e64090b6a966a92b21",
     "retrieval_unit": "passage",
     "scale_version": "miracl-ko-scale-v2",
-    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
+    "source_git_commit": "9fd2c84cce23dc673a095a051b17b4b025c2dd7b",
     "source_revisions": {
       "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
       "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
@@ -269,9 +269,9 @@
     }
   },
   "normalization": {
-    "acquisition_manifest_sha256": "9437a11ca19182999566a0d17e5b2b47d585eadd670efafa20228c3a9c3d2892",
+    "acquisition_manifest_sha256": "26c29a75505e8d0fffcf402c458bb52426ec8ee853960256c89cf4a610f18bd7",
     "dataset": "MIRACL",
-    "generated_at": "2026-07-23T08:56:53.243930+00:00",
+    "generated_at": "2026-07-23T10:45:37.926545+00:00",
     "inputs": {
       "corpus_0": {
         "byte_size": 87965596,
@@ -342,10 +342,10 @@
         "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
       }
     },
-    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
+    "preparation_contract_sha256": "2c806cc432319f24e9b4fbcd34380bf117bd223bc3c299e64090b6a966a92b21",
     "retrieval_unit": "passage",
     "revision_lock_sha256": "84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa",
-    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
+    "source_git_commit": "9fd2c84cce23dc673a095a051b17b4b025c2dd7b",
     "transformation_version": "miracl-ko-nfc-v1",
     "unicode_nfc_changed_fields": {
       "query": 0,
