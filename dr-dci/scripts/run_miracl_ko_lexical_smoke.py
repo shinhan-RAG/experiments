@@ -89,9 +89,9 @@ def require_file_record(data_dir: Path, record: dict[str, Any], *, label: str) -
 
 def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
     java = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True)
-    from pyserini.analysis import get_lucene_analyzer
+    from pyserini.analysis import Analyzer, get_lucene_analyzer
 
-    analyzer = get_lucene_analyzer(config["backend"]["analyzer_language"])
+    analyzer = Analyzer(get_lucene_analyzer(config["backend"]["analyzer_language"]))
     analyzed_probe = [str(token) for token in analyzer.analyze("한국어 검색 검증")]
     if not analyzed_probe:
         raise RuntimeError("Pyserini Korean CJK analyzer returned no probe tokens")
