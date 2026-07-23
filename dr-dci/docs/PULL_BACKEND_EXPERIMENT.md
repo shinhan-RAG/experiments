@@ -34,7 +34,7 @@ The previously reported answer accuracy values must be rerun before reuse. In pa
 
 ## 4. Hypothesis
 
-Adding BM25 candidates through RRF will improve workspace gold recall for queries containing exact entities, identifiers, or discriminative phrases that dense retrieval misses.
+Adding BM25 candidates through RRF will improve workspace document gold recall for queries containing exact entities, identifiers, or discriminative phrases that dense retrieval misses.
 
 The opposite result is also plausible. Dense retrieval can be stronger for paraphrases, and adding lexical candidates can displace useful semantic candidates when Top-K is fixed. The experiment is therefore two-sided.
 
@@ -62,7 +62,7 @@ These values reproduce Peter's current final stack for the first controlled comp
 
 Primary endpoint:
 
-- Paired per-query delta in workspace gold recall (`hybrid_rrf - dense`), with a seeded 95% bootstrap confidence interval.
+- Paired per-query delta in workspace document gold recall (`hybrid_rrf - dense`), with a seeded 95% bootstrap confidence interval.
 
 Secondary diagnostics:
 

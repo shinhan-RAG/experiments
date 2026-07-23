@@ -1,6 +1,6 @@
 """Rank-based retrieval metrics for the pull-backend probe.
 
-The agent-loop primary endpoint stays workspace gold recall. These metrics
+The agent-loop primary endpoint stays workspace document gold recall. These metrics
 answer the retrieval-quality axis on the ranked candidate list that one pull
 produces for the original query text, independent of agent query rewriting.
 Callers must exclude queries without positive gold (denominator = judged

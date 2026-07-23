@@ -26,7 +26,7 @@ Peter의 기존 Part 1·2 결과를 삭제하거나 덮어쓰지 않고, 가장 
 
 ### 3.1 Part 1
 
-PDF에는 baseline Gold Recall `0.0392`, taxonomy-only `0.0484`, stack-all `0.0505`가 기록돼 있다. 그러나 현재 코드에는 다음 해석 공백이 있다.
+PDF에는 baseline document Gold Recall `0.0392`, taxonomy-only `0.0484`, stack-all `0.0505`가 기록돼 있다. 그러나 현재 코드에는 다음 해석 공백이 있다.
 
 1. `taxonomy_only`와 `stack_tax`는 이름만 다르고 treatment 설정이 완전히 같다.
 2. `stack_all`과 `stack_tax`의 차이는 `0.0004`이지만 질의별 paired 신뢰구간이 없다. 따라서 `stack_all`을 통계적으로 확인된 최적 설정이라고 부를 근거가 부족하다.
@@ -65,7 +65,7 @@ DCI 논문은 고정 top-k가 exact lexical constraint, sparse clue conjunction,
 
 ### 4.3 Google Research의 sufficient context
 
-Google Research는 검색된 context가 질문을 답하기에 충분한지와 모델이 충분한 context를 활용했는지를 분리해 평가할 필요가 있다고 제안한다. 이번 단계에서는 별도 sufficient-context agent를 추가하지 않는다. 대신 answer accuracy만 보지 않고 workspace gold recall을 함께 측정해 검색 실패와 답변 실패를 구분한다.
+Google Research는 검색된 context가 질문을 답하기에 충분한지와 모델이 충분한 context를 활용했는지를 분리해 평가할 필요가 있다고 제안한다. 이번 단계에서는 별도 sufficient-context agent를 추가하지 않는다. 대신 answer accuracy만 보지 않고 workspace document gold recall을 함께 측정해 검색 실패와 답변 실패를 구분한다.
 
 ## 5. 좁힌 실험
 
@@ -87,7 +87,7 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 
 주 평가:
 
-- 질의별 workspace Gold Recall의 `taxonomy - baseline` paired bootstrap 95% CI
+- 질의별 workspace **document** Gold Recall의 `taxonomy - baseline` paired bootstrap 95% CI
 
 보조 평가:
 
@@ -95,15 +95,15 @@ Google Research는 검색된 context가 질문을 답하기에 충분한지와 �
 - pull 수, latency, prompt/completion token
 - taxonomy-filter가 적용된 pull 횟수
 - taxonomy artifact의 subset/gold-document coverage와 유효 L1 label coverage
-- boost eligible corpus documents 및 그중 실제 pull 결과에 포함된 문서 수
+- 각 실제 pull의 boost eligible/positive-score document 수, dense-stage 전후 rank, Top-K 진입·이탈, target cosine의 최소·최대·음수 비율
 - API가 제공하는 경우 `system_fingerprint`
 - efficiency는 보조 지표로만 사용한다. recall을 pull 수로 나눈 파생값이므로 단독 품질 지표로 해석하지 않는다.
 
 진행 기준:
 
-- Gold Recall delta의 95% CI가 0보다 클 때 taxonomy의 긍정 효과 후보로 본다.
-- CI가 0을 포함하면 불확실로 판정하고, `stack_all` 확대 대신 질의별 승패와 taxonomy 사용 여부만 분석한다.
-- CI가 0보다 작으면 taxonomy 확대 실험을 중단한다.
+- macro workspace document Gold Recall delta의 95% CI 하한이 `0.01`보다 클 때 taxonomy의 긍정 신호로 본다.
+- CI 상한이 `−0.01`보다 작으면 taxonomy 확대 실험을 중단한다.
+- 그 밖은 불확실로 판정하고, `stack_all` 확대 대신 질의별 승패와 taxonomy 작동 telemetry만 분석한다.
 
 1회 실행의 paired bootstrap은 질의 간 변동만 반영하고 LLM 실행 간 변동은 반영하지 않는다. OpenAI Chat Completions의 `seed`도 공식 문서상 best-effort이며 결정성이 보장되지 않는다. 따라서 1회 실행은 screening으로 취급하고, 긍정 신호가 확인될 때만 같은 두 arm을 반복 실행해 확인한다. 반복 횟수는 비용 승인 전에 확정하며, 서로 다른 backend fingerprint가 섞이면 별도로 표기한다. Gold qrel은 taxonomy prompt/filter 생성에 입력하지 않는다.
 
@@ -119,15 +119,17 @@ Part 1을 통과한 경우에만 taxonomy arm을 확장한다.
 
 주 평가:
 
-- 각 규모의 `taxonomy - baseline` paired Gold Recall delta
-- 각 arm의 `50K - 20K`, `110K - 20K` paired Gold Recall delta
+- 각 arm의 **`110K - 20K` workspace document Gold Recall paired delta**
+- `20K - 50K`, `50K - 110K`, scale별 `taxonomy - baseline`은 탐색 비교
 
 운영 평가:
 
 - 평균/p50/p95 latency
 - pull 수, workspace 문서 수, token 사용량
 - taxonomy-filter pull 사용률
-- same-arm dynamic multi-pull − single-pull paired delta. `pull_queries` 원시 trace로 original-query retrieval probe와 agent rewrite를 후속 분해한다.
+- same-arm dynamic multi-pull − single-pull paired delta. `pull_traces`로 agent rewrite를 기록한다. 공통 dense original-query probe와 나란히 보되 taxonomy arm의 retrieval-only 결과로 해석하지 않는다.
+
+Part 1 screening과 Part 2는 같은 50개 질의를 쓰므로, Part 2를 독립 재현으로 표현하지 않는다.
 
 공유 문서의 taxonomy 값은 규모별로 같아야 한다. 110K 정본에서 50K·20K subset을 필터링해 파생하는 방식을 우선한다. 별도 생성본을 사용하면 사전검사가 공유 문서의 값 변경을 차단한다.
 
@@ -143,9 +145,11 @@ agent 실험보다 먼저 수행한다.
 | retriever | 동일 dense embedding·동일 파라미터 |
 | 변경 변수 | distractor 수만 |
 
-지표: 주 지표 `nDCG@10`(graded, pytrec_eval/BEIR 관례의 선형 gain·log2 할인),
-`Precision@20`. 보조 지표 `Recall@5/20`, `Hit@5/10`, latency. 통계는 같은
+TREC-COVID qrel과 현재 구현의 평가 단위는 `corpus-id`, 즉 **문서**다. 지표는 주 지표 document `nDCG@10`(graded, pytrec_eval/BEIR 관례의 선형 gain·log2 할인),
+document `Precision@20`이다. 보조 지표는 document `Recall@5/20`, document `Hit@5/10`, latency다. 통계는 같은
 질의를 짝지은 scale 쌍별 paired bootstrap 95% CI.
+
+주 scale 비교는 `110K−20K`로 고정한다. `20K−50K`, `50K−110K`는 탐색 결과다. 신한라이프 평가의 chunk Recall/Hit은 DocNav chunk/qrel이 제공된 뒤 별도 계약으로 구현하며, 여기의 TREC 문서 지표와 혼용하지 않는다.
 
 지표 선택 이유: 질의당 positive gold 중앙값이 478이라 Recall@20 상한이
 약 0.042로 낮고 Hit@5/10은 포화된다. nDCG@10은 TREC-COVID의 graded label
@@ -213,7 +217,8 @@ distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nest
 - `src/eval/part12_contracts.py`: selected duplicate arm 차단, nested subset, gold 보존율, artifact의 subset/gold coverage와 taxonomy L1 coverage, 공유 문서 augmentation 일치 검사
 - `compare_result_rows()`: 집계 평균이 아니라 query ID를 맞춘 paired bootstrap 비교
 - `taxonomy_filtered_pulls`: taxonomy filter가 요청된 pull 횟수
-- `taxonomy_boost_eligible_documents` / `taxonomy_boosted_returned_documents`: taxonomy score boost가 적용 가능한 corpus 수와 실제 반환 후보 수를 분리 계측
+- `taxonomy_boost_eligible_documents` / `taxonomy_boosted_returned_documents`: taxonomy score boost가 적용 가능한 corpus 수와 dense-stage Top-K 반환 후보 수를 분리 계측
+- `taxonomy_boost_rank_changed_pulls`, Top-K 진입·이탈, target cosine 최소·최대·음수 비율, `pull_traces`: 양수 cosine에만 적용한 boost가 실제 순위를 바꿨는지 계측
 - `system_fingerprint`: 제공되는 backend 변경 식별자를 결과에 보존
 - `python run_experiment.py --part 1 --focused`: baseline 대 taxonomy-only만 실행
 - `python run_experiment.py --part 2 --focused`: baseline·taxonomy-only의 20K·50K·110K 확장만 실행
@@ -229,8 +234,8 @@ distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nest
 | 1 | `run_part1()` | baseline, taxonomy/tags/prefix/metadata 단독, 동일 taxonomy의 `stack_tax`, 각 적층 arm | historical 9-arm 경로. `taxonomy_only == stack_tax`이므로 focused에서는 실행하지 않음. |
 | 1 focused | `run_part1(..., focused=True)` | baseline vs taxonomy-only | 동일 taxonomy schema prompt, score soft boost 단일변수. |
 | 2 | `run_part2()` | `stack_all` DR-DCI vs Hybrid RAG, 20K/50K/110K | historical 복합 처치이므로 taxonomy 인과 주장에 사용하지 않음. |
-| 2 focused | `run_part2(..., focused=True)` | baseline vs taxonomy-only × 3 nested scales, 각 arm의 single-pull static workspace | Part 1 양성 screening 이후에만 실행; dynamic−single paired delta가 multi-pull 축. |
-| 2 scale probe | `run_part2_scale_probe()` | original query 1회 dense pull × 3 nested scales | LLM/agent 없이 distractor count만 변경; retrieval degradation 국소화용. |
+| 2 focused | `run_part2(..., focused=True)` | baseline vs taxonomy-only × 3 nested scales, 각 arm의 dynamic/single-pull workspace | Part 1 양성 screening 이후에만 실행; 주 scale 비교는 110K−20K, dynamic−single은 탐색 축. |
+| 2 scale probe | `run_part2_scale_probe()` | 공통 original-query 1회 dense pull × 3 nested scales | taxonomy arm이 없는 LLM/agent-free distractor probe; retrieval degradation 국소화용. |
 | 3 | `run_part3()` | taxonomy+prefix+metadata 고정, tags A/B/C | 이번 범위 밖. |
 | 4 | `run_part4()` | final DR-DCI stack vs Hybrid RAG | 이번 범위 밖; Part 1/2 taxonomy 효과와 합산 해석 금지. |
 
@@ -243,16 +248,16 @@ distractor 표본·임베딩 모델 변동은 반영하지 않는다(단일 nest
 - taxonomy 20K/50K/110K 산출물: 없음
 - Peter의 augmentation 저장소는 현재 인증 없이 조회되지 않음
 - 원 생성기는 `Qwen/Qwen3-8B`를 `localhost:8100`에서 호출하지만 현재 해당 endpoint가 없음
-- retrieval-only scale probe: **실측 완료** (5.3 결과 참조 — 검색단 degradation 지지)
+- retrieval-only scale probe: historical 실측 표는 보존했으나 raw JSON이 없어 **미검증** (5.3 참조)
 - Part 1 집중 실행: 차단
 - Part 1~4 원시 결과 JSON과 scale probe 원시 JSON: 로컬 부재. 현재 표의 과거 수치는 재계산·result-contract 검증 불가.
 - TREC-COVID local snapshot은 source ID/split은 기록돼 있지만 immutable Hugging Face revision은 기존 수집 시 기록되지 않음. 새 공유 실험 전 revision을 받아 manifest에 채워야 함.
 - 따라서 `run_experiment.py`의 model-backed Part 1·2 preflight도 현재 revision 누락으로 중단된다. `audit_part12.py`의 subset/artifact 진단은 계속 무비용으로 실행 가능하다.
 
-따라서 지금 숫자를 새로 만들 수는 없다. Peter가 사용한 taxonomy artifact를 원 실행 환경에서 가져오거나 동일 모델·prompt·subset 계약으로 복원한 뒤 다음 순서로 진행한다. 환경에 존재하는 다른 API key로 taxonomy를 새로 생성하면 생성 모델까지 바뀌므로 원 결과의 단일변수 재검증이 아니다.
+따라서 현재는 새 model-backed 숫자를 만들 수 없다. 신규 TREC focused 실행에는 immutable source revision, taxonomy artifact provenance, 외부 실행 승인이 필요하다. Peter의 과거 수치를 재해석하려면 raw JSON이 추가로 필요하고, 신한 전이 검증에는 신한 PDF와 DocNav chunk/qrel 계약이 추가로 필요하다. 환경에 존재하는 다른 API key로 taxonomy를 새로 생성하면 생성 모델까지 바뀌므로 원 결과의 단일변수 재검증이 아니다.
 
 ```bash
-# 산출물 없이 지금 실행 가능 (임베딩 endpoint만 필요)
+# immutable revision과 embedding endpoint가 있을 때만 실행 가능
 python run_experiment.py --part 2 --scale-probe
 # 생성 직후 또는 인스턴스에서 받은 JSON을 무비용 검증
 python scripts/validate_scale_probe_result.py results/part2_scale_probe/<timestamp>.json

@@ -27,6 +27,7 @@ from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
 from src.eval.comparison import (
+    classify_practical_effect,
     compare_paired_results,
     compare_probe_rows,
     compare_result_rows,
@@ -331,10 +332,35 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "taxonomy_boost_eligible_documents": result.get(
                 "taxonomy_boost_eligible_documents", 0
             ),
+            "taxonomy_boosted_positive_score_documents": result.get(
+                "taxonomy_boosted_positive_score_documents", 0
+            ),
             "taxonomy_boosted_returned_documents": result.get(
                 "taxonomy_boosted_returned_documents", 0
             ),
+            "taxonomy_boost_rank_changed_pulls": result.get(
+                "taxonomy_boost_rank_changed_pulls", 0
+            ),
+            "taxonomy_boost_top_k_entered_documents": result.get(
+                "taxonomy_boost_top_k_entered_documents", 0
+            ),
+            "taxonomy_boost_top_k_exited_documents": result.get(
+                "taxonomy_boost_top_k_exited_documents", 0
+            ),
+            "taxonomy_boost_target_score_count": result.get(
+                "taxonomy_boost_target_score_count", 0
+            ),
+            "taxonomy_boost_target_negative_score_count": result.get(
+                "taxonomy_boost_target_negative_score_count", 0
+            ),
+            "taxonomy_boost_target_score_min": result.get(
+                "taxonomy_boost_target_score_min"
+            ),
+            "taxonomy_boost_target_score_max": result.get(
+                "taxonomy_boost_target_score_max"
+            ),
             "pull_queries": result.get("pull_queries", []),
+            "pull_traces": result.get("pull_traces", []),
             "system_fingerprints": result.get("system_fingerprints", []),
             "latency_seconds": latency_seconds,
             "single_pull": single_pull,
@@ -558,20 +584,46 @@ def run_part1(config: dict, *, focused: bool = False):
 
     analysis = {}
     if "baseline" in all_results and "taxonomy_only" in all_results:
-        analysis["taxonomy_only_minus_baseline"] = compare_result_rows(
+        comparison = compare_result_rows(
             all_results["baseline"]["results"],
             all_results["taxonomy_only"]["results"],
             seed=config["seed"],
         )
+        if focused:
+            minimum_effect_size = float(
+                part_cfg.get("minimum_practical_effect_size", 0.01)
+            )
+            comparison["document_gold_recall_decision"] = classify_practical_effect(
+                comparison["gold_recall"],
+                minimum_effect_size=minimum_effect_size,
+            )
+        analysis["taxonomy_only_minus_baseline"] = comparison
     manifest = build_part12_manifest(config, dataset, [subset_size])
     manifest.update({
-        "schema_version": "dr-dci.part1-taxonomy.v1",
+        "schema_version": "dr-dci.part1-taxonomy.v2",
         "hypothesis": (
             "With the taxonomy category schema held constant in both arms, "
-            "taxonomy soft boosting improves workspace gold recall."
+            "taxonomy soft boosting improves workspace document gold recall."
+            if focused else
+            "Historical multi-arm stacking path; not a single-variable taxonomy test."
         ),
         "single_variable": "taxonomy_soft_boost",
         "taxonomy_action_point": "pull score soft boost only",
+        "primary_endpoint": "workspace_document_gold_recall",
+        "decision_rule": (
+            {
+                "comparison": "taxonomy_only_minus_baseline",
+                "minimum_practical_effect_size": float(
+                    part_cfg.get("minimum_practical_effect_size", 0.01)
+                ),
+                "positive": "ci95_low > minimum_practical_effect_size",
+                "negative": "ci95_high < -minimum_practical_effect_size",
+                "otherwise": "inconclusive",
+            }
+            if focused else {
+                "status": "not_applicable_to_confounded_historical_path",
+            }
+        ),
         "taxonomy_prompt_schema_shared": bool(focused),
         "git_commit": current_git_commit(),
         "dataset": dataset,
@@ -671,7 +723,6 @@ def run_part2(config: dict, *, focused: bool = False):
 
     analysis = {}
     sizes = [int(size) for size in part_cfg["subsets"]]
-    smallest_key = f"{sizes[0] // 1000}k"
     if focused:
         for size in sizes:
             size_key = f"{size // 1000}k"
@@ -681,13 +732,17 @@ def run_part2(config: dict, *, focused: bool = False):
                 seed=config["seed"],
             )
         for arm in ("baseline", "taxonomy_only"):
-            for size in sizes[1:]:
-                size_key = f"{size // 1000}k"
-                analysis[f"{arm}_{size_key}_minus_{smallest_key}"] = compare_result_rows(
-                    all_results[f"{arm}_{smallest_key}"]["results"],
-                    all_results[f"{arm}_{size_key}"]["results"],
-                    seed=config["seed"],
-                )
+            for control_index, control_size in enumerate(sizes):
+                control_key = f"{control_size // 1000}k"
+                for treatment_size in sizes[control_index + 1:]:
+                    treatment_key = f"{treatment_size // 1000}k"
+                    analysis[
+                        f"{arm}_{treatment_key}_minus_{control_key}"
+                    ] = compare_result_rows(
+                        all_results[f"{arm}_{control_key}"]["results"],
+                        all_results[f"{arm}_{treatment_key}"]["results"],
+                        seed=config["seed"],
+                    )
     if part_cfg.get("include_single_pull", True):
         for arm in selected_steps:
             arm_name = arm["name"]
@@ -707,6 +762,24 @@ def run_part2(config: dict, *, focused: bool = False):
         "subsets": sizes,
         "focused": focused,
         "include_single_pull": part_cfg.get("include_single_pull", True),
+        "primary_scale_comparison": "110k_minus_20k within each arm",
+        "exploratory_scale_comparisons": [
+            "50k_minus_20k within each arm",
+            "110k_minus_50k within each arm",
+            "taxonomy_minus_baseline at each scale",
+            "dynamic_minus_single at each arm and scale",
+        ],
+        "retrieval_only_component": {
+            "scope": "common dense original-query scale probe",
+            "taxonomy_arm_comparison": False,
+        },
+        "agent_component": {
+            "scope": "baseline and taxonomy-only dynamic/single-pull comparisons",
+            "independence": (
+                "uses the same 50 TREC-COVID queries as Part 1 screening; "
+                "it is not an independent replication"
+            ),
+        },
         "arms": [
             {
                 "name": str(step["name"]),
@@ -1107,7 +1180,7 @@ def save_results(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_path = out_dir / f"{timestamp}.json"
 
-    # results에서 큰 리스트 제거 (요약만 저장)
+    # Keep a compact summary alongside full per-query rows for paired reanalysis.
     summary = {}
     for key, val in results.items():
         summary[key] = val.get("metrics", "probe_only")

@@ -210,8 +210,17 @@ class DCIAgent:
         completion_tokens = 0
         taxonomy_filtered_pulls = 0
         taxonomy_boost_eligible_documents = 0
+        taxonomy_boosted_positive_score_documents = 0
         taxonomy_boosted_returned_documents = 0
+        taxonomy_boost_rank_changed_pulls = 0
+        taxonomy_boost_top_k_entered_documents = 0
+        taxonomy_boost_top_k_exited_documents = 0
+        taxonomy_boost_target_score_count = 0
+        taxonomy_boost_target_negative_score_count = 0
+        taxonomy_boost_target_score_min = None
+        taxonomy_boost_target_score_max = None
         pull_queries = []
+        pull_traces = []
         system_fingerprints = set()
 
         for turn in range(self.max_turns):
@@ -250,7 +259,16 @@ class DCIAgent:
                         "total_in_workspace": len(workspace.docs),
                         "pull_executed": False,
                         "taxonomy_boost_eligible_documents": 0,
+                        "taxonomy_boosted_positive_score_documents": 0,
                         "taxonomy_boosted_returned_documents": 0,
+                        "taxonomy_boost_rank_changed": False,
+                        "taxonomy_boost_top_k_entered_documents": 0,
+                        "taxonomy_boost_top_k_exited_documents": 0,
+                        "taxonomy_boost_target_score_count": 0,
+                        "taxonomy_boost_target_negative_score_count": 0,
+                        "taxonomy_boost_target_score_min": None,
+                        "taxonomy_boost_target_score_max": None,
+                        "taxonomy_boost_rank_changes": [],
                     }
                 else:
                     result = self._execute_tool(func_name, args, workspace)
@@ -264,9 +282,67 @@ class DCIAgent:
                         taxonomy_boost_eligible_documents += result.get(
                             "taxonomy_boost_eligible_documents", 0
                         )
+                        taxonomy_boosted_positive_score_documents += result.get(
+                            "taxonomy_boosted_positive_score_documents", 0
+                        )
                         taxonomy_boosted_returned_documents += result.get(
                             "taxonomy_boosted_returned_documents", 0
                         )
+                        taxonomy_boost_rank_changed_pulls += int(bool(result.get(
+                            "taxonomy_boost_rank_changed", False
+                        )))
+                        taxonomy_boost_top_k_entered_documents += result.get(
+                            "taxonomy_boost_top_k_entered_documents", 0
+                        )
+                        taxonomy_boost_top_k_exited_documents += result.get(
+                            "taxonomy_boost_top_k_exited_documents", 0
+                        )
+                        taxonomy_boost_target_score_count += result.get(
+                            "taxonomy_boost_target_score_count", 0
+                        )
+                        taxonomy_boost_target_negative_score_count += result.get(
+                            "taxonomy_boost_target_negative_score_count", 0
+                        )
+                        pull_min = result.get("taxonomy_boost_target_score_min")
+                        pull_max = result.get("taxonomy_boost_target_score_max")
+                        if pull_min is not None:
+                            taxonomy_boost_target_score_min = (
+                                pull_min if taxonomy_boost_target_score_min is None
+                                else min(taxonomy_boost_target_score_min, pull_min)
+                            )
+                        if pull_max is not None:
+                            taxonomy_boost_target_score_max = (
+                                pull_max if taxonomy_boost_target_score_max is None
+                                else max(taxonomy_boost_target_score_max, pull_max)
+                            )
+                        pull_traces.append({
+                            "query": str(args.get("query", "")),
+                            "taxonomy_filter": args.get("taxonomy_filter"),
+                            "taxonomy_boost_stage": result.get("taxonomy_boost_stage"),
+                            "taxonomy_boost_rank_changed": bool(result.get(
+                                "taxonomy_boost_rank_changed", False
+                            )),
+                            "taxonomy_boost_top_k_entered_documents": result.get(
+                                "taxonomy_boost_top_k_entered_documents", 0
+                            ),
+                            "taxonomy_boost_top_k_exited_documents": result.get(
+                                "taxonomy_boost_top_k_exited_documents", 0
+                            ),
+                            "taxonomy_boost_target_score_count": result.get(
+                                "taxonomy_boost_target_score_count", 0
+                            ),
+                            "taxonomy_boosted_positive_score_documents": result.get(
+                                "taxonomy_boosted_positive_score_documents", 0
+                            ),
+                            "taxonomy_boost_target_negative_score_count": result.get(
+                                "taxonomy_boost_target_negative_score_count", 0
+                            ),
+                            "taxonomy_boost_target_score_min": pull_min,
+                            "taxonomy_boost_target_score_max": pull_max,
+                            "taxonomy_boost_rank_changes": result.get(
+                                "taxonomy_boost_rank_changes", []
+                            ),
+                        })
                         retrieved_candidates += result.get("retrieved", 0)
                         added_documents += result.get("added_to_workspace", 0)
                 elif func_name == "answer":
@@ -289,8 +365,17 @@ class DCIAgent:
                         "llm_completion_tokens": completion_tokens,
                         "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
                         "taxonomy_boost_eligible_documents": taxonomy_boost_eligible_documents,
+                        "taxonomy_boosted_positive_score_documents": taxonomy_boosted_positive_score_documents,
                         "taxonomy_boosted_returned_documents": taxonomy_boosted_returned_documents,
+                        "taxonomy_boost_rank_changed_pulls": taxonomy_boost_rank_changed_pulls,
+                        "taxonomy_boost_top_k_entered_documents": taxonomy_boost_top_k_entered_documents,
+                        "taxonomy_boost_top_k_exited_documents": taxonomy_boost_top_k_exited_documents,
+                        "taxonomy_boost_target_score_count": taxonomy_boost_target_score_count,
+                        "taxonomy_boost_target_negative_score_count": taxonomy_boost_target_negative_score_count,
+                        "taxonomy_boost_target_score_min": taxonomy_boost_target_score_min,
+                        "taxonomy_boost_target_score_max": taxonomy_boost_target_score_max,
                         "pull_queries": pull_queries,
+                        "pull_traces": pull_traces,
                         "system_fingerprints": sorted(system_fingerprints),
                     }
 
@@ -313,8 +398,17 @@ class DCIAgent:
             "llm_completion_tokens": completion_tokens,
             "taxonomy_filtered_pulls": taxonomy_filtered_pulls,
             "taxonomy_boost_eligible_documents": taxonomy_boost_eligible_documents,
+            "taxonomy_boosted_positive_score_documents": taxonomy_boosted_positive_score_documents,
             "taxonomy_boosted_returned_documents": taxonomy_boosted_returned_documents,
+            "taxonomy_boost_rank_changed_pulls": taxonomy_boost_rank_changed_pulls,
+            "taxonomy_boost_top_k_entered_documents": taxonomy_boost_top_k_entered_documents,
+            "taxonomy_boost_top_k_exited_documents": taxonomy_boost_top_k_exited_documents,
+            "taxonomy_boost_target_score_count": taxonomy_boost_target_score_count,
+            "taxonomy_boost_target_negative_score_count": taxonomy_boost_target_negative_score_count,
+            "taxonomy_boost_target_score_min": taxonomy_boost_target_score_min,
+            "taxonomy_boost_target_score_max": taxonomy_boost_target_score_max,
             "pull_queries": pull_queries,
+            "pull_traces": pull_traces,
             "system_fingerprints": sorted(system_fingerprints),
         }
 
@@ -325,6 +419,7 @@ class DCIAgent:
                 query=args["query"],
                 taxonomy_filter=taxonomy_filter,
             )
+            retriever_telemetry = getattr(results, "telemetry", {})
             eligible_ids = set()
             if taxonomy_filter and self.taxonomy_boost_data:
                 eligible_ids = {
@@ -356,9 +451,40 @@ class DCIAgent:
                 # A supplied filter is not evidence that the treatment acted.
                 # Record both the corpus population eligible for boosting and
                 # how many of those documents were returned by that pull.
-                "taxonomy_boost_eligible_documents": len(eligible_ids),
-                "taxonomy_boosted_returned_documents": sum(
-                    row["doc_id"] in eligible_ids for row in results
+                "taxonomy_boost_eligible_documents": retriever_telemetry.get(
+                    "taxonomy_boost_eligible_documents", len(eligible_ids)
+                ),
+                "taxonomy_boosted_positive_score_documents": retriever_telemetry.get(
+                    "taxonomy_boosted_positive_score_documents", 0
+                ),
+                "taxonomy_boosted_returned_documents": retriever_telemetry.get(
+                    "taxonomy_boosted_returned_documents",
+                    sum(row["doc_id"] in eligible_ids for row in results),
+                ),
+                "taxonomy_boost_stage": retriever_telemetry.get("taxonomy_boost_stage"),
+                "taxonomy_boost_rank_changed": retriever_telemetry.get(
+                    "taxonomy_boost_rank_changed", False
+                ),
+                "taxonomy_boost_top_k_entered_documents": retriever_telemetry.get(
+                    "taxonomy_boost_top_k_entered_documents", 0
+                ),
+                "taxonomy_boost_top_k_exited_documents": retriever_telemetry.get(
+                    "taxonomy_boost_top_k_exited_documents", 0
+                ),
+                "taxonomy_boost_target_score_count": retriever_telemetry.get(
+                    "taxonomy_boost_target_score_count", 0
+                ),
+                "taxonomy_boost_target_negative_score_count": retriever_telemetry.get(
+                    "taxonomy_boost_target_negative_score_count", 0
+                ),
+                "taxonomy_boost_target_score_min": retriever_telemetry.get(
+                    "taxonomy_boost_target_score_min"
+                ),
+                "taxonomy_boost_target_score_max": retriever_telemetry.get(
+                    "taxonomy_boost_target_score_max"
+                ),
+                "taxonomy_boost_rank_changes": retriever_telemetry.get(
+                    "taxonomy_boost_rank_changes", []
                 ),
                 "pull_executed": True,
             }

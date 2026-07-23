@@ -1,7 +1,7 @@
 # Part 1·2 설계 인수인계
 
 기준일: 2026-07-23  
-기준 코드: `feature_ralph`의 `99c8ffe8c88b12c1532881e9546685681ca095ff`
+기준 코드: `feature_ralph`; 실행 시점의 정확한 commit은 결과 manifest의 `git_commit`을 사용한다.
 
 ## 1. 이 문서의 목적
 
@@ -17,7 +17,7 @@
 ### 범위
 
 - Part 1: `baseline` 대 `taxonomy_only` 한 쌍만 비교한다.
-- Part 2: retrieval-only scale probe를 먼저 검증하고, 이후 동일 두 arm을 20K·50K·110K에서 비교한다.
+- Part 2: 공통 dense retrieval-only scale probe를 먼저 검증하고, 이후 동일 두 agent arm을 20K·50K·110K에서 비교한다.
 - 기존 pull backend 비교와 Part 3·4·5 결과는 보존하고 확장하지 않는다.
 
 ### 범위 밖
@@ -32,7 +32,7 @@
 
 | 항목 | 확인 결과 | 설계상 의미 |
 |---|---|---|
-| Git | 현재 작업 브랜치는 `feature_ralph`, 기준 커밋은 `99c8ffe` | 새 작업 브랜치를 만들지 않는다. 현재 로컬은 origin보다 1 commit 앞서 있으며 push하지 않았다. |
+| Git | 현재 작업 브랜치는 `feature_ralph` | 새 작업 브랜치를 만들지 않는다. ahead/behind 값은 변하므로 실행 manifest와 `git status --short --branch`로 확인한다. |
 | 통합 PR | PR #2는 open, `feature_ralph_noah_integration` → `dev`, head `e83d044` | 해당 PR을 병합하거나 기준 브랜치를 바꾸지 않는다. |
 | Part 1 기존 arm | `taxonomy_only`와 `stack_tax`의 treatment 설정이 동일 | 두 arm을 독립적인 비교로 사용하지 않는다. |
 | Part 1 기존 작동점 | taxonomy schema prompt, score boost, workspace taxonomy 탐색이 함께 바뀌었다 | 기존 향상 수치를 taxonomy 단일 효과로 귀속할 수 없다. |
@@ -57,7 +57,7 @@
 
 ### 단일 가설
 
-**H1: taxonomy와 일치하는 문서에 대한 soft score boost가 baseline보다 질의별 workspace gold recall을 높인다.**
+**H1: taxonomy와 일치하는 문서에 대한 soft score boost가 baseline보다 질의별 workspace document gold recall을 높인다.**
 
 | 조건 | Control | Treatment |
 |---|---|---|
@@ -70,32 +70,29 @@
 
 ### 평가와 판정
 
-- 주 지표: 질의별 workspace chunk gold recall의 `treatment - control`, paired bootstrap 95% CI
-- 합의 지표: chunk Recall@5/20, Hit@5/10
-- 보조 지표: nDCG@10, P@20, multi-gold macro recall, answer accuracy, judge 유효 분모
-- 운영 지표: latency, pull 수, token, workspace 문서 수, 실패·제외 질의 수
-- 작동점 telemetry: boost eligible corpus documents, boost eligible returned documents, actual pull query trace
-- CI 전체가 0보다 크면 긍정 신호 후보, 0을 포함하면 불확실, 0보다 작으면 taxonomy 확대를 중단한다.
+- TREC agent workspace 주 지표: 질의별 **workspace document gold recall**의 `treatment - control`, paired bootstrap 95% CI
+- TREC agent 운영 지표: pull 수, latency, token, workspace 문서 수, 실패·제외 질의 수
+- 답변 지표: 유효한 judge 분모에서의 accuracy와 judge error 수
+- retrieval-only 공통 dense probe: document Recall@5/20, document Hit@5/10, nDCG@10, P@20, latency
+- 신한 전이 평가: chunk Recall@5/20·chunk Hit@5/10은 DocNav chunk/qrel이 제공된 뒤 별도 계약으로 구현한다. TREC corpus-id 문서 지표와 혼용하지 않는다.
+- 작동점 telemetry: 각 실제 pull의 boost eligible/positive-score document 수, dense-stage 전후 rank, Top-K 진입·이탈, target cosine의 최소·최대·음수 비율, bounded pull trace
+- 최소 실질 효과 크기: macro workspace document gold recall **0.01**. CI 하한이 0.01보다 클 때만 긍정 신호로 분류하고, CI 상한이 −0.01보다 작으면 부정 신호로 분류한다. 그 밖은 불확실이다.
 
 한 실행의 CI는 질의 간 차이만 반영한다. 긍정 신호가 있어도 비용 승인 전에는 반복 횟수나 새 treatment를 늘리지 않는다.
 
 ## 6. 확정된 Part 2 실험 계약
 
-### 6.1 retrieval-only probe 우선
+### 6.1 공통 dense retrieval-only probe 우선
 
-동일 query·dense model·retrieval parameter에서 nested 20K/50K/110K corpus만 바꾼다. 주 지표는 graded nDCG@10과 P@20이고, Recall@5/20·Hit@5/10·latency는 보조로 기록한다. 모든 scale 쌍은 같은 query ID를 맞춘 paired bootstrap CI를 기록한다.
+동일 query·dense model·retrieval parameter에서 nested 20K/50K/110K corpus만 바꾼다. 이 probe는 taxonomy arm이 없는 공통 baseline이다. 주 지표는 document graded nDCG@10과 document P@20이고, document Recall@5/20·document Hit@5/10·latency는 보조로 기록한다. 주 scale 비교는 **110K−20K**로 고정하고, 20K−50K·50K−110K는 탐색 결과로 분류한다.
 
 이 probe는 검색단 성능 저하를 국소화할 뿐, agent 성능 저하의 원인을 확정하지 않는다. 기존 H200 수치가 문서에 있더라도 raw JSON과 manifest를 회수해 validator를 통과하기 전에는 미검증 historical observation이다.
 
-### 6.2 agent 단계
+### 6.2 arm별 agent 단계
 
-Part 1의 두 arm을 각 scale에 적용한다. 각 arm·scale에서 다음을 분리한다.
+Part 1의 두 arm을 각 scale에 적용한다. 이 단계는 arm별 **dynamic multi-pull agent**와 **single-pull static workspace**만 비교한다. 공통 dense probe를 taxonomy arm의 retrieval-only 결과로 표현하지 않는다.
 
-1. retrieval-only original-query 결과
-2. dynamic multi-pull agent 결과
-3. single-pull static workspace 결과
-
-보고할 비교는 각 arm의 scale 간 paired delta와 같은 arm·scale의 `dynamic multi-pull - single-pull` paired delta다. query rewrite의 영향은 `pull_queries` 원시 trace와 original-query probe를 함께 보며, 이 둘을 동일한 수치로 혼합하지 않는다.
+주 scale 비교는 각 arm의 **110K−20K workspace document gold recall** paired delta다. 20K−50K·50K−110K, scale별 taxonomy−baseline, 같은 arm·scale의 `dynamic multi-pull - single-pull`은 탐색 비교다. query rewrite의 영향은 agent `pull_traces`와 공통 original-query dense probe를 나란히 보되, 이 둘로 taxonomy 인과 효과를 계산하지 않는다. Part 1 screening과 Part 2는 같은 50 query를 쓰므로 Part 2를 독립 재현으로 표현하지 않는다.
 
 공유 문서의 taxonomy 값은 scale마다 같아야 한다. 110K 정본을 만든 뒤 50K·20K를 필터링해 파생하는 방식을 우선하며, 별도 생성 artifact를 쓰면 공유 문서 값의 hash/동일성 검사를 통과해야 한다.
 
@@ -106,6 +103,7 @@ Part 1의 두 arm을 각 scale에 적용한다. 각 arm·scale에서 다음을 �
 - model-backed Part 1·2 실행 전 corpus/query/qrels의 immutable source revision을 검사한다.
 - Part 1 focused arm은 prompt schema를 고정하고 workspace taxonomy 탐색을 양쪽에서 끈다.
 - single-pull은 실제 첫 pull만 실행하고 attempted pull과 실제 pull을 분리해 기록한다.
+- taxonomy boost는 양수 cosine에만 적용한다. dense-stage 전후 rank, Top-K 진입·이탈, score 분포와 bounded pull trace를 보존한다.
 - 결과 manifest는 dataset/subset counts, 원본·subset SHA-256, config hash, 코드 commit, seed, model/instruction/control, 실행 환경을 보존한다.
 - scale result validator는 raw per-query rows, provenance, metric, paired CI 계약이 빠지면 실패한다.
 - H200 전송은 git pull이 아닌 code/config/manifest bundle만 사용하며 data, key, cache, result를 넣지 않는다.
@@ -116,21 +114,27 @@ Part 1의 두 arm을 각 scale에 적용한다. 각 arm·scale에서 다음을 �
 
 - 기존 Part 1 수치의 상승은 prompt·boost·workspace 탐색이 혼재돼 있어 taxonomy 단일 효과가 아니다.
 - historical scale 수치는 삭제하지 않되 raw result 부재 상태에서는 재현된 증거가 아니다.
-- TREC-COVID는 질의당 gold가 많아 Hit@5/10이 포화될 수 있다. Hit를 주 결론으로 쓰지 않는다.
+- TREC-COVID qrel과 현재 코드는 `corpus-id`, 즉 문서 ID 단위다. `workspace_docs`도 문서 ID이므로 모든 현재 TREC endpoint를 document 단위로 표기한다.
+- TREC-COVID는 질의당 gold가 많아 document Hit@5/10이 포화될 수 있다. Hit를 주 결론으로 쓰지 않는다.
 - 20K에서 gold를 전부 포함한 scale 구성은 운영 corpus의 무작위 확장을 뜻하지 않는다. 검색기 순도 희석을 통제한 probe일 뿐이다.
 - DR-DCI의 controlled distractor scaling 원칙은 차용하되 Peter 구현을 논문의 공식 재현으로 표현하지 않는다.
 - 최종 근거는 원문 section과 좌표이며, taxonomy·관계·트리는 navigation 보조 신호다.
 
 ## 9. 실행 전 필요한 외부 입력
 
-다음 중 하나라도 없으면 새 model-backed 결과를 만들지 않는다.
+### 신규 TREC focused 실행의 필수 입력
 
 1. `BeIR/trec-covid` corpus/query 및 `BeIR/trec-covid-qrels` test의 immutable revision, subset, split, row count가 든 acquisition manifest
-2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash
-3. 가능하면 110K 정본 taxonomy artifact와 20K/50K 파생 규칙
-4. Part 1~4 및 2026-07-22 scale probe의 원시 result JSON과 당시 코드 commit/config
-5. 지정된 신한 PDF 파일 또는 정확한 접근 경로
-6. H200/외부 모델 실행에 대한 명시적 승인
+2. Peter가 사용한 20K taxonomy artifact와 생성 model, prompt, source revision, artifact hash. Part 2에는 110K 정본과 20K/50K 파생 규칙도 필요하다.
+3. H200/외부 모델 실행에 대한 명시적 승인
+
+### 과거 결과 재해석에만 필요한 입력
+
+- Part 1~4 및 2026-07-22 scale probe의 원시 result JSON과 당시 코드 commit/config
+
+### 신한 전이 검증에만 필요한 입력
+
+- 지정된 신한 PDF 파일 또는 정확한 접근 경로, 그리고 DocNav chunk/qrel 계약
 
 ## 10. 재현과 인수 기준
 
@@ -154,9 +158,9 @@ bash scripts/package_part12_h200_bundle.sh /private/tmp/dr-dci-part12.tar.gz
 4. paired 결과와 telemetry를 검토해 H1의 방향만 판정한다.
 5. 긍정 신호가 있어도 별도 승인 전에는 Part 2 확대나 반복 실행을 시작하지 않는다.
 
-## 11. 설계 검토에서 내려야 할 결정
+## 11. 설계 검토에서 확인할 결정
 
-- immutable revision과 artifact provenance를 확보한 뒤에도 H1의 score boost를 유지할지
+- H1의 최소 실질 효과 크기 0.01 macro workspace document gold recall을 실행 전에 확정할지. 변경하면 config와 근거를 commit으로 남긴다.
 - Part 1 screening의 최소 유효 질의 수와 실패 query 처리 규칙을 실행 전에 확정할지
 - Part 1 양성 신호에 필요한 반복 실행 수와 비용 상한을 별도 승인 항목으로 둘지
 - raw historical result가 회수되지 않을 경우, 기존 수치를 참고 부록으로만 남길지

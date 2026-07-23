@@ -27,6 +27,31 @@ class StaticPullRetriever:
         ]
 
 
+class TelemetryPullRetriever:
+    def pull(self, query, taxonomy_filter=None):
+        from src.agent.retriever import PullResult
+
+        return PullResult(
+            [{"doc_id": "d1", "score": 1.0}],
+            {
+                "taxonomy_boost_eligible_documents": 1,
+                "taxonomy_boosted_positive_score_documents": 1,
+                "taxonomy_boosted_returned_documents": 1,
+                "taxonomy_boost_rank_changed": True,
+                "taxonomy_boost_top_k_entered_documents": 1,
+                "taxonomy_boost_top_k_exited_documents": 1,
+                "taxonomy_boost_target_score_count": 1,
+                "taxonomy_boost_target_negative_score_count": 0,
+                "taxonomy_boost_target_score_min": 0.4,
+                "taxonomy_boost_target_score_max": 0.4,
+                "taxonomy_boost_rank_changes": [{
+                    "doc_id": "d1", "rank_before": 2, "rank_after": 1,
+                    "score_before": 0.4, "score_after": 0.6,
+                }],
+            },
+        )
+
+
 class ExperimentContractTests(unittest.TestCase):
     def test_judge_does_not_match_incorrect_as_correct(self):
         self.assertEqual(Judge.parse_judgment("correct"), "correct")
@@ -90,6 +115,45 @@ class ExperimentContractTests(unittest.TestCase):
         results = hybrid.pull("ZXQ991")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["doc_id"], "lexical")
+
+    def test_taxonomy_boost_only_increases_positive_scores_and_reports_rank_effect(self):
+        retriever = StaticEmbeddingRetriever(
+            RetrieverConfig("unused", "model", top_k=1, backend="dense", taxonomy_boost=1.5),
+            query_embedding=[1.0, 0.0],
+        )
+        retriever.doc_ids = ["boosted", "plain", "negative"]
+        retriever.embedding_matrix = np.asarray([
+            [0.4, np.sqrt(1 - 0.4 ** 2)],
+            [0.5, np.sqrt(1 - 0.5 ** 2)],
+            [-0.2, np.sqrt(1 - 0.2 ** 2)],
+        ])
+        retriever.doc_taxonomy = {
+            "boosted": {"L1": "Treatment"},
+            "negative": {"L1": "Treatment"},
+        }
+
+        results = retriever.pull("query", taxonomy_filter={"L1": "Treatment"})
+
+        self.assertEqual([row["doc_id"] for row in results], ["boosted"])
+        telemetry = results.telemetry
+        self.assertEqual(telemetry["taxonomy_boost_target_score_count"], 2)
+        self.assertEqual(telemetry["taxonomy_boost_target_negative_score_count"], 1)
+        self.assertEqual(telemetry["taxonomy_boosted_positive_score_documents"], 1)
+        self.assertEqual(telemetry["taxonomy_boost_target_score_min"], -0.2)
+        self.assertEqual(telemetry["taxonomy_boost_target_score_max"], 0.4)
+        self.assertEqual(telemetry["taxonomy_boost_top_k_entered_documents"], 1)
+        self.assertEqual(telemetry["taxonomy_boost_top_k_exited_documents"], 1)
+        self.assertTrue(telemetry["taxonomy_boost_rank_changed"])
+        self.assertEqual(telemetry["taxonomy_boost_rank_changes"], [
+            {
+                "doc_id": "boosted", "rank_before": 2, "rank_after": 1,
+                "score_before": 0.4, "score_after": 0.6,
+            },
+            {
+                "doc_id": "plain", "rank_before": 1, "rank_after": 2,
+                "score_before": 0.5, "score_after": 0.5,
+            },
+        ])
 
     def test_workspace_limit_is_applied_by_agent(self):
         corpus = {
@@ -169,6 +233,51 @@ class ExperimentContractTests(unittest.TestCase):
         self.assertEqual(result["taxonomy_filtered_pulls"], 1)
         self.assertEqual(result["taxonomy_boost_eligible_documents"], 1)
         self.assertEqual(result["taxonomy_boosted_returned_documents"], 1)
+
+    def test_agent_keeps_rank_effect_trace_for_each_executed_pull(self):
+        import json as _json
+
+        agent = DCIAgent(
+            llm_url="unused",
+            model_name="unused",
+            retriever=TelemetryPullRetriever(),
+            corpus={"d1": {"title": "one", "text": "first"}},
+            taxonomy_data={"d1": {"L1": "Treatment"}},
+            max_turns=2,
+        )
+        responses = iter([
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-1",
+                    "function": {
+                        "name": "pull",
+                        "arguments": _json.dumps({
+                            "query": "test", "taxonomy_filter": {"L1": "Treatment"},
+                        }),
+                    },
+                }],
+            },
+            {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call-2",
+                    "function": {"name": "answer", "arguments": '{"text": "done"}'},
+                }],
+            },
+        ])
+        agent._call_llm = lambda messages: next(responses)
+
+        result = agent.run("question")
+
+        self.assertEqual(result["taxonomy_boost_rank_changed_pulls"], 1)
+        self.assertEqual(result["taxonomy_boosted_positive_score_documents"], 1)
+        self.assertEqual(result["taxonomy_boost_top_k_entered_documents"], 1)
+        self.assertEqual(result["taxonomy_boost_target_negative_score_count"], 0)
+        self.assertEqual(result["pull_traces"][0]["taxonomy_boost_rank_changes"], [{
+            "doc_id": "d1", "rank_before": 2, "rank_after": 1,
+            "score_before": 0.4, "score_after": 0.6,
+        }])
 
     def test_single_pull_ablation_keeps_only_the_first_agent_query(self):
         import json as _json

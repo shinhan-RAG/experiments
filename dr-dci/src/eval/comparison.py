@@ -65,7 +65,13 @@ RESULT_METRIC_KEYS = (
     "pull_count",
     "taxonomy_filtered_pulls",
     "taxonomy_boost_eligible_documents",
+    "taxonomy_boosted_positive_score_documents",
     "taxonomy_boosted_returned_documents",
+    "taxonomy_boost_rank_changed_pulls",
+    "taxonomy_boost_top_k_entered_documents",
+    "taxonomy_boost_top_k_exited_documents",
+    "taxonomy_boost_target_score_count",
+    "taxonomy_boost_target_negative_score_count",
     "latency_seconds",
     "llm_prompt_tokens",
     "llm_completion_tokens",
@@ -94,6 +100,21 @@ def compare_probe_rows(
             seed=seed,
         )
     return out
+
+
+def classify_practical_effect(
+    paired_metric: dict,
+    *,
+    minimum_effect_size: float,
+) -> str:
+    """Classify a prespecified paired CI against a practical-effect threshold."""
+    if minimum_effect_size < 0:
+        raise ValueError("minimum_effect_size must be non-negative")
+    if paired_metric["ci95_low"] > minimum_effect_size:
+        return "positive_practical_signal"
+    if paired_metric["ci95_high"] < -minimum_effect_size:
+        return "negative_practical_signal"
+    return "inconclusive"
 
 
 def compare_result_rows(

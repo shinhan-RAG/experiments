@@ -69,7 +69,7 @@ class Judge:
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
-        """Gold R@W = |Workspace ∩ gold_docs| / |gold_docs|"""
+        """Document Gold R@W = |workspace document IDs ∩ gold document IDs| / |gold document IDs|."""
         if not gold_doc_ids:
             return 0.0
         intersection = set(workspace_docs) & set(gold_doc_ids)
@@ -111,9 +111,35 @@ def compute_metrics(results: list[dict]) -> dict:
     avg_taxonomy_eligible = sum(
         r.get("taxonomy_boost_eligible_documents", 0) for r in results
     ) / n
+    avg_taxonomy_positive_score = sum(
+        r.get("taxonomy_boosted_positive_score_documents", 0) for r in results
+    ) / n
     avg_taxonomy_returned = sum(
         r.get("taxonomy_boosted_returned_documents", 0) for r in results
     ) / n
+    avg_taxonomy_rank_changed_pulls = sum(
+        r.get("taxonomy_boost_rank_changed_pulls", 0) for r in results
+    ) / n
+    avg_taxonomy_entered = sum(
+        r.get("taxonomy_boost_top_k_entered_documents", 0) for r in results
+    ) / n
+    avg_taxonomy_exited = sum(
+        r.get("taxonomy_boost_top_k_exited_documents", 0) for r in results
+    ) / n
+    taxonomy_target_score_count = sum(
+        r.get("taxonomy_boost_target_score_count", 0) for r in results
+    )
+    taxonomy_negative_score_count = sum(
+        r.get("taxonomy_boost_target_negative_score_count", 0) for r in results
+    )
+    taxonomy_target_score_mins = [
+        r["taxonomy_boost_target_score_min"] for r in results
+        if r.get("taxonomy_boost_target_score_min") is not None
+    ]
+    taxonomy_target_score_maxes = [
+        r["taxonomy_boost_target_score_max"] for r in results
+        if r.get("taxonomy_boost_target_score_max") is not None
+    ]
     avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
     avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
     avg_turns = sum(r.get("turns", 0) for r in results) / n
@@ -135,7 +161,24 @@ def compute_metrics(results: list[dict]) -> dict:
         "avg_pulls": round(avg_pulls, 2),
         "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
         "avg_taxonomy_boost_eligible_documents": round(avg_taxonomy_eligible, 2),
+        "avg_taxonomy_boosted_positive_score_documents": round(
+            avg_taxonomy_positive_score, 2
+        ),
         "avg_taxonomy_boosted_returned_documents": round(avg_taxonomy_returned, 2),
+        "avg_taxonomy_boost_rank_changed_pulls": round(
+            avg_taxonomy_rank_changed_pulls, 2
+        ),
+        "avg_taxonomy_boost_top_k_entered_documents": round(avg_taxonomy_entered, 2),
+        "avg_taxonomy_boost_top_k_exited_documents": round(avg_taxonomy_exited, 2),
+        "taxonomy_boost_target_score_count": taxonomy_target_score_count,
+        "taxonomy_boost_target_negative_score_count": taxonomy_negative_score_count,
+        "taxonomy_boost_target_negative_score_rate": round(
+            taxonomy_negative_score_count / taxonomy_target_score_count, 4
+        ) if taxonomy_target_score_count else None,
+        "taxonomy_boost_target_score_min": min(taxonomy_target_score_mins)
+        if taxonomy_target_score_mins else None,
+        "taxonomy_boost_target_score_max": max(taxonomy_target_score_maxes)
+        if taxonomy_target_score_maxes else None,
         "avg_retrieved_candidates": round(avg_candidates, 2),
         "avg_workspace_docs": round(avg_workspace_docs, 2),
         "avg_turns": round(avg_turns, 2),

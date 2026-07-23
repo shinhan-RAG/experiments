@@ -80,6 +80,9 @@ parts:
   part1_stacking:
     dataset: "trec-covid"
     subset: 20000
+    # Absolute macro workspace-document recall delta required for a positive
+    # focused-screening signal; statistical significance alone is insufficient.
+    minimum_practical_effect_size: 0.01
     steps:
       # Baseline
       - name: "baseline"
@@ -167,5 +170,7 @@ parts:
 
 # Evaluation
 evaluation:
-  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  # Current TREC-COVID endpoints are document-ID based. Shinhan chunk metrics
+  # require a separate DocNav chunk/qrel evaluation contract.
+  metrics: ["accuracy", "workspace_document_gold_recall", "efficiency", "degradation_rate"]
   judge_prompt_path: "config/judge_prompt.txt"

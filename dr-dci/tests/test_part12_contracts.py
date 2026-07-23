@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import run_experiment
-from src.eval.comparison import compare_result_rows
+from src.eval.comparison import classify_practical_effect, compare_result_rows
 from src.eval.part12_contracts import (
     audit_part12,
     duplicate_arms,
@@ -174,6 +174,22 @@ class Part12ContractTests(unittest.TestCase):
         self.assertEqual(report["pull_count"]["mean_delta"], 1.0)
         self.assertEqual(report["accuracy"]["mean_delta"], 1.0)
 
+    def test_practical_effect_rule_requires_more_than_a_ci_above_zero(self):
+        self.assertEqual(
+            classify_practical_effect(
+                {"ci95_low": 0.001, "ci95_high": 0.003},
+                minimum_effect_size=0.01,
+            ),
+            "inconclusive",
+        )
+        self.assertEqual(
+            classify_practical_effect(
+                {"ci95_low": 0.011, "ci95_high": 0.020},
+                minimum_effect_size=0.01,
+            ),
+            "positive_practical_signal",
+        )
+
     def test_focused_part1_preflight_runs_before_embedding(self):
         with tempfile.TemporaryDirectory() as directory:
             data = Path(directory)
@@ -234,7 +250,7 @@ class Part12ContractTests(unittest.TestCase):
             "parts": {
                 "part2_scaling": {
                     "dataset": "fixture",
-                    "subsets": [1000, 2000],
+                    "subsets": [1000, 2000, 3000],
                     "include_single_pull": True,
                 },
             },
@@ -258,9 +274,10 @@ class Part12ContractTests(unittest.TestCase):
                 patch.object(run_experiment, "save_results", side_effect=lambda *args, **kwargs: saved.update(kwargs)):
             run_experiment.run_part2(config, focused=True)
 
-        self.assertEqual(run_agent.call_count, 8)  # 2 arms × 2 scales × (dynamic + single)
+        self.assertEqual(run_agent.call_count, 12)  # 2 arms × 3 scales × (dynamic + single)
         self.assertEqual(saved["analysis"]["dynamic_minus_single_baseline_1k"]["gold_recall"]["mean_delta"], 0.2)
         self.assertEqual(saved["analysis"]["dynamic_minus_single_taxonomy_only_2k"]["pull_count"]["mean_delta"], 1.0)
+        self.assertIn("baseline_3k_minus_2k", saved["analysis"])
         self.assertTrue(saved["manifest"]["include_single_pull"])
 
 

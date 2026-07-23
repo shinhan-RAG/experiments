@@ -30,6 +30,19 @@ class RetrieverConfig:
     api_key: str = None            # OpenAI 호환 원격 endpoint용(로컬 vLLM은 불요)
 
 
+class PullResult(list):
+    """Ranked pull candidates with bounded, per-pull treatment telemetry.
+
+    It remains a list so existing callers can iterate over candidates unchanged.
+    The telemetry describes the dense-score stage, before optional RRF fusion or
+    reranking, where taxonomy soft boosting is applied.
+    """
+
+    def __init__(self, candidates: list[dict], telemetry: dict):
+        super().__init__(candidates)
+        self.telemetry = telemetry
+
+
 class PullRetriever:
     def __init__(self, config: RetrieverConfig):
         self.config = config
@@ -101,26 +114,86 @@ class PullRetriever:
         for i, did in enumerate(doc_ids):
             self.doc_embeddings[did] = emb_matrix[i]
 
-    def pull(self, query: str, taxonomy_filter: dict = None) -> list[dict]:
+    def pull(self, query: str, taxonomy_filter: dict = None) -> PullResult:
         """Pull action: vectorized cosine similarity + taxonomy soft boost."""
         query_emb = self._embed_batch([query])[0]
 
         # 벡터화 cosine similarity (행렬 연산)
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
-        sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
+        raw_sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
+        sims = raw_sims.copy()
 
-        # taxonomy soft boost
+        eligible_indices = np.asarray([], dtype=int)
         if taxonomy_filter and self.doc_taxonomy:
-            for i, did in enumerate(self.doc_ids):
-                tax = self.doc_taxonomy.get(did, {})
-                if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
-                    sims[i] *= self.config.taxonomy_boost
+            eligible_indices = np.asarray([
+                i for i, did in enumerate(self.doc_ids)
+                if isinstance(self.doc_taxonomy.get(did), dict)
+                and all(self.doc_taxonomy[did].get(key) == value
+                        for key, value in taxonomy_filter.items())
+            ], dtype=int)
 
-        # Dense candidates are always built so the hybrid arm changes only the backend.
+        # Multiplying a negative cosine by a factor above one is a penalty, not
+        # a boost.  Keep non-positive target scores unchanged and report their
+        # prevalence so the treatment's operating population is observable.
+        positive_eligible_indices = eligible_indices[raw_sims[eligible_indices] > 0]
+        if len(positive_eligible_indices):
+            sims[positive_eligible_indices] *= self.config.taxonomy_boost
+
         candidate_k = self.config.top_k * 4 if self.config.reranker_url else self.config.top_k
         dense_k = max(candidate_k, self.config.bm25_top_k)
-        top_indices = np.argsort(-sims, kind="stable")[:dense_k]
+        baseline_order = np.argsort(-raw_sims, kind="stable")
+        boosted_order = np.argsort(-sims, kind="stable")
+        baseline_ranks = {int(index): rank + 1 for rank, index in enumerate(baseline_order)}
+        boosted_ranks = {int(index): rank + 1 for rank, index in enumerate(boosted_order)}
+        baseline_top_k = set(int(index) for index in baseline_order[:self.config.top_k])
+        boosted_top_k = set(int(index) for index in boosted_order[:self.config.top_k])
+
+        # Keep rank traces bounded to the union of candidate-stage documents.
+        # The top-k admission/ejection counts always refer to the dense stage
+        # because that is the point where the taxonomy score is modified.
+        trace_indices = set(int(index) for index in baseline_order[:dense_k])
+        trace_indices.update(int(index) for index in boosted_order[:dense_k])
+        rank_changes = [
+            {
+                "doc_id": self.doc_ids[index],
+                "rank_before": baseline_ranks[index],
+                "rank_after": boosted_ranks[index],
+                "score_before": round(float(raw_sims[index]), 6),
+                "score_after": round(float(sims[index]), 6),
+            }
+            for index in sorted(trace_indices, key=lambda index: boosted_ranks[index])
+            if baseline_ranks[index] != boosted_ranks[index]
+        ]
+        target_scores = raw_sims[eligible_indices]
+        negative_target_scores = target_scores[target_scores < 0]
+        telemetry = {
+            "taxonomy_boost_stage": "dense_pre_backend_and_rerank",
+            "taxonomy_boost_eligible_documents": int(len(eligible_indices)),
+            "taxonomy_boosted_positive_score_documents": int(len(positive_eligible_indices)),
+            "taxonomy_boosted_returned_documents": int(
+                sum(index in boosted_top_k for index in eligible_indices)
+            ),
+            "taxonomy_boost_rank_changed": bool(rank_changes),
+            "taxonomy_boost_top_k_entered_documents": int(
+                len(boosted_top_k - baseline_top_k)
+            ),
+            "taxonomy_boost_top_k_exited_documents": int(
+                len(baseline_top_k - boosted_top_k)
+            ),
+            "taxonomy_boost_target_score_count": int(len(target_scores)),
+            "taxonomy_boost_target_negative_score_count": int(len(negative_target_scores)),
+            "taxonomy_boost_target_score_min": (
+                round(float(target_scores.min()), 6) if len(target_scores) else None
+            ),
+            "taxonomy_boost_target_score_max": (
+                round(float(target_scores.max()), 6) if len(target_scores) else None
+            ),
+            "taxonomy_boost_rank_changes": rank_changes,
+        }
+
+        # Dense candidates are always built so the hybrid arm changes only the backend.
+        top_indices = boosted_order[:dense_k]
         dense_candidates = [
             {"doc_id": self.doc_ids[i], "score": float(sims[i])}
             for i in top_indices
@@ -139,7 +212,7 @@ class PullRetriever:
         if self.config.reranker_url:
             candidates = self._rerank(query, candidates)
 
-        return candidates[:self.config.top_k]
+        return PullResult(candidates[:self.config.top_k], telemetry)
 
     def _rerank(self, query: str, candidates: list[dict]) -> list[dict]:
         docs = [self.doc_raw_texts.get(c["doc_id"], "") for c in candidates]
