@@ -12,6 +12,7 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import gzip
 import hashlib
+import heapq
 import json
 import os
 from pathlib import Path
@@ -27,6 +28,7 @@ NORMALIZATION_VERSION = "miracl-ko-nfc-v1"
 SCALE_VERSION = "miracl-ko-scale-v1"
 SCALE_SIZES = (20_000, 50_000, 110_000)
 RETRIEVAL_UNIT = "passage"
+REVISION_LOCK_SCHEMA_VERSION = "dr-dci.miracl-ko-revision-lock.v1"
 NORMALIZED_SCHEMA = {
     "corpus": {
         "corpus_id": "article_id#passage_index (preserved MIRACL docid)",
@@ -104,6 +106,71 @@ def file_record(path: Path, *, relative_to: Path | None = None) -> dict[str, Any
     }
 
 
+def _manifest_file_path(data_dir: Path, relative_path: Any) -> Path:
+    if not isinstance(relative_path, str) or not relative_path:
+        raise ValueError("manifest file record has invalid relative_path")
+    root = data_dir.resolve()
+    candidate = (root / relative_path).resolve()
+    if not candidate.is_relative_to(root):
+        raise ValueError("manifest file record escapes data directory")
+    return candidate
+
+
+def _validate_file_record(record: dict[str, Any], *, data_dir: Path, label: str) -> None:
+    for key in ("relative_path", "byte_size", "sha256"):
+        if key not in record:
+            raise ValueError(f"{label} record missing {key}")
+    path = _manifest_file_path(data_dir, record["relative_path"])
+    if not path.is_file():
+        raise ValueError(f"{label} file is missing: {record['relative_path']}")
+    if path.stat().st_size != int(record["byte_size"]):
+        raise ValueError(f"{label} byte_size does not match manifest: {record['relative_path']}")
+    if sha256_file(path) != record["sha256"]:
+        raise ValueError(f"{label} sha256 does not match manifest: {record['relative_path']}")
+
+
+def validate_revision_lock(lock: dict[str, Any]) -> None:
+    if lock.get("schema_version") != REVISION_LOCK_SCHEMA_VERSION:
+        raise ValueError("MIRACL revision lock has unsupported schema_version")
+    if lock.get("dataset") != "MIRACL" or lock.get("language") != "ko":
+        raise ValueError("MIRACL revision lock must identify MIRACL Korean")
+    if not isinstance(lock.get("change_control"), str) or not lock["change_control"]:
+        raise ValueError("MIRACL revision lock is missing change_control")
+    approval = lock.get("approval_record")
+    if not isinstance(approval, dict) or not all(
+        isinstance(approval.get(key), str) and approval[key]
+        for key in ("status", "reviewed_at", "evidence", "scope")
+    ):
+        raise ValueError("MIRACL revision lock is missing an approval_record")
+    expected_repositories = {
+        "topics_qrels": TOPICS_QRELS_REPO,
+        "corpus": CORPUS_REPO,
+    }
+    sources = lock.get("sources")
+    if not isinstance(sources, dict) or set(sources) != set(expected_repositories):
+        raise ValueError("MIRACL revision lock must contain topics_qrels and corpus sources")
+    for key, repository in expected_repositories.items():
+        source = sources[key]
+        if not isinstance(source, dict) or source.get("repository") != repository:
+            raise ValueError(f"MIRACL revision lock has unexpected repository for {key}")
+        revision = source.get("revision")
+        if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+            raise ValueError(f"MIRACL revision lock has invalid revision for {key}")
+
+
+def load_revision_lock(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        raise FileNotFoundError(f"MIRACL revision lock is missing: {path}")
+    try:
+        lock = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise ValueError(f"MIRACL revision lock is invalid JSON: {path}") from error
+    if not isinstance(lock, dict):
+        raise ValueError("MIRACL revision lock must be a JSON object")
+    validate_revision_lock(lock)
+    return lock
+
+
 def normalized_text(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("MIRACL text fields must be strings")
@@ -135,6 +202,11 @@ def positive_passage_ids(qrels: Iterable[dict[str, Any]]) -> set[str]:
     }
 
 
+def judged_passage_ids(qrels: Iterable[dict[str, Any]]) -> set[str]:
+    """All qrel-referenced passage IDs, irrespective of relevance grade."""
+    return {str(row["corpus_id"]) for row in qrels}
+
+
 def scale_rank(corpus_id: str) -> tuple[bytes, str]:
     digest = hashlib.sha256(
         SCALE_VERSION.encode("utf-8") + b"\0" + corpus_id.encode("utf-8")
@@ -143,26 +215,95 @@ def scale_rank(corpus_id: str) -> tuple[bytes, str]:
 
 
 def build_nested_subset_ids(
-    corpus_ids: set[str], positive_ids: set[str], *, sizes: tuple[int, ...] = SCALE_SIZES
+    corpus_ids: set[str], mandatory_ids: set[str], *, sizes: tuple[int, ...] = SCALE_SIZES
 ) -> dict[int, list[str]]:
     if tuple(sorted(sizes)) != tuple(sizes) or not sizes:
         raise ValueError("scale sizes must be a non-empty ascending tuple")
-    if len(positive_ids) > sizes[0]:
-        raise ValueError(f"M+ has {len(positive_ids):,} passages and cannot fit in {sizes[0]:,}")
-    missing = sorted(positive_ids - corpus_ids)
+    if len(mandatory_ids) > sizes[0]:
+        raise ValueError(
+            f"mandatory judged set has {len(mandatory_ids):,} passages and cannot fit in {sizes[0]:,}"
+        )
+    missing = sorted(mandatory_ids - corpus_ids)
     if missing:
-        raise ValueError(f"positive qrel references {len(missing)} orphan passage IDs")
+        raise ValueError(f"mandatory judged set references {len(missing)} orphan passage IDs")
     if len(corpus_ids) < sizes[-1]:
         raise ValueError(
             f"corpus has {len(corpus_ids):,} passages; {sizes[-1]:,} passages are required"
         )
 
-    mandatory = sorted(positive_ids, key=scale_rank)
-    distractors = sorted(corpus_ids - positive_ids, key=scale_rank)
-    canonical = mandatory + distractors[:sizes[-1] - len(mandatory)]
-    if len(canonical) != sizes[-1]:
+    distractor_count = sizes[-1] - len(mandatory_ids)
+    # Keep only the required lowest-ranked distractors.  A full 1.48M-item
+    # sort is unnecessary and can distort the preparation environment.
+    distractors = heapq.nsmallest(
+        distractor_count,
+        (corpus_id for corpus_id in corpus_ids if corpus_id not in mandatory_ids),
+        key=scale_rank,
+    )
+    canonical_membership = set(mandatory_ids) | set(distractors)
+    if len(canonical_membership) != sizes[-1]:
         raise ValueError("unable to construct canonical 110K passage subset")
-    return {size: canonical[:size] for size in sizes}
+    memberships = {
+        size: set(mandatory_ids) | set(distractors[:size - len(mandatory_ids)])
+        for size in sizes
+    }
+    # Membership uses qrels only for mandatory inclusion.  Serialized/indexed
+    # order is a qrel-independent global rank, never a gold-first layout.
+    return {size: sorted(memberships[size], key=scale_rank) for size in sizes}
+
+
+class _ReverseScaleRank:
+    """Heap entry whose smallest element represents the greatest normal rank."""
+
+    __slots__ = ("corpus_id", "rank")
+
+    def __init__(self, corpus_id: str):
+        self.corpus_id = corpus_id
+        self.rank = scale_rank(corpus_id)
+
+    def __lt__(self, other: "_ReverseScaleRank") -> bool:
+        return self.rank > other.rank
+
+
+def stream_nested_subset_ids(
+    corpus_path: Path, mandatory_ids: set[str], *, sizes: tuple[int, ...] = SCALE_SIZES
+) -> dict[int, list[str]]:
+    """Select the 110K membership without materializing the full corpus-ID set."""
+    if tuple(sorted(sizes)) != tuple(sizes) or not sizes:
+        raise ValueError("scale sizes must be a non-empty ascending tuple")
+    if len(mandatory_ids) > sizes[0]:
+        raise ValueError(
+            f"mandatory judged set has {len(mandatory_ids):,} passages and cannot fit in {sizes[0]:,}"
+        )
+    required_distractors = sizes[-1] - len(mandatory_ids)
+    selected: list[_ReverseScaleRank] = []
+    found_mandatory: set[str] = set()
+    passage_count = 0
+    for row in iter_jsonl(corpus_path):
+        passage_count += 1
+        corpus_id = str(row["corpus_id"])
+        if corpus_id in mandatory_ids:
+            found_mandatory.add(corpus_id)
+            continue
+        if not required_distractors:
+            continue
+        entry = _ReverseScaleRank(corpus_id)
+        if len(selected) < required_distractors:
+            heapq.heappush(selected, entry)
+        elif entry.rank < selected[0].rank:
+            heapq.heapreplace(selected, entry)
+    missing = sorted(mandatory_ids - found_mandatory)
+    if missing:
+        raise ValueError(f"mandatory judged set references {len(missing)} orphan passage IDs")
+    if passage_count < sizes[-1] or len(selected) != required_distractors:
+        raise ValueError(
+            f"corpus has {passage_count:,} passages; {sizes[-1]:,} passages are required"
+        )
+    distractors = [entry.corpus_id for entry in selected]
+    memberships = {
+        size: set(mandatory_ids) | set(heapq.nsmallest(size - len(mandatory_ids), distractors, key=scale_rank))
+        for size in sizes
+    }
+    return {size: sorted(memberships[size], key=scale_rank) for size in sizes}
 
 
 def passage_content_hash(row: dict[str, Any]) -> str:
@@ -177,32 +318,35 @@ def passage_content_hash(row: dict[str, Any]) -> str:
 
 
 def validate_nested_subset_payloads(
-    payloads: dict[int, list[dict[str, Any]]], *, positive_ids: set[str]
+    payloads: dict[int, list[dict[str, Any]]], *, mandatory_ids: set[str]
 ) -> None:
     expected_sizes = sorted(payloads)
-    previous_rows: list[dict[str, Any]] | None = None
+    previous_ids: list[str] | None = None
     previous_by_id: dict[str, str] = {}
     for size in expected_sizes:
         rows = payloads[size]
         ids = [str(row["corpus_id"]) for row in rows]
         if len(ids) != len(set(ids)):
             raise ValueError(f"subset {size} has duplicate passage IDs")
-        if not positive_ids.issubset(ids):
-            raise ValueError(f"subset {size} does not preserve all positive passages")
-        if previous_rows is not None and ids[:len(previous_rows)] != [
-            str(row["corpus_id"]) for row in previous_rows
-        ]:
-            raise ValueError("nested subsets do not preserve deterministic passage order")
+        if not mandatory_ids.issubset(ids):
+            raise ValueError(f"subset {size} does not preserve all mandatory judged passages")
+        if ids != sorted(ids, key=scale_rank):
+            raise ValueError("subset output is not ordered by qrel-independent global hash rank")
+        if previous_ids is not None:
+            if not set(previous_ids) < set(ids):
+                raise ValueError("nested subsets do not preserve strict set inclusion")
+            if previous_ids != [corpus_id for corpus_id in ids if corpus_id in set(previous_ids)]:
+                raise ValueError("shared passages do not preserve global hash rank across scales")
         for row in rows:
             corpus_id = str(row["corpus_id"])
             content_hash = passage_content_hash(row)
             if corpus_id in previous_by_id and previous_by_id[corpus_id] != content_hash:
                 raise ValueError(f"shared passage content changed across scales: {corpus_id}")
             previous_by_id[corpus_id] = content_hash
-        previous_rows = rows
+        previous_ids = ids
 
 
-def validate_nested_subset_manifest(manifest: dict[str, Any]) -> None:
+def validate_nested_subset_manifest(manifest: dict[str, Any], *, data_dir: Path | None = None) -> None:
     """Guard scale-invariant query/qrel provenance in the persisted fixture manifest."""
     if manifest.get("retrieval_unit") != RETRIEVAL_UNIT:
         raise ValueError("MIRACL nested subset manifest must be passage-level")
@@ -214,15 +358,83 @@ def validate_nested_subset_manifest(manifest: dict[str, Any]) -> None:
         raise ValueError("MIRACL nested subset manifest is missing query/qrel provenance")
     if any(value != query_qrel_inputs[0] for value in query_qrel_inputs[1:]):
         raise ValueError("MIRACL query/qrel inputs must be invariant across scales")
+    if manifest.get("all_judged_qrels_forced_into_mandatory_set") is not True:
+        raise ValueError("MIRACL nested subset manifest must preserve all judged passages")
     for size in SCALE_SIZES:
         record = subsets[str(size)]
         if record.get("passage_count") != size:
             raise ValueError(f"MIRACL nested subset has incorrect passage count for {size}")
         if record.get("positive_passages_preserved") is not True:
             raise ValueError(f"MIRACL nested subset does not preserve positive passages for {size}")
+        if record.get("judged_passages_preserved") is not True:
+            raise ValueError(f"MIRACL nested subset does not preserve all judged passages for {size}")
+        if data_dir is not None:
+            corpus = record.get("corpus")
+            if not isinstance(corpus, dict):
+                raise ValueError(f"MIRACL nested subset is missing corpus file provenance for {size}")
+            _validate_file_record(corpus, data_dir=data_dir, label=f"subset {size} corpus")
+    if data_dir is not None:
+        normalized_corpus = manifest.get("normalized_corpus_input")
+        if normalized_corpus is not None:
+            if not isinstance(normalized_corpus, dict):
+                raise ValueError("MIRACL nested subset manifest has invalid normalized corpus provenance")
+            _validate_file_record(
+                normalized_corpus, data_dir=data_dir, label="subset normalized corpus input"
+            )
+        for name, record in query_qrel_inputs[0].items():
+            if not isinstance(record, dict):
+                raise ValueError(f"MIRACL nested subset has invalid query/qrel input {name}")
+            _validate_file_record(record, data_dir=data_dir, label=f"subset query/qrel input {name}")
 
 
-def validate_acquisition_manifest(manifest: dict[str, Any]) -> None:
+def validate_miracl_ko_subset_files(data_dir: Path, manifest: dict[str, Any]) -> None:
+    """Recheck persisted fixture membership, global ordering, and shared contents."""
+    validate_nested_subset_manifest(manifest, data_dir=data_dir)
+    paths = normalized_paths(data_dir)
+    judged_ids = judged_passage_ids(
+        list(iter_jsonl(paths["qrels_train"])) + list(iter_jsonl(paths["qrels_dev"]))
+    )
+    if len(judged_ids) != manifest.get("judged_passage_count"):
+        raise ValueError("subset manifest judged-passage count does not match normalized qrels")
+
+    previous_ids: list[str] | None = None
+    previous_hashes: dict[str, str] = {}
+    for size in SCALE_SIZES:
+        record = manifest["subsets"][str(size)]
+        corpus_path = _manifest_file_path(data_dir, record["corpus"]["relative_path"])
+        ids: list[str] = []
+        content_hashes: dict[str, str] = {}
+        previous_rank: tuple[bytes, str] | None = None
+        for row in iter_jsonl(corpus_path):
+            corpus_id = str(row["corpus_id"])
+            current_rank = scale_rank(corpus_id)
+            if previous_rank is not None and current_rank < previous_rank:
+                raise ValueError(f"subset {size} is not ordered by global hash rank")
+            if corpus_id in content_hashes:
+                raise ValueError(f"subset {size} has duplicate passage IDs")
+            ids.append(corpus_id)
+            content_hashes[corpus_id] = passage_content_hash(row)
+            previous_rank = current_rank
+        if len(ids) != size:
+            raise ValueError(f"subset {size} file does not have the manifest passage count")
+        if not judged_ids.issubset(content_hashes):
+            raise ValueError(f"subset {size} file does not preserve all judged passages")
+        if previous_ids is not None:
+            current_ids = set(content_hashes)
+            if not set(previous_ids) < current_ids:
+                raise ValueError("persisted MIRACL subsets do not preserve strict set inclusion")
+            if previous_ids != [corpus_id for corpus_id in ids if corpus_id in previous_hashes]:
+                raise ValueError("persisted shared passages do not preserve global hash rank")
+            for corpus_id, content_hash in previous_hashes.items():
+                if content_hashes[corpus_id] != content_hash:
+                    raise ValueError(f"persisted shared passage content changed across scales: {corpus_id}")
+        previous_ids = ids
+        previous_hashes = content_hashes
+
+
+def validate_acquisition_manifest(
+    manifest: dict[str, Any], *, data_dir: Path | None = None, revision_lock: dict[str, Any] | None = None
+) -> None:
     required = (
         "dataset", "language", "source_urls", "resolved_revision", "downloaded_at",
         "license", "underlying_content_license", "acquisition_script_version",
@@ -234,14 +446,66 @@ def validate_acquisition_manifest(manifest: dict[str, Any]) -> None:
     revision = manifest["resolved_revision"]
     if not isinstance(revision, dict) or not revision.get("topics_qrels") or not revision.get("corpus"):
         raise ValueError("acquisition manifest missing resolved_revision for topics_qrels or corpus")
+    if revision_lock is not None:
+        validate_revision_lock(revision_lock)
+        locked_revisions = {
+            key: revision_lock["sources"][key]["revision"]
+            for key in ("topics_qrels", "corpus")
+        }
+        if revision != locked_revisions:
+            raise ValueError("acquisition manifest revisions do not match the approved revision lock")
+        if manifest.get("revision_lock_sha256") != sha256_json(revision_lock):
+            raise ValueError("acquisition manifest revision_lock_sha256 does not match the approved revision lock")
     for record in manifest["files"]:
-        for key in ("source_url", "relative_path", "byte_size", "sha256"):
+        for key in ("source_url", "source_key", "resolved_revision", "relative_path", "byte_size", "sha256"):
             if key not in record:
                 raise ValueError(f"acquisition file record missing {key}")
         if not isinstance(record["sha256"], str) or len(record["sha256"]) != 64:
             raise ValueError("acquisition file record has invalid sha256")
         if int(record["byte_size"]) < 0:
             raise ValueError("acquisition file record has invalid byte_size")
+        if record["resolved_revision"] != revision.get(record["source_key"]):
+            raise ValueError("acquisition file record revision does not match its source")
+        hash_verification = record.get("hash_verification")
+        if not isinstance(hash_verification, dict) or hash_verification.get("kind") not in {
+            "official_lfs_sha256", "local_sha256_at_pinned_revision",
+        }:
+            raise ValueError("acquisition file record is missing hash verification provenance")
+        if data_dir is not None:
+            _validate_file_record(record, data_dir=data_dir, label="acquisition manifest")
+
+
+def validate_normalization_manifest(manifest: dict[str, Any], *, data_dir: Path) -> None:
+    required = (
+        "dataset", "language", "retrieval_unit", "transformation_version", "generated_at",
+        "acquisition_manifest_sha256", "revision_lock_sha256", "inputs", "outputs",
+        "unicode_nfc_changed_fields",
+    )
+    for key in required:
+        if not manifest.get(key):
+            raise ValueError(f"normalization manifest missing {key}")
+    if manifest.get("retrieval_unit") != RETRIEVAL_UNIT:
+        raise ValueError("normalization manifest must be passage-level")
+    for section in ("inputs", "outputs"):
+        records = manifest[section]
+        if not isinstance(records, dict) or not records:
+            raise ValueError(f"normalization manifest has invalid {section}")
+        for name, record in records.items():
+            if not isinstance(record, dict):
+                raise ValueError(f"normalization manifest has invalid {section}.{name}")
+            _validate_file_record(record, data_dir=data_dir, label=f"normalization manifest {section}.{name}")
+            if section == "outputs" and (not isinstance(record.get("rows"), int) or record["rows"] < 0):
+                raise ValueError(f"normalization manifest output {name} has invalid rows")
+
+
+def validate_eda_blocking_conditions(report: dict[str, Any]) -> None:
+    if int(report.get("corpus", {}).get("empty_text_count", 0)):
+        raise ValueError("MIRACL EDA blocks empty passage text")
+    empty_queries = report.get("queries", {}).get("empty_query_count", {})
+    if any(int(value) for value in empty_queries.values()):
+        raise ValueError("MIRACL EDA blocks empty query text")
+    if report.get("official_reference_count_comparison", {}).get("status") != "matches":
+        raise ValueError("MIRACL EDA blocks official release-count drift")
 
 
 def validate_leakage_inputs(input_fields: dict[str, list[str]]) -> None:
@@ -311,6 +575,24 @@ def normalized_paths(data_dir: Path) -> dict[str, Path]:
     }
 
 
+def load_verified_acquisition_manifest(data_dir: Path, revision_lock: dict[str, Any]) -> dict[str, Any]:
+    path = data_dir / "acquisition_manifest.json"
+    if not path.is_file():
+        raise FileNotFoundError("MIRACL preparation requires acquisition_manifest.json")
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    validate_acquisition_manifest(manifest, data_dir=data_dir, revision_lock=revision_lock)
+    return manifest
+
+
+def load_verified_normalization_manifest(data_dir: Path) -> dict[str, Any]:
+    path = data_dir / "normalization_manifest.json"
+    if not path.is_file():
+        raise FileNotFoundError("MIRACL preparation requires normalization_manifest.json")
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    validate_normalization_manifest(manifest, data_dir=data_dir)
+    return manifest
+
+
 def iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
     with path.open(encoding="utf-8") as stream:
         for line_number, line in enumerate(stream, start=1):
@@ -350,6 +632,27 @@ def _atomic_write_json(path: Path, value: dict[str, Any]) -> None:
     os.replace(temporary_path, path)
 
 
+def eda_report_path(data_dir: Path) -> Path:
+    return data_dir / "eda_report.json"
+
+
+def write_miracl_ko_eda_report(data_dir: Path, report: dict[str, Any]) -> None:
+    _atomic_write_json(eda_report_path(data_dir), report)
+
+
+def load_current_miracl_ko_eda_report(data_dir: Path) -> dict[str, Any]:
+    path = eda_report_path(data_dir)
+    if not path.is_file():
+        raise FileNotFoundError("run validate first: missing MIRACL EDA report")
+    report = json.loads(path.read_text(encoding="utf-8"))
+    if report.get("normalization_manifest_sha256") != sha256_file(data_dir / "normalization_manifest.json"):
+        raise ValueError("MIRACL EDA report does not match the current normalization manifest")
+    if report.get("integrity_status") != "passed":
+        raise ValueError("MIRACL EDA report is not passing")
+    validate_eda_blocking_conditions(report)
+    return report
+
+
 def _normalization_counter() -> Counter[str]:
     return Counter({"title": 0, "text": 0, "query": 0})
 
@@ -362,7 +665,8 @@ def _normalize_field(value: Any, name: str, changes: Counter[str]) -> str:
     return normalized
 
 
-def normalize_miracl_ko(data_dir: Path) -> dict[str, Any]:
+def normalize_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict[str, Any]:
+    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
     raw = raw_paths(data_dir)
     missing = [name for name, path in raw.items() if not path.is_file()]
     if missing:
@@ -434,11 +738,17 @@ def normalize_miracl_ko(data_dir: Path) -> dict[str, Any]:
         "retrieval_unit": RETRIEVAL_UNIT,
         "transformation_version": NORMALIZATION_VERSION,
         "generated_at": utc_now(),
+        "acquisition_manifest_sha256": sha256_file(data_dir / "acquisition_manifest.json"),
+        "revision_lock_sha256": sha256_json(revision_lock),
         "inputs": {name: file_record(path, relative_to=data_dir) for name, path in raw.items()},
         "outputs": {name: {**record, "relative_path": str(output[name].relative_to(data_dir))}
                     for name, record in outputs.items()},
         "unicode_nfc_changed_fields": dict(changes),
     }
+    if acquisition["resolved_revision"] != {
+        key: revision_lock["sources"][key]["revision"] for key in ("topics_qrels", "corpus")
+    }:
+        raise ValueError("normalization input revisions do not match the approved revision lock")
     _atomic_write_json(data_dir / "normalization_manifest.json", manifest)
     return manifest
 
@@ -556,8 +866,14 @@ def _load_qrel_splits(paths: dict[str, Path]) -> dict[str, Any]:
     }
 
 
-def validate_miracl_ko(data_dir: Path) -> dict[str, Any]:
+def validate_miracl_ko(data_dir: Path, *, revision_lock: dict[str, Any]) -> dict[str, Any]:
     """Compute passage-level EDA and fail-loud integrity findings from normalized data."""
+    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
+    verified_normalization = load_verified_normalization_manifest(data_dir)
+    if verified_normalization.get("acquisition_manifest_sha256") != sha256_file(data_dir / "acquisition_manifest.json"):
+        raise ValueError("normalization manifest does not match the verified acquisition manifest")
+    if verified_normalization.get("revision_lock_sha256") != sha256_json(revision_lock):
+        raise ValueError("normalization manifest does not match the approved revision lock")
     paths = normalized_paths(data_dir)
     missing = [name for name, path in paths.items() if not path.is_file()]
     if missing:
@@ -657,7 +973,7 @@ def validate_miracl_ko(data_dir: Path) -> dict[str, Any]:
             )
 
     normalization_manifest_path = data_dir / "normalization_manifest.json"
-    normalization_manifest = json.loads(normalization_manifest_path.read_text()) if normalization_manifest_path.exists() else {}
+    normalization_manifest = verified_normalization
     violations = []
     if duplicate_corpus_ids:
         violations.append(f"duplicate corpus_id rows: {duplicate_corpus_ids}")
@@ -742,6 +1058,8 @@ def validate_miracl_ko(data_dir: Path) -> dict[str, Any]:
             "orphan_corpus_ids": len(orphan_corpus_ids),
             "positive_passage_count": len(positive_ids),
             "positive_passage_id_sha256": positive_id_hash,
+            "judged_passage_count": len(all_qrel_corpus_ids),
+            "judged_passage_id_sha256": sha256_json(sorted(all_qrel_corpus_ids)),
             "per_split_positive_structure": multi_positive,
         },
         "split_overlap": {
@@ -770,27 +1088,58 @@ def validate_miracl_ko(data_dir: Path) -> dict[str, Any]:
         "integrity_status": "passed" if not violations else "blocked",
         "violations": violations,
     }
+    try:
+        validate_eda_blocking_conditions(report)
+    except ValueError as error:
+        report["violations"].append(str(error))
+        report["integrity_status"] = "blocked"
     return report
 
 
-def build_miracl_ko_subsets(data_dir: Path, eda: dict[str, Any]) -> dict[str, Any]:
-    """Create 110K first, then its ordered 50K and 20K passage prefixes."""
+def build_miracl_ko_subsets(
+    data_dir: Path, eda: dict[str, Any], *, revision_lock: dict[str, Any]
+) -> dict[str, Any]:
+    """Create nested memberships, then serialize each scale by global passage hash rank."""
     if eda.get("retrieval_unit") != RETRIEVAL_UNIT:
         raise ValueError("MIRACL subset builder requires passage-level EDA")
     if eda.get("integrity_status") != "passed":
         raise ValueError("MIRACL subset builder requires passing integrity EDA")
     paths = normalized_paths(data_dir)
     acquisition_path = data_dir / "acquisition_manifest.json"
-    if not acquisition_path.is_file():
-        raise FileNotFoundError("MIRACL subset builder requires acquisition_manifest.json")
-    acquisition = json.loads(acquisition_path.read_text(encoding="utf-8"))
-    validate_acquisition_manifest(acquisition)
+    acquisition = load_verified_acquisition_manifest(data_dir, revision_lock)
+    normalization = load_verified_normalization_manifest(data_dir)
+    if normalization.get("acquisition_manifest_sha256") != sha256_file(acquisition_path):
+        raise ValueError("subset builder requires normalization tied to the verified acquisition manifest")
+    if normalization.get("revision_lock_sha256") != sha256_json(revision_lock):
+        raise ValueError("subset builder requires normalization tied to the approved revision lock")
+    if eda.get("normalization_manifest_sha256") != sha256_file(data_dir / "normalization_manifest.json"):
+        raise ValueError("subset builder requires EDA from the current verified normalization manifest")
     qrels = list(iter_jsonl(paths["qrels_train"])) + list(iter_jsonl(paths["qrels_dev"]))
     positive_ids = positive_passage_ids(qrels)
+    judged_ids = judged_passage_ids(qrels)
     if len(positive_ids) != eda["qrels"]["positive_passage_count"]:
         raise ValueError("EDA positive-passage count does not match normalized qrels")
-    corpus_ids = {str(row["corpus_id"]) for row in iter_jsonl(paths["corpus"])}
-    ordered_ids = build_nested_subset_ids(corpus_ids, positive_ids)
+    if len(judged_ids) != eda["qrels"]["judged_passage_count"]:
+        raise ValueError("EDA judged-passage count does not match normalized qrels")
+    root = data_dir / "subsets"
+    manifest_path = root / "manifest.json"
+    if manifest_path.is_file():
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if existing.get("scale_version") != SCALE_VERSION:
+            raise ValueError("existing MIRACL subset fixture uses a different scale contract")
+        if existing.get("source_revisions") != acquisition["resolved_revision"]:
+            raise ValueError("existing MIRACL subset fixture uses different source revisions")
+        validate_miracl_ko_subset_files(data_dir, existing)
+        # Source bytes, normalized query/qrels, and persisted fixture have all
+        # been revalidated.  Rebind provenance without rewriting identical
+        # large passage files solely because manifest metadata changed.
+        existing["acquisition_manifest_sha256"] = sha256_file(acquisition_path)
+        existing["normalization_manifest_sha256"] = sha256_file(data_dir / "normalization_manifest.json")
+        existing["normalized_corpus_input"] = file_record(paths["corpus"], relative_to=data_dir)
+        _atomic_write_json(manifest_path, existing)
+        validate_miracl_ko_subset_files(data_dir, existing)
+        return existing
+    ordered_ids = stream_nested_subset_ids(paths["corpus"], judged_ids)
     canonical_ids = ordered_ids[SCALE_SIZES[-1]]
     canonical_set = set(canonical_ids)
     selected_rows: dict[str, dict[str, Any]] = {}
@@ -802,9 +1151,8 @@ def build_miracl_ko_subsets(data_dir: Path, eda: dict[str, Any]) -> dict[str, An
         raise ValueError("canonical 110K subset is missing selected passages")
     payloads = {size: [selected_rows[corpus_id] for corpus_id in ids]
                 for size, ids in ordered_ids.items()}
-    validate_nested_subset_payloads(payloads, positive_ids=positive_ids)
+    validate_nested_subset_payloads(payloads, mandatory_ids=judged_ids)
 
-    root = data_dir / "subsets"
     subset_records: dict[str, Any] = {}
     shared_inputs = {
         name: file_record(path, relative_to=data_dir)
@@ -821,24 +1169,33 @@ def build_miracl_ko_subsets(data_dir: Path, eda: dict[str, Any]) -> dict[str, An
             "passage_content_aggregate_sha256": sha256_json(content_hashes),
             "positive_passage_count": len(positive_ids),
             "positive_passages_preserved": positive_ids.issubset(ordered_ids[size]),
+            "judged_passage_count": len(judged_ids),
+            "judged_passages_preserved": judged_ids.issubset(ordered_ids[size]),
             "query_qrel_inputs": shared_inputs,
         }
     manifest = {
         "dataset": "MIRACL",
         "language": "ko",
         "retrieval_unit": RETRIEVAL_UNIT,
-        "design": "controlled distractor scaling; positive passages fixed, distractors increase",
+        "design": "controlled distractor scaling; all judged passages fixed, unjudged distractors increase",
         "scale_version": SCALE_VERSION,
         "acquisition_manifest_sha256": sha256_file(acquisition_path),
+        "normalization_manifest_sha256": sha256_file(data_dir / "normalization_manifest.json"),
+        "normalized_corpus_input": file_record(paths["corpus"], relative_to=data_dir),
         "source_revisions": acquisition["resolved_revision"],
-        "positive_set_definition": "relevance > 0 across normalized train and dev qrels only",
+        "mandatory_set_definition": "all unique corpus IDs in normalized train and dev qrels, regardless of relevance",
+        "output_order_definition": "SHA256(miracl-ko-scale-v1\\0 + corpus_id), independent of relevance",
         "positive_passage_count": len(positive_ids),
         "positive_passage_id_sha256": sha256_json(sorted(positive_ids)),
-        "negative_qrels_forced_into_mandatory_set": False,
+        "judged_passage_count": len(judged_ids),
+        "judged_passage_id_sha256": sha256_json(sorted(judged_ids)),
+        "all_judged_qrels_forced_into_mandatory_set": True,
         "subsets": subset_records,
     }
     validate_nested_subset_manifest(manifest)
     _atomic_write_json(root / "manifest.json", manifest)
+    validate_nested_subset_manifest(manifest, data_dir=data_dir)
+    validate_miracl_ko_subset_files(data_dir, manifest)
     return manifest
 
 
@@ -846,13 +1203,20 @@ def _repository_files(info: Any) -> dict[str, Any]:
     return {item.rfilename: item for item in (info.siblings or [])}
 
 
-def acquire_miracl_ko(data_dir: Path, *, acquisition_script: Path) -> dict[str, Any]:
-    """Download only official artifacts at their API-resolved immutable commits."""
+def acquire_miracl_ko(
+    data_dir: Path, *, acquisition_script: Path, revision_lock: dict[str, Any]
+) -> dict[str, Any]:
+    """Verify/download only the revisions explicitly named in the approved lock."""
     from huggingface_hub import HfApi, hf_hub_download
 
+    validate_revision_lock(revision_lock)
     api = HfApi()
-    topics_info = api.dataset_info(TOPICS_QRELS_REPO, files_metadata=True)
-    corpus_info = api.dataset_info(CORPUS_REPO, files_metadata=True)
+    topics_revision = revision_lock["sources"]["topics_qrels"]["revision"]
+    corpus_revision = revision_lock["sources"]["corpus"]["revision"]
+    topics_info = api.dataset_info(TOPICS_QRELS_REPO, revision=topics_revision, files_metadata=True)
+    corpus_info = api.dataset_info(CORPUS_REPO, revision=corpus_revision, files_metadata=True)
+    if topics_info.sha != topics_revision or corpus_info.sha != corpus_revision:
+        raise ValueError("official MIRACL revision resolution drifted from the approved revision lock")
     repositories = {
         "topics_qrels": (TOPICS_QRELS_REPO, TOPICS_QRELS_URL, topics_info, TOPICS_QRELS_FILES),
         "corpus": (CORPUS_REPO, CORPUS_URL, corpus_info, CORPUS_FILES),
@@ -869,7 +1233,7 @@ def acquire_miracl_ko(data_dir: Path, *, acquisition_script: Path) -> dict[str, 
                 repo_id=repo_id,
                 filename=filename,
                 repo_type="dataset",
-                revision=info.sha,
+                revision=revision_lock["sources"][source_key]["revision"],
                 local_dir=raw_root,
             ))
             record = {
@@ -887,13 +1251,23 @@ def acquire_miracl_ko(data_dir: Path, *, acquisition_script: Path) -> dict[str, 
             expected_sha = getattr(lfs, "sha256", None) if lfs else None
             if expected_sha and record["sha256"] != expected_sha:
                 raise ValueError(f"downloaded SHA-256 does not match official LFS metadata: {filename}")
-            record["official_lfs_sha256"] = expected_sha
+            if expected_sha:
+                record["hash_verification"] = {
+                    "kind": "official_lfs_sha256",
+                    "official_lfs_sha256": expected_sha,
+                }
+            else:
+                record["hash_verification"] = {
+                    "kind": "local_sha256_at_pinned_revision",
+                    "pinned_revision": info.sha,
+                }
             files.append(record)
     manifest = {
         "dataset": "MIRACL",
         "language": "ko",
         "source_urls": {"topics_qrels": TOPICS_QRELS_URL, "corpus": CORPUS_URL},
-        "resolved_revision": {"topics_qrels": topics_info.sha, "corpus": corpus_info.sha},
+        "resolved_revision": {"topics_qrels": topics_revision, "corpus": corpus_revision},
+        "revision_lock_sha256": sha256_json(revision_lock),
         "downloaded_at": utc_now(),
         "license": "Apache-2.0 (MIRACL repository and dataset cards)",
         "underlying_content_license": {
@@ -907,7 +1281,7 @@ def acquire_miracl_ko(data_dir: Path, *, acquisition_script: Path) -> dict[str, 
         "transformation_version": NORMALIZATION_VERSION,
         "files": files,
     }
-    validate_acquisition_manifest(manifest)
+    validate_acquisition_manifest(manifest, data_dir=data_dir, revision_lock=revision_lock)
     _atomic_write_json(data_dir / "acquisition_manifest.json", manifest)
     return manifest
 
@@ -940,7 +1314,7 @@ def write_miracl_pretest_artifacts(
     stamp: str,
 ) -> tuple[Path, Path, Path]:
     summary = {
-        "schema_version": "dr-dci.miracl-ko-pretest.v1",
+        "schema_version": "dr-dci.miracl-ko-pretest.v2",
         "generated_at": utc_now(),
         "dataset": "MIRACL",
         "language": "ko",
@@ -968,7 +1342,7 @@ def write_miracl_pretest_artifacts(
         },
     }
     hash_manifest = {
-        "schema_version": "dr-dci.miracl-ko-hash-manifest.v1",
+        "schema_version": "dr-dci.miracl-ko-hash-manifest.v2",
         "generated_at": utc_now(),
         "dataset": "MIRACL",
         "language": "ko",
@@ -995,13 +1369,14 @@ def write_miracl_pretest_artifacts(
         "## Acquisition and unit", "",
         f"- Topics/qrels revision: `{acquisition['resolved_revision']['topics_qrels']}`",
         f"- Corpus revision: `{acquisition['resolved_revision']['corpus']}`",
+        f"- Approved revision-lock SHA-256: `{acquisition['revision_lock_sha256']}`; acquisition requests only these revisions and never adopts remote HEAD.",
         f"- MIRACL artifact license: {acquisition['license']}; underlying Wikipedia terms are recorded separately in the hash manifest.",
         "- Retrieval unit: **passage** (`article_id#passage_index`); article aggregation is not used.",
         f"- Raw artifacts are under ignored `data/`; no raw or normalized passage text is committed.", "",
         "## Measured integrity", "",
         f"- Corpus: {corpus['passage_count']:,} passages from {corpus['article_count']:,} articles.",
         f"- Queries: train {eda['queries']['train_query_count']:,}; dev {eda['queries']['dev_query_count']:,}.",
-        f"- Judgments: train {qrels['train_count']:,}; dev {qrels['dev_count']:,}; positive passage union M+ {qrels['positive_passage_count']:,}.",
+        f"- Judgments: train {qrels['train_count']:,}; dev {qrels['dev_count']:,}; all judged passages {qrels['judged_passage_count']:,}; positive passage union M+ {qrels['positive_passage_count']:,}.",
         f"- Orphan qids/passage IDs: {sum(qrels['orphan_qids'].values())} / {qrels['orphan_corpus_ids']}; integrity status `{eda['integrity_status']}`.",
         f"- Official reference-count comparison: `{eda['official_reference_count_comparison']['status']}`; NFC changed title/text/query fields: `{eda['normalization']}`.",
         "",
@@ -1011,9 +1386,11 @@ def write_miracl_pretest_artifacts(
         "- IDs and numeric relevance are preserved; passage IDs are never collapsed to article IDs.",
         "",
         "## Controlled distractor fixtures", "",
-        "Positive passages (`relevance > 0`) are fixed across 20K/50K/110K; only SHA-256-ranked distractor passages increase.",
-        "The deterministic rank is `SHA256(\"miracl-ko-scale-v1\\0\" + corpus_id)`; the 110K fixture is built first, then ordered 50K/20K prefixes are derived.",
-        *[f"- {size}: {subset_rows[str(size)]['passage_count']:,} passages; positive preservation `{subset_rows[str(size)]['positive_passages_preserved']}`; corpus SHA-256 `{subset_rows[str(size)]['corpus']['sha256']}`" for size in SCALE_SIZES],
+        "All judged passages (including relevance=0) are fixed across 20K/50K/110K; only unjudged SHA-256-ranked distractor passages increase.",
+        "The deterministic rank is `SHA256(\"miracl-ko-scale-v1\\0\" + corpus_id)`. Qrels choose mandatory membership only; every serialized scale is independently sorted by this relevance-independent rank.",
+        "Thus scale nesting is set inclusion rather than file-prefix inclusion, while every shared passage keeps the same relative order across scales.",
+        "Before reporting, the persisted files are reread to verify their SHA-256, all-judged membership, global rank order, set nesting, and shared-passage content invariance.",
+        *[f"- {size}: {subset_rows[str(size)]['passage_count']:,} passages; judged preservation `{subset_rows[str(size)]['judged_passages_preserved']}`; positive preservation `{subset_rows[str(size)]['positive_passages_preserved']}`; corpus SHA-256 `{subset_rows[str(size)]['corpus']['sha256']}`" for size in SCALE_SIZES],
         "",
         "## Leakage and smoke", "",
         "- No taxonomy artifact was generated. The preparation contract allows taxonomy only from 110K corpus `title`/`text`; qrels and queries are forbidden inputs.",

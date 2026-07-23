@@ -1,15 +1,18 @@
 {
   "acquisition": {
-    "acquisition_script_sha256": "d02b7dd01777aac3606e98756b8e948d94480d2046aaf7f2b16a56094be2e701",
+    "acquisition_script_sha256": "52289ab5fdf5e0bcbf907f00f7c2a24f85f1fe24c4c7753d8184057a39c3c2cc",
     "acquisition_script_version": "miracl-ko-preparation-v1",
     "dataset": "MIRACL",
-    "downloaded_at": "2026-07-23T07:34:00.470334+00:00",
+    "downloaded_at": "2026-07-23T08:22:51.529419+00:00",
     "files": [
       {
         "byte_size": 53825,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "local_sha256_at_pinned_revision",
+          "pinned_revision": "5be20db9509754dadad47689368639fcec739c00"
+        },
         "language": "ko",
-        "official_lfs_sha256": null,
         "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-train.tsv",
         "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
         "sha256": "552c5fe3c6d71fa35150172a160a6cea144f8b73b478795059dbf97aa294b2b7",
@@ -19,8 +22,11 @@
       {
         "byte_size": 12597,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "local_sha256_at_pinned_revision",
+          "pinned_revision": "5be20db9509754dadad47689368639fcec739c00"
+        },
         "language": "ko",
-        "official_lfs_sha256": null,
         "relative_path": "raw/miracl-v1.0-ko/topics/topics.miracl-v1.0-ko-dev.tsv",
         "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
         "sha256": "a365552cfc997a8915e948a3b5994883f641e7c3f12b6af87bbfaf89729e32a8",
@@ -30,8 +36,11 @@
       {
         "byte_size": 232882,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "local_sha256_at_pinned_revision",
+          "pinned_revision": "5be20db9509754dadad47689368639fcec739c00"
+        },
         "language": "ko",
-        "official_lfs_sha256": null,
         "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-train.tsv",
         "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
         "sha256": "7719e296a61f599a64fd102f62a1ce0d257199c8da2aca90e1c66ddcb9644a93",
@@ -41,8 +50,11 @@
       {
         "byte_size": 55675,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "local_sha256_at_pinned_revision",
+          "pinned_revision": "5be20db9509754dadad47689368639fcec739c00"
+        },
         "language": "ko",
-        "official_lfs_sha256": null,
         "relative_path": "raw/miracl-v1.0-ko/qrels/qrels.miracl-v1.0-ko-dev.tsv",
         "resolved_revision": "5be20db9509754dadad47689368639fcec739c00",
         "sha256": "88827ccc5b64e531b25f70eef30202d33daa9bfa3ac8cceadf5cdbd5ca5034df",
@@ -52,8 +64,11 @@
       {
         "byte_size": 87965596,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "official_lfs_sha256",
+          "official_lfs_sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d"
+        },
         "language": "ko",
-        "official_lfs_sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d",
         "relative_path": "raw/miracl-corpus-v1.0-ko/docs-0.jsonl.gz",
         "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
         "sha256": "c56a31883a291504aa9c97968fb7a5fbcc9ea1099ee1810200249e1afb7fc55d",
@@ -63,8 +78,11 @@
       {
         "byte_size": 75422723,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "official_lfs_sha256",
+          "official_lfs_sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd"
+        },
         "language": "ko",
-        "official_lfs_sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd",
         "relative_path": "raw/miracl-corpus-v1.0-ko/docs-1.jsonl.gz",
         "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
         "sha256": "fecd2886124e78c3aa87c59604ac9909c23165415c70a96f4edb95677b5ed0cd",
@@ -74,8 +92,11 @@
       {
         "byte_size": 62582229,
         "dataset": "MIRACL",
+        "hash_verification": {
+          "kind": "official_lfs_sha256",
+          "official_lfs_sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9"
+        },
         "language": "ko",
-        "official_lfs_sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9",
         "relative_path": "raw/miracl-corpus-v1.0-ko/docs-2.jsonl.gz",
         "resolved_revision": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
         "sha256": "93e90d098d78f50a9e76dd2e64608d65e0563787954f848da9b04286f81b75d9",
@@ -90,6 +111,7 @@
       "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
       "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
     },
+    "revision_lock_sha256": "d201546006b1f85864bdc5e62d7f0d886f4fcaaf0cdf60b32beec98b4554d253",
     "source_urls": {
       "corpus": "https://huggingface.co/datasets/miracl/miracl-corpus",
       "topics_qrels": "https://huggingface.co/datasets/miracl/miracl"
@@ -102,17 +124,26 @@
     }
   },
   "dataset": "MIRACL",
-  "generated_at": "2026-07-23T07:35:02.101321+00:00",
+  "generated_at": "2026-07-23T08:23:41.536108+00:00",
   "language": "ko",
   "nested_subsets": {
-    "acquisition_manifest_sha256": "367c9bc8b8bccd9e37eb78b088da2ebee7c8a8e3a39a95064907d9f56ce1741c",
+    "acquisition_manifest_sha256": "d389cac7cded11fccfac24e9f7eff2325df4fae83522e244b2127d88838fabfb",
+    "all_judged_qrels_forced_into_mandatory_set": true,
     "dataset": "MIRACL",
-    "design": "controlled distractor scaling; positive passages fixed, distractors increase",
+    "design": "controlled distractor scaling; all judged passages fixed, unjudged distractors increase",
+    "judged_passage_count": 12601,
+    "judged_passage_id_sha256": "b489df1d479a56273868744b79d5f4fbf0388b18d2a3d4d03ac4ba3146cc583f",
     "language": "ko",
-    "negative_qrels_forced_into_mandatory_set": false,
+    "mandatory_set_definition": "all unique corpus IDs in normalized train and dev qrels, regardless of relevance",
+    "normalization_manifest_sha256": "359c9b60490f671dcb1b72d92825d49c2290409abe7d2e552fdc9ad9c530bd4f",
+    "normalized_corpus_input": {
+      "byte_size": 745841888,
+      "relative_path": "normalized/corpus.jsonl",
+      "sha256": "b2db7bfbf15c55bfb8acf240248426da20f5abb7c937252718d5651f2808342b"
+    },
+    "output_order_definition": "SHA256(miracl-ko-scale-v1\\0 + corpus_id), independent of relevance",
     "positive_passage_count": 2105,
     "positive_passage_id_sha256": "53b7b3e0652aba68b22c55df1ab73837aa1d48c24efa4ee4a5b5233dffc98480",
-    "positive_set_definition": "relevance > 0 across normalized train and dev qrels only",
     "retrieval_unit": "passage",
     "scale_version": "miracl-ko-scale-v1",
     "source_revisions": {
@@ -122,13 +153,15 @@
     "subsets": {
       "110000": {
         "corpus": {
-          "byte_size": 55698197,
+          "byte_size": 58398087,
           "relative_path": "subsets/110k/corpus.jsonl",
           "rows": 110000,
-          "sha256": "fd3088c041916f4bc98f21e54689c2a3eab3fd6ec45daac45fa46591c511217c"
+          "sha256": "72876a87de9de6ba1e3f7a00e3867673a8b7a61ac21a1aa8ca58a7337aff5107"
         },
-        "ordered_passage_id_sha256": "8e440885a8ff5b77baf86947d9022bd42c314c6f92e035d700c80a8a0ae75ce7",
-        "passage_content_aggregate_sha256": "9a98e7eb45b154e98f31f14a7e93197daed742960c9bb39fc9ed3815dbb5e6c4",
+        "judged_passage_count": 12601,
+        "judged_passages_preserved": true,
+        "ordered_passage_id_sha256": "1d30b8cfe8c671deebeb42c5ed7d4c2bfe3a11d0a3ec07cd4e8bbcfa4c64af4f",
+        "passage_content_aggregate_sha256": "a1607aa084684181a031193aa44416e16ec91126f4fe67ddff81daef1c99675e",
         "passage_count": 110000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -157,13 +190,15 @@
       },
       "20000": {
         "corpus": {
-          "byte_size": 10494855,
+          "byte_size": 13411445,
           "relative_path": "subsets/20k/corpus.jsonl",
           "rows": 20000,
-          "sha256": "4ff8dc4803db997aef56414bfe857537e69c3f2dd71397976dbefbb003985a78"
+          "sha256": "a01130d3bf5540960a8b6c24cfac78565ef6698f45cd3195327b588a84e92b56"
         },
-        "ordered_passage_id_sha256": "69ea56d28994ad2950a7b517a2c04dd1390be65f054f32d0e7ec56e6bdf3db0e",
-        "passage_content_aggregate_sha256": "270d023c1754e79c8c6ba701f129c6e27b8bba258c943f3dcc50b1ac8da948d1",
+        "judged_passage_count": 12601,
+        "judged_passages_preserved": true,
+        "ordered_passage_id_sha256": "f62373d97a32750e1968cd6fc5e3e4abf041a18a870f218b3c8b0deb4ce2f61f",
+        "passage_content_aggregate_sha256": "4b7a156a4dd0141b2333f620028ffc946f019509811ade84d3059ec64e508617",
         "passage_count": 20000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -192,13 +227,15 @@
       },
       "50000": {
         "corpus": {
-          "byte_size": 25569181,
+          "byte_size": 28469352,
           "relative_path": "subsets/50k/corpus.jsonl",
           "rows": 50000,
-          "sha256": "ba7423a8de3a11f19c3eeb16d5c345cd418293265e6a427f2a02dbc51438c3b5"
+          "sha256": "9608f260646db6c8a931cb1387a664df63399a7d7c36c9b055b3df7366598cf3"
         },
-        "ordered_passage_id_sha256": "d58c66d30b1e902facbdb3bd6e03df1d96ccacc31131a7a5c6c00eb46ea34cf0",
-        "passage_content_aggregate_sha256": "00432b10ac23824f25ae0bb610b6871a9481b45fd70161cd2e6610f4efb665e8",
+        "judged_passage_count": 12601,
+        "judged_passages_preserved": true,
+        "ordered_passage_id_sha256": "584747a20746a214972258a792d87a3f2e4605e1bc061c6170bc47a71bff035a",
+        "passage_content_aggregate_sha256": "6fde48fc80ea7cde8a164ae498d52e9ba55500f986733450854d25338094f50d",
         "passage_count": 50000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -228,8 +265,9 @@
     }
   },
   "normalization": {
+    "acquisition_manifest_sha256": "d389cac7cded11fccfac24e9f7eff2325df4fae83522e244b2127d88838fabfb",
     "dataset": "MIRACL",
-    "generated_at": "2026-07-23T07:34:17.307328+00:00",
+    "generated_at": "2026-07-23T08:23:07.005842+00:00",
     "inputs": {
       "corpus_0": {
         "byte_size": 87965596,
@@ -301,6 +339,7 @@
       }
     },
     "retrieval_unit": "passage",
+    "revision_lock_sha256": "d201546006b1f85864bdc5e62d7f0d886f4fcaaf0cdf60b32beec98b4554d253",
     "transformation_version": "miracl-ko-nfc-v1",
     "unicode_nfc_changed_fields": {
       "query": 0,
@@ -329,5 +368,5 @@
     }
   },
   "retrieval_unit": "passage",
-  "schema_version": "dr-dci.miracl-ko-hash-manifest.v1"
+  "schema_version": "dr-dci.miracl-ko-hash-manifest.v2"
 }
