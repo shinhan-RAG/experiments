@@ -10,11 +10,18 @@ RUN apt-get update \
     && ln -s "/usr/lib/jvm/java-21-openjdk-$(dpkg --print-architecture)" "${JAVA_HOME}" \
     && rm -rf /var/lib/apt/lists/*
 
-# The Pyserini distribution carries the pinned Anserini fat JAR.  Run that JAR
-# directly: this avoids importing Pyserini's dense/impact modules and installs
-# neither model frameworks nor external model/API clients. NumPy supports the
-# repository's existing paired-bootstrap evaluator only.
-RUN python -m pip install --no-cache-dir --no-deps pyserini==2.1.0 \
-    && python -m pip install --no-cache-dir numpy==2.4.2
+# The Pyserini source distribution carries the pinned Anserini fat JAR. Verify
+# its source hash, extract only that JAR, then remove Pyserini itself. This
+# avoids importing its dense/impact modules or retaining model/API dependencies.
+# NumPy supports the repository's existing paired-bootstrap evaluator only.
+ARG PYSERINI_SOURCE_SHA256=384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f
+RUN mkdir -p /tmp/pyserini-source /opt/anserini \
+    && python -m pip download --no-cache-dir --no-deps --dest /tmp/pyserini-source pyserini==2.1.0 \
+    && test "$(sha256sum /tmp/pyserini-source/pyserini-2.1.0.tar.gz | awk '{print $1}')" = "$PYSERINI_SOURCE_SHA256" \
+    && python -m pip install --no-cache-dir --no-deps /tmp/pyserini-source/pyserini-2.1.0.tar.gz \
+    && cp /usr/local/lib/python3.12/site-packages/pyserini/resources/jars/anserini-2.1.1-fatjar.jar /opt/anserini/ \
+    && python -m pip uninstall -y pyserini \
+    && python -m pip install --no-cache-dir --no-deps numpy==2.4.2 \
+    && rm -rf /tmp/pyserini-source
 
 WORKDIR /work

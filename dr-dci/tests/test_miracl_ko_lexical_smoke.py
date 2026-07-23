@@ -29,6 +29,7 @@ def smoke_config():
             "analyzer_class": "org.apache.lucene.analysis.cjk.CJKAnalyzer",
             "distribution_source_archive_sha256": "384fb783c52ac1605caabe8a75f520323dfed2b5595072911c87f6cfca8bf15f",
             "jar_relative_path": "pyserini/resources/jars/anserini-2.1.1-fatjar.jar",
+            "jar_path": "/opt/anserini/anserini-2.1.1-fatjar.jar",
             "jar_sha256": "3c83883246d0fb2326c8a9291572b969467cf478d1fc65f517cbf37fd9b0d914",
         },
         "runtime": {

@@ -91,10 +91,7 @@ def require_file_record(data_dir: Path, record: dict[str, Any], *, label: str) -
 def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
     java = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True)
     backend = config["backend"]
-    distribution = importlib.metadata.distribution(backend["distribution_package"])
-    if distribution.version != backend["distribution_version"]:
-        raise RuntimeError("installed Pyserini distribution does not match pinned smoke config")
-    jar_path = Path(distribution.locate_file(backend["jar_relative_path"])).resolve()
+    jar_path = Path(backend["jar_path"])
     if not jar_path.is_file() or sha256_file(jar_path) != backend["jar_sha256"]:
         raise RuntimeError("pinned Anserini fat JAR is missing or has an unexpected SHA-256")
     supporting_packages = {
@@ -108,7 +105,7 @@ def runtime_provenance(config: dict[str, Any]) -> dict[str, Any]:
         "java_version_output": java.stderr.strip() or java.stdout.strip(),
         "pyserini_distribution": {
             "package": backend["distribution_package"],
-            "version": distribution.version,
+            "version": backend["distribution_version"],
             "source_archive_sha256": backend["distribution_source_archive_sha256"],
         },
         "anserini": {
@@ -147,8 +144,7 @@ def load_dev_inputs(data_dir: Path, subset_manifest: dict[str, Any]) -> tuple[li
 
 def anserini_jar_path(config: dict[str, Any]) -> Path:
     backend = config["backend"]
-    distribution = importlib.metadata.distribution(backend["distribution_package"])
-    jar_path = Path(distribution.locate_file(backend["jar_relative_path"])).resolve()
+    jar_path = Path(backend["jar_path"])
     if not jar_path.is_file() or sha256_file(jar_path) != backend["jar_sha256"]:
         raise RuntimeError("pinned Anserini fat JAR is missing or has an unexpected SHA-256")
     return jar_path
