@@ -9,7 +9,8 @@ This is not a taxonomy result, Agentic RAG result, insurance-domain validation, 
 
 - Topics/qrels revision: `5be20db9509754dadad47689368639fcec739c00`
 - Corpus revision: `d921ec7e349ce0d28daf30b2da9da5ee698bef0d`
-- Approved revision-lock SHA-256: `d201546006b1f85864bdc5e62d7f0d886f4fcaaf0cdf60b32beec98b4554d253`; acquisition requests only these revisions and never adopts remote HEAD.
+- Approved revision-lock SHA-256: `84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa`; acquisition requests only these revisions and never adopts remote HEAD.
+- Preparation contract SHA-256: `4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7`; source Git commit: `dbee144bd86c1de81248308db68c8d15dd3ab29a`. The contract hashes the wrapper, preparation algorithm module, and revision lock.
 - MIRACL artifact license: Apache-2.0 (MIRACL repository and dataset cards); underlying Wikipedia terms are recorded separately in the hash manifest.
 - Retrieval unit: **passage** (`article_id#passage_index`); article aggregation is not used.
 - Raw artifacts are under ignored `data/`; no raw or normalized passage text is committed.
@@ -30,12 +31,12 @@ This is not a taxonomy result, Agentic RAG result, insurance-domain validation, 
 ## Controlled distractor fixtures
 
 All judged passages (including relevance=0) are fixed across 20K/50K/110K; only unjudged SHA-256-ranked distractor passages increase.
-The deterministic rank is `SHA256("miracl-ko-scale-v1\0" + corpus_id)`. Qrels choose mandatory membership only; every serialized scale is independently sorted by this relevance-independent rank.
+The deterministic rank is `SHA256(miracl-ko-scale-v2\0 + corpus_id), independent of relevance`. Qrels choose mandatory membership only; every serialized scale is independently sorted by this relevance-independent rank.
 Thus scale nesting is set inclusion rather than file-prefix inclusion, while every shared passage keeps the same relative order across scales.
 Before reporting, the persisted files are reread to verify their SHA-256, all-judged membership, global rank order, set nesting, and shared-passage content invariance.
-- 20000: 20,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `a01130d3bf5540960a8b6c24cfac78565ef6698f45cd3195327b588a84e92b56`
-- 50000: 50,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `9608f260646db6c8a931cb1387a664df63399a7d7c36c9b055b3df7366598cf3`
-- 110000: 110,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `72876a87de9de6ba1e3f7a00e3867673a8b7a61ac21a1aa8ca58a7337aff5107`
+- 20000: 20,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `1ffc669b3b912473a7d7fdcf50d696a2d39a05bcb9bc3f436b4b6d1bac0d7498`
+- 50000: 50,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `66e3f5ccdc7fc5b608c93eceff2345765f253fa0d64d3547f6a90b04e64b0dfc`
+- 110000: 110,000 passages; judged preservation `True`; positive preservation `True`; corpus SHA-256 `76fc195065f29b96f02e1fc3d7bb8c1e2330c4e701c8c472602fa5ced9626030`
 
 ## Leakage and smoke
 

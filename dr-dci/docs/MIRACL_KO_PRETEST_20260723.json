@@ -1,9 +1,9 @@
 {
   "acquisition": {
-    "acquisition_script_sha256": "52289ab5fdf5e0bcbf907f00f7c2a24f85f1fe24c4c7753d8184057a39c3c2cc",
-    "acquisition_script_version": "miracl-ko-preparation-v1",
+    "acquisition_script_sha256": "b3059182a72446037c63a34afbc5946fc644e0e983c02c7c473bd4391768025d",
+    "acquisition_script_version": "miracl-ko-preparation-v2",
     "dataset": "MIRACL",
-    "downloaded_at": "2026-07-23T08:22:51.529419+00:00",
+    "downloaded_at": "2026-07-23T08:56:42.611621+00:00",
     "files": [
       {
         "byte_size": 53825,
@@ -106,12 +106,14 @@
     ],
     "language": "ko",
     "license": "Apache-2.0 (MIRACL repository and dataset cards)",
+    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
     "python_version": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 11:23:37) [Clang 14.0.6 ]",
     "resolved_revision": {
       "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
       "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
     },
-    "revision_lock_sha256": "d201546006b1f85864bdc5e62d7f0d886f4fcaaf0cdf60b32beec98b4554d253",
+    "revision_lock_sha256": "84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa",
+    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
     "source_urls": {
       "corpus": "https://huggingface.co/datasets/miracl/miracl-corpus",
       "topics_qrels": "https://huggingface.co/datasets/miracl/miracl"
@@ -166,7 +168,7 @@
       "unique_passage_id_count": 1486752
     },
     "dataset": "MIRACL",
-    "generated_at": "2026-07-23T08:23:24.412129+00:00",
+    "generated_at": "2026-07-23T08:57:07.953066+00:00",
     "integrity_status": "passed",
     "language": "ko",
     "leakage_diagnostics": {
@@ -191,7 +193,7 @@
       "text": 5,
       "title": 0
     },
-    "normalization_manifest_sha256": "359c9b60490f671dcb1b72d92825d49c2290409abe7d2e552fdc9ad9c530bd4f",
+    "normalization_manifest_sha256": "7808421b0d96808ab5336986b43bc2069e5a941cbee53eb0bb7c939db33156c2",
     "official_reference_count_comparison": {
       "actual": {
         "corpus": {
@@ -225,6 +227,7 @@
       "source": "MIRACL official repository and dataset card",
       "status": "matches"
     },
+    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
     "qrels": {
       "conflicting_duplicate_qrels": {
         "dev": 0,
@@ -339,6 +342,7 @@
       "train_query_row_count": 868
     },
     "retrieval_unit": "passage",
+    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
     "split_overlap": {
       "dev_positive_article_count": 433,
       "shared_positive_article_count": 155,
@@ -356,14 +360,14 @@
     "scope": "Korean passage-retrieval algorithm screening only",
     "status": "suitable"
   },
-  "generated_at": "2026-07-23T08:23:41.535665+00:00",
+  "generated_at": "2026-07-23T09:07:43.042046+00:00",
   "language": "ko",
   "lexical_plumbing_smoke": {
     "reason": "Pyserini is not installed and no existing Korean lexical retrieval dependency is approved; the repository's small regex BM25 helper is not promoted to a Korean tokenizer",
     "status": "blocked"
   },
   "nested_subsets": {
-    "acquisition_manifest_sha256": "d389cac7cded11fccfac24e9f7eff2325df4fae83522e244b2127d88838fabfb",
+    "acquisition_manifest_sha256": "9437a11ca19182999566a0d17e5b2b47d585eadd670efafa20228c3a9c3d2892",
     "all_judged_qrels_forced_into_mandatory_set": true,
     "dataset": "MIRACL",
     "design": "controlled distractor scaling; all judged passages fixed, unjudged distractors increase",
@@ -371,17 +375,19 @@
     "judged_passage_id_sha256": "b489df1d479a56273868744b79d5f4fbf0388b18d2a3d4d03ac4ba3146cc583f",
     "language": "ko",
     "mandatory_set_definition": "all unique corpus IDs in normalized train and dev qrels, regardless of relevance",
-    "normalization_manifest_sha256": "359c9b60490f671dcb1b72d92825d49c2290409abe7d2e552fdc9ad9c530bd4f",
+    "normalization_manifest_sha256": "7808421b0d96808ab5336986b43bc2069e5a941cbee53eb0bb7c939db33156c2",
     "normalized_corpus_input": {
       "byte_size": 745841888,
       "relative_path": "normalized/corpus.jsonl",
       "sha256": "b2db7bfbf15c55bfb8acf240248426da20f5abb7c937252718d5651f2808342b"
     },
-    "output_order_definition": "SHA256(miracl-ko-scale-v1\\0 + corpus_id), independent of relevance",
+    "output_order_definition": "SHA256(miracl-ko-scale-v2\\0 + corpus_id), independent of relevance",
     "positive_passage_count": 2105,
     "positive_passage_id_sha256": "53b7b3e0652aba68b22c55df1ab73837aa1d48c24efa4ee4a5b5233dffc98480",
+    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
     "retrieval_unit": "passage",
-    "scale_version": "miracl-ko-scale-v1",
+    "scale_version": "miracl-ko-scale-v2",
+    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
     "source_revisions": {
       "corpus": "d921ec7e349ce0d28daf30b2da9da5ee698bef0d",
       "topics_qrels": "5be20db9509754dadad47689368639fcec739c00"
@@ -389,15 +395,15 @@
     "subsets": {
       "110000": {
         "corpus": {
-          "byte_size": 58398087,
+          "byte_size": 58253611,
           "relative_path": "subsets/110k/corpus.jsonl",
           "rows": 110000,
-          "sha256": "72876a87de9de6ba1e3f7a00e3867673a8b7a61ac21a1aa8ca58a7337aff5107"
+          "sha256": "76fc195065f29b96f02e1fc3d7bb8c1e2330c4e701c8c472602fa5ced9626030"
         },
         "judged_passage_count": 12601,
         "judged_passages_preserved": true,
-        "ordered_passage_id_sha256": "1d30b8cfe8c671deebeb42c5ed7d4c2bfe3a11d0a3ec07cd4e8bbcfa4c64af4f",
-        "passage_content_aggregate_sha256": "a1607aa084684181a031193aa44416e16ec91126f4fe67ddff81daef1c99675e",
+        "ordered_passage_id_sha256": "9cdfd08eb6939043ca0a34931dd65df024cb37d26438be60656829d8bf5a518c",
+        "passage_content_aggregate_sha256": "6e92b9807a16b9216964843d4f924ccc67354c7bdffaadb3e1e06b491b7417d6",
         "passage_count": 110000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -426,15 +432,15 @@
       },
       "20000": {
         "corpus": {
-          "byte_size": 13411445,
+          "byte_size": 13441068,
           "relative_path": "subsets/20k/corpus.jsonl",
           "rows": 20000,
-          "sha256": "a01130d3bf5540960a8b6c24cfac78565ef6698f45cd3195327b588a84e92b56"
+          "sha256": "1ffc669b3b912473a7d7fdcf50d696a2d39a05bcb9bc3f436b4b6d1bac0d7498"
         },
         "judged_passage_count": 12601,
         "judged_passages_preserved": true,
-        "ordered_passage_id_sha256": "f62373d97a32750e1968cd6fc5e3e4abf041a18a870f218b3c8b0deb4ce2f61f",
-        "passage_content_aggregate_sha256": "4b7a156a4dd0141b2333f620028ffc946f019509811ade84d3059ec64e508617",
+        "ordered_passage_id_sha256": "7739013d39139e887cc9c1f3c88daa2e62d28febda4b5f3c3755d9ddd7325cb5",
+        "passage_content_aggregate_sha256": "906e386def61709b2238c3a92a867e8de308194fb8b78b72b51f916477c6548e",
         "passage_count": 20000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -463,15 +469,15 @@
       },
       "50000": {
         "corpus": {
-          "byte_size": 28469352,
+          "byte_size": 28405329,
           "relative_path": "subsets/50k/corpus.jsonl",
           "rows": 50000,
-          "sha256": "9608f260646db6c8a931cb1387a664df63399a7d7c36c9b055b3df7366598cf3"
+          "sha256": "66e3f5ccdc7fc5b608c93eceff2345765f253fa0d64d3547f6a90b04e64b0dfc"
         },
         "judged_passage_count": 12601,
         "judged_passages_preserved": true,
-        "ordered_passage_id_sha256": "584747a20746a214972258a792d87a3f2e4605e1bc061c6170bc47a71bff035a",
-        "passage_content_aggregate_sha256": "6fde48fc80ea7cde8a164ae498d52e9ba55500f986733450854d25338094f50d",
+        "ordered_passage_id_sha256": "f2cddd08f11b92989a8588cf3b235b990075d0e0b684a72b33d5b0fe3d353617",
+        "passage_content_aggregate_sha256": "889f3beceaf447b40bfd8e9183cda7efe7affb669b02743cddce372742a8f769",
         "passage_count": 50000,
         "positive_passage_count": 2105,
         "positive_passages_preserved": true,
@@ -501,9 +507,9 @@
     }
   },
   "normalization": {
-    "acquisition_manifest_sha256": "d389cac7cded11fccfac24e9f7eff2325df4fae83522e244b2127d88838fabfb",
+    "acquisition_manifest_sha256": "9437a11ca19182999566a0d17e5b2b47d585eadd670efafa20228c3a9c3d2892",
     "dataset": "MIRACL",
-    "generated_at": "2026-07-23T08:23:07.005842+00:00",
+    "generated_at": "2026-07-23T08:56:53.243930+00:00",
     "inputs": {
       "corpus_0": {
         "byte_size": 87965596,
@@ -574,8 +580,10 @@
         "sha256": "8aa6c0214645ea4756b9da63874d76ab811b34c71ca4f344c306e1d4c9384b57"
       }
     },
+    "preparation_contract_sha256": "4dae88ce5550be52221d8cbfa2374e8926dc75a9244c0702e2143a7c99c868a7",
     "retrieval_unit": "passage",
-    "revision_lock_sha256": "d201546006b1f85864bdc5e62d7f0d886f4fcaaf0cdf60b32beec98b4554d253",
+    "revision_lock_sha256": "84d61180fc79180c4b2851c8e19ea8661b334ab0019f6e6dfbed3c137457c8fa",
+    "source_git_commit": "dbee144bd86c1de81248308db68c8d15dd3ab29a",
     "transformation_version": "miracl-ko-nfc-v1",
     "unicode_nfc_changed_fields": {
       "query": 0,
@@ -611,5 +619,5 @@
     "taxonomy_artifact": "not_generated"
   },
   "retrieval_unit": "passage",
-  "schema_version": "dr-dci.miracl-ko-pretest.v2"
+  "schema_version": "dr-dci.miracl-ko-pretest.v3"
 }
