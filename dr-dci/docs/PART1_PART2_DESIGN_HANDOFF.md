@@ -43,6 +43,12 @@
 | taxonomy artifact | 20K·50K·110K artifact가 로컬에 없음 | taxonomy treatment는 artifact가 없으면 fail-loud로 중단해야 한다. |
 | 신한 PDF | 지정된 PDF 경로가 로컬에 없음 | 다른 PPTX 등으로 추정 대체하지 않는다. |
 
+### 3.1 MIRACL-ko preparation track (separate from TREC focused execution)
+
+MIRACL-ko M0 data preparation and its standalone lexical plumbing smoke are complete as Korean **passage** controlled-distractor-scaling work; they neither replace TREC-COVID nor establish a Shinhan physical-document result. The fixed 20K/50K/110K fixtures preserve judged passages and scale only distractors.
+
+The MIRACL taxonomy artifact contract and synthetic validation harness are implemented in `docs/MIRACL_KO_TAXONOMY_ARTIFACT_CONTRACT_20260723.md`, but an actual 110K taxonomy body has **not** been generated. It is deliberately not registered in `run_experiment.py`, the TREC configuration, the focused Part 1/2 result contract, or an Agent path. A future real artifact must be generated once from 110K passage title/text only, then filter-projected to 50K/20K with shared mappings invariant. It must pass the standalone hash/provenance/coverage audit before a separately instructed MIRACL consumer adapter or passage-specific effect criterion is considered.
+
 ## 4. 실제 실행 경로
 
 | 경로 | 목적 | 현재 설계 판단 |

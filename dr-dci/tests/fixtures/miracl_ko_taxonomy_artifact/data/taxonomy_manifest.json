@@ -1,0 +1,56 @@
+{
+  "schema_version": "dr-dci.miracl-ko-taxonomy-manifest.v1",
+  "generated_at": "2026-07-24T00:00:00+00:00",
+  "taxonomy_artifact_id": "miracl-ko-synthetic-taxonomy-v1",
+  "dataset": "MIRACL",
+  "language": "ko",
+  "source_revisions": {"topics_qrels": "1111111111111111111111111111111111111111", "corpus": "2222222222222222222222222222222222222222"},
+  "retrieval_unit": "passage",
+  "source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
+  "source_scale": 110000,
+  "input_contract": {
+    "mapping_key": "corpus_id",
+    "semantic_generator_input_fields": ["title", "text"],
+    "corpus_id_semantic_use": "prohibited",
+    "corpus_id_nonsemantic_uses": ["mapping_join", "duplicate_detection", "deterministic_output_order"],
+    "forbidden_input_fields": ["query", "queries", "qid", "qrel", "qrels", "relevance", "answer", "answers", "gold", "gold_id", "gold_ids", "evidence", "evidence_id", "evidence_ids", "positive_passages", "negative_passages", "ranked_passage_ids", "evaluation_result"]
+  },
+  "provenance": {
+    "revision_lock_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "preparation_contract_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "input_110k_corpus_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "input_subset_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "generator": {
+      "generator_type": "deterministic_mock",
+      "generator_version": "fixture-v1",
+      "generator_code_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "model_or_algorithm": "content-hash-mock",
+      "model_or_tokenizer_version": "fixture-v1",
+      "prompt_template_sha256": null,
+      "seed": 7,
+      "parameters": {"label_count": 2},
+      "determinism_mode": "deterministic"
+    }
+  },
+  "source_artifact_content_sha256": "4a3038f448c2bdf06843f1c5b5685b857fd40b7147b23a64269de87d10d599ee",
+  "artifacts": {
+    "20000": {
+      "role": "filter_projection",
+      "artifact_file": {"relative_path": "taxonomy/20000.json", "byte_size": 2336, "sha256": "fa6224ff28575d04516ee1162ab5c3b49d7217b6f1a8870eb4cd412ce6b38c7c"},
+      "source_artifact_content_sha256": "4a3038f448c2bdf06843f1c5b5685b857fd40b7147b23a64269de87d10d599ee",
+      "projection_method": "filter_110k_mapping_by_corpus_id_v1"
+    },
+    "50000": {
+      "role": "filter_projection",
+      "artifact_file": {"relative_path": "taxonomy/50000.json", "byte_size": 2427, "sha256": "0c2a825072830fd526e3ee5d1a4b64ee31c6aa6a050ad862c94610ae8d5c9608"},
+      "source_artifact_content_sha256": "4a3038f448c2bdf06843f1c5b5685b857fd40b7147b23a64269de87d10d599ee",
+      "projection_method": "filter_110k_mapping_by_corpus_id_v1"
+    },
+    "110000": {
+      "role": "source",
+      "artifact_file": {"relative_path": "taxonomy/110000.json", "byte_size": 2354, "sha256": "d096c9d8b08aa53ec5cc195f8f6206cb5e50c654d29256c77197f2c5005d3db9"},
+      "source_artifact_content_sha256": null,
+      "projection_method": "source_110k_identity_v1"
+    }
+  }
+}

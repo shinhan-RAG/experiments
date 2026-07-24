@@ -1,0 +1,44 @@
+{
+  "schema_version": "dr-dci.miracl-ko-taxonomy-artifact.v1",
+  "taxonomy_artifact_id": "miracl-ko-synthetic-taxonomy-v1",
+  "dataset": "MIRACL",
+  "language": "ko",
+  "source_revisions": {"topics_qrels": "1111111111111111111111111111111111111111", "corpus": "2222222222222222222222222222222222222222"},
+  "retrieval_unit": "passage",
+  "source_scale": 110000,
+  "projection_scale": 20000,
+  "input_contract": {
+    "mapping_key": "corpus_id",
+    "semantic_generator_input_fields": ["title", "text"],
+    "corpus_id_semantic_use": "prohibited",
+    "corpus_id_nonsemantic_uses": ["mapping_join", "duplicate_detection", "deterministic_output_order"],
+    "forbidden_input_fields": ["query", "queries", "qid", "qrel", "qrels", "relevance", "answer", "answers", "gold", "gold_id", "gold_ids", "evidence", "evidence_id", "evidence_ids", "positive_passages", "negative_passages", "ranked_passage_ids", "evaluation_result"]
+  },
+  "provenance": {
+    "revision_lock_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "preparation_contract_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "input_110k_corpus_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "input_subset_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "generator": {
+      "generator_type": "deterministic_mock",
+      "generator_version": "fixture-v1",
+      "generator_code_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "model_or_algorithm": "content-hash-mock",
+      "model_or_tokenizer_version": "fixture-v1",
+      "prompt_template_sha256": null,
+      "seed": 7,
+      "parameters": {"label_count": 2},
+      "determinism_mode": "deterministic"
+    }
+  },
+  "label_catalog": [
+    {"label_id": "topic.a", "label": "Topic A"},
+    {"label_id": "topic.b", "label": "Topic B"},
+    {"label_id": "unknown", "label": "Unknown"}
+  ],
+  "assignments": [
+    {"corpus_id": "article#0", "label_id": "topic.a", "score": 1.0, "status": "assigned"},
+    {"corpus_id": "article#2", "label_id": "unknown", "score": 0.0, "status": "unknown"}
+  ],
+  "projection": {"method": "filter_110k_mapping_by_corpus_id_v1", "source_artifact_sha256": "4a3038f448c2bdf06843f1c5b5685b857fd40b7147b23a64269de87d10d599ee"}
+}
