@@ -177,24 +177,39 @@ def build_pilot_data(corpus, queries, gold):
     rng.shuffle(usable)
     chosen = usable[:N_QUERIES]
 
-    query_gold = {}          # qid -> subset에 포함된 gold ids
+    query_gold = {}          # qid -> subset에 포함된 gold ids (평가용)
     gold_union = set()
+    # 평가에서 빠진 positive라도 distractor가 되면 recall이 왜곡되므로
+    # 선택된 질의의 전체 positive qrel을 distractor 후보에서 제외한다
+    exclude_union = set()
     for qid, gs in chosen:
         picked = sorted(gs)[:K_GOLD_PER_Q]
         query_gold[qid] = picked
         gold_union.update(picked)
+        exclude_union.update(gold[qid])
 
-    # distractor 후보 (gold 아닌 non-empty)
-    all_ids = [did for did in corpus if nonempty(did) and did not in gold_union]
+    gold_list = sorted(gold_union)
+    if len(gold_list) > min(SCALES):
+        raise ValueError(
+            f"gold_union({len(gold_list)}) exceeds min scale({min(SCALES)}); "
+            "reduce PILOT_N_QUERIES/PILOT_K_GOLD or raise PILOT_SCALES"
+        )
+
+    # distractor 후보 (선택 질의의 positive 전부 제외, non-empty)
+    all_ids = [did for did in corpus if nonempty(did) and did not in exclude_union]
     rng.shuffle(all_ids)
     max_scale = max(SCALES)
-    distractors = all_ids[:max_scale]  # 충분히 확보
+    max_need = max_scale - len(gold_list)
+    if len(all_ids) < max_need:
+        raise ValueError(
+            f"not enough distractor candidates: need {max_need}, have {len(all_ids)}"
+        )
+    distractors = all_ids[:max_need]
 
     # nested subset: gold_union 항상 포함 + distractor 채움
     subsets = {}
-    gold_list = sorted(gold_union)
     for s in SCALES:
-        need = max(0, s - len(gold_list))
+        need = s - len(gold_list)
         subsets[s] = gold_list + distractors[:need]
     union_ids = subsets[max_scale]
     return chosen, query_gold, subsets, union_ids
@@ -411,12 +426,18 @@ def main():
     aug["tags"] = gen_tags(corpus, union_ids); print("  tags done")
     ref = gen_reference_answers(corpus, chosen, query_gold, queries); print("  reference answers done")
 
+    gold_union = {g for gs in query_gold.values() for g in gs}
+    excluded_beyond_gold = {
+        g for qid, _ in chosen for g in gold[qid]
+    } - gold_union
+
     artifact_path = OUT / f"{OUT_PREFIX.lower()}_artifacts.json"
     artifact_path.write_text(json.dumps({
         "seed": SEED,
         "query_ids": qids,
         "corpus_ids": union_ids,
         "query_gold": query_gold,
+        "excluded_positives_beyond_gold": len(excluded_beyond_gold),
         "augmentations": aug,
         "reference_answers": ref,
         "models": {
