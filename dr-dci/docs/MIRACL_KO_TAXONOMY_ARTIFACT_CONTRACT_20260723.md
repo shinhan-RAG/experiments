@@ -44,6 +44,12 @@ Thus ID text, prefixes, article numbers, and namespaces cannot be used in embedd
 
 The validator rejects query/qrel/qid/relevance/positive-negative/answer/gold/evidence/ranked-result fields and any unsupported transport field. It permits neither gold IDs nor an alternative ID that conveys relevance. Query taxonomy is outside this contract; a future query tagger must accept query text only.
 
+### Generator batch and output rejoin
+
+`build_taxonomy_generator_batch()` is the sole external transport contract. It validates input transport records (`corpus_id`, `title`, `text`), sorts once by opaque `corpus_id`, then writes two hash-bound parallel arrays: `mapping_envelope` contains only `{request_index, corpus_id}` and never enters a semantic generator; `semantic_payload` contains only `{title, text}` in the same deterministic order.
+
+A generator returns exactly one `{label_id, score, status}` object for every semantic payload row. `rejoin_taxonomy_generator_outputs()` rejects short/extra output, a changed envelope/hash/order, duplicate ID, or an ID in semantic payload, then reattaches results only through the verified request index. Therefore the same transport record set produces the same semantic payload order and final mapping regardless of caller order. The older `build_semantic_generator_inputs()` remains a title/text extractor only; it has no output-binding contract and is not an approved generator interface.
+
 ## Artifact schema and provenance
 
 The schema versions are `dr-dci.miracl-ko-taxonomy-artifact.v1` and `dr-dci.miracl-ko-taxonomy-manifest.v1`.
@@ -70,7 +76,7 @@ Each ignored artifact body contains:
 
 `unknown` is explicit (`label_id=unknown`, `score=0`, `status=unknown`); it is never an unrecorded fallback. Assignment IDs are unique, the label catalog has unique IDs and labels, assignments have finite `[0,1]` scores, and every expected passage has exactly one assignment.
 
-The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records `generated_at`, exact artifact body byte size/SHA-256 for all scales, source Git commit, source revisions, the input/provenance contract, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration.
+The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records an RFC3339 timezone-bearing `generated_at`, exact artifact body byte size/SHA-256 for all scales, source Git commit, source revisions, the input/provenance contract, `generator_contract_sha256`, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration. Generator parameters must be JSON-safe with no NaN/Infinity; boolean values are not valid seeds or assignment scores. Display labels must already be Unicode NFC with normalized single-space whitespace, so the artifact and consumer never silently normalize a category at match time.
 
 ## Fixed-scale projection
 
@@ -81,6 +87,24 @@ The body deliberately has no wall-clock timestamp so that an actually determinis
 The source body declares `source_110k_identity_v1`. Projections declare `filter_110k_mapping_by_corpus_id_v1` and the source body’s canonical SHA-256. The validator rejects a projection containing a non-110K ID, a missing target-scale ID, a changed assignment, label catalog drift, provenance drift, revision mismatch, or body/hash mismatch.
 
 This is transductive controlled distractor scaling. It must be described as “taxonomy generated on the fixed 110K passage fixture and projected to 20K/50K,” never as a taxonomy trained independently on a smaller corpus.
+
+## Flat-L1 consumer adapter contract
+
+The existing retriever exact-matches document taxonomy dictionaries against Agent L1/L2 filter strings. The sole approved preparation-level bridge is therefore `build_flat_l1_consumer_adapter()`:
+
+- artifact `label` is copied unchanged to document `{"L1": label}` and to the Agent L1 list;
+- `label_id` remains an internal artifact/audit key and is never used as an L1 match value;
+- the Agent schema is exactly `{"L1": [artifact display labels except Unknown], "L2": {}}`;
+- `unknown` assignments are omitted from boost-eligible document mapping;
+- assignment `score` stays in artifact QA only and is `not_used_by_existing_soft_boost`.
+
+This is not wired to `run_experiment.py`, the Agent, or `PullRetriever`. The validator rejects a label-ID/display-label mismatch, unknown mapping, score-weight mode, or passage omission/addition. A score-weighted bridge is rejected because the current retriever only has the configured global taxonomy multiplier; confidence weighting would be a second retrieval treatment.
+
+## Independent provenance and approval boundary
+
+The artifact manifest is not an approval record. A real generation requires three separate tracked objects: (1) result manifest with source commit, generator-contract hash, body hashes, and artifact provenance; (2) generator code contract with a uniquely sorted relative file list, each byte SHA-256, and `generator_code_sha256 = SHA256(canonical JSON of aggregate method + file list)`; its canonical JSON SHA-256 is `generator_contract_sha256`; and (3) an approval record with approved source commit, generator-contract/code hashes, approver, RFC3339 time, and basis.
+
+`validate_taxonomy_generation_preflight()` requires all three, compares every commit/hash, and rejects non-clean Git porcelain state. The audit CLI performs that check only when both `--approval-record` and `--generator-code-contract` are supplied. No approval record is created in `config/` by this work. The fixture contains a marked `synthetic_test` record which validates fixtures only and cannot authorize execution.
 
 ## Preflight, audit, and synthetic RED → GREEN harness
 
@@ -93,6 +117,9 @@ The following RED counterexamples are fixed in `tests/test_miracl_ko_taxonomy_ar
 - missing manifest/body, tampered artifact byte hash, missing seed/provenance, duplicate ID, and orphan/missing mapping;
 - changed common-passage label/score, source-outside projection, and non-exact projection;
 - deterministic generator content change;
+- reverse-order batch/rejoin ambiguity, missing/extra generator output, and semantic-payload ID leakage;
+- label-ID/display-label exact-match mismatch, unknown boost eligibility, score-weight drift, and consumer passage coverage drift;
+- self-declared code/source provenance, missing approval, dirty source, non-RFC3339 timestamp, bool seed/score, non-finite parameter, and non-canonical label;
 - future focused control/treatment differences other than the taxonomy boost toggle.
 
 The tracked three-passage fixture under `tests/fixtures/miracl_ko_taxonomy_artifact/` validates the body SHA and all three projection roles without putting real MIRACL taxonomy content in Git.
@@ -106,9 +133,15 @@ PYTHONPATH=. pytest -q tests/test_miracl_ko_taxonomy_artifact.py
 # After a separately approved real generator has produced ignored bodies and
 # a tracked manifest; this command is read-only and fails loudly when absent.
 PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py
+
+# After separate approval artifacts are committed. This checks actual Git HEAD
+# and rejects a dirty checkout before a generation workflow.
+PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py \
+  --approval-record config/miracl_ko_taxonomy_approval.json \
+  --generator-code-contract config/miracl_ko_taxonomy_generator_code_contract.json
 ```
 
-Before any real artifact generation, an approved generator must write the three bodies under `data/miracl-ko/taxonomy/`, build the tracked `config/miracl_ko_taxonomy_artifact_manifest.json` from their real hashes, and run the audit against the pinned 110K/subset/revision inputs. It must record model/algorithm version, code hash, prompt/template hash when applicable, seed, full parameters, and the external execution approval. It must not use query/qrel/relevance/gold/evidence inputs.
+Before any real artifact generation, an approved generator must build a clean-checkout code contract and approval record, create the one 110K body through the batch/rejoin contract, filter-project the 50K/20K bodies, build the tracked `config/miracl_ko_taxonomy_artifact_manifest.json` from real hashes, and run the audit against the pinned 110K/subset/revision inputs. It must record model/algorithm version, code hash, prompt/template hash when applicable, seed, full parameters, and external execution approval. It must not use query/qrel/relevance/gold/evidence inputs.
 
 ## Non-results and next gate
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import subprocess
 import sys
 from typing import Any
 
@@ -24,7 +25,10 @@ from src.miracl_ko.preparation import (
     sha256_file,
     validate_miracl_ko_subset_files,
 )
-from src.miracl_ko.taxonomy_artifact import validate_taxonomy_artifact_manifest
+from src.miracl_ko.taxonomy_artifact import (
+    validate_taxonomy_artifact_manifest,
+    validate_taxonomy_generation_preflight,
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -63,6 +67,22 @@ def verified_taxonomy_provenance(
     }
 
 
+def git_source_state(repo_root: Path) -> tuple[str, str]:
+    head = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        check=True,
+        text=True,
+        capture_output=True,
+    ).stdout.strip()
+    porcelain = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain"],
+        check=True,
+        text=True,
+        capture_output=True,
+    ).stdout
+    return head, porcelain
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=Path("data/miracl-ko"))
@@ -72,6 +92,8 @@ def main() -> int:
         default=Path("config/miracl_ko_taxonomy_artifact_manifest.json"),
     )
     parser.add_argument("--revision-lock", type=Path, default=Path("config/miracl_ko_revision_lock.json"))
+    parser.add_argument("--approval-record", type=Path)
+    parser.add_argument("--generator-code-contract", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -81,6 +103,16 @@ def main() -> int:
         (REPO_ROOT / args.revision_lock).resolve()
         if not args.revision_lock.is_absolute()
         else args.revision_lock
+    )
+    approval_path = (
+        (REPO_ROOT / args.approval_record).resolve()
+        if args.approval_record is not None and not args.approval_record.is_absolute()
+        else args.approval_record
+    )
+    generator_contract_path = (
+        (REPO_ROOT / args.generator_code_contract).resolve()
+        if args.generator_code_contract is not None and not args.generator_code_contract.is_absolute()
+        else args.generator_code_contract
     )
     if not revision_lock_path.is_file():
         raise FileNotFoundError(f"MIRACL revision lock is missing: {revision_lock_path}")
@@ -103,6 +135,23 @@ def main() -> int:
             revision_lock_path=revision_lock_path,
         ),
     )
+    if (approval_path is None) != (generator_contract_path is None):
+        raise ValueError("taxonomy approval record and generator code contract must be provided together")
+    if approval_path is not None and generator_contract_path is not None:
+        if not approval_path.is_file():
+            raise FileNotFoundError(f"taxonomy approval record is missing: {approval_path}")
+        if not generator_contract_path.is_file():
+            raise FileNotFoundError(f"taxonomy generator code contract is missing: {generator_contract_path}")
+        actual_source_git_commit, git_status_porcelain = git_source_state(REPO_ROOT)
+        validate_taxonomy_generation_preflight(
+            taxonomy_manifest,
+            approval_record=load_json(approval_path),
+            generator_code_contract=load_json(generator_contract_path),
+            actual_source_git_commit=actual_source_git_commit,
+            git_status_porcelain=git_status_porcelain,
+            generator_repo_root=REPO_ROOT,
+        )
+        report["generation_approval_preflight"] = "ready"
     rendered = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True)
     print(rendered)
     if args.output is not None:

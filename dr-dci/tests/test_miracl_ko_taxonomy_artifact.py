@@ -5,17 +5,29 @@ import unittest
 from pathlib import Path
 
 from src.miracl_ko.taxonomy_artifact import (
+    TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION,
     TAXONOMY_ARTIFACT_SCHEMA_VERSION,
+    TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION,
+    TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION,
     TAXONOMY_MANIFEST_SCHEMA_VERSION,
+    build_flat_l1_consumer_adapter,
+    build_generator_code_contract,
     build_semantic_generator_inputs,
+    build_taxonomy_generator_batch,
     build_taxonomy_artifact_manifest,
+    generator_contract_sha256,
     load_verified_taxonomy_projection,
     project_taxonomy_artifact,
+    rejoin_taxonomy_generator_outputs,
     taxonomy_artifact_sha256,
+    validate_flat_l1_consumer_adapter,
     validate_deterministic_regeneration,
     validate_focused_taxonomy_treatment_pair,
+    validate_taxonomy_approval_record,
     validate_taxonomy_artifact,
     validate_taxonomy_artifact_manifest,
+    validate_taxonomy_generation_preflight,
+    validate_taxonomy_generator_batch,
     validate_taxonomy_projection,
 )
 from src.miracl_ko.preparation import file_record, sha256_file
@@ -87,6 +99,220 @@ def source_artifact() -> dict:
 
 
 class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
+    def test_generator_batch_is_order_independent_and_rejoins_only_through_envelope(self):
+        forward = [
+            {"corpus_id": "article#2", "title": "두", "text": "둘"},
+            {"corpus_id": "article#1", "title": "하나", "text": "첫"},
+        ]
+        reverse = list(reversed(forward))
+
+        # Existing title/text-only helper preserves caller order, so it cannot
+        # by itself define a safe post-generation rejoin contract.
+        self.assertNotEqual(
+            build_semantic_generator_inputs(forward),
+            build_semantic_generator_inputs(reverse),
+        )
+        batch = build_taxonomy_generator_batch(forward)
+        self.assertEqual(batch, build_taxonomy_generator_batch(reverse))
+        self.assertEqual(batch["schema_version"], TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION)
+        self.assertEqual(
+            batch["mapping_envelope"],
+            [
+                {"request_index": 0, "corpus_id": "article#1"},
+                {"request_index": 1, "corpus_id": "article#2"},
+            ],
+        )
+        self.assertEqual(batch["semantic_payload"], [{"title": "하나", "text": "첫"}, {"title": "두", "text": "둘"}])
+        self.assertTrue(all("corpus_id" not in row for row in batch["semantic_payload"]))
+
+        outputs = [
+            {"label_id": "topic.a", "score": 0.9, "status": "assigned"},
+            {"label_id": "topic.b", "score": 0.8, "status": "assigned"},
+        ]
+        self.assertEqual(
+            rejoin_taxonomy_generator_outputs(batch, outputs),
+            [
+                {"corpus_id": "article#1", "label_id": "topic.a", "score": 0.9, "status": "assigned"},
+                {"corpus_id": "article#2", "label_id": "topic.b", "score": 0.8, "status": "assigned"},
+            ],
+        )
+        for outputs_with_wrong_count in (outputs[:1], outputs + outputs[:1]):
+            with self.subTest(output_count=len(outputs_with_wrong_count)):
+                with self.assertRaisesRegex(ValueError, "count"):
+                    rejoin_taxonomy_generator_outputs(batch, outputs_with_wrong_count)
+        with self.assertRaisesRegex(ValueError, "duplicate corpus_id"):
+            build_taxonomy_generator_batch(forward + [dict(forward[0])])
+
+        leaking = copy.deepcopy(batch)
+        leaking["semantic_payload"][0]["corpus_id"] = "article#1"
+        with self.assertRaisesRegex(ValueError, "semantic payload"):
+            validate_taxonomy_generator_batch(leaking)
+        mismatched = copy.deepcopy(batch)
+        mismatched["mapping_envelope"] = list(reversed(mismatched["mapping_envelope"]))
+        with self.assertRaisesRegex(ValueError, "mapping envelope"):
+            rejoin_taxonomy_generator_outputs(mismatched, outputs)
+
+    def test_flat_l1_adapter_preserves_display_labels_and_excludes_unknown(self):
+        artifact = source_artifact()
+        expected_ids = {"article#0", "article#1", "article#2"}
+        adapter = build_flat_l1_consumer_adapter(artifact, expected_corpus_ids=expected_ids)
+        self.assertEqual(adapter["schema_version"], TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION)
+        self.assertEqual(adapter["document_taxonomy"], {
+            "article#0": {"L1": "Topic A"},
+            "article#1": {"L1": "Topic B"},
+        })
+        self.assertEqual(adapter["agent_taxonomy_schema"], {"L1": ["Topic A", "Topic B"], "L2": {}})
+        self.assertEqual(adapter["score_handling"], "not_used_by_existing_soft_boost")
+        validate_flat_l1_consumer_adapter(adapter, artifact, expected_corpus_ids=expected_ids)
+
+        label_id_leak = copy.deepcopy(adapter)
+        label_id_leak["document_taxonomy"]["article#0"] = {"L1": "topic.a"}
+        with self.assertRaisesRegex(ValueError, "display label|exact match"):
+            validate_flat_l1_consumer_adapter(label_id_leak, artifact, expected_corpus_ids=expected_ids)
+        unknown_boost = copy.deepcopy(adapter)
+        unknown_boost["document_taxonomy"]["article#2"] = {"L1": "Unknown"}
+        with self.assertRaisesRegex(ValueError, "unknown"):
+            validate_flat_l1_consumer_adapter(unknown_boost, artifact, expected_corpus_ids=expected_ids)
+        weighted = copy.deepcopy(adapter)
+        weighted["score_handling"] = "use_as_boost_weight"
+        with self.assertRaisesRegex(ValueError, "score"):
+            validate_flat_l1_consumer_adapter(weighted, artifact, expected_corpus_ids=expected_ids)
+        omitted = copy.deepcopy(adapter)
+        del omitted["document_taxonomy"]["article#1"]
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            validate_flat_l1_consumer_adapter(omitted, artifact, expected_corpus_ids=expected_ids)
+        added = copy.deepcopy(adapter)
+        added["document_taxonomy"]["article#unexpected"] = {"L1": "Topic A"}
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            validate_flat_l1_consumer_adapter(added, artifact, expected_corpus_ids=expected_ids)
+
+    def test_generator_provenance_requires_separate_approval_and_clean_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            generator_path = root / "generator.py"
+            generator_path.write_text("# deterministic mock\n", encoding="utf-8")
+            code_contract = build_generator_code_contract(root, ["generator.py"])
+            full = source_artifact()
+            full["provenance"]["generator"]["generator_code_sha256"] = code_contract["generator_code_sha256"]
+            artifact_path = root / "110000.json"
+            artifact_path.write_text(json.dumps(full, ensure_ascii=False), encoding="utf-8")
+            manifest = build_taxonomy_artifact_manifest(
+                full_artifact=full,
+                artifact_records={
+                    20_000: {"relative_path": "110000.json", "byte_size": artifact_path.stat().st_size, "sha256": sha256_file(artifact_path)},
+                    50_000: {"relative_path": "110000.json", "byte_size": artifact_path.stat().st_size, "sha256": sha256_file(artifact_path)},
+                    110_000: {"relative_path": "110000.json", "byte_size": artifact_path.stat().st_size, "sha256": sha256_file(artifact_path)},
+                },
+                source_git_commit="f" * 40,
+                generator_contract_sha256=generator_contract_sha256(code_contract),
+            )
+            approval = {
+                "schema_version": TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION,
+                "approval_kind": "actual_execution",
+                "status": "approved_for_generation",
+                "approved_source_git_commit": "f" * 40,
+                "approved_generator_contract_sha256": generator_contract_sha256(code_contract),
+                "approved_generator_code_sha256": code_contract["generator_code_sha256"],
+                "approved_by": "named-approver",
+                "approved_at": "2026-07-24T12:00:00+00:00",
+                "approval_basis": "separate approved change request",
+            }
+            validate_taxonomy_generation_preflight(
+                manifest,
+                approval_record=approval,
+                generator_code_contract=code_contract,
+                actual_source_git_commit="f" * 40,
+                git_status_porcelain="",
+                generator_repo_root=root,
+            )
+            with self.assertRaisesRegex(FileNotFoundError, "approval"):
+                validate_taxonomy_generation_preflight(
+                    manifest,
+                    approval_record=None,
+                    generator_code_contract=code_contract,
+                    actual_source_git_commit="f" * 40,
+                    git_status_porcelain="",
+                    generator_repo_root=root,
+                )
+            with self.assertRaisesRegex(ValueError, "dirty"):
+                validate_taxonomy_generation_preflight(
+                    manifest,
+                    approval_record=approval,
+                    generator_code_contract=code_contract,
+                    actual_source_git_commit="f" * 40,
+                    git_status_porcelain=" M generator.py",
+                    generator_repo_root=root,
+                )
+            wrong_approval = copy.deepcopy(approval)
+            wrong_approval["approved_generator_code_sha256"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "generator code"):
+                validate_taxonomy_generation_preflight(
+                    manifest,
+                    approval_record=wrong_approval,
+                    generator_code_contract=code_contract,
+                    actual_source_git_commit="f" * 40,
+                    git_status_porcelain="",
+                    generator_repo_root=root,
+                )
+            generator_path.write_text("# modified after contract\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "code file hash"):
+                validate_taxonomy_generation_preflight(
+                    manifest,
+                    approval_record=approval,
+                    generator_code_contract=code_contract,
+                    actual_source_git_commit="f" * 40,
+                    git_status_porcelain="",
+                    generator_repo_root=root,
+                )
+
+            synthetic_approval = {**approval, "approval_kind": "synthetic_test", "status": "synthetic_only", "approved_by": "synthetic-fixture"}
+            validate_taxonomy_approval_record(synthetic_approval, allow_synthetic=True)
+            with self.assertRaisesRegex(ValueError, "synthetic"):
+                validate_taxonomy_approval_record(synthetic_approval)
+
+    def test_strict_types_canonical_labels_and_manifest_timestamp(self):
+        artifact = source_artifact()
+        seed_bool = copy.deepcopy(artifact)
+        seed_bool["provenance"]["generator"]["seed"] = True
+        with self.assertRaisesRegex(ValueError, "seed"):
+            validate_taxonomy_artifact(seed_bool)
+        score_bool = copy.deepcopy(artifact)
+        score_bool["assignments"][0]["score"] = True
+        with self.assertRaisesRegex(ValueError, "score"):
+            validate_taxonomy_artifact(score_bool)
+        nan_parameter = copy.deepcopy(artifact)
+        nan_parameter["provenance"]["generator"]["parameters"] = {"temperature": float("nan")}
+        with self.assertRaisesRegex(ValueError, "parameters"):
+            validate_taxonomy_artifact(nan_parameter)
+        non_nfc_label = copy.deepcopy(artifact)
+        non_nfc_label["label_catalog"][0]["label"] = "Cafe\u0301"
+        with self.assertRaisesRegex(ValueError, "NFC"):
+            validate_taxonomy_artifact(non_nfc_label)
+        whitespace_duplicate = copy.deepcopy(artifact)
+        whitespace_duplicate["label_catalog"].append({"label_id": "topic.c", "label": "Topic  A"})
+        with self.assertRaisesRegex(ValueError, "whitespace|duplicate"):
+            validate_taxonomy_artifact(whitespace_duplicate)
+
+        with tempfile.TemporaryDirectory() as directory:
+            data_dir = Path(directory)
+            path = data_dir / "110000.json"
+            path.write_text(json.dumps(artifact), encoding="utf-8")
+            manifest = build_taxonomy_artifact_manifest(
+                full_artifact=artifact,
+                artifact_records={
+                    scale: file_record(path, relative_to=data_dir) for scale in (20_000, 50_000, 110_000)
+                },
+                source_git_commit="f" * 40,
+                generator_contract_sha256="f" * 64,
+            )
+            manifest["generated_at"] = "2026-07-24T12:00:00"
+            with self.assertRaisesRegex(ValueError, "generated_at"):
+                validate_taxonomy_artifact_manifest(
+                    manifest,
+                    data_dir=data_dir,
+                    expected_ids_by_scale={scale: {"article#0", "article#1", "article#2"} for scale in (20_000, 50_000, 110_000)},
+                )
+
     def test_semantic_generator_inputs_allow_only_title_and_text(self):
         records = [
             {"corpus_id": "article#0", "title": "제목", "text": "본문"},
@@ -140,6 +366,13 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             validate_taxonomy_projection(
                 full, changed, expected_corpus_ids={"article#0", "article#2"}, target_scale=20_000
             )
+        changed_source_revision = copy.deepcopy(projected)
+        changed_source_revision["source_revisions"]["corpus"] = "3" * 40
+        with self.assertRaisesRegex(ValueError, "source_revisions"):
+            validate_taxonomy_projection(
+                full, changed_source_revision,
+                expected_corpus_ids={"article#0", "article#2"}, target_scale=20_000,
+            )
 
     def test_manifest_rechecks_artifact_hash_and_projection_files(self):
         full = source_artifact()
@@ -161,6 +394,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                     for scale, path in paths.items()
                 },
                 source_git_commit="f" * 40,
+                generator_contract_sha256="f" * 64,
             )
             manifest_path = data_dir / "taxonomy_manifest.json"
             manifest_path.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
@@ -275,6 +509,12 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
         )
         self.assertEqual(audit["status"], "ready")
         self.assertEqual(audit["artifact_sha256"], "4a3038f448c2bdf06843f1c5b5685b857fd40b7147b23a64269de87d10d599ee")
+        synthetic_approval = json.loads(
+            (FIXTURE_DATA_DIR.parent / "synthetic_approval_record.json").read_text(encoding="utf-8")
+        )
+        validate_taxonomy_approval_record(synthetic_approval, allow_synthetic=True)
+        with self.assertRaisesRegex(ValueError, "synthetic"):
+            validate_taxonomy_approval_record(synthetic_approval)
 
     def test_deterministic_regeneration_and_focused_treatment_pair_are_strict(self):
         artifact = source_artifact()

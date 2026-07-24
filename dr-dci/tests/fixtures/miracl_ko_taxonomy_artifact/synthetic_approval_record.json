@@ -1,0 +1,11 @@
+{
+  "schema_version": "dr-dci.miracl-ko-taxonomy-approval-record.v1",
+  "approval_kind": "synthetic_test",
+  "status": "synthetic_only",
+  "approved_source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
+  "approved_generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "approved_generator_code_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "approved_by": "synthetic-fixture-not-an-execution-approver",
+  "approved_at": "2026-07-24T00:00:00+00:00",
+  "approval_basis": "fixture-only provenance validation; no external execution approved"
+}

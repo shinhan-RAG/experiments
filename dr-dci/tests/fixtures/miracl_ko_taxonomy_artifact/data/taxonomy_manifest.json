@@ -7,6 +7,7 @@
   "source_revisions": {"topics_qrels": "1111111111111111111111111111111111111111", "corpus": "2222222222222222222222222222222222222222"},
   "retrieval_unit": "passage",
   "source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
+  "generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "source_scale": 110000,
   "input_contract": {
     "mapping_key": "corpus_id",
