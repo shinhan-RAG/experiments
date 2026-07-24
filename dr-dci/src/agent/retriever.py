@@ -35,7 +35,8 @@ class RetrieverConfig:
     embedding_model: str
     top_k: int = 20
     use_prefix: bool = False
-    taxonomy_boost: float = 1.5
+    # 덧셈 보너스: 곱셈 boost는 음수 cosine에서 penalty로 반전되므로 사용하지 않는다
+    taxonomy_bonus: float = 0.15
     reranker_url: str = None
     reranker_model: str = None
     # 모델별 instruction은 비교 arm 모두에 동일하게 주입해야 한다.
@@ -168,7 +169,7 @@ class PullRetriever:
             for i, did in enumerate(self.doc_ids):
                 tax = self.doc_taxonomy.get(did, {})
                 if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
-                    sims[i] *= self.config.taxonomy_boost
+                    sims[i] += self.config.taxonomy_bonus
         return sims
 
     def pull(self, query: str, taxonomy_filter: dict = None,

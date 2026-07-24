@@ -81,6 +81,34 @@ def test_cache_key_changes_with_prefix():
     assert k1 != k2  # prefix 여부가 cache key에 반영 (P2-3)
 
 
+def _signed_retriever(cosines: dict, taxonomy: dict):
+    """cosine 값을 직접 지정한 retriever (음수 score 검증용)."""
+    cfg = RetrieverConfig(embedding_url="mock", embedding_model="mock")
+    r = PullRetriever(cfg)
+    r.doc_ids = list(cosines)
+    r.embedding_matrix = np.array(
+        [[c, float(np.sqrt(1 - c * c))] for c in cosines.values()]
+    )
+    r.doc_taxonomy = taxonomy
+    r._embed_batch = lambda texts, batch_size=256: [np.array([1.0, 0.0])]
+    return r
+
+
+@pytest.mark.parametrize("match_cos,other_cos", [
+    (-0.15, -0.2),   # 음수 구간: 곱셈 boost면 일치 문서가 역전당한다
+    (0.0, -0.05),
+    (0.3, 0.25),
+])
+def test_taxonomy_boost_never_demotes_matching_doc(match_cos, other_cos):
+    r = _signed_retriever(
+        {"m": match_cos, "o": other_cos}, {"m": {"L1": "T"}}
+    )
+    base = r._dense_scores("q")
+    boosted = r._dense_scores("q", taxonomy_filter={"L1": "T"})
+    assert boosted[0] >= base[0] - 1e-9   # 일치 문서 점수는 감소하지 않는다
+    assert boosted[0] > boosted[1]        # 원래 우위였던 일치 문서가 역전되지 않는다
+
+
 def test_cache_key_changes_with_text():
     r = build()
     k1 = r._cache_key(["d0"], ["original text"])
