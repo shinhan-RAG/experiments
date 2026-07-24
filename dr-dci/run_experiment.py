@@ -208,6 +208,73 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
     return rows
 
 
+def failed_query_row(query: dict, exc: Exception,
+                     requested_features: dict = None,
+                     single_pull: bool = False) -> dict:
+    """실행에 실패한 질의를 결과 행으로 기록한다 — 한 질의의 장애가
+    이미 소비한 나머지 결과를 유실시키지 않도록."""
+    return {
+        "query_id": str(query.get("_id", "")),
+        "query_text": query.get("title") or query.get("text", ""),
+        "answer": "",
+        "failed": True,
+        "error": f"{type(exc).__name__}: {exc}",
+        "termination_reason": "harness_error",
+        "gold_recall": 0.0,
+        "read_recall": 0.0,
+        "efficiency": 0.0,
+        "pull_count": 0,
+        "retrieved_candidates": 0,
+        "added_documents": 0,
+        "workspace_docs": [],
+        "read_docs": [],
+        "turns": 0,
+        "tool_call_counts": {},
+        "tool_calls_total": 0,
+        "llm_prompt_tokens": 0,
+        "llm_completion_tokens": 0,
+        "taxonomy_filtered_pulls": 0,
+        "system_fingerprints": [],
+        "latency_seconds": 0.0,
+        "distinct_pull_queries": 0,
+        "pull_stats": [],
+        "budget_exhausted": False,
+        "rule_violations": [],
+        "trace": [],
+        "requested_features": dict(requested_features or {}),
+        "single_pull": single_pull,
+    }
+
+
+def check_arm_failure_rate(results: list, threshold: float = 0.2):
+    """arm 내 실패율이 임계값을 넘으면 결과 해석이 불가하므로 중단한다."""
+    if not results:
+        return
+    failed = [
+        r for r in results
+        if r.get("termination_reason") in {"llm_error", "harness_error"}
+    ]
+    rate = len(failed) / len(results)
+    if rate > threshold:
+        errors = [r.get("error", "") for r in failed[:5]]
+        raise RuntimeError(
+            f"arm aborted: {len(failed)}/{len(results)} queries failed "
+            f"(threshold {threshold:.0%}). first errors: {errors}"
+        )
+
+
+def assign_judgment(r: dict, ref_answers: dict, judge) -> None:
+    """빈 답변(실패/프로토콜 위반)은 judge에 보내지 않고 명시적으로 구분한다."""
+    if not r.get("answer"):
+        r["judgment"] = "agent_error"
+    elif r["query_id"] in ref_answers:
+        r["judgment"] = judge.evaluate_accuracy(
+            r["query_text"], ref_answers[r["query_id"]], r["answer"]
+        )
+    else:
+        r["judgment"] = "n/a"
+
+
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                ref_answers: dict, step_config: dict, subset_size: int,
                dataset: str, cached_retriever: PullRetriever = None,
@@ -322,24 +389,42 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "single_pull": single_pull,
         }
 
+    requested_features = {
+        key: step_config.get(key, False)
+        for key in ("taxonomy", "tags", "prefix", "metadata")
+    }
     results = [None] * len(queries)
     with ThreadPoolExecutor(max_workers=16) as executor:
         futures = {executor.submit(run_single_query, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
-            results[idx] = future.result()
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                results[idx] = failed_query_row(
+                    queries[idx], exc,
+                    requested_features=requested_features,
+                    single_pull=single_pull,
+                )
+                print(f"    [FAILED] query {queries[idx].get('_id')}: {exc}")
+
+    try:
+        check_arm_failure_rate(results)
+    except RuntimeError:
+        # 이미 소비한 API 비용의 결과는 중단 전에 보존한다
+        dump_path = RESULTS_DIR / f"aborted_arm_{datetime.now():%Y%m%d_%H%M%S}.json"
+        dump_path.parent.mkdir(parents=True, exist_ok=True)
+        dump_path.write_text(
+            json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        print(f"    [ABORTED] partial results saved: {dump_path}")
+        raise
 
     # Judge 병렬 실행
-    def judge_single(r):
-        if r["query_id"] in ref_answers:
-            r["judgment"] = judge.evaluate_accuracy(
-                r["query_text"], ref_answers[r["query_id"]], r["answer"]
-            )
-        else:
-            r["judgment"] = "n/a"
-
     with ThreadPoolExecutor(max_workers=16) as executor:
-        list(executor.map(judge_single, results))
+        list(executor.map(
+            lambda r: assign_judgment(r, ref_answers, judge), results
+        ))
 
     return results
 
@@ -411,15 +496,17 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         futures = {executor.submit(run_single_hybrid, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
-            results[idx] = future.result()
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                results[idx] = failed_query_row(queries[idx], exc)
+                print(f"    [FAILED] query {queries[idx].get('_id')}: {exc}")
+
+    check_arm_failure_rate(results)
 
     # Judge 순차 실행
     for r in results:
-        r["judgment"] = "n/a"
-        if r["query_id"] in ref_answers:
-            r["judgment"] = judge.evaluate_accuracy(
-                r["query_text"], ref_answers[r["query_id"]], r["answer"]
-            )
+        assign_judgment(r, ref_answers, judge)
 
     return results
 

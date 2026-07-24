@@ -1,5 +1,6 @@
 """P0-3, P0-9, single-pull: agent harness 규칙 검증 (mock LLM + mock retriever)"""
 import numpy as np
+import pytest
 from src.agent.dci_agent import DCIAgent, normalize_query
 from src.agent.retriever import PullRetriever, RetrieverConfig
 
@@ -194,3 +195,94 @@ def test_repeated_early_text_answers_end_as_budget_exhausted():
 
 def test_normalize_query():
     assert normalize_query("  COVID  Vaccine ") == "covid vaccine"
+
+
+# ---------------------------------------------------------------- _call_llm 오류 처리
+
+class _FakeResponse:
+    def __init__(self, status_code=200, body=None, text=""):
+        self.status_code = status_code
+        self._body = body
+        self.text = text
+
+    def json(self):
+        if self._body is None:
+            raise ValueError("no json")
+        return self._body
+
+
+def _bare_agent():
+    return DCIAgent(llm_url="http://mock", model_name="m",
+                    retriever=None, corpus={})
+
+
+def _ok_body(content="ok"):
+    return {"choices": [{"message": {"content": content, "tool_calls": None}}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1}}
+
+
+def test_call_llm_retries_timeout_and_5xx(monkeypatch):
+    import requests
+    from src.agent import dci_agent as mod
+
+    responses = [
+        requests.exceptions.Timeout("timed out"),
+        _FakeResponse(status_code=503),
+        _FakeResponse(status_code=200, body=_ok_body()),
+    ]
+    calls = {"n": 0}
+
+    def post(*args, **kwargs):
+        item = responses[calls["n"]]
+        calls["n"] += 1
+        if isinstance(item, Exception):
+            raise item
+        return item
+
+    monkeypatch.setattr(mod.requests, "post", post)
+    monkeypatch.setattr(mod.time, "sleep", lambda s: None)
+    out = _bare_agent()._call_llm([])
+    assert out["content"] == "ok"
+    assert calls["n"] == 3
+
+
+def test_call_llm_raises_explicit_error_after_retries(monkeypatch):
+    import requests
+    from src.agent import dci_agent as mod
+    from src.agent.dci_agent import LLMCallError
+
+    def post(*args, **kwargs):
+        raise requests.exceptions.Timeout("timed out")
+
+    monkeypatch.setattr(mod.requests, "post", post)
+    monkeypatch.setattr(mod.time, "sleep", lambda s: None)
+    with pytest.raises(LLMCallError):
+        _bare_agent()._call_llm([])
+
+
+def test_call_llm_400_raises_instead_of_fake_answer(monkeypatch):
+    # 400을 가짜 정상 답변으로 바꾸면 장애가 성능 결과로 둔갑한다
+    from src.agent import dci_agent as mod
+    from src.agent.dci_agent import LLMCallError
+
+    monkeypatch.setattr(
+        mod.requests, "post",
+        lambda *a, **k: _FakeResponse(status_code=400, text="bad request"),
+    )
+    with pytest.raises(LLMCallError):
+        _bare_agent()._call_llm([])
+
+
+def test_run_records_llm_error_termination():
+    from src.agent.dci_agent import LLMCallError
+
+    agent = make_agent([])
+
+    def boom(messages):
+        raise LLMCallError("HTTP 500 after retries")
+
+    agent._call_llm = boom
+    out = agent.run("question")
+    assert out["termination_reason"] == "llm_error"
+    assert out["answer"] == ""
+    assert "HTTP 500" in out["error"]

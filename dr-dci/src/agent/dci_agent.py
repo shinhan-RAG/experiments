@@ -14,9 +14,14 @@ DR-DCI Agent: Pull + DCI (workspace tools) 기반 질의응답 에이전트
 
 import json
 import re
+import time
 import requests
 from .workspace import Workspace, Document, normalize_tag
 from .retriever import PullRetriever
+
+
+class LLMCallError(RuntimeError):
+    """agent LLM 호출이 재시도 후에도 실패했음을 나타낸다."""
 
 AGENT_SYSTEM_BASE = """You are a research assistant that answers questions by searching and analyzing documents in your workspace.
 
@@ -247,8 +252,15 @@ class DCIAgent:
 
         turns_used = self.max_turns
         termination_reason = "turn_budget_exhausted"
+        llm_error = None
         for turn in range(self.max_turns):
-            response = self._call_llm(messages)
+            try:
+                response = self._call_llm(messages)
+            except LLMCallError as exc:
+                llm_error = str(exc)
+                termination_reason = "llm_error"
+                turns_used = turn + 1
+                break
             usage = response.pop("_usage", None) or {}
             fingerprint = response.pop("_system_fingerprint", None)
             state["prompt_tokens"] += int(usage.get("prompt_tokens") or 0)
@@ -333,6 +345,7 @@ class DCIAgent:
             "read_docs": sorted(workspace.read_ids),
             "turns": turns_used,
             "termination_reason": termination_reason,
+            "error": llm_error,
             "budget_exhausted": not state["answered"] and turns_used >= self.max_turns,
             "rule_violations": state["rule_violations"],
             "trace": state["trace"],
@@ -481,19 +494,32 @@ class DCIAgent:
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
-        for attempt in range(3):
-            resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=120)
-            if resp.status_code == 400:
-                return {"content": "I cannot process this query due to context limitations.", "tool_calls": None}
-            if resp.status_code == 429:
-                import time
-                time.sleep(5 * (attempt + 1))
-                continue
-            resp.raise_for_status()
-            body = resp.json()
-            choice = dict(body["choices"][0]["message"])
-            choice["_usage"] = body.get("usage") or {}
-            choice["_system_fingerprint"] = body.get("system_fingerprint")
-            return choice
+        attempts = 4
+        last_error = None
+        for attempt in range(attempts):
+            try:
+                resp = requests.post(self.llm_url, json=payload, headers=headers, timeout=120)
+            except requests.RequestException as exc:
+                last_error = f"transport error: {exc}"
+            else:
+                if resp.status_code == 429 or resp.status_code >= 500:
+                    last_error = f"HTTP {resp.status_code}"
+                elif resp.status_code >= 400:
+                    # 4xx는 재시도해도 같은 결과 — 가짜 답변으로 숨기지 않고 명시적 실패
+                    raise LLMCallError(
+                        f"agent LLM call failed: HTTP {resp.status_code}: {resp.text[:200]}"
+                    )
+                else:
+                    try:
+                        body = resp.json()
+                        choice = dict(body["choices"][0]["message"])
+                    except (ValueError, KeyError, IndexError) as exc:
+                        last_error = f"malformed response: {exc}"
+                    else:
+                        choice["_usage"] = body.get("usage") or {}
+                        choice["_system_fingerprint"] = body.get("system_fingerprint")
+                        return choice
+            if attempt < attempts - 1:
+                time.sleep(2 ** (attempt + 1))
 
-        return {"content": "Max retries exceeded.", "tool_calls": None}
+        raise LLMCallError(f"agent LLM call failed after {attempts} attempts: {last_error}")
