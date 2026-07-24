@@ -246,6 +246,7 @@ class DCIAgent:
         }
 
         turns_used = self.max_turns
+        termination_reason = "turn_budget_exhausted"
         for turn in range(self.max_turns):
             response = self._call_llm(messages)
             usage = response.pop("_usage", None) or {}
@@ -258,11 +259,25 @@ class DCIAgent:
             if not response.get("tool_calls"):
                 distinct = len({normalize_query(q) for q in state["pull_queries"]})
                 if state["pull_count"] < self.min_pulls or distinct < self.min_pulls:
+                    # answer 도구 조기 호출과 동일하게 거부하고 다음 턴을 계속 진행
                     state["rule_violations"].append("answered_without_min_pulls")
-                else:
-                    state["final_answer"] = response.get("content", "") or ""
-                    state["answered"] = True
+                    messages.append({
+                        "role": "assistant",
+                        "content": response.get("content", "") or "",
+                    })
+                    messages.append({
+                        "role": "user",
+                        "content": (
+                            f"Answer rejected: you must pull at least {self.min_pulls} "
+                            "times with different queries before answering. "
+                            "Continue searching with the available tools."
+                        ),
+                    })
+                    continue
+                state["final_answer"] = response.get("content", "") or ""
+                state["answered"] = True
                 turns_used = turn + 1
+                termination_reason = "answered"
                 break
 
             messages.append({
@@ -302,6 +317,7 @@ class DCIAgent:
 
             if answered_this_turn:
                 turns_used = turn + 1
+                termination_reason = "answered"
                 break
 
         distinct_queries = len({normalize_query(q) for q in state["pull_queries"]})
@@ -316,6 +332,7 @@ class DCIAgent:
             "workspace_docs": list(workspace.docs.keys()),
             "read_docs": sorted(workspace.read_ids),
             "turns": turns_used,
+            "termination_reason": termination_reason,
             "budget_exhausted": not state["answered"] and turns_used >= self.max_turns,
             "rule_violations": state["rule_violations"],
             "trace": state["trace"],

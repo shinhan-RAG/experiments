@@ -150,5 +150,47 @@ def test_budget_exhausted_flag():
     assert out["budget_exhausted"] is True
 
 
+def test_plain_text_early_answer_rejected_and_continues():
+    # min_pulls 미달 상태의 일반 텍스트 답변은 answer 도구와 동일하게
+    # 거부된 뒤 다음 턴이 계속 진행돼야 한다 (즉시 종료 금지)
+    script = [
+        [("pull", {"query": "q1"})],
+        None,  # 텍스트로 조기 답변 시도
+        [("pull", {"query": "q2"})],
+        [("answer", {"text": "final"})],
+    ]
+    out = make_agent(script).run("question")
+    assert out["answer"] == "final"
+    assert "answered_without_min_pulls" in out["rule_violations"]
+    assert out["termination_reason"] == "answered"
+
+
+def test_termination_reason_answered():
+    script = [
+        [("pull", {"query": "q1"})],
+        [("pull", {"query": "q2"})],
+        [("answer", {"text": "final"})],
+    ]
+    out = make_agent(script).run("question")
+    assert out["termination_reason"] == "answered"
+    assert out["budget_exhausted"] is False
+
+
+def test_termination_reason_turn_budget_exhausted():
+    script = [[("pull", {"query": f"q{i}"})] for i in range(10)]
+    out = make_agent(script, max_turns=3).run("question")
+    assert out["termination_reason"] == "turn_budget_exhausted"
+    assert out["budget_exhausted"] is True
+
+
+def test_repeated_early_text_answers_end_as_budget_exhausted():
+    # 거부가 반복되다 turn이 소진되면 answered가 아니라 budget 소진으로 끝난다
+    script = [[("pull", {"query": "q1"})], None, None]
+    out = make_agent(script, max_turns=3).run("question")
+    assert out["answer"] == ""
+    assert out["termination_reason"] == "turn_budget_exhausted"
+    assert out["budget_exhausted"] is True
+
+
 def test_normalize_query():
     assert normalize_query("  COVID  Vaccine ") == "covid vaccine"
