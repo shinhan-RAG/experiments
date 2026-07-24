@@ -15,6 +15,7 @@ reasoning-parser controls; vLLM documents structured-output and sampling
 controls needed by a later transport implementation. [Qwen3 vLLM deployment guide](https://github.com/QwenLM/Qwen3/blob/main/docs/source/deployment/vllm.md)
 [vLLM structured outputs](https://docs.vllm.ai/en/latest/examples/features/structured_outputs/)
 [vLLM sampling parameters](https://docs.vllm.ai/en/v0.9.0/api/vllm/sampling_params.html)
+[vLLM generation-config server argument](https://docs.vllm.ai/en/latest/configuration/engine_args/)
 
 The configured `Alibaba-NLP/gte-Qwen2-1.5B-instruct` endpoint is not adopted
 as an alternative generator: it is configured in this repository as a
@@ -45,9 +46,9 @@ floating model tag are invalid.
 | Model/tokenizer | Repository, immutable model revision, tokenizer repository and immutable tokenizer revision. |
 | Representation | Pooling and normalization, or explicit `not_applicable` only when the selected LLM algorithm does not create embeddings. |
 | Category construction | Classification/clustering algorithm, library/version or explicit `not_applicable`, cluster-count/selection rule, stable `label_id` rule, unknown/outlier handling, and display-label rule. |
-| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; `generation_config_mode`; and the complete canonical server generation-config object plus SHA-256, or explicit `not_applicable`. |
-| Template and reasoning | Chat-template mode, template SHA-256, content format, Qwen thinking enable/disable state, reasoning-parser policy, and whether reasoning content is retained. Unused values must be explicit `not_applicable`. |
-| Prompt and structured output | Complete prompt/template text and UTF-8 SHA-256; JSON structured-output schema, schema SHA-256, and content format, or explicit `not_applicable`. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
+| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; `generation_config_mode`; and the complete canonical server generation-config object, source launch value, and SHA-256, or explicit `not_applicable`. `request_controls_only` must launch with exactly `--generation-config vllm` and may not set an unmodelled `--override-generation-config`; `server_generation_config` must use the approved source launch value. |
+| Template and reasoning | Chat-template mode, template SHA-256, content format, and the exact `--chat-template` launch value when explicit; Qwen thinking enable/disable state, reasoning-parser policy, and whether reasoning content is retained. The canonical request template must carry `chat_template_kwargs.enable_thinking`; enabled reasoning must have the matching `--reasoning-parser`, while disabled thinking forbids it. Unused values must be explicit `not_applicable`. |
+| Prompt and structured output | Complete prompt/template text and UTF-8 SHA-256; JSON structured-output schema, schema name/SHA-256, and content format, or explicit `not_applicable`. The canonical request template must include the same `response_format` JSON schema. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
 | Request controls | Integer seed, determinism/replay mode, and every sampling/request control: `temperature`, `max_tokens`, `top_p`, `top_k`, `min_p`, `stop`, `stop_token_ids`, `presence_penalty`, `frequency_penalty`, `repetition_penalty`, `seed`, `n`, and `logprobs`. Each uses either an exact JSON-safe value or approved explicit `not_applicable`; `temperature`, `max_tokens`, and `seed` must match the top-level generator controls. |
 | Batch controls | Batch size, corpus-ID-sorted contiguous grouping, ordinal order, timeout, retry cap, resume policy, and request-hash idempotency mode. `max_retries` is a **per-successful-batch** limit; the receipt total is the sum of each successful batch's retry count and can therefore be larger than the per-batch limit. |
 | Runtime | Dependency-lock SHA-256 or immutable container digest, exact library versions, and model/tokenizer values repeated in the execution runtime receipt. |
@@ -67,8 +68,12 @@ evaluation outputs are rejected at the public input boundary.
 
 1. The approved plan includes `run_controls` and hashes the complete generator
    specification, including vLLM serving/template/thinking/structured-output
-   and sampling controls. A run whose batch size/grouping/order/retry/resume
-   controls differ is rejected before receipt validation.
+   and sampling controls. It also contains a canonical OpenAI-compatible
+   request-body template and its SHA-256. That template is derived from, and
+   must exactly equal, the declared launch/template/thinking/schema/sampling
+   values; it uses only a title/text payload placeholder. A run whose batch
+   size/grouping/order/retry/resume controls differ is rejected before receipt
+   validation.
 2. `TaxonomyGeneratorRun` sorts opaque `corpus_id` once, then creates
    contiguous batches. A batch has a non-semantic mapping envelope and a
    title/text-only semantic payload.
@@ -92,7 +97,9 @@ evaluation outputs are rejected at the public input boundary.
    assignment list before the validator mints the opaque
    `VerifiedTaxonomyGenerationReceipt` token. The manifest builder accepts
    that token, never a shape-only receipt mapping, and records its
-   `generation_receipt_sha256`.
+   `generation_receipt_sha256`. The token directly binds the actual code
+   contract aggregate/code hash and the complete generator-spec hash; manifest
+   construction rechecks those values against artifact provenance.
 
 The 20K and 50K artifacts remain pure projections of the 110K assignment
 mapping. They do not retrain, rename labels, or change shared assignment

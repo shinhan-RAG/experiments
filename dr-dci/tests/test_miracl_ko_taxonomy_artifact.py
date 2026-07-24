@@ -15,6 +15,7 @@ from src.miracl_ko.taxonomy_artifact import (
     TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION,
     TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION,
     TAXONOMY_MANIFEST_SCHEMA_VERSION,
+    TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION,
     approval_record_sha256,
     build_flat_l1_consumer_adapter,
     build_generator_code_contract,
@@ -57,7 +58,11 @@ FIXTURE_DATA_DIR = (
 
 
 def source_artifact() -> dict:
-    server_arguments = ["--synthetic-taxonomy-server"]
+    prompt_template = "Synthetic taxonomy test prompt: title and text only."
+    server_arguments = [
+        "--synthetic-taxonomy-server", "--generation-config", "vllm",
+        "--chat-template", "synthetic-qwen3.jinja",
+    ]
     response_schema = {
         "type": "object",
         "required": ["request_index", "label_id", "score", "status"],
@@ -65,6 +70,26 @@ def source_artifact() -> dict:
     canonical_sha256 = lambda value: hashlib.sha256(
         json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
+    request_body_template = {
+        "schema_version": TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION,
+        "endpoint": "/v1/chat/completions",
+        "body": {
+            "model": "synthetic/mock-model",
+            "messages": [
+                {"role": "system", "content": prompt_template},
+                {"role": "user", "content": "{{taxonomy_semantic_payload_json}}"},
+            ],
+            "temperature": 0.0,
+            "max_tokens": 16,
+            "seed": 7,
+            "n": 1,
+            "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {"name": "taxonomy_assignment", "schema": response_schema},
+            },
+        },
+    }
     return {
         "schema_version": TAXONOMY_ARTIFACT_SCHEMA_VERSION,
         "taxonomy_artifact_id": "miracl-ko-mock-taxonomy-v1",
@@ -98,9 +123,7 @@ def source_artifact() -> dict:
                 "generator_code_sha256": "e" * 64,
                 "model_or_algorithm": "content-hash-mock",
                 "model_or_tokenizer_version": "test-v1",
-                "prompt_template_sha256": hashlib.sha256(
-                    b"Synthetic taxonomy test prompt: title and text only."
-                ).hexdigest(),
+                "prompt_template_sha256": hashlib.sha256(prompt_template.encode("utf-8")).hexdigest(),
                 "seed": 7,
                 "parameters": {"label_count": 2},
                 "determinism_mode": "deterministic",
@@ -114,7 +137,7 @@ def source_artifact() -> dict:
                 "clustering_library": "not_applicable",
                 "clustering_library_version": "not_applicable",
                 "cluster_selection_rule": "fixed-synthetic-label-catalog-v1",
-                "prompt_template": "Synthetic taxonomy test prompt: title and text only.",
+                "prompt_template": prompt_template,
                 "generation_controls": {"temperature": 0.0, "max_tokens": 16},
                 "runtime": {
                     "model_repository": "synthetic/mock-model",
@@ -136,11 +159,13 @@ def source_artifact() -> dict:
                         "generation_config_mode": "request_controls_only",
                         "server_generation_config": None,
                         "server_generation_config_sha256": "not_applicable",
+                        "server_generation_config_launch_value": "not_applicable",
                     },
                     "chat_template": {
                         "mode": "explicit_template",
                         "sha256": "1" * 64,
                         "content_format": "openai_chat_messages_v1",
+                        "launch_argument": "synthetic-qwen3.jinja",
                     },
                     "thinking": {
                         "enable_thinking": "disabled",
@@ -152,6 +177,7 @@ def source_artifact() -> dict:
                         "content_format": "json_object_utf8_v1",
                         "json_schema": response_schema,
                         "json_schema_sha256": canonical_sha256(response_schema),
+                        "json_schema_name": "taxonomy_assignment",
                     },
                     "sampling_request_controls": {
                         "temperature": {"mode": "value", "value": 0.0},
@@ -168,6 +194,8 @@ def source_artifact() -> dict:
                         "n": {"mode": "value", "value": 1},
                         "logprobs": {"mode": "not_applicable", "value": None},
                     },
+                    "request_body_template": request_body_template,
+                    "request_body_template_sha256": canonical_sha256(request_body_template),
                 },
             },
         },
@@ -901,6 +929,57 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 raw_response_dir=response_dir,
             )
             self.assertEqual(list(verified_receipt.assignments), artifact["assignments"])
+            self.assertEqual(verified_receipt.generator_code_sha256, contract["generator_code_sha256"])
+            self.assertEqual(verified_receipt.generator_spec_sha256, plan["generator_spec_sha256"])
+
+            foreign_generator = root / "g2.py"
+            foreign_generator.write_text("# different deterministic mock\n", encoding="utf-8")
+            foreign_contract = build_generator_code_contract(root, ["g2.py"])
+            foreign_approval = copy.deepcopy(approval)
+            foreign_approval["approved_generator_contract_sha256"] = generator_contract_sha256(foreign_contract)
+            # Keep the original g1 aggregate code hash: only the contract is swapped.
+            foreign_receipt = copy.deepcopy(receipt)
+            foreign_receipt["approval_record_sha256"] = approval_record_sha256(foreign_approval)
+            foreign_receipt["generator_contract_sha256"] = generator_contract_sha256(foreign_contract)
+            with self.assertRaisesRegex(ValueError, "plan code contract"):
+                validate_taxonomy_generation_receipt(
+                    foreign_receipt,
+                    generation_plan=plan,
+                    approval_record=foreign_approval,
+                    generator_code_contract=foreign_contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+
+            wrong_code_approval = copy.deepcopy(approval)
+            wrong_code_approval["approved_generator_code_sha256"] = foreign_contract["generator_code_sha256"]
+            wrong_code_receipt = copy.deepcopy(receipt)
+            wrong_code_receipt["approval_record_sha256"] = approval_record_sha256(wrong_code_approval)
+            with self.assertRaisesRegex(ValueError, "approval generator code"):
+                validate_taxonomy_generation_receipt(
+                    wrong_code_receipt,
+                    generation_plan=plan,
+                    approval_record=wrong_code_approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+
+            provenance_swapped_artifact = copy.deepcopy(artifact)
+            provenance_swapped_artifact["provenance"]["generator"]["model_or_algorithm"] = "other-generator"
+            with self.assertRaisesRegex(ValueError, "generator specification"):
+                build_taxonomy_artifact_manifest(
+                    full_artifact=provenance_swapped_artifact,
+                    artifact_records={
+                        scale: {"relative_path": f"{scale}.json", "byte_size": 0, "sha256": "a" * 64}
+                        for scale in (20_000, 50_000, 110_000)
+                    },
+                    generator_source_commit=plan["generator_source_commit"],
+                    generator_contract_sha256=generator_contract_sha256(contract),
+                    generation_plan_sha256=generation_plan_sha256(plan),
+                    approval_record_sha256=approval_record_sha256(approval),
+                    verified_receipt=verified_receipt,
+                )
 
             retry_over_limit = copy.deepcopy(receipt)
             retry_over_limit["raw_response_files"][0]["attempt_count"] = 2
@@ -930,7 +1009,10 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             altered_artifact = source_artifact()
             altered_artifact["provenance"]["generator"]["generator_code_sha256"] = contract["generator_code_sha256"]
             altered_launch = altered_artifact["provenance"]["generator"]["vllm_execution"]["server_launch"]
-            altered_launch["arguments"] = ["--synthetic-taxonomy-server", "--different-launch-control"]
+            altered_launch["arguments"] = [
+                "--synthetic-taxonomy-server", "--different-launch-control",
+                "--generation-config", "vllm", "--chat-template", "synthetic-qwen3.jinja",
+            ]
             altered_launch["arguments_sha256"] = hashlib.sha256(
                 json.dumps(altered_launch["arguments"], ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
             ).hexdigest()
@@ -1110,6 +1192,99 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                     batch_size=plan["run_controls"]["batch_size"],
                     run_controls=plan["run_controls"],
                 )
+
+    def test_vllm_plan_requires_effective_launch_and_request_contract(self):
+        """RED regressions: serving declarations must equal launch and request bytes."""
+        def canonical_sha256(value: object) -> str:
+            return hashlib.sha256(
+                json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+
+        artifact = source_artifact()
+        plan = generation_plan_for(artifact)
+        launch = artifact["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        self.assertEqual(plan["generator"]["runtime"]["container_digest"], "sha256:" + "a" * 64)
+
+        missing_request_controls_override = copy.deepcopy(artifact)
+        missing_launch = missing_request_controls_override["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        missing_launch["arguments"] = [
+            "--synthetic-taxonomy-server", "--chat-template", "synthetic-qwen3.jinja",
+        ]
+        missing_launch["arguments_sha256"] = canonical_sha256(missing_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "request_controls_only generation-config"):
+            generation_plan_for(missing_request_controls_override)
+
+        missing_thinking_control = copy.deepcopy(artifact)
+        missing_thinking_template = missing_thinking_control["provenance"]["generator"]["vllm_execution"]
+        del missing_thinking_template["request_body_template"]["body"]["extra_body"]["chat_template_kwargs"]
+        missing_thinking_template["request_body_template_sha256"] = canonical_sha256(
+            missing_thinking_template["request_body_template"]
+        )
+        with self.assertRaisesRegex(ValueError, "request body template"):
+            generation_plan_for(missing_thinking_control)
+
+        missing_structured_schema = copy.deepcopy(artifact)
+        missing_schema_template = missing_structured_schema["provenance"]["generator"]["vllm_execution"]
+        del missing_schema_template["request_body_template"]["body"]["response_format"]
+        missing_schema_template["request_body_template_sha256"] = canonical_sha256(
+            missing_schema_template["request_body_template"]
+        )
+        with self.assertRaisesRegex(ValueError, "request body template"):
+            generation_plan_for(missing_structured_schema)
+
+        enabled_reasoning = copy.deepcopy(artifact)
+        enabled_execution = enabled_reasoning["provenance"]["generator"]["vllm_execution"]
+        enabled_execution["thinking"] = {
+            "enable_thinking": "enabled",
+            "reasoning_parser": "qwen3",
+            "response_reasoning_content": "included",
+        }
+        enabled_launch = enabled_execution["server_launch"]
+        enabled_launch["arguments"] += ["--reasoning-parser", "qwen3"]
+        enabled_launch["arguments_sha256"] = canonical_sha256(enabled_launch["arguments"])
+        enabled_execution["request_body_template"]["body"]["extra_body"]["chat_template_kwargs"] = {
+            "enable_thinking": True,
+        }
+        enabled_execution["request_body_template_sha256"] = canonical_sha256(
+            enabled_execution["request_body_template"]
+        )
+        generation_plan_for(enabled_reasoning)
+        enabled_launch["arguments"] = enabled_launch["arguments"][:-2]
+        enabled_launch["arguments_sha256"] = canonical_sha256(enabled_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "reasoning_parser"):
+            generation_plan_for(enabled_reasoning)
+
+        changed_request_contract = copy.deepcopy(artifact)
+        changed_execution = changed_request_contract["provenance"]["generator"]["vllm_execution"]
+        changed_execution["sampling_request_controls"]["top_p"] = {"mode": "value", "value": 0.9}
+        changed_execution["request_body_template"]["body"]["top_p"] = 0.9
+        changed_execution["request_body_template_sha256"] = canonical_sha256(
+            changed_execution["request_body_template"]
+        )
+        changed_plan = generation_plan_for(changed_request_contract)
+        self.assertEqual(
+            changed_plan["generator"]["runtime"]["container_digest"],
+            plan["generator"]["runtime"]["container_digest"],
+        )
+        self.assertNotEqual(generation_plan_sha256(changed_plan), generation_plan_sha256(plan))
+
+        server_config_mode = copy.deepcopy(artifact)
+        server_launch = server_config_mode["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        server_config = {"temperature": 0.3}
+        server_launch["generation_config_mode"] = "server_generation_config"
+        server_launch["server_generation_config"] = server_config
+        server_launch["server_generation_config_sha256"] = canonical_sha256(server_config)
+        server_launch["server_generation_config_launch_value"] = "/approved/generation-config"
+        server_launch["arguments"] = [
+            "--synthetic-taxonomy-server", "--generation-config", "/approved/generation-config",
+            "--chat-template", "synthetic-qwen3.jinja",
+        ]
+        server_launch["arguments_sha256"] = canonical_sha256(server_launch["arguments"])
+        generation_plan_for(server_config_mode)
+        server_launch["arguments"][2] = "/other/generation-config"
+        server_launch["arguments_sha256"] = canonical_sha256(server_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "server generation-config"):
+            generation_plan_for(server_config_mode)
 
     def test_strict_types_canonical_labels_and_manifest_timestamp(self):
         artifact = source_artifact()

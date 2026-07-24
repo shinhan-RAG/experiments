@@ -28,8 +28,9 @@ TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v2"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
 TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v2"
-TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v3"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v4"
 TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v2"
+TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION = "dr-dci.miracl-ko-vllm-request-body-template.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
 TAXONOMY_GENERATOR_CODE_CONTRACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-code-contract.v1"
 TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-approval-record.v1"
@@ -82,6 +83,8 @@ class VerifiedTaxonomyGenerationReceipt:
     generation_plan_sha256: str
     approval_record_sha256: str
     generator_contract_sha256: str
+    generator_code_sha256: str
+    generator_spec_sha256: str
     generator_source_commit: str
     generation_run_sha256: str
     assignment_canonical_sha256: str
@@ -652,10 +655,81 @@ def _validate_vllm_control(value: Any, *, label: str, validator: Any) -> Any:
     return value["value"]
 
 
+def _vllm_launch_option_values(arguments: list[str], option: str) -> list[str]:
+    """Read one vLLM option without treating prose metadata as launch state."""
+    values: list[str] = []
+    for index, argument in enumerate(arguments):
+        if argument == option:
+            if index + 1 == len(arguments):
+                raise ValueError(f"taxonomy vLLM launch option {option} has no value")
+            values.append(arguments[index + 1])
+        elif argument.startswith(f"{option}="):
+            value = argument.removeprefix(f"{option}=")
+            if not value:
+                raise ValueError(f"taxonomy vLLM launch option {option} has no value")
+            values.append(value)
+    return values
+
+
+def _require_vllm_launch_option(arguments: list[str], option: str, value: str, *, label: str) -> None:
+    if _vllm_launch_option_values(arguments, option) != [value]:
+        raise ValueError(f"taxonomy vLLM {label} does not match launch arguments")
+
+
+def _forbid_vllm_launch_option(arguments: list[str], option: str, *, label: str) -> None:
+    if _vllm_launch_option_values(arguments, option):
+        raise ValueError(f"taxonomy vLLM {label} must not appear in launch arguments")
+
+
+def _expected_vllm_request_body_template(
+    *, generator: Mapping[str, Any], execution: Mapping[str, Any], sampling_values: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Derive the exact OpenAI-compatible request template from approved controls."""
+    structured = execution["structured_output"]
+    thinking = execution["thinking"]
+    body: dict[str, Any] = {
+        "model": generator["model_repository"],
+        "messages": [
+            {"role": "system", "content": generator["prompt_template"]},
+            {"role": "user", "content": "{{taxonomy_semantic_payload_json}}"},
+        ],
+    }
+    for name in (
+        "temperature", "max_tokens", "top_p", "stop", "presence_penalty", "frequency_penalty",
+        "repetition_penalty", "seed", "n", "logprobs",
+    ):
+        if sampling_values[name] is not None:
+            body[name] = sampling_values[name]
+    extra_body: dict[str, Any] = {}
+    for name in ("top_k", "min_p", "stop_token_ids"):
+        if sampling_values[name] is not None:
+            extra_body[name] = sampling_values[name]
+    if thinking["enable_thinking"] in {"enabled", "disabled"}:
+        extra_body["chat_template_kwargs"] = {
+            "enable_thinking": thinking["enable_thinking"] == "enabled",
+        }
+    if extra_body:
+        body["extra_body"] = extra_body
+    if structured["mode"] == "json_schema":
+        body["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": structured["json_schema_name"],
+                "schema": structured["json_schema"],
+            },
+        }
+    return {
+        "schema_version": TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION,
+        "endpoint": "/v1/chat/completions",
+        "body": body,
+    }
+
+
 def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) -> None:
     """Require every serving and request behavior to be explicit in the plan."""
     required = {
         "server_launch", "chat_template", "thinking", "structured_output", "sampling_request_controls",
+        "request_body_template", "request_body_template_sha256",
     }
     if not isinstance(execution, Mapping) or set(execution) != required:
         raise ValueError("taxonomy vLLM execution has missing or unsupported fields")
@@ -663,6 +737,7 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
     launch_required = {
         "command", "arguments", "arguments_sha256", "generation_config_mode",
         "server_generation_config", "server_generation_config_sha256",
+        "server_generation_config_launch_value",
     }
     if not isinstance(launch, Mapping) or set(launch) != launch_required:
         raise ValueError("taxonomy vLLM server_launch is invalid")
@@ -677,10 +752,20 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
         raise ValueError("taxonomy vLLM launch arguments sha256 does not match arguments")
     if launch.get("generation_config_mode") not in {"request_controls_only", "server_generation_config"}:
         raise ValueError("taxonomy vLLM generation_config_mode is invalid")
+    _forbid_vllm_launch_option(
+        arguments, "--override-generation-config", label="unapproved server generation override",
+    )
     server_config_hash = launch.get("server_generation_config_sha256")
     if launch["generation_config_mode"] == "request_controls_only":
-        if launch.get("server_generation_config") is not None or server_config_hash != "not_applicable":
+        if (
+            launch.get("server_generation_config") is not None
+            or server_config_hash != "not_applicable"
+            or launch.get("server_generation_config_launch_value") != "not_applicable"
+        ):
             raise ValueError("taxonomy vLLM unused server generation config must be not_applicable")
+        _require_vllm_launch_option(
+            arguments, "--generation-config", "vllm", label="request_controls_only generation-config",
+        )
     else:
         if not isinstance(launch.get("server_generation_config"), Mapping) or not launch["server_generation_config"]:
             raise ValueError("taxonomy vLLM server generation config is invalid")
@@ -688,18 +773,41 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
         _require_sha256(server_config_hash, label="taxonomy vLLM server generation config")
         if server_config_hash != sha256_json(launch["server_generation_config"]):
             raise ValueError("taxonomy vLLM server generation config sha256 does not match config")
+        config_launch_value = _require_nonempty_string(
+            launch.get("server_generation_config_launch_value"),
+            label="taxonomy vLLM server generation config launch value",
+        )
+        _require_vllm_launch_option(
+            arguments, "--generation-config", config_launch_value, label="server generation-config",
+        )
 
     template = execution.get("chat_template")
-    if not isinstance(template, Mapping) or set(template) != {"mode", "sha256", "content_format"}:
+    if not isinstance(template, Mapping) or set(template) != {"mode", "sha256", "content_format", "launch_argument"}:
         raise ValueError("taxonomy vLLM chat_template is invalid")
     if template.get("mode") not in {"resolved_model_template", "explicit_template", "not_applicable"}:
         raise ValueError("taxonomy vLLM chat_template mode is invalid")
     if template["mode"] == "not_applicable":
-        if template.get("sha256") != "not_applicable" or template.get("content_format") != "not_applicable":
+        if (
+            template.get("sha256") != "not_applicable"
+            or template.get("content_format") != "not_applicable"
+            or template.get("launch_argument") != "not_applicable"
+        ):
             raise ValueError("taxonomy vLLM unused chat_template must be explicitly not_applicable")
+        _forbid_vllm_launch_option(arguments, "--chat-template", label="unused chat_template")
     else:
         _require_sha256(template.get("sha256"), label="taxonomy vLLM chat_template")
         _require_nonempty_string(template.get("content_format"), label="taxonomy vLLM chat_template content_format")
+        if template["mode"] == "explicit_template":
+            template_launch_value = _require_nonempty_string(
+                template.get("launch_argument"), label="taxonomy vLLM chat_template launch argument",
+            )
+            _require_vllm_launch_option(
+                arguments, "--chat-template", template_launch_value, label="chat_template",
+            )
+        else:
+            if template.get("launch_argument") != "not_applicable":
+                raise ValueError("resolved taxonomy vLLM chat_template launch argument must be not_applicable")
+            _forbid_vllm_launch_option(arguments, "--chat-template", label="resolved chat_template")
 
     thinking = execution.get("thinking")
     if not isinstance(thinking, Mapping) or set(thinking) != {
@@ -714,12 +822,18 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
             raise ValueError("enabled taxonomy vLLM thinking requires a reasoning_parser")
         if thinking.get("response_reasoning_content") not in {"included", "excluded"}:
             raise ValueError("enabled taxonomy vLLM thinking requires response reasoning-content policy")
+        _require_vllm_launch_option(
+            arguments, "--reasoning-parser", thinking["reasoning_parser"], label="reasoning_parser",
+        )
     elif thinking.get("reasoning_parser") != "not_applicable" or thinking.get("response_reasoning_content") != "not_applicable":
         raise ValueError("disabled or unused taxonomy vLLM thinking must be explicitly not_applicable")
+    else:
+        _forbid_vllm_launch_option(arguments, "--reasoning-parser", label="disabled reasoning_parser")
+        _forbid_vllm_launch_option(arguments, "--enable-reasoning", label="disabled reasoning")
 
     structured = execution.get("structured_output")
     if not isinstance(structured, Mapping) or set(structured) != {
-        "mode", "content_format", "json_schema", "json_schema_sha256",
+        "mode", "content_format", "json_schema", "json_schema_sha256", "json_schema_name",
     }:
         raise ValueError("taxonomy vLLM structured_output is invalid")
     if structured.get("mode") not in {"json_schema", "not_applicable"}:
@@ -727,6 +841,7 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
     if structured["mode"] == "json_schema":
         if not isinstance(structured.get("json_schema"), Mapping) or not structured["json_schema"]:
             raise ValueError("taxonomy vLLM structured output json_schema is invalid")
+        _require_nonempty_string(structured.get("json_schema_name"), label="taxonomy vLLM structured output schema name")
         _require_nonempty_string(structured.get("content_format"), label="taxonomy vLLM structured output content_format")
         _require_sha256(structured.get("json_schema_sha256"), label="taxonomy vLLM structured output schema")
         if structured["json_schema_sha256"] != sha256_json(structured["json_schema"]):
@@ -735,6 +850,7 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
         structured.get("content_format") != "not_applicable"
         or structured.get("json_schema") is not None
         or structured.get("json_schema_sha256") != "not_applicable"
+        or structured.get("json_schema_name") != "not_applicable"
     ):
         raise ValueError("unused taxonomy vLLM structured output must be explicitly not_applicable")
 
@@ -799,6 +915,14 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
         raise ValueError("taxonomy vLLM max_tokens does not match generator controls")
     if values["seed"] != generator["seed"]:
         raise ValueError("taxonomy vLLM seed does not match generator seed")
+    request_body_template = _expected_vllm_request_body_template(
+        generator=generator, execution=execution, sampling_values=values,
+    )
+    if execution.get("request_body_template") != request_body_template:
+        raise ValueError("taxonomy vLLM request body template does not match declared launch/request controls")
+    _require_sha256(execution.get("request_body_template_sha256"), label="taxonomy vLLM request body template")
+    if execution["request_body_template_sha256"] != sha256_json(request_body_template):
+        raise ValueError("taxonomy vLLM request body template sha256 does not match template")
 
 
 def generator_spec_sha256(generator: Mapping[str, Any]) -> str:
@@ -1587,6 +1711,7 @@ def validate_taxonomy_generation_receipt(
     validate_taxonomy_generator_run_against_plan(generation_run, generation_plan)
     plan_hash = generation_plan_sha256(generation_plan)
     contract_hash = generator_contract_sha256(generator_code_contract)
+    code_hash = generator_code_contract["generator_code_sha256"]
     approval_hash = approval_record_sha256(approval_record)
     if receipt["generation_plan_sha256"] != plan_hash:
         raise ValueError("taxonomy generation receipt plan hash does not match plan")
@@ -1594,14 +1719,20 @@ def validate_taxonomy_generation_receipt(
         raise ValueError("taxonomy generation receipt approval hash does not match approval record")
     if receipt["generator_contract_sha256"] != contract_hash:
         raise ValueError("taxonomy generation receipt generator contract hash does not match contract")
+    if generation_plan["generator_code_contract_sha256"] != contract_hash:
+        raise ValueError("taxonomy generation receipt plan code contract does not match actual contract")
+    if generation_plan["generator_code_sha256"] != code_hash:
+        raise ValueError("taxonomy generation receipt plan generator code does not match actual contract")
+    if generation_plan["generator"]["generator_code_sha256"] != code_hash:
+        raise ValueError("taxonomy generation receipt plan generator metadata code does not match actual contract")
     if approval_record["approved_generation_plan_sha256"] != plan_hash:
         raise ValueError("taxonomy approval generation plan does not match receipt plan")
     if approval_record["approved_generator_source_commit"] != generation_plan["generator_source_commit"]:
         raise ValueError("taxonomy approval generator source commit does not match receipt plan")
     if approval_record["approved_generator_contract_sha256"] != contract_hash:
         raise ValueError("taxonomy approval generator contract does not match receipt contract")
-    if approval_record["approved_generator_code_sha256"] != generation_plan["generator_code_sha256"]:
-        raise ValueError("taxonomy approval generator code does not match receipt plan")
+    if approval_record["approved_generator_code_sha256"] != code_hash:
+        raise ValueError("taxonomy approval generator code does not match actual contract")
     if receipt["generator_source_commit"] != generation_plan["generator_source_commit"]:
         raise ValueError("taxonomy generation receipt generator source commit does not match plan")
     if receipt["generation_run_sha256"] != generation_run["generation_run_sha256"]:
@@ -1654,6 +1785,8 @@ def validate_taxonomy_generation_receipt(
         generation_plan_sha256=receipt["generation_plan_sha256"],
         approval_record_sha256=receipt["approval_record_sha256"],
         generator_contract_sha256=receipt["generator_contract_sha256"],
+        generator_code_sha256=code_hash,
+        generator_spec_sha256=generation_plan["generator_spec_sha256"],
         generator_source_commit=receipt["generator_source_commit"],
         generation_run_sha256=receipt["generation_run_sha256"],
         assignment_canonical_sha256=receipt["assignment_canonical_sha256"],
@@ -1687,6 +1820,11 @@ def build_taxonomy_artifact_manifest(
         raise ValueError("taxonomy artifact manifest receipt generator contract hash does not match manifest")
     if verified_receipt.generator_source_commit != generator_source_commit:
         raise ValueError("taxonomy artifact manifest receipt generator source commit does not match manifest")
+    artifact_generator = full_artifact["provenance"]["generator"]
+    if artifact_generator["generator_code_sha256"] != verified_receipt.generator_code_sha256:
+        raise ValueError("taxonomy artifact manifest generator code does not match verified receipt")
+    if generator_spec_sha256(artifact_generator) != verified_receipt.generator_spec_sha256:
+        raise ValueError("taxonomy artifact manifest generator specification does not match verified receipt")
     if verified_receipt.assignment_canonical_sha256 != sha256_json(full_artifact["assignments"]):
         raise ValueError("taxonomy artifact manifest receipt assignment hash does not match artifact")
     normalized_records: dict[str, dict[str, Any]] = {}
