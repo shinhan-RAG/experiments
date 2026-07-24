@@ -3,6 +3,7 @@
   "approval_kind": "synthetic_test",
   "status": "synthetic_only",
   "approved_source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
+  "approved_generation_plan_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "approved_generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "approved_generator_code_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
   "approved_by": "synthetic-fixture-not-an-execution-approver",

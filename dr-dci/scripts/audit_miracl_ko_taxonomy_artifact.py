@@ -27,7 +27,7 @@ from src.miracl_ko.preparation import (
 )
 from src.miracl_ko.taxonomy_artifact import (
     validate_taxonomy_artifact_manifest,
-    validate_taxonomy_generation_preflight,
+    validate_taxonomy_artifact_authorization,
 )
 
 
@@ -92,8 +92,26 @@ def main() -> int:
         default=Path("config/miracl_ko_taxonomy_artifact_manifest.json"),
     )
     parser.add_argument("--revision-lock", type=Path, default=Path("config/miracl_ko_revision_lock.json"))
-    parser.add_argument("--approval-record", type=Path)
-    parser.add_argument("--generator-code-contract", type=Path)
+    parser.add_argument(
+        "--generation-plan",
+        type=Path,
+        default=Path("config/miracl_ko_taxonomy_generation_plan.json"),
+    )
+    parser.add_argument(
+        "--approval-record",
+        type=Path,
+        default=Path("config/miracl_ko_taxonomy_approval.json"),
+    )
+    parser.add_argument(
+        "--generator-code-contract",
+        type=Path,
+        default=Path("config/miracl_ko_taxonomy_generator_code_contract.json"),
+    )
+    parser.add_argument(
+        "--integrity-only",
+        action="store_true",
+        help="validate body/hash/projection only; never marks an artifact experiment-ready",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -104,14 +122,11 @@ def main() -> int:
         if not args.revision_lock.is_absolute()
         else args.revision_lock
     )
-    approval_path = (
-        (REPO_ROOT / args.approval_record).resolve()
-        if args.approval_record is not None and not args.approval_record.is_absolute()
-        else args.approval_record
-    )
+    plan_path = (REPO_ROOT / args.generation_plan).resolve() if not args.generation_plan.is_absolute() else args.generation_plan
+    approval_path = (REPO_ROOT / args.approval_record).resolve() if not args.approval_record.is_absolute() else args.approval_record
     generator_contract_path = (
         (REPO_ROOT / args.generator_code_contract).resolve()
-        if args.generator_code_contract is not None and not args.generator_code_contract.is_absolute()
+        if not args.generator_code_contract.is_absolute()
         else args.generator_code_contract
     )
     if not revision_lock_path.is_file():
@@ -124,7 +139,7 @@ def main() -> int:
     subset_manifest = load_json(subset_manifest_path)
     validate_miracl_ko_subset_files(data_dir, subset_manifest)
     taxonomy_manifest = load_json(manifest_path)
-    report = validate_taxonomy_artifact_manifest(
+    integrity = validate_taxonomy_artifact_manifest(
         taxonomy_manifest,
         data_dir=data_dir,
         expected_ids_by_scale=subset_ids_by_scale(data_dir, subset_manifest),
@@ -135,23 +150,41 @@ def main() -> int:
             revision_lock_path=revision_lock_path,
         ),
     )
-    if (approval_path is None) != (generator_contract_path is None):
-        raise ValueError("taxonomy approval record and generator code contract must be provided together")
-    if approval_path is not None and generator_contract_path is not None:
-        if not approval_path.is_file():
-            raise FileNotFoundError(f"taxonomy approval record is missing: {approval_path}")
-        if not generator_contract_path.is_file():
-            raise FileNotFoundError(f"taxonomy generator code contract is missing: {generator_contract_path}")
+    if args.integrity_only:
+        report = {
+            "artifact_integrity": integrity,
+            "generation_authorization": "integrity_only_not_authorized",
+            "experiment_ready": False,
+        }
+    else:
+        for path, label in (
+            (plan_path, "taxonomy generation plan"),
+            (approval_path, "taxonomy approval record"),
+            (generator_contract_path, "taxonomy generator code contract"),
+        ):
+            if not path.is_file():
+                raise FileNotFoundError(f"{label} is missing: {path}")
         actual_source_git_commit, git_status_porcelain = git_source_state(REPO_ROOT)
-        validate_taxonomy_generation_preflight(
+        input_provenance = verified_taxonomy_provenance(
+            data_dir=data_dir,
+            subset_manifest=subset_manifest,
+            revision_lock_path=revision_lock_path,
+        )
+        validate_taxonomy_artifact_authorization(
             taxonomy_manifest,
+            generation_plan=load_json(plan_path),
             approval_record=load_json(approval_path),
             generator_code_contract=load_json(generator_contract_path),
             actual_source_git_commit=actual_source_git_commit,
             git_status_porcelain=git_status_porcelain,
+            verified_input_provenance=input_provenance,
             generator_repo_root=REPO_ROOT,
         )
-        report["generation_approval_preflight"] = "ready"
+        report = {
+            "artifact_integrity": integrity,
+            "generation_authorization": "ready",
+            "experiment_ready": True,
+        }
     rendered = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True)
     print(rendered)
     if args.output is not None:

@@ -8,6 +8,7 @@
   "retrieval_unit": "passage",
   "source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
   "generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "generation_plan_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "source_scale": 110000,
   "input_contract": {
     "mapping_key": "corpus_id",

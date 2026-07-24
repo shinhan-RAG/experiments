@@ -24,6 +24,7 @@ from src.miracl_ko.preparation import RETRIEVAL_UNIT, SCALE_SIZES, sha256_file, 
 TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v1"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
 TAXONOMY_GENERATOR_CODE_CONTRACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-code-contract.v1"
 TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-approval-record.v1"
@@ -132,37 +133,14 @@ def _validate_semantic_input_contract(contract: Any) -> None:
 
 
 def build_semantic_generator_inputs(corpus_records: Iterable[Mapping[str, Any]]) -> list[dict[str, str]]:
-    """Create model-facing inputs without passage IDs or evaluation information.
+    """Deprecated compatibility extractor; never use it to rejoin outputs.
 
-    ``corpus_id`` is permitted only at the outer mapping boundary.  It is
-    checked for duplicate transport records here, but never returned to a
-    semantic generator, tokenizer, clusterer, or label-naming operation.
+    It now has the batch builder's deterministic sort semantics, but returns
+    only the model-facing payload.  Real generation must use
+    :func:`build_taxonomy_generator_batch` and
+    :func:`rejoin_taxonomy_generator_outputs` together.
     """
-    inputs: list[dict[str, str]] = []
-    seen_ids: set[str] = set()
-    allowed_transport_fields = {TAXONOMY_MAPPING_KEY, *TAXONOMY_SEMANTIC_INPUT_FIELDS}
-    for index, record in enumerate(corpus_records):
-        if not isinstance(record, Mapping):
-            raise ValueError(f"taxonomy corpus record {index} must be an object")
-        lowered_fields = {str(field).casefold() for field in record}
-        forbidden = sorted(lowered_fields & TAXONOMY_FORBIDDEN_INPUT_FIELDS)
-        if forbidden:
-            raise ValueError(f"taxonomy generator input contains forbidden leakage field: {forbidden[0]}")
-        unsupported = set(record) - allowed_transport_fields
-        if unsupported:
-            raise ValueError(f"taxonomy generator input has unsupported fields: {sorted(unsupported)}")
-        corpus_id = _require_nonempty_string(record.get(TAXONOMY_MAPPING_KEY), label="taxonomy corpus_id")
-        if corpus_id in seen_ids:
-            raise ValueError(f"taxonomy generator input has duplicate corpus_id: {corpus_id}")
-        seen_ids.add(corpus_id)
-        title = record.get("title")
-        text = record.get("text")
-        if not isinstance(title, str) or not isinstance(text, str):
-            raise ValueError("taxonomy title/text inputs must be strings")
-        inputs.append({"title": title, "text": text})
-    if not inputs:
-        raise ValueError("taxonomy generator input requires at least one passage")
-    return inputs
+    return build_taxonomy_generator_batch(corpus_records)["semantic_payload"]
 
 
 def _validate_transport_record(record: Mapping[str, Any], *, index: int) -> tuple[str, str, str]:
@@ -264,16 +242,27 @@ def validate_taxonomy_generator_batch(batch: Mapping[str, Any]) -> None:
 def rejoin_taxonomy_generator_outputs(
     batch: Mapping[str, Any], generator_outputs: Iterable[Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Rejoin positional generator output using only the verified envelope."""
+    """Rejoin request-indexed generator output using only the verified envelope."""
     validate_taxonomy_generator_batch(batch)
     outputs = list(generator_outputs)
     envelope = batch["mapping_envelope"]
     if len(outputs) != len(envelope):
         raise ValueError("taxonomy generator output count does not match input count")
     assignments: list[dict[str, Any]] = []
-    for envelope_row, output in zip(envelope, outputs):
-        if not isinstance(output, Mapping) or set(output) != {"label_id", "score", "status"}:
+    outputs_by_index: dict[int, Mapping[str, Any]] = {}
+    for output in outputs:
+        if not isinstance(output, Mapping) or set(output) != {"request_index", "label_id", "score", "status"}:
             raise ValueError("taxonomy generator output has unsupported fields")
+        request_index = output.get("request_index")
+        if type(request_index) is not int or request_index < 0 or request_index >= len(envelope):
+            raise ValueError("taxonomy generator output request_index is invalid")
+        if request_index in outputs_by_index:
+            raise ValueError("taxonomy generator output request_index is duplicated")
+        outputs_by_index[request_index] = output
+    if set(outputs_by_index) != set(range(len(envelope))):
+        raise ValueError("taxonomy generator output request_index is missing")
+    for envelope_row in envelope:
+        output = outputs_by_index[envelope_row["request_index"]]
         label_id = _require_nonempty_string(output.get("label_id"), label="taxonomy generator output label_id")
         score = output.get("score")
         if type(score) not in {int, float} or not math.isfinite(float(score)) or not 0.0 <= float(score) <= 1.0:
@@ -343,6 +332,7 @@ def _label_catalog_by_id(catalog: Any) -> dict[str, dict[str, str]]:
         raise ValueError("taxonomy label_catalog must be a non-empty array")
     by_id: dict[str, dict[str, str]] = {}
     seen_labels: set[str] = set()
+    previous_label_id: str | None = None
     for item in catalog:
         if not isinstance(item, dict):
             raise ValueError("taxonomy label_catalog entries must be objects")
@@ -357,10 +347,13 @@ def _label_catalog_by_id(catalog: Any) -> dict[str, dict[str, str]]:
             raise ValueError("taxonomy label must use normalized whitespace")
         if label_id in by_id:
             raise ValueError(f"taxonomy label_catalog has duplicate label_id: {label_id}")
+        if previous_label_id is not None and label_id <= previous_label_id:
+            raise ValueError("taxonomy label_catalog must be sorted by label_id")
         if normalized_label in seen_labels:
             raise ValueError(f"taxonomy label_catalog has duplicate normalized label: {label}")
         by_id[label_id] = {"label_id": label_id, "label": label}
         seen_labels.add(normalized_label)
+        previous_label_id = label_id
     if "unknown" not in by_id:
         raise ValueError("taxonomy label_catalog must define the unknown label")
     return by_id
@@ -754,11 +747,95 @@ def generator_contract_sha256(contract: Mapping[str, Any]) -> str:
     return sha256_json(contract)
 
 
+def _validate_input_provenance(input_provenance: Any) -> None:
+    if not isinstance(input_provenance, dict):
+        raise ValueError("taxonomy generation input provenance must be an object")
+    required = {
+        "revision_lock_sha256",
+        "preparation_contract_sha256",
+        "input_110k_corpus_sha256",
+        "input_subset_manifest_sha256",
+    }
+    if set(input_provenance) != required:
+        raise ValueError("taxonomy generation input provenance has missing or unsupported fields")
+    for key in sorted(required):
+        _require_sha256(input_provenance.get(key), label=f"taxonomy generation input {key}")
+
+
+def build_taxonomy_generation_plan(
+    *, input_provenance: Mapping[str, str], source_git_commit: str,
+    generator_code_contract_sha256: str, generator_code_sha256: str,
+    generator: Mapping[str, Any], input_contract: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Build the artifact-free object that must be approved before generation."""
+    plan = {
+        "schema_version": TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION,
+        "dataset": "MIRACL",
+        "language": "ko",
+        "retrieval_unit": RETRIEVAL_UNIT,
+        "source_scale": TAXONOMY_SOURCE_SCALE,
+        "input_provenance": dict(input_provenance),
+        "source_git_commit": source_git_commit,
+        "generator_code_contract_sha256": generator_code_contract_sha256,
+        "generator_code_sha256": generator_code_sha256,
+        "generator": dict(generator),
+        "input_contract": dict(input_contract),
+        "batch_contract_schema_version": TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION,
+        "output_artifact_schema_version": TAXONOMY_ARTIFACT_SCHEMA_VERSION,
+        "projection_method": FILTER_PROJECTION_METHOD,
+        "determinism_mode": generator.get("determinism_mode"),
+    }
+    validate_taxonomy_generation_plan(plan)
+    return plan
+
+
+def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
+    """Validate an artifact-free pre-generation plan."""
+    required = {
+        "schema_version", "dataset", "language", "retrieval_unit", "source_scale",
+        "input_provenance", "source_git_commit", "generator_code_contract_sha256",
+        "generator_code_sha256", "generator", "input_contract",
+        "batch_contract_schema_version", "output_artifact_schema_version",
+        "projection_method", "determinism_mode",
+    }
+    if not isinstance(plan, Mapping) or set(plan) != required:
+        raise ValueError("taxonomy generation plan has missing, artifact-derived, or unsupported fields")
+    if plan.get("schema_version") != TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION:
+        raise ValueError("taxonomy generation plan schema_version is invalid")
+    if plan.get("dataset") != "MIRACL" or plan.get("language") != "ko":
+        raise ValueError("taxonomy generation plan must identify MIRACL Korean")
+    if plan.get("retrieval_unit") != RETRIEVAL_UNIT or plan.get("source_scale") != TAXONOMY_SOURCE_SCALE:
+        raise ValueError("taxonomy generation plan retrieval unit or source scale is invalid")
+    _validate_input_provenance(plan.get("input_provenance"))
+    if not isinstance(plan.get("source_git_commit"), str) or not re.fullmatch(r"[0-9a-f]{40}", plan["source_git_commit"]):
+        raise ValueError("taxonomy generation plan source commit is invalid")
+    _require_sha256(plan.get("generator_code_contract_sha256"), label="taxonomy generation plan code contract")
+    _require_sha256(plan.get("generator_code_sha256"), label="taxonomy generation plan code aggregate")
+    _validate_generator(plan.get("generator"))
+    if plan["generator"]["generator_code_sha256"] != plan["generator_code_sha256"]:
+        raise ValueError("taxonomy generation plan generator code hash does not match generator metadata")
+    _validate_semantic_input_contract(plan.get("input_contract"))
+    if plan.get("batch_contract_schema_version") != TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION:
+        raise ValueError("taxonomy generation plan batch contract version is invalid")
+    if plan.get("output_artifact_schema_version") != TAXONOMY_ARTIFACT_SCHEMA_VERSION:
+        raise ValueError("taxonomy generation plan output artifact schema version is invalid")
+    if plan.get("projection_method") != FILTER_PROJECTION_METHOD:
+        raise ValueError("taxonomy generation plan projection method is invalid")
+    if plan.get("determinism_mode") != plan["generator"].get("determinism_mode"):
+        raise ValueError("taxonomy generation plan determinism mode does not match generator metadata")
+
+
+def generation_plan_sha256(plan: Mapping[str, Any]) -> str:
+    validate_taxonomy_generation_plan(plan)
+    return sha256_json(plan)
+
+
 def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthetic: bool = False) -> None:
     """Validate an approval object; synthetic records cannot authorize execution."""
     required = {
         "schema_version", "approval_kind", "status", "approved_source_git_commit",
-        "approved_generator_contract_sha256", "approved_generator_code_sha256",
+        "approved_generation_plan_sha256", "approved_generator_contract_sha256",
+        "approved_generator_code_sha256",
         "approved_by", "approved_at", "approval_basis",
     }
     if not isinstance(record, Mapping) or set(record) != required:
@@ -769,6 +846,7 @@ def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthe
         r"[0-9a-f]{40}", record["approved_source_git_commit"]
     ):
         raise ValueError("taxonomy approval record source commit is invalid")
+    _require_sha256(record.get("approved_generation_plan_sha256"), label="taxonomy approval generation plan")
     _require_sha256(record.get("approved_generator_contract_sha256"), label="taxonomy approval generator contract")
     _require_sha256(record.get("approved_generator_code_sha256"), label="taxonomy approval generator code")
     _require_nonempty_string(record.get("approved_by"), label="taxonomy approval approver")
@@ -786,9 +864,10 @@ def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthe
 
 
 def validate_taxonomy_generation_preflight(
-    manifest: Mapping[str, Any], *, approval_record: Mapping[str, Any] | None,
+    generation_plan: Mapping[str, Any], *, approval_record: Mapping[str, Any] | None,
     generator_code_contract: Mapping[str, Any] | None, actual_source_git_commit: str,
-    git_status_porcelain: str, generator_repo_root: Path | None = None,
+    git_status_porcelain: str, verified_input_provenance: Mapping[str, str],
+    generator_repo_root: Path | None = None,
 ) -> None:
     """Require independently approved code/source and a clean checkout.
 
@@ -800,35 +879,38 @@ def validate_taxonomy_generation_preflight(
         raise FileNotFoundError("taxonomy generation approval record is missing")
     if generator_code_contract is None:
         raise FileNotFoundError("taxonomy generator code contract is missing")
+    validate_taxonomy_generation_plan(generation_plan)
     validate_taxonomy_approval_record(approval_record)
     validate_generator_code_contract(generator_code_contract, repo_root=generator_repo_root)
     if not isinstance(actual_source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", actual_source_git_commit):
         raise ValueError("taxonomy generation actual source commit is invalid")
     if not isinstance(git_status_porcelain, str) or git_status_porcelain.strip():
         raise ValueError("taxonomy generation dirty Git worktree is prohibited")
-    manifest_source_commit = manifest.get("source_git_commit")
-    if manifest_source_commit != actual_source_git_commit:
-        raise ValueError("taxonomy manifest source commit does not match actual source commit")
+    if generation_plan["source_git_commit"] != actual_source_git_commit:
+        raise ValueError("taxonomy generation plan source commit does not match actual source commit")
     contract_hash = generator_contract_sha256(generator_code_contract)
-    if manifest.get("generator_contract_sha256") != contract_hash:
-        raise ValueError("taxonomy manifest generator contract hash does not match verified contract")
-    manifest_generator = manifest.get("provenance", {}).get("generator")
-    if not isinstance(manifest_generator, Mapping):
-        raise ValueError("taxonomy manifest generator provenance is missing")
+    if generation_plan["generator_code_contract_sha256"] != contract_hash:
+        raise ValueError("taxonomy generation plan code contract hash does not match verified contract")
     code_hash = generator_code_contract["generator_code_sha256"]
-    if manifest_generator.get("generator_code_sha256") != code_hash:
-        raise ValueError("taxonomy manifest generator code hash does not match verified code contract")
-    if approval_record["approved_source_git_commit"] != manifest_source_commit:
-        raise ValueError("taxonomy approval source commit does not match manifest")
+    if generation_plan["generator_code_sha256"] != code_hash:
+        raise ValueError("taxonomy generation plan code aggregate does not match verified code contract")
+    _validate_input_provenance(dict(verified_input_provenance))
+    if generation_plan["input_provenance"] != dict(verified_input_provenance):
+        raise ValueError("taxonomy generation plan input provenance does not match verified inputs")
+    plan_hash = generation_plan_sha256(generation_plan)
+    if approval_record["approved_generation_plan_sha256"] != plan_hash:
+        raise ValueError("taxonomy approval generation plan does not match current plan")
+    if approval_record["approved_source_git_commit"] != generation_plan["source_git_commit"]:
+        raise ValueError("taxonomy approval source commit does not match generation plan")
     if approval_record["approved_generator_contract_sha256"] != contract_hash:
-        raise ValueError("taxonomy approval generator contract does not match manifest")
+        raise ValueError("taxonomy approval generator contract does not match generation plan")
     if approval_record["approved_generator_code_sha256"] != code_hash:
-        raise ValueError("taxonomy approval generator code does not match manifest")
+        raise ValueError("taxonomy approval generator code does not match generation plan")
 
 
 def build_taxonomy_artifact_manifest(
     *, full_artifact: Mapping[str, Any], artifact_records: Mapping[int, Mapping[str, Any]],
-    source_git_commit: str, generator_contract_sha256: str,
+    source_git_commit: str, generator_contract_sha256: str, generation_plan_sha256: str,
 ) -> dict[str, Any]:
     """Build the tracked manifest; large artifact bodies remain outside Git."""
     full_audit = validate_taxonomy_artifact(full_artifact)
@@ -839,6 +921,7 @@ def build_taxonomy_artifact_manifest(
     if not isinstance(source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_git_commit):
         raise ValueError("taxonomy manifest source_git_commit is invalid")
     _require_sha256(generator_contract_sha256, label="taxonomy manifest generator contract")
+    _require_sha256(generation_plan_sha256, label="taxonomy manifest generation plan")
     normalized_records: dict[str, dict[str, Any]] = {}
     for scale in SCALE_SIZES:
         record = dict(artifact_records[scale])
@@ -859,6 +942,7 @@ def build_taxonomy_artifact_manifest(
         "retrieval_unit": RETRIEVAL_UNIT,
         "source_git_commit": source_git_commit,
         "generator_contract_sha256": generator_contract_sha256,
+        "generation_plan_sha256": generation_plan_sha256,
         "source_scale": TAXONOMY_SOURCE_SCALE,
         "input_contract": dict(full_artifact["input_contract"]),
         "provenance": provenance,
@@ -891,7 +975,7 @@ def validate_taxonomy_artifact_manifest(
     required = {
         "schema_version", "generated_at", "taxonomy_artifact_id", "dataset", "language", "source_revisions", "retrieval_unit",
         "source_git_commit", "source_scale", "input_contract", "provenance",
-        "generator_contract_sha256", "source_artifact_content_sha256", "artifacts",
+        "generator_contract_sha256", "generation_plan_sha256", "source_artifact_content_sha256", "artifacts",
     }
     if set(manifest) != required:
         raise ValueError("taxonomy artifact manifest has missing or unsupported fields")
@@ -912,6 +996,7 @@ def validate_taxonomy_artifact_manifest(
     ):
         raise ValueError("taxonomy artifact manifest source_git_commit is invalid")
     _require_sha256(manifest.get("generator_contract_sha256"), label="taxonomy artifact manifest generator contract")
+    _require_sha256(manifest.get("generation_plan_sha256"), label="taxonomy artifact manifest generation plan")
     _validate_semantic_input_contract(manifest.get("input_contract"))
     _validate_provenance(manifest.get("provenance"))
     if expected_provenance is not None:
@@ -977,11 +1062,46 @@ def validate_taxonomy_artifact_manifest(
     }
 
 
-def load_verified_taxonomy_projection(
+def validate_taxonomy_artifact_authorization(
+    manifest: Mapping[str, Any], *, generation_plan: Mapping[str, Any],
+    approval_record: Mapping[str, Any] | None, generator_code_contract: Mapping[str, Any] | None,
+    actual_source_git_commit: str, git_status_porcelain: str,
+    verified_input_provenance: Mapping[str, str], generator_repo_root: Path | None = None,
+) -> None:
+    """Bind an integrity-checked artifact to an approved pre-generation plan."""
+    validate_taxonomy_generation_preflight(
+        generation_plan,
+        approval_record=approval_record,
+        generator_code_contract=generator_code_contract,
+        actual_source_git_commit=actual_source_git_commit,
+        git_status_porcelain=git_status_porcelain,
+        verified_input_provenance=verified_input_provenance,
+        generator_repo_root=generator_repo_root,
+    )
+    plan_hash = generation_plan_sha256(generation_plan)
+    if manifest.get("generation_plan_sha256") != plan_hash:
+        raise ValueError("taxonomy artifact manifest generation plan hash does not match authorization")
+    if manifest.get("source_git_commit") != generation_plan["source_git_commit"]:
+        raise ValueError("taxonomy artifact manifest source commit does not match generation plan")
+    if manifest.get("generator_contract_sha256") != generation_plan["generator_code_contract_sha256"]:
+        raise ValueError("taxonomy artifact manifest generator contract does not match generation plan")
+    if manifest.get("input_contract") != generation_plan["input_contract"]:
+        raise ValueError("taxonomy artifact manifest input contract does not match generation plan")
+    if manifest.get("provenance", {}).get("generator") != generation_plan["generator"]:
+        raise ValueError("taxonomy artifact manifest generator metadata does not match generation plan")
+    manifest_input_provenance = {
+        key: manifest.get("provenance", {}).get(key)
+        for key in generation_plan["input_provenance"]
+    }
+    if manifest_input_provenance != generation_plan["input_provenance"]:
+        raise ValueError("taxonomy artifact manifest input provenance does not match generation plan")
+
+
+def load_integrity_only_taxonomy_projection(
     manifest_path: Path, *, data_dir: Path, expected_ids_by_scale: Mapping[int, set[str]], scale: int,
     expected_source_revisions: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
-    """Fail loudly before a future consumer receives a projected mapping."""
+    """Load a projection after integrity checks only; never authorize experiment use."""
     if not manifest_path.is_file():
         raise FileNotFoundError(f"taxonomy artifact manifest is missing: {manifest_path}")
     try:
@@ -995,6 +1115,41 @@ def load_verified_taxonomy_projection(
         data_dir=data_dir,
         expected_ids_by_scale=expected_ids_by_scale,
         expected_source_revisions=expected_source_revisions,
+    )
+    record = manifest["artifacts"][str(scale)]["artifact_file"]
+    return _load_artifact(_validate_file_record(record, data_dir=data_dir, label=f"taxonomy {scale}"), label=f"taxonomy {scale}")
+
+
+def load_authorized_taxonomy_projection(
+    manifest_path: Path, *, data_dir: Path, expected_ids_by_scale: Mapping[int, set[str]], scale: int,
+    generation_plan: Mapping[str, Any], approval_record: Mapping[str, Any] | None,
+    generator_code_contract: Mapping[str, Any] | None, actual_source_git_commit: str,
+    git_status_porcelain: str, verified_input_provenance: Mapping[str, str],
+    expected_source_revisions: Mapping[str, str] | None = None,
+    generator_repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Return a projection only after integrity and generation authorization pass."""
+    if not manifest_path.is_file():
+        raise FileNotFoundError(f"taxonomy artifact manifest is missing: {manifest_path}")
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise ValueError("taxonomy artifact manifest JSON is invalid") from error
+    validate_taxonomy_artifact_manifest(
+        manifest,
+        data_dir=data_dir,
+        expected_ids_by_scale=expected_ids_by_scale,
+        expected_source_revisions=expected_source_revisions,
+    )
+    validate_taxonomy_artifact_authorization(
+        manifest,
+        generation_plan=generation_plan,
+        approval_record=approval_record,
+        generator_code_contract=generator_code_contract,
+        actual_source_git_commit=actual_source_git_commit,
+        git_status_porcelain=git_status_porcelain,
+        verified_input_provenance=verified_input_provenance,
+        generator_repo_root=generator_repo_root,
     )
     record = manifest["artifacts"][str(scale)]["artifact_file"]
     return _load_artifact(_validate_file_record(record, data_dir=data_dir, label=f"taxonomy {scale}"), label=f"taxonomy {scale}")
