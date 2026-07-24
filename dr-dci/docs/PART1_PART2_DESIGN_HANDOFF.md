@@ -49,6 +49,10 @@ MIRACL-ko M0 data preparation and its standalone lexical plumbing smoke are comp
 
 The MIRACL taxonomy artifact contract and synthetic validation harness are implemented in `docs/MIRACL_KO_TAXONOMY_ARTIFACT_CONTRACT_20260723.md`, but an actual 110K taxonomy body has **not** been generated. It is deliberately not registered in `run_experiment.py`, the TREC configuration, the focused Part 1/2 result contract, or an Agent path. A future real artifact must be generated once from 110K passage title/text only, then filter-projected to 50K/20K with shared mappings invariant. It must pass the standalone hash/provenance/coverage audit before a separately instructed MIRACL consumer adapter or passage-specific effect criterion is considered.
 
+### 3.2 Evaluation hierarchy update (2026-07-24)
+
+Final-success interpretation is recorded separately in `docs/LEGAL_PRIMARY_MIRACL_SECONDARY_EVALUATION_PLAN_20260724.md`: AIHub Korean legal parent-document evaluation is the primary confirmatory target-domain evaluation, while MIRACL-ko passage evaluation is method/development and secondary robustness evidence. This changes neither the existing MIRACL execution contracts nor historical records; dataset results must not be combined, and MIRACL success cannot override a legal primary failure.
+
 ## 4. 실제 실행 경로
 
 | 경로 | 목적 | 현재 설계 판단 |
