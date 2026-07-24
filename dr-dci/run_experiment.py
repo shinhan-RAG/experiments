@@ -21,6 +21,7 @@ from src.agent.retriever import PullRetriever, RetrieverConfig
 from src.agent.dci_agent import DCIAgent
 from src.hybrid.pipeline import HybridRAG
 from src.eval.judge import Judge, compute_metrics
+from src.eval import span_metrics
 
 
 BASE_DIR = Path(__file__).parent
@@ -65,6 +66,24 @@ def load_queries(dataset: str):
             qrels.append(json.loads(line))
 
     return queries, qrels
+
+
+def load_supporting_spans(dataset: str) -> dict:
+    """qa_meta.jsonl에서 질의별 근거 span 로드 (없으면 빈 dict).
+
+    반환: {qid(str): [{"text": ...}, ...]}  — span 기반 지표(coverage/density/f1)용.
+    span이 없는 데이터셋(trec-covid 등)은 빈 dict → span 지표는 자동으로 건너뜀.
+    """
+    path = DATA_DIR / "raw" / dataset / "qa_meta.jsonl"
+    spans = {}
+    if not path.exists():
+        return spans
+    with open(path) as f:
+        for line in f:
+            m = json.loads(line)
+            if m.get("supporting_spans"):
+                spans[str(m["qid"])] = m["supporting_spans"]
+    return spans
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
@@ -181,12 +200,14 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         prompt_template=judge_prompt,
     )
 
-    # qrels → query별 gold docs
+    # qrels → query별 gold docs (청크 단위: corpus-id = 정답 청크)
     from collections import defaultdict
     query_gold = defaultdict(set)
     for entry in qrels:
         if entry["score"] >= 1:
             query_gold[str(entry["query-id"])].add(str(entry["corpus-id"]))
+    # 근거 span (있으면 coverage/density/f1 계산; 없으면 건너뜀)
+    query_spans = load_supporting_spans(dataset)
 
     # 에이전트 병렬 실행
     def run_single_query(i, q):
@@ -196,6 +217,16 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
+        # 청크단위 검색품질(recall/ndcg 항상) + 근거 span 지표(span 있을 때만)
+        span_eval = None
+        if gold_docs:
+            ranked_chunks = [
+                {"chunk_id": did, "text": corpus_dict.get(did, {}).get("text", "")}
+                for did in result["workspace_docs"]
+            ]
+            span_eval = span_metrics.evaluate_query(
+                ranked_chunks, set(gold_docs), query_spans.get(qid)
+            )
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
             "query_id": qid,
@@ -206,6 +237,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "pull_count": result["pull_count"],
             "workspace_docs": result["workspace_docs"],
             "turns": result["turns"],
+            "span_metrics": span_eval,
         }
 
     results = [None] * len(queries)
@@ -227,14 +259,28 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     with ThreadPoolExecutor(max_workers=16) as executor:
         executor.map(judge_single, results)
 
+    _report_span_metrics(results)
     return results
 
 
+def _report_span_metrics(results: list):
+    """질의별 span_metrics를 평균내어 출력 (있을 때만)."""
+    have = [r["span_metrics"] for r in results if r.get("span_metrics")]
+    if not have:
+        return
+    agg = span_metrics.aggregate(have)
+    keys = ["recall@5", "recall@20", "ndcg@10", "coverage@20", "density@20", "span_f1@20"]
+    line = "  ".join(f"{k}={agg[k]}" for k in keys if k in agg)
+    print(f"    [청크단위 지표 n={len(have)}] {line}")
+
+
 def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
-               ref_answers: dict) -> list:
+               ref_answers: dict, dataset: str = None) -> list:
     """Hybrid RAG baseline 실행"""
     models = config["models"]
     hybrid_cfg = config["hybrid"]
+    corpus_dict = {doc["_id"]: doc for doc in corpus}
+    query_spans = load_supporting_spans(dataset) if dataset else {}
 
     pipeline = HybridRAG(
         embedding_url=models["embedding"]["url"],
@@ -275,6 +321,15 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         gold_docs = list(query_gold.get(qid, []))
         gold_recall = Judge.gold_recall_at_workspace(result["retrieved_docs"], gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
+        span_eval = None
+        if gold_docs:
+            ranked_chunks = [
+                {"chunk_id": did, "text": corpus_dict.get(did, {}).get("text", "")}
+                for did in result["retrieved_docs"]
+            ]
+            span_eval = span_metrics.evaluate_query(
+                ranked_chunks, set(gold_docs), query_spans.get(qid)
+            )
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
             "query_id": qid,
@@ -284,6 +339,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             "efficiency": efficiency,
             "pull_count": result["pull_count"],
             "retrieved_docs": result["retrieved_docs"],
+            "span_metrics": span_eval,
         }
 
     results = [None] * len(queries)
@@ -301,6 +357,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
                 r["query_text"], ref_answers[r["query_id"]], r["answer"]
             )
 
+    _report_span_metrics(results)
     return results
 
 
@@ -395,7 +452,7 @@ def run_part2(config: dict):
         print(f"    Metrics: {metrics}")
 
         print(f"\n  --- Hybrid RAG @ {size_key} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers)
+        results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
         metrics = compute_metrics(results)
         all_results[f"hybrid_{size_key}"] = {"results": results, "metrics": metrics}
         print(f"    Metrics: {metrics}")
@@ -469,7 +526,7 @@ def run_part4(config: dict):
         print(f"    Metrics: {metrics}")
 
         print(f"\n  --- Hybrid RAG @ {dataset} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers)
+        results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
         metrics = compute_metrics(results)
         all_results[f"hybrid_{dataset}"] = {"results": results, "metrics": metrics}
         print(f"    Metrics: {metrics}")

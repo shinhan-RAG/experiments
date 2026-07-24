@@ -49,6 +49,10 @@ datasets:
     queries: 50
   ko-strategyqa:
     queries: 50
+  shinhan:
+    # 신한라이프 실무문서(약관/상품/LICO) 28건 → 2,802청크, 균등샘플 50쿼리
+    # 피터님 실험 데이터셋을 실제 도메인 문서로 재구성한 버전
+    queries: 50
 
 # Experiment parts
 parts:
