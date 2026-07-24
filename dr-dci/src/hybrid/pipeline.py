@@ -4,7 +4,7 @@ Hybrid RAG Baseline: Dense + BM25 + RRF + Reranker + LLM
 
 import numpy as np
 import requests
-from src.retrieval import BM25, embedding_cache_key, reciprocal_rank_fusion
+from src.retrieval import BM25, RerankerError, embedding_cache_key, reciprocal_rank_fusion
 
 
 class HybridRAG:
@@ -12,7 +12,8 @@ class HybridRAG:
                  reranker_url: str, reranker_model: str,
                  llm_url: str, llm_model: str,
                  dense_top_k: int = 20, bm25_top_k: int = 20, rerank_top_k: int = 20,
-                 api_key: str = None, query_instruction: str = None):
+                 api_key: str = None, query_instruction: str = None,
+                 allow_reranker_fallback: bool = False):
         self.embedding_url = embedding_url
         self.api_key = api_key
         self.embedding_model = embedding_model
@@ -24,6 +25,8 @@ class HybridRAG:
         self.bm25_top_k = bm25_top_k
         self.rerank_top_k = rerank_top_k
         self.query_instruction = query_instruction
+        self.allow_reranker_fallback = allow_reranker_fallback
+        self.last_rerank_error: str = None
 
         self.bm25 = BM25()
         self.doc_ids: list[str] = []
@@ -93,8 +96,12 @@ class HybridRAG:
         )
         fused = [(row["doc_id"], row["score"]) for row in fused_rows]
 
-        # Reranking
-        reranked = self._rerank(query, fused[:self.rerank_top_k * 2])
+        # Reranking — reranker 미구성 시 네트워크 호출 없이 명시적으로 생략
+        self.last_rerank_error = None
+        if self.reranker_url:
+            reranked = self._rerank(query, fused[:self.rerank_top_k * 2])
+        else:
+            reranked = fused[:self.rerank_top_k * 2]
         top_docs = reranked[:self.rerank_top_k]
 
         # LLM 답변 생성
@@ -105,6 +112,8 @@ class HybridRAG:
             "answer": answer,
             "retrieved_docs": [did for did, _ in top_docs],
             "pull_count": 1,  # hybrid는 항상 1회 검색
+            "reranker_used": bool(self.reranker_url) and self.last_rerank_error is None,
+            "reranker_error": self.last_rerank_error,
         }
 
     def _rerank(self, query: str, candidates: list) -> list:
@@ -133,9 +142,13 @@ class HybridRAG:
             scored = [(candidates[r["index"]][0], r["relevance_score"]) for r in results]
             scored.sort(key=lambda x: -x[1])
             return scored
-        except Exception:
-            # reranker 실패 시 원래 순서 유지
-            return candidates
+        except (requests.RequestException, KeyError, IndexError, ValueError, TypeError) as exc:
+            error = f"{type(exc).__name__}: {exc}"
+            if self.allow_reranker_fallback:
+                # 명시적으로 허용된 경우에만 원래 순서 유지 + 오류 기록
+                self.last_rerank_error = error
+                return candidates
+            raise RerankerError(f"reranker call failed: {error}") from exc
 
     def _build_context(self, docs: list, max_chars: int = 4000) -> str:
         context_parts = []

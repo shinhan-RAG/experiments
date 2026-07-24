@@ -337,6 +337,105 @@ class AgentAccountingTests(unittest.TestCase):
         self.assertEqual(result["answer"], "답")
 
 
+class FailureHandlingTests(unittest.TestCase):
+    def test_failed_query_row_has_metric_defaults(self):
+        from run_experiment import failed_query_row
+
+        row = failed_query_row(
+            {"_id": "q9", "title": "질의"}, RuntimeError("boom"),
+            requested_features={"taxonomy": True}, single_pull=False,
+        )
+        self.assertEqual(row["query_id"], "q9")
+        self.assertTrue(row["failed"])
+        self.assertEqual(row["termination_reason"], "harness_error")
+        self.assertIn("boom", row["error"])
+        self.assertEqual(row["answer"], "")
+        # 집계 함수가 기대하는 필드가 기본값으로 존재해야 한다
+        for key in ("gold_recall", "pull_count", "retrieved_candidates",
+                    "workspace_docs", "turns", "latency_seconds",
+                    "rule_violations", "trace"):
+            self.assertIn(key, row)
+        compute_metrics([row])  # 예외 없이 집계 가능
+
+    def test_arm_aborts_when_failure_rate_exceeds_threshold(self):
+        from run_experiment import check_arm_failure_rate
+
+        ok = {"termination_reason": "answered"}
+        bad = {"termination_reason": "llm_error"}
+        check_arm_failure_rate([ok, ok, ok, ok, bad], threshold=0.2)  # 20%까지 허용
+        with self.assertRaises(RuntimeError):
+            check_arm_failure_rate([ok, ok, bad, bad], threshold=0.2)
+
+    def test_empty_answer_is_not_sent_to_judge(self):
+        from run_experiment import assign_judgment
+
+        class ExplodingJudge:
+            def evaluate_accuracy(self, *a, **k):
+                raise AssertionError("judge must not be called for empty answers")
+
+        row = {"query_id": "q1", "query_text": "질의", "answer": ""}
+        assign_judgment(row, {"q1": "ref"}, ExplodingJudge())
+        self.assertEqual(row["judgment"], "agent_error")
+
+        answered = {"query_id": "q2", "query_text": "질의", "answer": "정상"}
+        assign_judgment(answered, {}, ExplodingJudge())
+        self.assertEqual(answered["judgment"], "n/a")
+
+
+class RerankerVisibilityTests(unittest.TestCase):
+    @staticmethod
+    def _pipeline(reranker_url="http://mock-rerank", allow=False):
+        from src.hybrid.pipeline import HybridRAG
+
+        p = HybridRAG(
+            embedding_url="u", embedding_model="m",
+            reranker_url=reranker_url, reranker_model="rr",
+            llm_url="u", llm_model="m",
+            dense_top_k=1, bm25_top_k=1, rerank_top_k=1,
+            allow_reranker_fallback=allow,
+        )
+        p.corpus = {"d1": {"title": "t", "text": "body"}}
+        return p
+
+    def test_hybrid_rerank_failure_raises_by_default(self):
+        import requests
+        from unittest.mock import patch
+
+        from src.retrieval import RerankerError
+
+        p = self._pipeline()
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=requests.exceptions.ConnectionError("down")):
+            with self.assertRaises(RerankerError):
+                p._rerank("q", [("d1", 1.0)])
+
+    def test_hybrid_rerank_fallback_records_error_when_allowed(self):
+        import requests
+        from unittest.mock import patch
+
+        p = self._pipeline(allow=True)
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=requests.exceptions.ConnectionError("down")):
+            out = p._rerank("q", [("d1", 1.0)])
+        self.assertEqual(out, [("d1", 1.0)])
+        self.assertIn("ConnectionError", p.last_rerank_error)
+
+    def test_hybrid_run_skips_rerank_without_url_and_reports_status(self):
+        from unittest.mock import patch
+
+        p = self._pipeline(reranker_url="")
+        p.doc_ids = ["d1"]
+        p.embedding_matrix = np.asarray([[1.0, 0.0]])
+        p.bm25.fit([{"_id": "d1", "title": "t", "text": "body"}])
+        p._embed_batch = lambda texts, batch_size=256: [np.asarray([1.0, 0.0]) for _ in texts]
+        p._generate_answer = lambda query, context: "answer"
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=AssertionError("no network call expected")):
+            result = p.run("question")
+        self.assertFalse(result["reranker_used"])
+        self.assertIsNone(result["reranker_error"])
+
+
 class EmbeddingAuthTests(unittest.TestCase):
     def test_embed_batch_sends_bearer_only_when_key_set(self):
         from unittest.mock import patch

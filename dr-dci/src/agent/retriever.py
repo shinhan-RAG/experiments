@@ -18,7 +18,7 @@ import requests
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.retrieval import BM25, reciprocal_rank_fusion
+from src.retrieval import BM25, RerankerError, reciprocal_rank_fusion
 
 
 CACHE_DIR = Path(__file__).parent.parent.parent / "cache" / "embeddings"
@@ -35,9 +35,12 @@ class RetrieverConfig:
     embedding_model: str
     top_k: int = 20
     use_prefix: bool = False
-    taxonomy_boost: float = 1.5
+    # 덧셈 보너스: 곱셈 boost는 음수 cosine에서 penalty로 반전되므로 사용하지 않는다
+    taxonomy_bonus: float = 0.15
     reranker_url: str = None
     reranker_model: str = None
+    # reranker 실패 시 원래 순서로 계속할지 여부 — 기본은 명시적 실패
+    allow_reranker_fallback: bool = False
     # 모델별 instruction은 비교 arm 모두에 동일하게 주입해야 한다.
     # 기본값을 숨은 GTE 전용 전처리로 두지 않는다.
     query_instruction: str = None
@@ -59,6 +62,7 @@ class PullRetriever:
         self.doc_titles: dict[str, str] = {}
         self.doc_raw_texts: dict[str, str] = {}  # for reranker
         self.bm25 = BM25()
+        self.last_rerank_error: str = None
 
     def _cache_key(self, doc_ids: list[str], texts: list[str]) -> str:
         """모델/전처리/본문이 바뀌면 무효화되는 cache key (P2-3)."""
@@ -168,7 +172,7 @@ class PullRetriever:
             for i, did in enumerate(self.doc_ids):
                 tax = self.doc_taxonomy.get(did, {})
                 if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
-                    sims[i] *= self.config.taxonomy_boost
+                    sims[i] += self.config.taxonomy_bonus
         return sims
 
     def pull(self, query: str, taxonomy_filter: dict = None,
@@ -236,13 +240,18 @@ class PullRetriever:
             if len(results) >= gather_k:
                 break
 
+        self.last_rerank_error = None
+        reranker_used = False
         if self.config.reranker_url and results:
             results = self._rerank(query, results)
+            reranker_used = self.last_rerank_error is None
 
         return {
             "results": results[:k],
             "requested": k,
             "duplicates_excluded": duplicates,
+            "reranker_used": reranker_used,
+            "reranker_error": self.last_rerank_error,
         }
 
     def _rerank(self, query: str, candidates: list[dict]) -> list[dict]:
@@ -264,8 +273,12 @@ class PullRetriever:
             for i, item in enumerate(scored):
                 item["rank"] = i + 1
             return scored
-        except Exception:
-            return candidates
+        except (requests.RequestException, KeyError, IndexError, ValueError, TypeError) as exc:
+            error = f"{type(exc).__name__}: {exc}"
+            if self.config.allow_reranker_fallback:
+                self.last_rerank_error = error
+                return candidates
+            raise RerankerError(f"reranker call failed: {error}") from exc
 
     def _embed_batch(self, texts: list[str], batch_size: int = 256) -> list[np.ndarray]:
         """vLLM embedding endpoint 호출 (batch=256)"""

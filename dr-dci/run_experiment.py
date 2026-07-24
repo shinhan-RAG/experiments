@@ -44,28 +44,63 @@ def load_config():
         return yaml.safe_load(f)
 
 
+# aihub 계열(법률)은 BEIR 표준 위치(data/raw/<dataset>)가 아닌
+# data/aihub/<variant>에 빌드되어 있다 (prepare_aihub.py 산출물).
+AIHUB_DATASET_DIRS = {
+    "aihub-full": ("aihub", "full"),
+    "aihub-smoke20k": ("aihub", "smoke20k"),
+}
+
+
+def dataset_dir(dataset: str) -> Path:
+    """dataset 이름 → 데이터 디렉토리."""
+    if dataset in AIHUB_DATASET_DIRS:
+        group, variant = AIHUB_DATASET_DIRS[dataset]
+        return DATA_DIR / group / variant
+    return DATA_DIR / "raw" / dataset
+
+
 def load_corpus(dataset: str, subset_size: int = None):
     """corpus 로드 (서브셋 적용)"""
-    raw_dir = DATA_DIR / "raw" / dataset
+    raw_dir = dataset_dir(dataset)
     corpus = []
     with open(raw_dir / "corpus.jsonl", encoding="utf-8") as f:
         for line in f:
             corpus.append(json.loads(line))
 
     if subset_size:
-        subset_path = DATA_DIR / "subsets" / dataset / f"{subset_size // 1000}k.json"
-        with open(subset_path, encoding="utf-8") as f:
-            doc_ids = set(json.load(f)["doc_ids"])
-        corpus = [doc for doc in corpus if doc["_id"] in doc_ids]
+        size_key = f"{subset_size // 1000}k"
+        parent_subset = raw_dir / f"{size_key}_parent_ids.json"
+        if parent_subset.exists():
+            # 청크형 corpus: 서브셋은 parent 문서 ID 목록으로 정의된다
+            with open(parent_subset, encoding="utf-8") as f:
+                parent_ids = set(json.load(f))
+            corpus = [doc for doc in corpus
+                      if doc.get("parent_id", doc["_id"]) in parent_ids]
+        else:
+            subset_path = DATA_DIR / "subsets" / dataset / f"{size_key}.json"
+            with open(subset_path, encoding="utf-8") as f:
+                doc_ids = set(json.load(f)["doc_ids"])
+            corpus = [doc for doc in corpus if doc["_id"] in doc_ids]
 
     return corpus
 
 
 def load_queries(dataset: str):
-    """쿼리 + qrels 로드"""
-    raw_dir = DATA_DIR / "raw" / dataset
+    """쿼리 + qrels 로드.
+
+    층화 표본(agent_queries_50.jsonl)이 있으면 그것을 질의 집합으로 쓴다 —
+    법률 데이터셋의 6천+ 전체 질의 대신 기존 50질의 실험 설계와 맞춘다.
+    """
+    raw_dir = dataset_dir(dataset)
+    query_file = raw_dir / "agent_queries_50.jsonl"
+    if query_file.exists():
+        print(f"    Using stratified query sample: {query_file.name}")
+    else:
+        query_file = raw_dir / "queries.jsonl"
+
     queries = []
-    with open(raw_dir / "queries.jsonl", encoding="utf-8") as f:
+    with open(query_file, encoding="utf-8") as f:
         for line in f:
             queries.append(json.loads(line))
 
@@ -75,6 +110,32 @@ def load_queries(dataset: str):
             qrels.append(json.loads(line))
 
     return queries, qrels
+
+
+def parent_map_from_corpus(corpus: list) -> dict:
+    """청크형 corpus의 {chunk_id → parent_id}. BEIR corpus면 빈 dict.
+
+    법률 corpus는 `_id`가 청크 ID이고 qrels의 corpus-id는 parent 문서를
+    가리키므로, 평가 전에 검색 결과를 parent 수준으로 사상해야 한다."""
+    return {
+        str(doc["_id"]): str(doc["parent_id"])
+        for doc in corpus
+        if doc.get("parent_id") and doc["parent_id"] != doc["_id"]
+    }
+
+
+def to_parent_ids(ids: list, parent_map: dict) -> list:
+    """ID 목록을 parent 수준으로 사상하고 첫 등장 순서 유지로 중복 제거."""
+    if not parent_map:
+        return list(ids)
+    seen = set()
+    out = []
+    for doc_id in ids:
+        pid = parent_map.get(str(doc_id), str(doc_id))
+        if pid not in seen:
+            seen.add(pid)
+            out.append(pid)
+    return out
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
@@ -182,7 +243,8 @@ def positive_gold_gains_by_query(qrels: list) -> dict:
 
 
 def run_pull_probe(retriever: PullRetriever, queries: list,
-                   query_gold: dict, query_gains: dict = None) -> list:
+                   query_gold: dict, query_gains: dict = None,
+                   parent_map: dict = None) -> list:
     """retrieval-only probe: 원 질의 텍스트로 backend를 직접 1회 pull해
     rank 지표(Recall@5/20·Hit@5/10·P@20·nDCG@10)를 잰다 — agent의 질의
     재작성과 독립인 검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
@@ -197,7 +259,8 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
         started = time.perf_counter()
         pulled = retriever.pull(text)
         candidates = pulled["results"] if isinstance(pulled, dict) else pulled
-        ranked = [r["doc_id"] for r in candidates]
+        ranked = to_parent_ids([r["doc_id"] for r in candidates],
+                               parent_map or {})
         latency = time.perf_counter() - started
         rows.append({
             "query_id": qid,
@@ -206,6 +269,73 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
             "ranked_top20": ranked[:20],
         })
     return rows
+
+
+def failed_query_row(query: dict, exc: Exception,
+                     requested_features: dict = None,
+                     single_pull: bool = False) -> dict:
+    """실행에 실패한 질의를 결과 행으로 기록한다 — 한 질의의 장애가
+    이미 소비한 나머지 결과를 유실시키지 않도록."""
+    return {
+        "query_id": str(query.get("_id", "")),
+        "query_text": query.get("title") or query.get("text", ""),
+        "answer": "",
+        "failed": True,
+        "error": f"{type(exc).__name__}: {exc}",
+        "termination_reason": "harness_error",
+        "gold_recall": 0.0,
+        "read_recall": 0.0,
+        "efficiency": 0.0,
+        "pull_count": 0,
+        "retrieved_candidates": 0,
+        "added_documents": 0,
+        "workspace_docs": [],
+        "read_docs": [],
+        "turns": 0,
+        "tool_call_counts": {},
+        "tool_calls_total": 0,
+        "llm_prompt_tokens": 0,
+        "llm_completion_tokens": 0,
+        "taxonomy_filtered_pulls": 0,
+        "system_fingerprints": [],
+        "latency_seconds": 0.0,
+        "distinct_pull_queries": 0,
+        "pull_stats": [],
+        "budget_exhausted": False,
+        "rule_violations": [],
+        "trace": [],
+        "requested_features": dict(requested_features or {}),
+        "single_pull": single_pull,
+    }
+
+
+def check_arm_failure_rate(results: list, threshold: float = 0.2):
+    """arm 내 실패율이 임계값을 넘으면 결과 해석이 불가하므로 중단한다."""
+    if not results:
+        return
+    failed = [
+        r for r in results
+        if r.get("termination_reason") in {"llm_error", "harness_error"}
+    ]
+    rate = len(failed) / len(results)
+    if rate > threshold:
+        errors = [r.get("error", "") for r in failed[:5]]
+        raise RuntimeError(
+            f"arm aborted: {len(failed)}/{len(results)} queries failed "
+            f"(threshold {threshold:.0%}). first errors: {errors}"
+        )
+
+
+def assign_judgment(r: dict, ref_answers: dict, judge) -> None:
+    """빈 답변(실패/프로토콜 위반)은 judge에 보내지 않고 명시적으로 구분한다."""
+    if not r.get("answer"):
+        r["judgment"] = "agent_error"
+    elif r["query_id"] in ref_answers:
+        r["judgment"] = judge.evaluate_accuracy(
+            r["query_text"], ref_answers[r["query_id"]], r["answer"]
+        )
+    else:
+        r["judgment"] = "n/a"
 
 
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
@@ -228,6 +358,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         )
 
     corpus_dict = {doc["_id"]: doc for doc in corpus}
+    # 청크형(법률) corpus면 qrels가 parent를 가리키므로 평가를 parent 수준으로
+    parent_map = parent_map_from_corpus(corpus)
 
     # Load schemas for agent prompt
     taxonomy_schema = None
@@ -286,8 +418,10 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         result = agent.run(query_text)
         latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
-        gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
-        read_recall = Judge.gold_recall_at_workspace(result["read_docs"], gold_docs)
+        gold_recall = Judge.gold_recall_at_workspace(
+            to_parent_ids(result["workspace_docs"], parent_map), gold_docs)
+        read_recall = Judge.gold_recall_at_workspace(
+            to_parent_ids(result["read_docs"], parent_map), gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -322,24 +456,42 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "single_pull": single_pull,
         }
 
+    requested_features = {
+        key: step_config.get(key, False)
+        for key in ("taxonomy", "tags", "prefix", "metadata")
+    }
     results = [None] * len(queries)
     with ThreadPoolExecutor(max_workers=16) as executor:
         futures = {executor.submit(run_single_query, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
-            results[idx] = future.result()
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                results[idx] = failed_query_row(
+                    queries[idx], exc,
+                    requested_features=requested_features,
+                    single_pull=single_pull,
+                )
+                print(f"    [FAILED] query {queries[idx].get('_id')}: {exc}")
+
+    try:
+        check_arm_failure_rate(results)
+    except RuntimeError:
+        # 이미 소비한 API 비용의 결과는 중단 전에 보존한다
+        dump_path = RESULTS_DIR / f"aborted_arm_{datetime.now():%Y%m%d_%H%M%S}.json"
+        dump_path.parent.mkdir(parents=True, exist_ok=True)
+        dump_path.write_text(
+            json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        print(f"    [ABORTED] partial results saved: {dump_path}")
+        raise
 
     # Judge 병렬 실행
-    def judge_single(r):
-        if r["query_id"] in ref_answers:
-            r["judgment"] = judge.evaluate_accuracy(
-                r["query_text"], ref_answers[r["query_id"]], r["answer"]
-            )
-        else:
-            r["judgment"] = "n/a"
-
     with ThreadPoolExecutor(max_workers=16) as executor:
-        list(executor.map(judge_single, results))
+        list(executor.map(
+            lambda r: assign_judgment(r, ref_answers, judge), results
+        ))
 
     return results
 
@@ -366,6 +518,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
 
     print("    Indexing corpus...")
     pipeline.index(corpus)
+    parent_map = parent_map_from_corpus(corpus)
 
     # Judge
     with open(CONFIG_DIR / "judge_prompt.txt") as f:
@@ -390,7 +543,8 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         result = pipeline.run(query_text)
         latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
-        gold_recall = Judge.gold_recall_at_workspace(result["retrieved_docs"], gold_docs)
+        gold_recall = Judge.gold_recall_at_workspace(
+            to_parent_ids(result["retrieved_docs"], parent_map), gold_docs)
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -404,6 +558,8 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             "retrieved_docs": result["retrieved_docs"],
             "turns": 1,
             "latency_seconds": latency_seconds,
+            "reranker_used": result.get("reranker_used"),
+            "reranker_error": result.get("reranker_error"),
         }
 
     results = [None] * len(queries)
@@ -411,15 +567,17 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         futures = {executor.submit(run_single_hybrid, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
-            results[idx] = future.result()
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                results[idx] = failed_query_row(queries[idx], exc)
+                print(f"    [FAILED] query {queries[idx].get('_id')}: {exc}")
+
+    check_arm_failure_rate(results)
 
     # Judge 순차 실행
     for r in results:
-        r["judgment"] = "n/a"
-        if r["query_id"] in ref_answers:
-            r["judgment"] = judge.evaluate_accuracy(
-                r["query_text"], ref_answers[r["query_id"]], r["answer"]
-            )
+        assign_judgment(r, ref_answers, judge)
 
     return results
 
@@ -693,7 +851,8 @@ def run_part2_scale_probe(config: dict):
         print(f"\n  --- dense probe @ {size_key} ---")
         retriever = build_pull_retriever(config, {"pull_backend": "dense"}, corpus)
         probes[size_key] = run_pull_probe(retriever, queries, query_gold,
-                                          query_gains=query_gains)
+                                          query_gains=query_gains,
+                                          parent_map=parent_map_from_corpus(corpus))
         all_results[f"dense_{size_key}"] = {"probe_rows": probes[size_key]}
 
     analysis = {}
@@ -843,7 +1002,8 @@ def run_part5(config: dict, probe_only: bool = False):
         # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
         # backend 외 변인 없이 rank 지표를 먼저 잰다.
         probes[backend] = run_pull_probe(retriever, queries, query_gold,
-                                         query_gains=query_gains)
+                                         query_gains=query_gains,
+                                         parent_map=parent_map_from_corpus(corpus))
         if probe_only:
             all_results[backend] = {"probe_rows": probes[backend]}
             continue

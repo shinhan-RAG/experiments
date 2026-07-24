@@ -81,8 +81,102 @@ def test_cache_key_changes_with_prefix():
     assert k1 != k2  # prefix 여부가 cache key에 반영 (P2-3)
 
 
+def _signed_retriever(cosines: dict, taxonomy: dict):
+    """cosine 값을 직접 지정한 retriever (음수 score 검증용)."""
+    cfg = RetrieverConfig(embedding_url="mock", embedding_model="mock")
+    r = PullRetriever(cfg)
+    r.doc_ids = list(cosines)
+    r.embedding_matrix = np.array(
+        [[c, float(np.sqrt(1 - c * c))] for c in cosines.values()]
+    )
+    r.doc_taxonomy = taxonomy
+    r._embed_batch = lambda texts, batch_size=256: [np.array([1.0, 0.0])]
+    return r
+
+
+@pytest.mark.parametrize("match_cos,other_cos", [
+    (-0.15, -0.2),   # 음수 구간: 곱셈 boost면 일치 문서가 역전당한다
+    (0.0, -0.05),
+    (0.3, 0.25),
+])
+def test_taxonomy_boost_never_demotes_matching_doc(match_cos, other_cos):
+    r = _signed_retriever(
+        {"m": match_cos, "o": other_cos}, {"m": {"L1": "T"}}
+    )
+    base = r._dense_scores("q")
+    boosted = r._dense_scores("q", taxonomy_filter={"L1": "T"})
+    assert boosted[0] >= base[0] - 1e-9   # 일치 문서 점수는 감소하지 않는다
+    assert boosted[0] > boosted[1]        # 원래 우위였던 일치 문서가 역전되지 않는다
+
+
 def test_cache_key_changes_with_text():
     r = build()
     k1 = r._cache_key(["d0"], ["original text"])
     k2 = r._cache_key(["d0"], ["changed text"])
     assert k1 != k2  # 같은 doc_id라도 본문이 바뀌면 무효화
+
+
+# ---------------------------------------------------------------- reranker 실패 가시화
+
+def _reranking_retriever(allow_fallback=False, n=5):
+    cfg = RetrieverConfig(embedding_url="mock", embedding_model="mock", top_k=2,
+                          reranker_url="http://mock-rerank", reranker_model="rr",
+                          allow_reranker_fallback=allow_fallback,
+                          query_instruction=None)
+    r = MockRetriever(n, cfg)
+    docs = [{"_id": f"d{i}", "title": f"d{i}", "text": f"doc {i}"} for i in range(n)]
+    r.index(docs)
+    return r
+
+
+def test_rerank_failure_raises_by_default(monkeypatch):
+    # 실험 실행에서 reranker 장애가 조용한 fallback으로 숨겨지면
+    # arm 라벨(“+Reranker”)과 실제 구성이 달라진다 — 기본은 명시적 실패
+    import requests
+    from src.agent import retriever as mod
+    from src.retrieval import RerankerError
+
+    def post(*args, **kwargs):
+        raise requests.exceptions.ConnectionError("reranker down")
+
+    monkeypatch.setattr(mod.requests, "post", post)
+    with pytest.raises(RerankerError):
+        _reranking_retriever().pull("q0")
+
+
+def test_rerank_failure_fallback_only_when_allowed(monkeypatch):
+    import requests
+    from src.agent import retriever as mod
+
+    def post(*args, **kwargs):
+        raise requests.exceptions.ConnectionError("reranker down")
+
+    monkeypatch.setattr(mod.requests, "post", post)
+    out = _reranking_retriever(allow_fallback=True).pull("q0")
+    assert out["reranker_used"] is False
+    assert "ConnectionError" in out["reranker_error"]
+    assert len(out["results"]) == 2  # fallback이어도 결과는 유지
+
+
+def test_pull_reports_reranker_success(monkeypatch):
+    from src.agent import retriever as mod
+
+    class FakeResp:
+        def __init__(self, n):
+            self.n = n
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"results": [
+                {"index": i, "relevance_score": 1.0 - i * 0.1} for i in range(self.n)
+            ]}
+
+    def post(url, json=None, timeout=None, **kwargs):
+        return FakeResp(len(json["documents"]))
+
+    monkeypatch.setattr(mod.requests, "post", post)
+    out = _reranking_retriever().pull("q0")
+    assert out["reranker_used"] is True
+    assert out["reranker_error"] is None
