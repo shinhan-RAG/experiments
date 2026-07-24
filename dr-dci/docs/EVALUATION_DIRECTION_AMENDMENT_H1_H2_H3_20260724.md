@@ -39,7 +39,7 @@
 | 하나 이상 미달 | 어떤 결과든 | 어떤 결과든 | 미달한 가설을 그대로 기록하며, 다른 데이터셋 점수로 보정하거나 합산하지 않는다. |
 | 어떤 결과든 | 어떤 결과든 | 미실행 | H4가 없으므로 최종 제품 주장은 보류한다. |
 
-H1의 결과는 위 표의 어느 행도 바꾸지 않는다. H1은 H4 전의 일반-domain text-only 방법 근거일 뿐이다.
+H1과 S0 exploratory smoke의 결과는 위 표의 어느 행도 바꾸지 않는다. H1은 H4 전의 일반-domain text-only 방법 근거이고, S0는 비판정 파이프라인 관찰일 뿐이다.
 
 ## 3. 기존 산출물 영향도
 
@@ -50,6 +50,7 @@ H1의 결과는 위 표의 어느 행도 바꾸지 않는다. H1은 H4 전의 �
 | MIRACL taxonomy generation contract, exact plan 후보, KT candidate/bundle 설계 | H1 taxonomy artifact 생성의 **후보 실행 계약** | 승인·실행 완료, H2/H4 element artifact, A/B 결과 | 무변경·실행 보류; D0는 별도 승인된 H1 실행을 자동 차단하거나 H2/H4 증거로 승격하지 않음 |
 | `docs/LEGAL_PRIMARY_MIRACL_SECONDARY_EVALUATION_PLAN_20260724.md` | AIHub legal primary/MIRACL secondary의 역사적 위계와 계속 유효한 Legal Gate L0·정합성·license/PII 계약 | H2/H4가 이미 구현됐거나 MIRACL focused runner가 존재한다는 주장, 또는 이 amendment 이전의 최종 제품 판정 위계 | 무변경; 향후 평가 위계·최종 성공 해석은 이 amendment가 supersede |
 | TREC-COVID focused Part 1·2 및 historical 결과 | 기존 document-level 역사 기록과 TREC 전용 실행 계약 | H1/H2a/H2b/H3/H4의 새 성공 근거 또는 신한 운영 성능 | 무변경 |
+| Peter PR #4의 S0 exploratory chunk smoke | parsed Markdown/text chunk 파이프라인, source-chunk 회수와 evidence diagnostic의 비판정 관찰 | H1/H2a/H2b/H3/H4 gate 통과, parser-derived element·표 구조·시각 이해, complete-relevance 검색 품질 | PR #4 코드 무변경·미병합; smoke 결과 미실행 |
 | `scripts/build_tags.py`와 기존 tag 파일 형식 | 현행 구현의 감사 대상·프로토타입 | parser-derived element treatment, D0 통과 artifact, H2 실험 입력 | 코드 변경 없음; H2에 사용 금지 |
 | H4 대상 법률/보험 복합문서 corpus·parser output·gold | 아직 없는 D0/H4 후보 선정·EDA의 대상 | H2 또는 H3의 결과를 해당 data 없이 H4/제품 증거로 표현 | 아직 미선정·미생성 |
 
@@ -163,28 +164,86 @@ H2b는 위 object의 `structural_type`을 그대로 유지하고 `semantic_role`
 
 통과 산출물은 source/hash manifest, parser manifest, normalized parent/element records, independent parser-fidelity gold, parent/element retrieval-qrel manifests, leakage/license report, H2a/H2b typed-filter schema, control/treatment config, synthetic fixture 및 validator다. D0 통과는 tag 품질이나 retrieval 개선을 뜻하지 않는다.
 
-## 6. 다음 실행 순서와 승인 gate
+## 6. S0 exploratory chunk smoke — PR #4 사전 경계
+
+### 6.1 역할과 비판정 상태
+
+S0는 Peter PR #4가 의도한 **parsed Markdown/text chunk pipeline smoke**다. taxonomy soft boost 비교의 공정성, source chunk 회수, evidence coverage/density 계산 경로를 관찰할 수는 있으나, H1/H2a/H2b/H3/H4 밖의 비판정 exploratory track이다.
+
+- S0는 어느 confirmatory gate도 통과시키지 않으며, H2/H4의 Gate D0를 대체하거나 충족하지 않는다.
+- S0 retrieval-only 또는 taxonomy 비교가 성공해도 H1 evidence로 승격하지 않고, Agent, focused Part 1~3, H2/H4 typed-filter, 최종 제품 주장으로 자동 진행하지 않는다.
+- 이 문서는 S0 실행을 승인하지 않는다. PR #4의 별도 실행 승인과 immutable input/result manifest가 있을 때만 D0와 **이전 또는 병렬**로 실행할 수 있다.
+- 이 기록 시점에는 S0 결과를 보지 않았으며, 모델/API 호출·taxonomy artifact 생성·실험 실행은 수행하지 않았다.
+
+### 6.2 단위와 표현 경계
+
+- S0의 검색 단위는 parsed Markdown/text **chunk**다. chunk는 parser-derived element와 동의어가 아니며, element ID·page·bbox·원본 객체 관계를 요구하는 D0 schema를 충족하지 않는다.
+- parsed Markdown 안의 표는 **text-mediated table representation**이다. table cell/row/column/span의 parser fidelity 또는 표 구조 이해를 뜻하지 않는다.
+- caption, OCR, bbox, image crop/original reference가 없으면 이미지·도형을 근거로 한 navigation이나 이해를 주장하지 않는다. 해당 정보가 일부 있어도 pixel/image embedding 또는 VLM 입력과 검수된 visual gold가 없으면 5.4절의 figure navigation/text-mediated retrieval 경계를 유지한다.
+
+### 6.3 source-chunk incomplete qrel 계약
+
+S0 qrel은 질문 생성에 사용한 **source chunk 한 개**를 `known_positive_source_chunk_id`로 등록한 incomplete qrel이다. 의미상 관련된 다른 chunk는 unjudged일 수 있으므로, 이 qrel은 complete relevance judgment가 아니다.
+
+- 주 회수 지표 이름은 `source_chunk_recall@k`로 한정한다. 각 질의의 known source chunk가 unique ranked top-k에 있으면 1, 없으면 0이며, 질의 평균의 분모·제외 규칙과 source mapping hash를 결과 manifest에 기록한다.
+- 이를 일반적인 complete-relevance Recall@k, Precision@k, 최종 검색 품질 또는 문서 relevance 개선으로 부르지 않는다.
+- `evidence_coverage@k`와 `evidence_density@k`를 보고하려면 source chunk에서 사전 선언·고정한 evidence-unit ledger와 그 SHA-256을 별도로 기록한다. coverage는 declared evidence unit 중 unique top-k가 지원하는 비율, density는 unique top-k chunk 중 하나 이상의 declared evidence unit을 지원하는 chunk의 비율로 한정한다. ledger가 없으면 두 지표는 누락으로 기록하며 source qrel로 대체하지 않는다.
+- 두 지표의 harmonic diagnostic은 동일 질의, 동일 k, 0이 아닌 동일 정의의 coverage/density가 있을 때만 보고한다. 이는 균형 진단값이지 relevance metric·gate criterion이 아니다.
+
+### 6.4 순위·중복·workspace 지표 경계
+
+- `nDCG@k`는 실제 retrieval이 반환한 **unique chunk ID의 단일 ranked list**에만 허용한다. metric 전 `len(ranked_ids) == len(set(ranked_ids))`를 검사하고 중복 ID는 fail-loud 한다. canonical relevance와 DCG/IDCG 계산 후 `0 <= nDCG@k <= 1` 불변식을 검사한다.
+- incomplete source-chunk qrel로 계산한 nDCG는 S0 내부의 ranking diagnostic일 뿐이며, qrel 불완전성을 해소하거나 complete-relevance nDCG가 되게 하지 않는다.
+- pull 순서로 누적된 Agent workspace는 단일 ranked list가 아니므로 표준 nDCG를 적용하지 않는다. S0는 Agent 평가가 아니며, workspace coverage를 별도 기술 통계로 기록하더라도 ranking metric이나 Agent 성능으로 표기하지 않는다.
+
+### 6.5 short-fragment 정책
+
+S0에서 최종 길이 120자 미만의 fragment를 제거하는 것은 허용될 수 있다. 적용한 결과 manifest에는 반드시 다음을 함께 기록한다.
+
+- `dropped_fragment_count`
+- `dropped_char_count`
+- `zero_chunk_document_count`
+- length rule, 적용 시점, 입력·출력 chunk manifest SHA-256
+
+이 제거가 있는 S0 결과는 incomplete-qrel smoke 진단으로만 보존한다. coverage 주장이나 H1/H2/H3/H4/최종 제품 근거로 승격하지 않는다.
+
+### 6.6 baseline/taxonomy 공정성 계약
+
+S0의 baseline과 taxonomy treatment는 다음을 동일하게 고정한다.
+
+- corpus와 parsed chunk manifest
+- chunking 및 short-fragment 정책
+- query와 incomplete source qrel/evidence ledger
+- retrieval backend와 모델
+- Top-K
+- pull 수와 총 retrieval/token/character budget
+- seed, timeout, 실패·제외 규칙, metric 구현
+
+차이는 승인된 taxonomy **soft boost 하나**뿐이다. 다른 prompt, query rewrite, reranker, chunking, tag filter, Agent turn 또는 budget 변경을 같은 arm에 추가하지 않는다. 이 공정성 계약은 S0를 H1 confirmatory result로 바꾸지 않는다.
+
+## 7. 다음 실행 순서와 승인 gate
 
 | 순서 | 승인 전 작업 | 다음 단계로 가기 위한 조건 | 금지되는 자동 진행 |
 |---|---|---|---|
 | 0 | 본 amendment와 기존 결과를 동결 | 문서 검토 완료 | 모델 실행·KT bundle 재생성 |
-| 1 | H1 candidate execution은 별도 재승인까지 보류 | 기존 immutable model/runtime/plan/approval 입력과 H1 실행 승인 | D0가 H1을 자동 차단하는 것, H1 결과를 H2/H3/H4 성공으로 해석 |
-| 2 | **Gate D0/H4 후보 선정·EDA**: 법률/보험 복합 원본, parser, independent gold, qrel, leakage/license 계약 준비 | D0 validator와 독립 검토 승인 | taxonomy/@tag 생성 또는 retrieval 실행, 후보 결과를 H4 효과로 표현 |
-| 3 | H2a structural-type retrieval-only protocol 고정 | H2a 단일변수, element/parent metric, parser-fidelity metric, minimum practical effect, raw-row/CI 계약 승인 | semantic role·rerank·prompt·Agent를 동시 추가 |
-| 4 | H2a retrieval-only control 대 treatment 1회 | 결과 validator·paired 분석·provenance audit 통과 | H2a 결과를 보고 filter/query/metric 재튜닝, Agent 자동 실행 |
-| 5 | H2b semantic-role retrieval-only protocol 및 1회 실행 | H2a의 data/config/raw-row 검증 완료와 H2b 별도 승인; H2a structural filter 고정 | H2a와 H2b를 복합 treatment로 재해석, Agent 자동 실행 |
-| 6 | H2 Agent protocol (선택적 후속) | H2 retrieval-only가 사전 승인한 실질 기준을 통과하고, Agent budget/prompt/judge가 별도 승인 | retrieval-only 성공을 Agent navigation·answer 성능으로 표현 |
-| 7 | H3 Legal Gate L0와 parent-document primary protocol 승인 | held-out query/exclusion hash, 법률 metric/effect criterion, license/PII 계약 승인 | MIRACL/H2 결과로 H3 gate 우회 |
-| 8 | H3 primary 1회 실행 | H3 결과 validator·paired 분석·provenance audit 통과 | H3 결과만으로 H4/복합문서 제품 주장 |
-| 9 | H4 target-intersection protocol 및 1회 평가 | D0 통과, 법률/보험 복합문서의 element+parent qrel, H4 effect criterion, independent parser-fidelity audit 승인 | H2/H3 결과를 H4 대신 사용, 시각 정보만으로 image understanding 주장 |
-| 10 | 최종 제품 판정 | H2a/H2b, H3, H4의 독립적 사전 계약 결과를 최종 판정표대로 해석 | 데이터셋 점수 합산, 사후 성공 기준 변경 |
+| 1 | **S0 exploratory chunk smoke** (D0 이전 또는 병렬의 선택적 PR #4 작업) | PR #4 별도 실행 승인, parsed chunk/source-qrel/evidence ledger manifest, short-fragment·unique-ranking·공정성 계약 사전 검증 | H1/H2a/H2b/H3/H4 gate 통과, D0 충족, Agent/focused Part 1~3/제품 주장 자동 진행 |
+| 2 | H1 candidate execution은 별도 재승인까지 보류 | 기존 immutable model/runtime/plan/approval 입력과 H1 실행 승인 | D0가 H1을 자동 차단하는 것, H1 결과를 H2/H3/H4 성공으로 해석 |
+| 3 | **Gate D0/H4 후보 선정·EDA**: 법률/보험 복합 원본, parser, independent gold, qrel, leakage/license 계약 준비 | D0 validator와 독립 검토 승인 | taxonomy/@tag 생성 또는 retrieval 실행, 후보 결과를 H4 효과로 표현 |
+| 4 | H2a structural-type retrieval-only protocol 고정 | H2a 단일변수, element/parent metric, parser-fidelity metric, minimum practical effect, raw-row/CI 계약 승인 | semantic role·rerank·prompt·Agent를 동시 추가 |
+| 5 | H2a retrieval-only control 대 treatment 1회 | 결과 validator·paired 분석·provenance audit 통과 | H2a 결과를 보고 filter/query/metric 재튜닝, Agent 자동 실행 |
+| 6 | H2b semantic-role retrieval-only protocol 및 1회 실행 | H2a의 data/config/raw-row 검증 완료와 H2b 별도 승인; H2a structural filter 고정 | H2a와 H2b를 복합 treatment로 재해석, Agent 자동 실행 |
+| 7 | H2 Agent protocol (선택적 후속) | H2 retrieval-only가 사전 승인한 실질 기준을 통과하고, Agent budget/prompt/judge가 별도 승인 | retrieval-only 성공을 Agent navigation·answer 성능으로 표현 |
+| 8 | H3 Legal Gate L0와 parent-document primary protocol 승인 | held-out query/exclusion hash, 법률 metric/effect criterion, license/PII 계약 승인 | MIRACL/H2 결과로 H3 gate 우회 |
+| 9 | H3 primary 1회 실행 | H3 결과 validator·paired 분석·provenance audit 통과 | H3 결과만으로 H4/복합문서 제품 주장 |
+| 10 | H4 target-intersection protocol 및 1회 평가 | D0 통과, 법률/보험 복합문서의 element+parent qrel, H4 effect criterion, independent parser-fidelity audit 승인 | H2/H3 결과를 H4 대신 사용, 시각 정보만으로 image understanding 주장 |
+| 11 | 최종 제품 판정 | H2a/H2b, H3, H4의 독립적 사전 계약 결과를 최종 판정표대로 해석 | 데이터셋 점수 합산, 사후 성공 기준 변경 |
 
-현재의 다음 허용 작업은 **Gate D0/H4에 맞는 법률/보험 복합 문서 데이터 후보 선정과 EDA**뿐이다. taxonomy artifact, taxonomy/@tag A/B, Agent, Peter Part 1~3, AIHub legal primary, KT bundle 재생성과 모델/API 호출은 모두 **미실행·미승인** 상태로 유지한다.
+후속으로 허용될 수 있는 작업은 (a) PR #4의 별도 실행 승인을 받은 S0 비판정 chunk smoke, 또는 (b) Gate D0/H4에 맞는 법률/보험 복합 문서 데이터 후보 선정과 EDA다. S0는 D0 이전 또는 병렬로만 위치하며 어떤 gate도 통과시키지 않는다. 이 문서 작업에서는 S0를 포함한 실험을 실행하지 않았다. taxonomy artifact, taxonomy/@tag A/B, Agent, Peter Part 1~3, AIHub legal primary, KT bundle 재생성과 모델/API 호출은 모두 **미실행·미승인** 상태로 유지한다.
 
-## 7. 현재 완료 상태의 정확한 표현
+## 8. 현재 완료 상태의 정확한 표현
 
 - **보존 완료:** MIRACL-ko text-only passage fixture와 standalone lexical plumbing baseline, 기존 taxonomy execution contract 및 역사 문서.
-- **이번 amendment 완료:** H1/H2a/H2b/H3/H4 평가 위계, 현행 @tag 코드의 제한, D0 독립 gold·시각 주장 경계와 후속 승인 순서의 사전 기록.
-- **완료가 아님:** taxonomy artifact 생성, taxonomy 효과, @tag 정확도/효과, parser fidelity, Agent 효과, Part 1~3, AIHub legal primary, H4 target-intersection, 법률/보험 복합문서 최종 제품 검증.
+- **이번 amendment 완료:** H1/H2a/H2b/H3/H4 평가 위계는 유지한 채, S0 비판정 chunk smoke 경계, 현행 @tag 코드의 제한, D0 독립 gold·시각 주장 경계와 후속 승인 순서의 사전 기록.
+- **완료가 아님:** S0 smoke 결과, taxonomy artifact 생성, taxonomy 효과, @tag 정확도/효과, parser fidelity, Agent 효과, Part 1~3, AIHub legal primary, H4 target-intersection, 법률/보험 복합문서 최종 제품 검증.
 
 이 구분을 유지함으로써 현재의 text-only baseline을 삭제하지 않으면서도, parser-derived evidence가 없는 MIRACL passage 결과가 구조 요소·법률/보험 제품 주장으로 확장되는 것을 막는다.
