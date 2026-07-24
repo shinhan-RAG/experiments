@@ -55,15 +55,17 @@ FIXTURE_DATA_DIR = (
     / "miracl_ko_taxonomy_artifact"
     / "data"
 )
+SYNTHETIC_MODEL_COMMIT = "1" * 40
+SYNTHETIC_TOKENIZER_COMMIT = "2" * 40
 
 
 def source_artifact() -> dict:
     prompt_template = "Synthetic taxonomy test prompt: title and text only."
     server_arguments = [
         "synthetic/mock-model",
-        "--revision", "synthetic-model-revision",
+        "--revision", SYNTHETIC_MODEL_COMMIT,
         "--tokenizer", "synthetic/mock-tokenizer",
-        "--tokenizer-revision", "synthetic-tokenizer-revision",
+        "--tokenizer-revision", SYNTHETIC_TOKENIZER_COMMIT,
         "--served-model-name", "synthetic-taxonomy-service",
         "--synthetic-taxonomy-server", "--generation-config", "vllm",
         "--chat-template", "synthetic-qwen3.jinja",
@@ -133,9 +135,9 @@ def source_artifact() -> dict:
                 "parameters": {"label_count": 2},
                 "determinism_mode": "deterministic",
                 "model_repository": "synthetic/mock-model",
-                "model_revision": "synthetic-model-revision",
+                "model_revision": SYNTHETIC_MODEL_COMMIT,
                 "tokenizer_repository": "synthetic/mock-tokenizer",
-                "tokenizer_revision": "synthetic-tokenizer-revision",
+                "tokenizer_revision": SYNTHETIC_TOKENIZER_COMMIT,
                 "pooling": "not_applicable",
                 "normalization": "not_applicable",
                 "clustering_or_classification_algorithm": "deterministic-content-hash-assignment",
@@ -146,9 +148,9 @@ def source_artifact() -> dict:
                 "generation_controls": {"temperature": 0.0, "max_tokens": 16},
                 "runtime": {
                     "model_repository": "synthetic/mock-model",
-                    "model_revision": "synthetic-model-revision",
+                    "model_revision": SYNTHETIC_MODEL_COMMIT,
                     "tokenizer_repository": "synthetic/mock-tokenizer",
-                    "tokenizer_revision": "synthetic-tokenizer-revision",
+                    "tokenizer_revision": SYNTHETIC_TOKENIZER_COMMIT,
                     "library_versions": {"synthetic-runtime": "test-v1"},
                     "dependency_lock_sha256": "f" * 64,
                     "container_digest": "sha256:" + "a" * 64,
@@ -1017,9 +1019,9 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             altered_launch = altered_artifact["provenance"]["generator"]["vllm_execution"]["server_launch"]
             altered_launch["arguments"] = [
                 "synthetic/mock-model",
-                "--revision", "synthetic-model-revision",
+                "--revision", SYNTHETIC_MODEL_COMMIT,
                 "--tokenizer", "synthetic/mock-tokenizer",
-                "--tokenizer-revision", "synthetic-tokenizer-revision",
+                "--tokenizer-revision", SYNTHETIC_TOKENIZER_COMMIT,
                 "--served-model-name", "synthetic-taxonomy-service",
                 "--synthetic-taxonomy-server", "--different-launch-control",
                 "--generation-config", "vllm", "--chat-template", "synthetic-qwen3.jinja",
@@ -1220,9 +1222,9 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
         missing_launch = missing_request_controls_override["provenance"]["generator"]["vllm_execution"]["server_launch"]
         missing_launch["arguments"] = [
             "synthetic/mock-model",
-            "--revision", "synthetic-model-revision",
+            "--revision", SYNTHETIC_MODEL_COMMIT,
             "--tokenizer", "synthetic/mock-tokenizer",
-            "--tokenizer-revision", "synthetic-tokenizer-revision",
+            "--tokenizer-revision", SYNTHETIC_TOKENIZER_COMMIT,
             "--served-model-name", "synthetic-taxonomy-service",
             "--synthetic-taxonomy-server", "--chat-template", "synthetic-qwen3.jinja",
         ]
@@ -1293,9 +1295,9 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
         server_launch["server_generation_config_launch_value"] = "/approved/generation-config"
         server_launch["arguments"] = [
             "synthetic/mock-model",
-            "--revision", "synthetic-model-revision",
+            "--revision", SYNTHETIC_MODEL_COMMIT,
             "--tokenizer", "synthetic/mock-tokenizer",
-            "--tokenizer-revision", "synthetic-tokenizer-revision",
+            "--tokenizer-revision", SYNTHETIC_TOKENIZER_COMMIT,
             "--served-model-name", "synthetic-taxonomy-service",
             "--synthetic-taxonomy-server", "--generation-config", "/approved/generation-config",
             "--chat-template", "synthetic-qwen3.jinja",
@@ -1448,6 +1450,98 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                     generation_run=run,
                     raw_response_dir=response_dir,
                 )
+
+    def test_actual_execution_requires_immutable_hugging_face_revisions(self):
+        """RED regressions: branch/tag/path inputs cannot authorize an actual run."""
+        def canonical_sha256(value: object) -> str:
+            return hashlib.sha256(
+                json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+
+        def set_revision(artifact: dict, *, model: str | None = None, tokenizer: str | None = None) -> None:
+            generator = artifact["provenance"]["generator"]
+            launch = generator["vllm_execution"]["server_launch"]
+            if model is not None:
+                generator["model_revision"] = model
+                generator["runtime"]["model_revision"] = model
+                launch["arguments"][2] = model
+            if tokenizer is not None:
+                generator["tokenizer_revision"] = tokenizer
+                generator["runtime"]["tokenizer_revision"] = tokenizer
+                launch["arguments"][6] = tokenizer
+            launch["arguments_sha256"] = canonical_sha256(launch["arguments"])
+
+        # A fully pinned model/tokenizer pair remains a valid actual-execution plan.
+        generation_plan_for(source_artifact())
+
+        mutable_main = source_artifact()
+        set_revision(mutable_main, model="main", tokenizer="main")
+        with self.assertRaisesRegex(ValueError, "model_revision must be an immutable commit"):
+            generation_plan_for(mutable_main)
+
+        mutable_latest = source_artifact()
+        set_revision(mutable_latest, tokenizer="latest")
+        with self.assertRaisesRegex(ValueError, "tokenizer_revision must be an immutable commit"):
+            generation_plan_for(mutable_latest)
+
+        release_tag = source_artifact()
+        set_revision(release_tag, model="v3.0.0")
+        with self.assertRaisesRegex(ValueError, "model_revision must be an immutable commit"):
+            generation_plan_for(release_tag)
+
+        short_sha = source_artifact()
+        set_revision(short_sha, tokenizer="a" * 12)
+        with self.assertRaisesRegex(ValueError, "tokenizer_revision must be an immutable commit"):
+            generation_plan_for(short_sha)
+
+        only_model_pinned = source_artifact()
+        set_revision(only_model_pinned, tokenizer="main")
+        with self.assertRaisesRegex(ValueError, "tokenizer_revision must be an immutable commit"):
+            generation_plan_for(only_model_pinned)
+
+        runtime_mismatch = source_artifact()
+        runtime_mismatch["provenance"]["generator"]["runtime"]["model_revision"] = "3" * 40
+        with self.assertRaisesRegex(ValueError, "runtime model_revision does not match"):
+            generation_plan_for(runtime_mismatch)
+
+        launch_mismatch = source_artifact()
+        launch_mismatch["provenance"]["generator"]["vllm_execution"]["server_launch"]["arguments"][2] = "3" * 40
+        launch_mismatch["provenance"]["generator"]["vllm_execution"]["server_launch"]["arguments_sha256"] = (
+            canonical_sha256(launch_mismatch["provenance"]["generator"]["vllm_execution"]["server_launch"]["arguments"])
+        )
+        with self.assertRaisesRegex(ValueError, "launch revision"):
+            generation_plan_for(launch_mismatch)
+
+        local_snapshot = source_artifact()
+        local_snapshot_generator = local_snapshot["provenance"]["generator"]
+        local_snapshot_generator["model_repository"] = "/models/Qwen3-8B"
+        local_snapshot_generator["runtime"]["model_repository"] = "/models/Qwen3-8B"
+        local_snapshot_generator["vllm_execution"]["server_launch"]["arguments"][0] = "/models/Qwen3-8B"
+        local_snapshot_generator["vllm_execution"]["server_launch"]["arguments_sha256"] = canonical_sha256(
+            local_snapshot_generator["vllm_execution"]["server_launch"]["arguments"]
+        )
+        with self.assertRaisesRegex(ValueError, "remote Hugging Face repository"):
+            generation_plan_for(local_snapshot)
+
+        trust_remote_code = source_artifact()
+        trust_launch = trust_remote_code["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        trust_launch["arguments"] += ["--trust-remote-code"]
+        trust_launch["arguments_sha256"] = canonical_sha256(trust_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "trust-remote-code"):
+            generation_plan_for(trust_remote_code)
+
+        synthetic_binding = source_artifact()
+        synthetic_generator = synthetic_binding["provenance"]["generator"]
+        synthetic_generator["model_revision"] = "synthetic-model-revision"
+        synthetic_generator["tokenizer_revision"] = "synthetic-tokenizer-revision"
+        synthetic_generator["runtime"]["model_revision"] = "synthetic-model-revision"
+        synthetic_generator["runtime"]["tokenizer_revision"] = "synthetic-tokenizer-revision"
+        synthetic_launch = synthetic_generator["vllm_execution"]["server_launch"]
+        synthetic_launch["model_tokenizer_binding_kind"] = "synthetic_test"
+        synthetic_launch["arguments"][2] = "synthetic-model-revision"
+        synthetic_launch["arguments"][6] = "synthetic-tokenizer-revision"
+        synthetic_launch["arguments_sha256"] = canonical_sha256(synthetic_launch["arguments"])
+        generation_plan_for(synthetic_binding)
 
     def test_strict_types_canonical_labels_and_manifest_timestamp(self):
         artifact = source_artifact()

@@ -28,7 +28,7 @@ TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v2"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
 TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v2"
-TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v5"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v6"
 TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v2"
 TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION = "dr-dci.miracl-ko-vllm-request-body-template.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
@@ -72,6 +72,8 @@ TAXONOMY_BATCH_ORDER = "batch_ordinal_ascending_v1"
 TAXONOMY_RESUME_POLICY = "reuse_verified_complete_batches_only_v1"
 TAXONOMY_IDEMPOTENCY_MODE = "generation_request_sha256_response_file_v1"
 TAXONOMY_MAX_RETRIES_SEMANTICS = "per_batch_successful_response_v1"
+HUGGING_FACE_COMMIT_REVISION_RE = re.compile(r"[0-9a-f]{40}")
+HUGGING_FACE_REPOSITORY_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)?")
 _VERIFIED_RECEIPT_TOKEN = object()
 
 
@@ -583,6 +585,20 @@ def _validate_generator(generator: Any) -> None:
         raise ValueError("taxonomy generator determinism_mode is invalid")
 
 
+def _require_immutable_hugging_face_commit(value: Any, *, label: str) -> str:
+    """Accept only a full pinned Hub commit for an actual model execution."""
+    if not isinstance(value, str) or not HUGGING_FACE_COMMIT_REVISION_RE.fullmatch(value):
+        raise ValueError(f"{label} must be an immutable commit SHA (lowercase 40-hex)")
+    return value
+
+
+def _require_remote_hugging_face_repository(value: Any, *, label: str) -> str:
+    """Reject local snapshot paths until an immutable snapshot contract exists."""
+    if not isinstance(value, str) or not HUGGING_FACE_REPOSITORY_RE.fullmatch(value):
+        raise ValueError(f"{label} must be a remote Hugging Face repository, not a local snapshot path")
+    return value
+
+
 def _validate_generation_generator_spec(generator: Any) -> None:
     """Validate the complete execution specification required in a plan.
 
@@ -610,6 +626,20 @@ def _validate_generation_generator_spec(generator: Any) -> None:
         "unknown_outlier_handling", "display_label_rule",
     ):
         _require_nonempty_string(generator.get(key), label=f"taxonomy generator specification {key}")
+    binding_kind = _vllm_model_tokenizer_binding_kind(generator)
+    if binding_kind == "actual_execution":
+        _require_remote_hugging_face_repository(
+            generator["model_repository"], label="taxonomy generator model_repository",
+        )
+        _require_remote_hugging_face_repository(
+            generator["tokenizer_repository"], label="taxonomy generator tokenizer_repository",
+        )
+        _require_immutable_hugging_face_commit(
+            generator["model_revision"], label="taxonomy generator model_revision",
+        )
+        _require_immutable_hugging_face_commit(
+            generator["tokenizer_revision"], label="taxonomy generator tokenizer_revision",
+        )
     if generator["prompt_template_sha256"] != _sha256_text(generator["prompt_template"]):
         raise ValueError("taxonomy generator prompt template sha256 does not match template")
     controls = generator.get("generation_controls")
@@ -632,6 +662,19 @@ def _validate_generation_generator_spec(generator: Any) -> None:
         _require_nonempty_string(runtime.get(key), label=f"taxonomy generator runtime {key}")
         if key in {"model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision"} and runtime[key] != generator[key]:
             raise ValueError(f"taxonomy generator runtime {key} does not match generator specification")
+    if binding_kind == "actual_execution":
+        _require_remote_hugging_face_repository(
+            runtime["model_repository"], label="taxonomy generator runtime model_repository",
+        )
+        _require_remote_hugging_face_repository(
+            runtime["tokenizer_repository"], label="taxonomy generator runtime tokenizer_repository",
+        )
+        _require_immutable_hugging_face_commit(
+            runtime["model_revision"], label="taxonomy generator runtime model_revision",
+        )
+        _require_immutable_hugging_face_commit(
+            runtime["tokenizer_revision"], label="taxonomy generator runtime tokenizer_revision",
+        )
     _require_sha256(runtime.get("dependency_lock_sha256"), label="taxonomy generator runtime dependency lock")
     versions = runtime.get("library_versions")
     if not isinstance(versions, Mapping) or not versions:
@@ -852,6 +895,13 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
         generator=generator,
         binding_kind=_vllm_model_tokenizer_binding_kind(generator),
     )
+    if launch_identity["binding_kind"] == "actual_execution" and any(
+        argument == "--trust-remote-code" or argument.startswith("--trust-remote-code=")
+        for argument in arguments
+    ):
+        raise ValueError(
+            "taxonomy vLLM --trust-remote-code requires a separate immutable code revision contract"
+        )
     if launch.get("generation_config_mode") not in {"request_controls_only", "server_generation_config"}:
         raise ValueError("taxonomy vLLM generation_config_mode is invalid")
     _forbid_vllm_launch_option(

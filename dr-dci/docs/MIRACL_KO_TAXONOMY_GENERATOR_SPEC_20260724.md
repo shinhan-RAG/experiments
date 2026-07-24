@@ -43,10 +43,10 @@ floating model tag are invalid.
 | Contract area | Required value before approval |
 |---|---|
 | Generator | Generator type, algorithm/classification rule, implementation version, clean generator source commit, code-contract and aggregate hashes. |
-| Model/tokenizer | Repository, immutable model revision, tokenizer repository and immutable tokenizer revision. |
+| Model/tokenizer | For `actual_execution`, model and tokenizer repositories must be remote Hugging Face repository identifiers (not local snapshot paths), and both revisions must be exact lowercase 40-hex Hub commit SHAs. Branches (`main`/`master`), tags (`latest`/release tags), and short SHAs are rejected. The same commits must appear in generator metadata, runtime metadata, and the vLLM `--revision`/`--tokenizer-revision` arguments. `synthetic_test` fixtures may use explicit synthetic revision strings, but cannot authorize preflight or mint a verified receipt. |
 | Representation | Pooling and normalization, or explicit `not_applicable` only when the selected LLM algorithm does not create embeddings. |
 | Category construction | Classification/clustering algorithm, library/version or explicit `not_applicable`, cluster-count/selection rule, stable `label_id` rule, unknown/outlier handling, and display-label rule. |
-| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; exactly one positional model or one `--model`; exactly one each of `--revision`, `--tokenizer`, and `--tokenizer-revision`; and at most one `--served-model-name`. All four identity values must exactly match the declared generator/runtime model and tokenizer fields. Duplicate/conflicting forms fail. If a served name is present, the canonical request `model` is that name; otherwise it is the approved model repository. `model_tokenizer_binding_kind=actual_execution` is required for real preflight/receipts; `synthetic_test` is fixture-only. The plan also fixes `generation_config_mode` and the complete canonical server generation-config object, source launch value, and SHA-256, or explicit `not_applicable`. `request_controls_only` must launch with exactly `--generation-config vllm` and may not set an unmodelled `--override-generation-config`; `server_generation_config` must use the approved source launch value. |
+| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; exactly one positional model or one `--model`; exactly one each of `--revision`, `--tokenizer`, and `--tokenizer-revision`; and at most one `--served-model-name`. All four identity values must exactly match the declared generator/runtime model and tokenizer fields. Duplicate/conflicting forms fail. If a served name is present, the canonical request `model` is that name; otherwise it is the approved model repository. `model_tokenizer_binding_kind=actual_execution` is required for real preflight/receipts; `synthetic_test` is fixture-only. `--trust-remote-code` is prohibited for the current actual-execution contract: no immutable remote-code revision contract exists yet, and this work does not infer a need for it. The plan also fixes `generation_config_mode` and the complete canonical server generation-config object, source launch value, and SHA-256, or explicit `not_applicable`. `request_controls_only` must launch with exactly `--generation-config vllm` and may not set an unmodelled `--override-generation-config`; `server_generation_config` must use the approved source launch value. |
 | Template and reasoning | Chat-template mode, template SHA-256, content format, and the exact `--chat-template` launch value when explicit; Qwen thinking enable/disable state, reasoning-parser policy, and whether reasoning content is retained. The canonical request template must carry `chat_template_kwargs.enable_thinking`; enabled reasoning must have the matching `--reasoning-parser`, while disabled thinking forbids it. Unused values must be explicit `not_applicable`. |
 | Prompt and structured output | Complete prompt/template text and UTF-8 SHA-256; JSON structured-output schema, schema name/SHA-256, and content format, or explicit `not_applicable`. The canonical request template must include the same `response_format` JSON schema. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
 | Request controls | Integer seed, determinism/replay mode, and every sampling/request control: `temperature`, `max_tokens`, `top_p`, `top_k`, `min_p`, `stop`, `stop_token_ids`, `presence_penalty`, `frequency_penalty`, `repetition_penalty`, `seed`, `n`, and `logprobs`. Each uses either an exact JSON-safe value or approved explicit `not_applicable`; `temperature`, `max_tokens`, and `seed` must match the top-level generator controls. |
@@ -108,8 +108,10 @@ scores.
 
 ## Exact external inputs required to unblock a real plan
 
-1. Approved Qwen model and tokenizer immutable revisions, with retrieval date
-   and official model-card source.
+1. Approved Qwen model and tokenizer immutable **40-hex commit** revisions,
+   with retrieval date and official model-card source. A local snapshot is not
+   an alternative until a separate snapshot identity/file-manifest contract is
+   approved.
 2. Approved vLLM/runtime deployment identity: dependency lock or immutable
    container digest, library versions, CUDA/driver capture policy, and H200
    execution environment owner.
@@ -120,7 +122,9 @@ scores.
    tokenizer-revision/served-name binding, config/template/thinking/
    reasoning-parser/structured-output/sampling values, batch size, timeout,
    per-batch retry/resume policy, request-response storage location, and
-   retention/access policy for raw responses.
+   retention/access policy for raw responses. Any future `--trust-remote-code`
+   use requires a separate immutable code-revision contract; it is not covered
+   by this plan.
 5. An actual execution approval record identifying the approver, timestamp,
    basis, exact plan hash, source commit, code-contract hash, and code hash.
 6. A clean generator-source checkout and separately read-only control root;
