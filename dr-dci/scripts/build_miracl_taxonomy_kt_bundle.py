@@ -26,11 +26,20 @@ BUNDLE_NAME = "miracl-taxonomy-kt-bundle"
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 GENERATOR_FILES = (
-    "taxonomy_vllm_generator.py",
+    "scripts/kt_bundle/taxonomy_vllm_generator.py",
+    "scripts/kt_bundle/preflight_validator.py",
+    "scripts/kt_bundle/start_vllm.sh",
+    "scripts/kt_bundle/vllm_runtime_contract.py",
     "src/miracl_ko/__init__.py",
+    "src/miracl_ko/flat_l1.py",
     "src/miracl_ko/preparation.py",
     "src/miracl_ko/taxonomy_artifact.py",
     "src/miracl_ko/kt_bundle.py",
+    "config/miracl_ko_taxonomy/flat_l1_catalog.json",
+    "config/miracl_ko_taxonomy/flat_l1_output_schema.json",
+    "config/miracl_ko_taxonomy/flat_l1_system_prompt.txt",
+    "config/miracl_ko_taxonomy/vllm_v0_9_0_runtime_identity.json",
+    "config/taxonomy_schemas/ko-strategyqa.yaml",
 )
 SHELL_SCRIPTS = (
     "common.sh", "preflight.sh", "verify_model_identity.sh", "start_vllm.sh", "wait_vllm.sh",
@@ -113,9 +122,12 @@ def build(output_dir: Path) -> tuple[Path, Path]:
             copy_file(TEMPLATE_ROOT / name, stage / "scripts" / name, executable=True)
         for name in VALIDATOR_SCRIPTS:
             copy_file(TEMPLATE_ROOT / name, stage / "validators" / name, executable=True)
-        copy_file(TEMPLATE_ROOT / "taxonomy_vllm_generator.py", stage / "generator" / "taxonomy_vllm_generator.py", executable=True)
-        for relative_path in GENERATOR_FILES[1:]:
-            copy_file(REPO_ROOT / relative_path, stage / "generator" / relative_path)
+        for relative_path in GENERATOR_FILES:
+            copy_file(
+                REPO_ROOT / relative_path,
+                stage / "generator" / relative_path,
+                executable=relative_path.endswith(".sh") or relative_path.endswith("taxonomy_vllm_generator.py"),
+            )
         (stage / "control").mkdir()
         (stage / "control" / "README.md").write_text(
             "Place only approved generation_plan.json, approval_record.json, and generator_code_contract.json here.\n",

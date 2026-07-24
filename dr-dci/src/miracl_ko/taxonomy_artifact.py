@@ -72,6 +72,21 @@ TAXONOMY_BATCH_ORDER = "batch_ordinal_ascending_v1"
 TAXONOMY_RESUME_POLICY = "reuse_verified_complete_batches_only_v1"
 TAXONOMY_IDEMPOTENCY_MODE = "generation_request_sha256_response_file_v1"
 TAXONOMY_MAX_RETRIES_SEMANTICS = "per_batch_successful_response_v1"
+MIRACL_KO_FLAT_L1_ASSIGNMENT_PROFILE = "miracl-ko-flat-l1-ko-strategyqa-v1"
+MIRACL_KO_FLAT_L1_ARTIFACT_ID = "miracl-ko-110k-flat-l1-ko-strategyqa-v1"
+MIRACL_KO_FLAT_L1_LABELS = {
+    "arts_culture": "Arts_Culture",
+    "biology": "Biology",
+    "geography": "Geography",
+    "history": "History",
+    "other": "Other",
+    "politics": "Politics",
+    "science": "Science",
+    "society": "Society",
+    "sports": "Sports",
+    "technology": "Technology",
+    "unknown": "unknown",
+}
 HUGGING_FACE_COMMIT_REVISION_RE = re.compile(r"[0-9a-f]{40}")
 HUGGING_FACE_REPOSITORY_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)?")
 _VERIFIED_RECEIPT_TOKEN = object()
@@ -341,6 +356,7 @@ def validate_taxonomy_generator_batch(batch: Mapping[str, Any]) -> None:
 def _default_run_controls(batch_size: int) -> dict[str, Any]:
     return {
         "batch_size": batch_size,
+        "transport_max_concurrency": 1,
         "batch_grouping": TAXONOMY_BATCH_GROUPING,
         "batch_order": TAXONOMY_BATCH_ORDER,
         "timeout_seconds": 120,
@@ -353,7 +369,7 @@ def _default_run_controls(batch_size: int) -> dict[str, Any]:
 
 def _validate_run_controls(controls: Any) -> None:
     required = {
-        "batch_size", "batch_grouping", "batch_order", "timeout_seconds", "max_retries",
+        "batch_size", "transport_max_concurrency", "batch_grouping", "batch_order", "timeout_seconds", "max_retries",
         "max_retries_semantics",
         "resume_policy", "idempotency_mode",
     }
@@ -361,6 +377,8 @@ def _validate_run_controls(controls: Any) -> None:
         raise ValueError("taxonomy generator run controls have missing or unsupported fields")
     if type(controls.get("batch_size")) is not int or controls["batch_size"] <= 0:
         raise ValueError("taxonomy generator run batch_size must be a positive integer")
+    if type(controls.get("transport_max_concurrency")) is not int or controls["transport_max_concurrency"] <= 0:
+        raise ValueError("taxonomy generator run transport_max_concurrency must be a positive integer")
     if type(controls.get("timeout_seconds")) is not int or controls["timeout_seconds"] <= 0:
         raise ValueError("taxonomy generator run timeout_seconds must be a positive integer")
     if type(controls.get("max_retries")) is not int or controls["max_retries"] < 0:
@@ -1178,6 +1196,85 @@ def _assignments_by_id(assignments: Any, *, catalog: dict[str, dict[str, str]]) 
     return by_id
 
 
+def validate_flat_l1_assignments(
+    assignments: Iterable[Mapping[str, Any]], *, generator: Mapping[str, Any],
+) -> None:
+    """Apply the approved MIRACL Flat-L1 score and closed-label rules.
+
+    Generic taxonomy fixtures remain free to exercise broader score handling.
+    The fixed production profile is stricter: it never converts an invalid
+    response into ``Other`` or ``unknown`` and it never stores a model
+    confidence as a retrieval signal.
+    """
+    parameters = generator.get("parameters") if isinstance(generator, Mapping) else None
+    if not isinstance(parameters, Mapping) or parameters.get("assignment_profile") != MIRACL_KO_FLAT_L1_ASSIGNMENT_PROFILE:
+        return
+    rows = list(assignments)
+    catalog = _label_catalog_by_id(parameters.get("label_catalog"))
+    expected_catalog = [
+        {"label_id": label_id, "label": label}
+        for label_id, label in sorted(MIRACL_KO_FLAT_L1_LABELS.items())
+    ]
+    if parameters.get("taxonomy_artifact_id") != MIRACL_KO_FLAT_L1_ARTIFACT_ID:
+        raise ValueError("MIRACL Flat-L1 taxonomy artifact id is invalid")
+    if parameters.get("label_catalog") != expected_catalog or list(catalog) != sorted(MIRACL_KO_FLAT_L1_LABELS):
+        raise ValueError("MIRACL Flat-L1 label catalog is invalid")
+    if parameters.get("assignment_score_policy") != "assigned_1_unknown_0_v1":
+        raise ValueError("MIRACL Flat-L1 assignment score policy is invalid")
+    if parameters.get("failure_policy") != "fail_loud_retry_no_label_fallback_v1":
+        raise ValueError("MIRACL Flat-L1 failure policy is invalid")
+    for row in rows:
+        label_id = row.get("label_id")
+        status = row.get("status")
+        score = row.get("score")
+        if label_id not in MIRACL_KO_FLAT_L1_LABELS:
+            raise ValueError("MIRACL Flat-L1 assignment has an unsupported label_id")
+        if status == "assigned":
+            if label_id == "unknown" or float(score) != 1.0:
+                raise ValueError("MIRACL Flat-L1 assigned output must use a closed label and score 1.0")
+        elif status == "unknown":
+            if label_id != "unknown" or float(score) != 0.0:
+                raise ValueError("MIRACL Flat-L1 unknown output must use unknown and score 0.0")
+        else:
+            raise ValueError("MIRACL Flat-L1 assignment status is invalid")
+
+
+def _validate_miracl_flat_l1_plan(generator: Mapping[str, Any], controls: Mapping[str, Any]) -> None:
+    parameters = generator.get("parameters")
+    if not isinstance(parameters, Mapping) or parameters.get("assignment_profile") != MIRACL_KO_FLAT_L1_ASSIGNMENT_PROFILE:
+        return
+    if controls.get("batch_size") != 1:
+        raise ValueError("MIRACL Flat-L1 batch_size must be 1 passage per request")
+    if controls.get("transport_max_concurrency") != 32:
+        raise ValueError("MIRACL Flat-L1 transport_max_concurrency must be 32")
+    if controls.get("timeout_seconds") != 60 or controls.get("max_retries") != 2:
+        raise ValueError("MIRACL Flat-L1 timeout or retry control is invalid")
+    if generator.get("generation_controls") != {"temperature": 0, "max_tokens": 100}:
+        raise ValueError("MIRACL Flat-L1 generation controls are invalid")
+    if parameters.get("semantic_batching") != "one_passage_per_request_v1":
+        raise ValueError("MIRACL Flat-L1 semantic batching contract is invalid")
+    if parameters.get("container_entrypoint") != ["python3", "-m", "vllm.entrypoints.openai.api_server"]:
+        raise ValueError("MIRACL Flat-L1 container entrypoint contract is invalid")
+    validate_flat_l1_assignments([], generator=generator)
+    execution = generator.get("vllm_execution")
+    if not isinstance(execution, Mapping):
+        raise ValueError("MIRACL Flat-L1 vLLM execution is invalid")
+    thinking = execution.get("thinking")
+    if not isinstance(thinking, Mapping) or thinking.get("enable_thinking") != "disabled" or thinking.get("reasoning_parser") != "not_applicable":
+        raise ValueError("MIRACL Flat-L1 thinking/reasoning policy is invalid")
+    structured = execution.get("structured_output")
+    if not isinstance(structured, Mapping) or structured.get("mode") != "json_schema":
+        raise ValueError("MIRACL Flat-L1 strict JSON schema is required")
+    if parameters.get("strict_output_schema_canonical_sha256") != structured.get("json_schema_sha256"):
+        raise ValueError("MIRACL Flat-L1 output schema provenance is invalid")
+    launch = execution.get("server_launch")
+    if not isinstance(launch, Mapping) or launch.get("command") != "container_default_openai_api_entrypoint_v1":
+        raise ValueError("MIRACL Flat-L1 container launch command contract is invalid")
+    arguments = launch.get("arguments")
+    if not isinstance(arguments, list) or not arguments or arguments[0] != "--model":
+        raise ValueError("MIRACL Flat-L1 container arguments must begin with --model")
+
+
 def taxonomy_artifact_sha256(artifact: Mapping[str, Any]) -> str:
     """Return a canonical content hash; timestamps live in the outer manifest."""
     return sha256_json(artifact)
@@ -1222,6 +1319,13 @@ def validate_taxonomy_artifact(
     _validate_provenance(artifact.get("provenance"))
     catalog = _label_catalog_by_id(artifact.get("label_catalog"))
     assignments = _assignments_by_id(artifact.get("assignments"), catalog=catalog)
+    generator = artifact["provenance"]["generator"]
+    if isinstance(generator.get("parameters"), Mapping) and generator["parameters"].get("assignment_profile") == MIRACL_KO_FLAT_L1_ASSIGNMENT_PROFILE:
+        if artifact.get("taxonomy_artifact_id") != generator["parameters"].get("taxonomy_artifact_id"):
+            raise ValueError("MIRACL Flat-L1 artifact id does not match generation plan")
+        if artifact.get("label_catalog") != generator["parameters"].get("label_catalog"):
+            raise ValueError("MIRACL Flat-L1 artifact catalog does not match generation plan")
+        validate_flat_l1_assignments(assignments.values(), generator=generator)
     projection = artifact.get("projection")
     if not isinstance(projection, dict) or set(projection) != {"method", "source_artifact_sha256"}:
         raise ValueError("taxonomy artifact projection metadata is invalid")
@@ -1607,6 +1711,7 @@ def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
     if plan.get("batch_contract_schema_version") != TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION:
         raise ValueError("taxonomy generation plan batch contract version is invalid")
     _validate_run_controls(plan.get("run_controls"))
+    _validate_miracl_flat_l1_plan(plan["generator"], plan["run_controls"])
     if plan.get("output_artifact_schema_version") != TAXONOMY_ARTIFACT_SCHEMA_VERSION:
         raise ValueError("taxonomy generation plan output artifact schema version is invalid")
     if plan.get("projection_method") != FILTER_PROJECTION_METHOD:

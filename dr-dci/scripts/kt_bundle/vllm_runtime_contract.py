@@ -46,7 +46,6 @@ def launch_spec(config_path: Path) -> dict[str, Any]:
         "generation_plan_sha256": lock["generation_plan_sha256"],
         "generator_source_commit": lock["generator_source_commit"],
         "container_digest": lock["container_digest"],
-        "launch_command": launch["command"],
         "launch_arguments": launch["arguments"],
         "launch_arguments_sha256": launch["arguments_sha256"],
         "model_repository": lock["model_repository"],

@@ -250,6 +250,7 @@ def generation_plan_for(
         input_contract=artifact["input_contract"],
         run_controls={
             "batch_size": 2,
+            "transport_max_concurrency": 1,
             "batch_grouping": "corpus_id_sorted_contiguous_v1",
             "batch_order": "batch_ordinal_ascending_v1",
             "timeout_seconds": 120,

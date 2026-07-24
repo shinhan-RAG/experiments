@@ -28,6 +28,7 @@ if str(GENERATOR_ROOT) not in sys.path:
 
 from src.miracl_ko.kt_bundle import (  # noqa: E402
     atomic_write_json,
+    image_matches_entrypoint,
     load_bundle_controls,
     parse_env_file,
     path_from_config,
@@ -77,12 +78,14 @@ def cuda_version() -> str | None:
 def docker_inventory(image: str) -> dict[str, Any]:
     okay, output = command_output(["docker", "image", "inspect", image, "--format", "{{json .}}"])
     if not okay:
-        return {"available": False, "image_present": False, "image_id": None, "image_digests": []}
+        return {"available": False, "image_present": False, "image_id": None, "image_digests": [], "entrypoint": None}
     try:
         value = json.loads(output)
     except json.JSONDecodeError:
-        return {"available": True, "image_present": False, "image_id": None, "image_digests": []}
+        return {"available": True, "image_present": False, "image_id": None, "image_digests": [], "entrypoint": None}
     digests = value.get("RepoDigests") if isinstance(value, dict) else []
+    config = value.get("Config") if isinstance(value, dict) else None
+    entrypoint = config.get("Entrypoint") if isinstance(config, dict) else None
     return {
         "available": True,
         "image_present": True,
@@ -92,21 +95,22 @@ def docker_inventory(image: str) -> dict[str, Any]:
             for digest in (digests or [])
             if isinstance(digest, str) and "@" in digest
         ),
+        "entrypoint": entrypoint if isinstance(entrypoint, list) and all(isinstance(item, str) for item in entrypoint) else None,
     }
 
 
 def image_matches_digest(image: dict[str, Any], digest: str) -> bool:
     """Require the local inspected image, not config text, to carry the lock."""
     return image.get("image_id") == digest or any(
-        isinstance(value, str) and value.endswith(f"@{digest}")
+        isinstance(value, str) and (value == digest or value.endswith(digest))
         for value in image.get("image_digests", [])
     )
 
 
 def vllm_version(image: str) -> str | None:
     okay, output = command_output([
-        "docker", "run", "--rm", "--network", "none", image,
-        "python", "-c", "import vllm; print(vllm.__version__)",
+        "docker", "run", "--rm", "--network", "none", "--entrypoint", "python3", image,
+        "-c", "import vllm; print(vllm.__version__)",
     ])
     return output if okay and output else None
 
@@ -128,7 +132,7 @@ def safe_lock(lock: dict[str, Any]) -> dict[str, Any]:
         for key in (
             "generation_plan_sha256", "approval_record_sha256", "generator_contract_sha256",
             "generator_code_sha256", "generator_source_commit", "model_revision",
-            "tokenizer_revision", "container_digest", "input_provenance",
+            "tokenizer_revision", "container_digest", "expected_container_entrypoint", "input_provenance",
         )
     }
 
@@ -182,6 +186,9 @@ def main() -> int:
                 raise RuntimeError("required local image or pinned model/tokenizer cache is unavailable")
             if not image_matches_digest(image, lock["container_digest"]):
                 raise RuntimeError("local Docker image does not match the approved container digest")
+            expected_entrypoint = lock.get("expected_container_entrypoint")
+            if expected_entrypoint is not None and not image_matches_entrypoint(image, expected_entrypoint):
+                raise RuntimeError("local Docker image entrypoint does not match the approved generation plan")
             if not gpu:
                 raise RuntimeError("no GPU is available for the approved local taxonomy generation")
             if report["vllm_version"] is None:

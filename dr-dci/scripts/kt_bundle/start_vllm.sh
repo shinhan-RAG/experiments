@@ -20,17 +20,21 @@ from pathlib import Path
 spec = json.loads(sys.argv[1])
 config = Path(sys.argv[2])
 root = Path(sys.argv[3])
+generator_root = root / "generator"
+sys.path.insert(0, str(generator_root))
+from src.miracl_ko.kt_bundle import approved_vllm_entrypoint_arguments
 values = {}
 for line in config.read_text(encoding="utf-8").splitlines():
     if line and not line.startswith("#"):
         key, value = line.split("=", 1)
         values[key] = value
 cache = values["KT_MODEL_CACHE_DIR"]
+arguments = approved_vllm_entrypoint_arguments(spec["launch_arguments"])
 command = [
     "docker", "run", "-d", "--name", "miracl-taxonomy-vllm", "--gpus", "all", "--network", "host",
     "--env", "HF_HUB_OFFLINE=1", "--env", "TRANSFORMERS_OFFLINE=1",
     "--mount", f"type=bind,src={cache},dst=/root/.cache/huggingface,readonly",
-    spec["vllm_image"], spec["launch_command"], *spec["launch_arguments"],
+    spec["vllm_image"], *arguments,
 ]
 container_id = subprocess.check_output(command, text=True).strip()
 launch = {

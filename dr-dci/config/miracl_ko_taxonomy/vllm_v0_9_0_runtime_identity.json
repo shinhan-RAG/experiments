@@ -1,0 +1,21 @@
+{
+  "schema_version": "dr-dci.miracl-ko-vllm-runtime-identity.v1",
+  "image_repository": "docker.io/vllm/vllm-openai",
+  "image_tag": "v0.9.0",
+  "platform": "linux/amd64",
+  "container_digest": "sha256:df2c55e5107afea09ea1a50f9dd96c99ebf97a795334c4d08f691f3d79b2ab12",
+  "container_entrypoint": ["python3", "-m", "vllm.entrypoints.openai.api_server"],
+  "library_versions": {
+    "cuda": "12.8.1",
+    "python": "3.12",
+    "torch": "2.7.0",
+    "torchvision": "0.22.0",
+    "vllm": "0.9.0"
+  },
+  "official_sources": [
+    "https://hub.docker.com/v2/repositories/vllm/vllm-openai/tags/v0.9.0",
+    "https://raw.githubusercontent.com/vllm-project/vllm/v0.9.0/docker/Dockerfile",
+    "https://raw.githubusercontent.com/vllm-project/vllm/v0.9.0/requirements/cuda.txt"
+  ],
+  "verification_policy": "docker image inspect must match both container digest and entrypoint; offline in-container version probe must match library_versions before generation"
+}

@@ -69,6 +69,31 @@ def require_commit(value: Any, *, label: str) -> str:
     return value
 
 
+def image_matches_entrypoint(image: Mapping[str, Any], expected_entrypoint: list[str]) -> bool:
+    """Compare a Docker-inspected entrypoint without accepting a command drift."""
+    return image.get("entrypoint") == expected_entrypoint
+
+
+def approved_vllm_entrypoint_arguments(arguments: Any) -> list[str]:
+    """Return only official-image API-server arguments, never a command token."""
+    if not isinstance(arguments, list) or not arguments or arguments[0] != "--model":
+        raise ValueError("approved vLLM image arguments must begin with --model")
+    if any(not isinstance(argument, str) or not argument for argument in arguments):
+        raise ValueError("approved vLLM image arguments must be non-empty strings")
+    return list(arguments)
+
+
+def order_successful_batch_records(records: list[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """Canonicalize concurrent completion records by approved batch ordinal."""
+    ordered = [dict(record) for record in records]
+    ordinals = [record.get("batch_ordinal") for record in ordered]
+    if any(type(ordinal) is not int or ordinal < 0 for ordinal in ordinals):
+        raise ValueError("successful batch record has an invalid batch_ordinal")
+    if len(set(ordinals)) != len(ordinals):
+        raise ValueError("successful batch records have duplicate batch_ordinal")
+    return sorted(ordered, key=lambda record: record["batch_ordinal"])
+
+
 def parse_env_file(path: Path) -> dict[str, str]:
     """Load a deliberately small KEY=VALUE config without shell evaluation."""
     values: dict[str, str] = {}
@@ -259,6 +284,12 @@ def validate_execution_lock(
     )
     if plan["input_provenance"] != provenance:
         raise ValueError("generation plan dataset/subset provenance does not match external MIRACL files")
+    parameters = plan["generator"].get("parameters")
+    expected_entrypoint = None
+    if isinstance(parameters, Mapping) and parameters.get("assignment_profile") == "miracl-ko-flat-l1-ko-strategyqa-v1":
+        expected_entrypoint = parameters.get("container_entrypoint")
+        if expected_entrypoint != ["python3", "-m", "vllm.entrypoints.openai.api_server"]:
+            raise ValueError("generation plan container entrypoint is invalid")
     return {
         "generation_plan_sha256": sha256_json(plan),
         "approval_record_sha256": approval_record_sha256(approval),
@@ -271,6 +302,7 @@ def validate_execution_lock(
         "tokenizer_revision": plan["generator"]["tokenizer_revision"],
         "container_digest": expected_runtime["container_digest"],
         "input_provenance": provenance,
+        "expected_container_entrypoint": expected_entrypoint,
         "data_dir": str(data_dir),
     }
 

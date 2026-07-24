@@ -1,0 +1,13 @@
+[
+  {"label_id": "arts_culture", "label": "Arts_Culture"},
+  {"label_id": "biology", "label": "Biology"},
+  {"label_id": "geography", "label": "Geography"},
+  {"label_id": "history", "label": "History"},
+  {"label_id": "other", "label": "Other"},
+  {"label_id": "politics", "label": "Politics"},
+  {"label_id": "science", "label": "Science"},
+  {"label_id": "society", "label": "Society"},
+  {"label_id": "sports", "label": "Sports"},
+  {"label_id": "technology", "label": "Technology"},
+  {"label_id": "unknown", "label": "unknown"}
+]

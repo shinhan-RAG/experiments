@@ -10,16 +10,18 @@ envelope that the tracked taxonomy contract can rejoin and audit.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from copy import deepcopy
 import json
 from pathlib import Path
 import sys
+import threading
 import time
 from typing import Any, Mapping
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-GENERATOR_ROOT = Path(__file__).resolve().parent
+GENERATOR_ROOT = Path(__file__).resolve().parents[2]
 if str(GENERATOR_ROOT) not in sys.path:
     sys.path.insert(0, str(GENERATOR_ROOT))
 
@@ -28,6 +30,7 @@ from src.miracl_ko.kt_bundle import (  # noqa: E402
     load_bundle_controls,
     load_json_object,
     operation_receipt_path,
+    order_successful_batch_records,
     parse_env_file,
     path_from_config,
     require_config,
@@ -45,6 +48,7 @@ from src.miracl_ko.taxonomy_artifact import (  # noqa: E402
     generator_contract_sha256,
     rejoin_taxonomy_generator_outputs,
     rejoin_taxonomy_generator_run_outputs,
+    validate_flat_l1_assignments,
     validate_taxonomy_artifact,
 )
 
@@ -194,6 +198,59 @@ def _write_raw_response_hash_manifest(
     })
 
 
+def _execute_missing_batch(
+    *, batch: Mapping[str, Any], plan: Mapping[str, Any], endpoint: str, raw_dir: Path,
+    vllm_raw_dir: Path, attempts: dict[str, int], operation: dict[str, Any],
+    operation_path: Path, state_lock: threading.Lock,
+) -> dict[str, Any]:
+    """Issue one request-bound passage batch with bounded retries only.
+
+    An exception never creates an ``Other`` or ``unknown`` assignment. The
+    caller records a partial receipt and stops scheduling new work instead.
+    """
+    ordinal = batch["batch_ordinal"]
+    transport_name = f"batch-{ordinal}.json"
+    transport_path = raw_dir / transport_name
+    max_retries = plan["run_controls"]["max_retries"]
+    timeout_seconds = plan["run_controls"]["timeout_seconds"]
+    with state_lock:
+        previous_attempts = int(attempts.get(str(ordinal), 0))
+    while previous_attempts <= max_retries:
+        previous_attempts += 1
+        with state_lock:
+            attempts[str(ordinal)] = previous_attempts
+            operation["batch_attempts"] = dict(attempts)
+            atomic_write_json(operation_path, operation)
+        try:
+            request = _replace_payload(plan["generator"]["vllm_execution"]["request_body_template"], batch["semantic_payload"])
+            raw_bytes, vllm_response = _post_local_vllm(
+                endpoint, request["body"], timeout_seconds=timeout_seconds,
+            )
+            raw_path = vllm_raw_dir / f"batch-{ordinal}.attempt-{previous_attempts}.json"
+            raw_path.write_bytes(raw_bytes)
+            transport_response = {
+                "generation_request_sha256": batch["generation_request_sha256"],
+                "outputs": _extract_outputs(vllm_response),
+            }
+            assignments = rejoin_taxonomy_generator_outputs(batch, transport_response)
+            validate_flat_l1_assignments(assignments, generator=plan["generator"])
+            atomic_write_json(transport_path, transport_response)
+            return {
+                "batch_ordinal": ordinal,
+                "generation_request_sha256": batch["generation_request_sha256"],
+                "relative_path": transport_name,
+                "byte_size": transport_path.stat().st_size,
+                "sha256": sha256_file(transport_path),
+                "attempt_count": previous_attempts,
+                "retry_count": previous_attempts - 1,
+            }
+        except Exception:
+            if previous_attempts > max_retries:
+                break
+            time.sleep(1)
+    raise RuntimeError(f"batch {ordinal} exhausted the approved retry limit")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-root", type=Path, required=True)
@@ -235,7 +292,8 @@ def main() -> int:
     vllm_raw_dir = generation_dir / "raw-vllm"
     raw_dir.mkdir(parents=True, exist_ok=True)
     vllm_raw_dir.mkdir(parents=True, exist_ok=True)
-    success_records: list[dict[str, Any]] = []
+    success_by_ordinal: dict[int, dict[str, Any]] = {}
+    pending_batches: list[Mapping[str, Any]] = []
     endpoint = f"http://{config['KT_VLLM_HOST']}:{config['KT_VLLM_PORT']}/v1/chat/completions"
     max_retries = plan["run_controls"]["max_retries"]
     for batch in run["batches"]:
@@ -244,11 +302,12 @@ def main() -> int:
         transport_path = raw_dir / transport_name
         if transport_path.is_file():
             response = load_json_object(transport_path, label="existing transport response")
-            rejoin_taxonomy_generator_outputs(batch, response)
+            existing_assignments = rejoin_taxonomy_generator_outputs(batch, response)
+            validate_flat_l1_assignments(existing_assignments, generator=plan["generator"])
             count = int(attempts.get(str(ordinal), 1))
             if count < 1 or count - 1 > max_retries:
                 raise ValueError("existing successful batch has an invalid approved retry count")
-            success_records.append({
+            success_by_ordinal[ordinal] = {
                 "batch_ordinal": ordinal,
                 "generation_request_sha256": batch["generation_request_sha256"],
                 "relative_path": transport_name,
@@ -256,58 +315,70 @@ def main() -> int:
                 "sha256": sha256_file(transport_path),
                 "attempt_count": count,
                 "retry_count": count - 1,
-            })
+            }
             continue
-        previous_attempts = int(attempts.get(str(ordinal), 0))
-        response_record: dict[str, Any] | None = None
-        while previous_attempts <= max_retries:
-            previous_attempts += 1
-            attempts[str(ordinal)] = previous_attempts
-            operation["batch_attempts"] = attempts
-            atomic_write_json(operation_receipt_path(output_dir), operation)
-            try:
-                request = _replace_payload(plan["generator"]["vllm_execution"]["request_body_template"], batch["semantic_payload"])
-                raw_bytes, vllm_response = _post_local_vllm(
-                    endpoint, request["body"], timeout_seconds=plan["run_controls"]["timeout_seconds"],
-                )
-                raw_path = vllm_raw_dir / f"batch-{ordinal}.attempt-{previous_attempts}.json"
-                raw_path.write_bytes(raw_bytes)
-                transport_response = {
-                    "generation_request_sha256": batch["generation_request_sha256"],
-                    "outputs": _extract_outputs(vllm_response),
-                }
-                rejoin_taxonomy_generator_outputs(batch, transport_response)
-                atomic_write_json(transport_path, transport_response)
-                response_record = {
-                    "batch_ordinal": ordinal,
-                    "generation_request_sha256": batch["generation_request_sha256"],
-                    "relative_path": transport_name,
-                    "byte_size": transport_path.stat().st_size,
-                    "sha256": sha256_file(transport_path),
-                    "attempt_count": previous_attempts,
-                    "retry_count": previous_attempts - 1,
-                }
-                break
-            except Exception:
-                if previous_attempts > max_retries:
-                    break
-                time.sleep(1)
-        if response_record is None:
-            receipt = _write_receipt(
-                output_dir=output_dir, plan=plan, approval=approval, contract=contract,
-                run=run, successful=success_records, status="partial",
+        pending_batches.append(batch)
+
+    # At most the approved concurrency is in flight. Completion order is never
+    # used as artifact order: every success record is canonicalized by ordinal.
+    state_lock = threading.Lock()
+    pending_index = 0
+    failure: Exception | None = None
+    futures: dict[Future[dict[str, Any]], Mapping[str, Any]] = {}
+    max_workers = plan["run_controls"]["transport_max_concurrency"]
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        def submit_next() -> bool:
+            nonlocal pending_index
+            if pending_index >= len(pending_batches):
+                return False
+            batch = pending_batches[pending_index]
+            pending_index += 1
+            future = executor.submit(
+                _execute_missing_batch,
+                batch=batch,
+                plan=plan,
+                endpoint=endpoint,
+                raw_dir=raw_dir,
+                vllm_raw_dir=vllm_raw_dir,
+                attempts=attempts,
+                operation=operation,
+                operation_path=operation_receipt_path(output_dir),
+                state_lock=state_lock,
             )
-            operation["status"] = "partial"
-            operation["completed_at"] = utc_now()
-            atomic_write_json(operation_receipt_path(output_dir), operation)
-            _write_raw_response_hash_manifest(
-                generation_dir=generation_dir,
-                plan_sha256=lock["generation_plan_sha256"],
-                run_sha256=run["generation_run_sha256"],
-                receipt=receipt,
-            )
-            raise RuntimeError(f"batch {ordinal} exhausted the approved retry limit")
-        success_records.append(response_record)
+            futures[future] = batch
+            return True
+
+        while len(futures) < max_workers and submit_next():
+            pass
+        while futures:
+            completed, _ = wait(futures, return_when=FIRST_COMPLETED)
+            for future in completed:
+                batch = futures.pop(future)
+                try:
+                    record = future.result()
+                    success_by_ordinal[record["batch_ordinal"]] = record
+                except Exception as error:
+                    if failure is None:
+                        failure = error
+                if failure is None:
+                    submit_next()
+
+    success_records = order_successful_batch_records(list(success_by_ordinal.values()))
+    if failure is not None:
+        receipt = _write_receipt(
+            output_dir=output_dir, plan=plan, approval=approval, contract=contract,
+            run=run, successful=success_records, status="partial",
+        )
+        operation["status"] = "partial"
+        operation["completed_at"] = utc_now()
+        atomic_write_json(operation_receipt_path(output_dir), operation)
+        _write_raw_response_hash_manifest(
+            generation_dir=generation_dir,
+            plan_sha256=lock["generation_plan_sha256"],
+            run_sha256=run["generation_run_sha256"],
+            receipt=receipt,
+        )
+        raise RuntimeError(str(failure)) from failure
     receipt = _write_receipt(
         output_dir=output_dir, plan=plan, approval=approval, contract=contract,
         run=run, successful=success_records, status="complete",
