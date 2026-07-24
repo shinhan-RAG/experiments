@@ -5,11 +5,20 @@ LLM-as-Judge 평가기
 - Efficiency: Gold R@W / Pull 횟수
 """
 
-import json
 import os
 import time
 import requests
-from pathlib import Path
+import numpy as np
+
+VALID_JUDGMENTS = {"correct", "incorrect"}
+
+
+def parse_judgment(raw: str) -> str:
+    """Judge 출력 전체가 허용된 단어일 때만 인정한다."""
+    if raw is None:
+        return "format_error"
+    cleaned = raw.strip().lower().strip("\"'`.,!:; \n\t")
+    return cleaned if cleaned in VALID_JUDGMENTS else "format_error"
 
 
 class Judge:
@@ -47,8 +56,8 @@ class Judge:
                     time.sleep(wait)
                     continue
                 resp.raise_for_status()
-                result = resp.json()["choices"][0]["message"]["content"].strip().lower()
-                return "correct" if "correct" in result else "incorrect"
+                result = resp.json()["choices"][0]["message"]["content"]
+                return self.parse_judgment(result)
             except requests.exceptions.Timeout:
                 time.sleep(10)
                 continue
@@ -57,6 +66,10 @@ class Judge:
                 return "error"
         print(f"  Judge error: max retries exceeded")
         return "error"
+
+    @staticmethod
+    def parse_judgment(value: str) -> str:
+        return parse_judgment(value)
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
@@ -87,21 +100,57 @@ def compute_metrics(results: list[dict]) -> dict:
     if n == 0:
         return {}
 
-    accuracy = sum(1 for r in results if r.get("judgment") == "correct") / n
+    judged = [
+        r for r in results
+        if r.get("judgment") in VALID_JUDGMENTS
+    ]
+    accuracy = (
+        sum(1 for r in judged if r["judgment"] == "correct") / len(judged)
+        if judged else None
+    )
     avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
     avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
     avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
+    avg_taxonomy_pulls = sum(r.get("taxonomy_filtered_pulls", 0) for r in results) / n
+    avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
+    avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
+    avg_turns = sum(r.get("turns", 0) for r in results) / n
+    avg_latency = sum(r.get("latency_seconds", 0) for r in results) / n
+    latencies = [r.get("latency_seconds", 0) for r in results]
+    candidate_efficiencies = [
+        r.get("gold_recall", 0) * 100 / r.get("retrieved_candidates", 0)
+        for r in results
+        if r.get("retrieved_candidates", 0) > 0
+    ]
 
     recall_vals = [r.get("gold_recall", 0) for r in results]
     ci_lo, ci_hi = bootstrap_ci(recall_vals)
 
     out = {
         "n": n,
-        "accuracy": round(accuracy, 4),
+        "accuracy": round(accuracy, 4) if accuracy is not None else None,
+        "judged_n": len(judged),
+        "n_judged": len(judged),
+        "judge_error_n": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
+        "judge_error_count": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
         "avg_gold_recall": round(avg_recall, 4),
         "recall_ci95": [ci_lo, ci_hi],
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
+        "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
+        "avg_retrieved_candidates": round(avg_candidates, 2),
+        "avg_workspace_docs": round(avg_workspace_docs, 2),
+        "avg_turns": round(avg_turns, 2),
+        "avg_latency_seconds": round(avg_latency, 3),
+        "p50_latency_seconds": round(float(np.percentile(latencies, 50)), 3),
+        "p95_latency_seconds": round(float(np.percentile(latencies, 95)), 3),
+        "avg_gold_recall_per_100_candidates": round(
+            sum(candidate_efficiencies) / len(candidate_efficiencies), 4
+        ) if candidate_efficiencies else 0.0,
     }
 
     # 청크단위 검색 지표 집계 (recall@k/ndcg@k + span coverage/density/f1).

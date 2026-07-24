@@ -19,13 +19,13 @@ SUBSET_SIZES = [20_000, 50_000, 110_000]
 
 
 def load_jsonl(path: Path) -> list:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
 def save_jsonl(data: list, path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         for item in data:
             f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
@@ -83,7 +83,7 @@ def build_trec_covid_subsets():
 
         out_path = OUTPUT_DIR / "trec-covid" / f"{size // 1000}k.json"
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump({
                 "subset_size": size,
                 "actual_size": len(subset_ids),
@@ -98,7 +98,7 @@ def build_trec_covid_subsets():
     subsets = {}
     for size in SUBSET_SIZES:
         path = OUTPUT_DIR / "trec-covid" / f"{size // 1000}k.json"
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             subsets[size] = set(json.load(f)["doc_ids"])
 
     assert subsets[20_000].issubset(subsets[50_000]), "20K is not subset of 50K!"
@@ -163,7 +163,7 @@ def build_generic_subset(dataset_name: str, subset_size: int = 20_000):
     out_dir = OUTPUT_DIR / dataset_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(out_dir / f"{subset_size // 1000}k.json", "w") as f:
+    with open(out_dir / f"{subset_size // 1000}k.json", "w", encoding="utf-8") as f:
         json.dump({
             "subset_size": actual_size,
             "actual_size": len(subset_ids),
@@ -173,7 +173,7 @@ def build_generic_subset(dataset_name: str, subset_size: int = 20_000):
         }, f, ensure_ascii=False, indent=2)
 
     # 저장: sampled queries
-    with open(out_dir / "sampled_queries.json", "w") as f:
+    with open(out_dir / "sampled_queries.json", "w", encoding="utf-8") as f:
         json.dump({
             "count": len(sampled),
             "query_ids": sampled_ids,

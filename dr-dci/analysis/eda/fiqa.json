@@ -1,0 +1,171 @@
+{
+  "eda_version": 1,
+  "dataset": "fiqa",
+  "generated_at_utc": "2026-07-21T08:41:53.842325+00:00",
+  "source": {
+    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/fiqa",
+    "configured_huggingface_ids": {
+      "corpus_queries": "BeIR/fiqa",
+      "qrels": "BeIR/fiqa-qrels"
+    },
+    "files": {
+      "corpus.jsonl": {
+        "sha256": "ec682921b2f308f8ba524e155b3aa3e2a33f76a55397e3ed6b60245829d69f98",
+        "bytes": 46814512
+      },
+      "queries.jsonl": {
+        "sha256": "0074610e27a62e8fe983c5e118c3c26c3566a7be42363b7ab918ebcaf7fdf196",
+        "bytes": 653449
+      },
+      "qrels.jsonl": {
+        "sha256": "caee8f712e93efee918a78277875ded4b4c57c48187614b0e62c083793dffdb2",
+        "bytes": 79822
+      }
+    }
+  },
+  "corpus": {
+    "document_count": 57638,
+    "empty_document_count": 38,
+    "title_present_rate": 0.0,
+    "contains_korean_rate": 1.7e-05,
+    "contains_latin_rate": 0.999289,
+    "characters": {
+      "count": 57638,
+      "min": 0.0,
+      "mean": 767.2108,
+      "p25": 329.0,
+      "p50": 522.0,
+      "p75": 935.0,
+      "p90": 1551.0,
+      "p95": 2097.0,
+      "p99": 3697.63,
+      "max": 16990.0
+    },
+    "tokens_regex": {
+      "count": 57638,
+      "min": 0.0,
+      "mean": 138.4778,
+      "p25": 59.0,
+      "p50": 95.0,
+      "p75": 169.0,
+      "p90": 280.0,
+      "p95": 380.0,
+      "p99": 664.63,
+      "max": 3056.0
+    },
+    "paragraphs": {
+      "count": 57638,
+      "min": 0.0,
+      "mean": 0.9993,
+      "p25": 1.0,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "short_document_rates": {
+      "tokens_le_64": 0.297217,
+      "tokens_le_128": 0.641799,
+      "tokens_le_256": 0.880912,
+      "tokens_le_512": 0.97774,
+      "tokens_le_1024": 0.99771
+    },
+    "chars_le_4000_rate": 0.992262
+  },
+  "queries": {
+    "query_count": 6648,
+    "characters": {
+      "count": 6648,
+      "min": 14.0,
+      "mean": 61.7098,
+      "p25": 45.0,
+      "p50": 60.0,
+      "p75": 76.0,
+      "p90": 92.0,
+      "p95": 103.0,
+      "p99": 124.0,
+      "max": 166.0
+    },
+    "tokens_regex": {
+      "count": 6648,
+      "min": 2.0,
+      "mean": 11.0659,
+      "p25": 8.0,
+      "p50": 11.0,
+      "p75": 14.0,
+      "p90": 17.0,
+      "p95": 19.0,
+      "p99": 23.0,
+      "max": 32.0
+    }
+  },
+  "relevance": {
+    "qrels_total": 1706,
+    "positive_qrels": 1706,
+    "relevance_score_counts": {
+      "1": 1706
+    },
+    "queries_with_positive_gold": 648,
+    "queries_without_positive_gold": 6000,
+    "unique_gold_documents": 1706,
+    "missing_gold_documents": 0,
+    "gold_documents_per_query": {
+      "count": 648,
+      "min": 1.0,
+      "mean": 2.6327,
+      "p25": 1.0,
+      "p50": 2.0,
+      "p75": 3.0,
+      "p90": 5.0,
+      "p95": 7.0,
+      "p99": 10.0,
+      "max": 15.0
+    },
+    "multi_gold_query_rate": 0.660494,
+    "metric_population": "queries with at least one positive qrel"
+  },
+  "lexical_alignment": {
+    "evaluated_query_count": 648,
+    "query_token_coverage_in_gold": {
+      "count": 648,
+      "min": 0.0,
+      "mean": 0.6612,
+      "p25": 0.5,
+      "p50": 0.6667,
+      "p75": 0.8182,
+      "p90": 0.9186,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "max_query_gold_jaccard": {
+      "count": 648,
+      "min": 0.0,
+      "mean": 0.0725,
+      "p25": 0.0417,
+      "p50": 0.065,
+      "p75": 0.0956,
+      "p90": 0.1273,
+      "p95": 0.1496,
+      "p99": 0.2076,
+      "max": 0.2632
+    },
+    "zero_token_overlap_query_rate": 0.006173,
+    "exact_normalized_query_in_gold_rate": 0.00463,
+    "rare_query_term_ratio": {
+      "count": 648,
+      "min": 0.0,
+      "mean": 0.0427,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 0.0769,
+      "p90": 0.1429,
+      "p95": 0.2,
+      "p99": 0.311,
+      "max": 0.6667
+    },
+    "rare_document_frequency_limit": 57
+  }
+}
