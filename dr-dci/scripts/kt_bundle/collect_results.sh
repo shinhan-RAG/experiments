@@ -18,6 +18,7 @@ if [[ "$MODE" != "complete" ]]; then
   echo "collect mode must be complete or --preflight-only" >&2
   exit 2
 fi
+require_passed_preflight "$CONFIG"
 python3 - "$OUTPUT" <<'PY'
 import json
 import sys

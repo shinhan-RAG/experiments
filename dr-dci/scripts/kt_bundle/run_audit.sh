@@ -3,6 +3,7 @@ set -euo pipefail
 source "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/common.sh"
 require_bundle_root
 CONFIG="$(config_path "${1:-config.env}")"
+require_passed_preflight "$CONFIG"
 STAGE="${2:-source}"
 if [[ "$STAGE" != "source" && "$STAGE" != "full" ]]; then
   echo "audit stage must be source or full" >&2
