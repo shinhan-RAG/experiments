@@ -1,13 +1,13 @@
 # AIHub 법률 primary · MIRACL-ko secondary 평가 계획
 
-기록일: 2026-07-24  
+기록일: 2026-07-24
 상태: **사전 평가 위계 기록 — 실행 미승인**
 
 ## 1. 변경 시점과 사전성
 
 이 문서는 MIRACL-ko taxonomy artifact 생성, taxonomy A/B, focused Part 1·2와 AIHub 법률 primary 결과가 모두 **미실행**인 상태에서 기록한다. 따라서 결과를 본 뒤 유리한 데이터셋으로 성공 기준을 바꾼 결정이 아니다.
 
-변경 대상은 최종 성공 판정과 결과 해석의 위계뿐이다. 기존 MIRACL-ko fixture, taxonomy generation contract, standalone audit, focused Part 1·2 gate와 하네스는 이 문서로 수정하지 않는다.
+변경 대상은 최종 성공 판정과 결과 해석의 위계뿐이다. 기존 MIRACL-ko preparation/artifact 계약, standalone audit 및 TREC-COVID focused Part 1→Part 2 gate는 이 문서로 수정하지 않는다. 이 구분은 MIRACL에 focused runner가 이미 존재한다는 뜻이 아니다.
 
 ## 2. 평가 역할
 
@@ -37,12 +37,26 @@
 
 MIRACL-ko 성공은 AIHub 법률 primary 실패를 구제하지 않는다.
 
-## 5. 기존 MIRACL 계획의 유지 범위
+## 5. 기존 TREC·MIRACL 실행 경계와 MIRACL 유지 범위
 
-- MIRACL-ko 20K/50K/110K fixture, taxonomy generation execution contract, standalone artifact audit, taxonomy consumer/A-B 절차, focused Part 1→Part 2 gate는 현재 기술 계약을 유지한다.
-- MIRACL-ko 결과는 AIHub 법률 primary의 성공 판정값으로 사용하지 않는다.
-- MIRACL 내부 Part 1 결과가 positive practical signal일 때만 Part 2를 허용하는 기존 gate도 유지한다.
-- MIRACL-ko 결과의 단위는 passage이며, AIHub 법률 parent-document 결과와 절대 점수를 직접 비교하지 않는다.
+### TREC-COVID focused 경로
+
+- 기존 focused Part 1→Part 2 approval gate는 TREC-COVID runner 경로에 구현된 계약으로만 유지한다.
+- TREC focused Part 1의 positive practical signal이 있을 때만 TREC focused Part 2를 허용하는 기존 gate도 그대로 둔다.
+
+### MIRACL-ko의 현재 구현 범위
+
+- 20K/50K/110K passage fixture
+- standalone Korean lexical smoke 결과
+- 110K taxonomy generation execution contract
+- 110K mapping의 20K/50K filter projection 계약
+- standalone taxonomy artifact audit
+
+MIRACL taxonomy는 아직 `run_experiment.py`, TREC configuration, focused Part 1/2 result contract, Agent 실행 경로에 등록되지 않았다. MIRACL consumer adapter, passage-specific effect criterion, taxonomy A/B, Agent, focused Part 1·2는 **future gate**이며 아직 구현·승인·실행되지 않았다.
+
+MIRACL의 다음 기술 순서는 승인된 실제 110K taxonomy artifact 생성, standalone audit, 별도 MIRACL consumer adapter와 passage-specific effect criterion의 설계·승인, 그 뒤에만 A/B 또는 Agent 실행이다. “기존 계획을 유지하고 주 평가만 법률로 변경”한다는 결정은 존재하지 않는 MIRACL runner를 구현 완료로 표현한다는 뜻이 아니다.
+
+MIRACL-ko 결과는 AIHub 법률 primary의 성공 판정값으로 사용하지 않으며, 단위는 passage다. AIHub 법률 parent-document 결과와 절대 점수를 직접 비교하지 않는다.
 
 ## 6. Gate L0 — AIHub 법률 primary 실행 전 선행 조건
 
@@ -87,7 +101,7 @@ MIRACL 개발·방법 검증 이후 법률 primary에서 다음 값을 임의로
 
 ## 9. 승인된 순서
 
-1. 현재 MIRACL-ko 계획을 기존 계약 안에서 계속 수행한다.
+1. 현재 MIRACL-ko preparation/artifact 계약을 유지하되, taxonomy A/B·Agent·focused runner를 새로 활성화하지 않는다.
 2. AIHub 법률 corpus/qrel은 held-out 상태로 유지한다.
 3. MIRACL taxonomy contract와 개발 설정을 동결한다.
 4. AIHub Gate L0와 legal primary protocol을 별도 승인한다.
