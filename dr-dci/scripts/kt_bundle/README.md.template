@@ -1,0 +1,143 @@
+# MIRACL-ko taxonomy KT execution bundle
+
+This archive is Git-independent. It contains no MIRACL corpus, model weights,
+credentials, API keys, or approved generation plan. It never fetches Git or
+uses an external inference API. The only inference endpoint used after the
+approval locks pass is the local vLLM server at `KT_VLLM_HOST:KT_VLLM_PORT`.
+
+## Preconditions outside this archive
+
+Provide these items before the locked preflight. Do not edit the bundle source
+or use a fallback value when any item is unavailable.
+
+- an external MIRACL-ko preparation directory containing the pinned `subsets/manifest.json` and 110K/50K/20K corpus files;
+- a local Hugging Face cache containing the plan-pinned model and tokenizer snapshots;
+- a local approved vLLM image matching the plan's container digest;
+- the exact, actually approved `generation_plan.json`, `approval_record.json`, and `generator_code_contract.json`;
+- a free local port and enough disk for raw model replies, artifacts, and the result archive.
+
+The exact plan must include `generator.parameters.taxonomy_artifact_id` and an
+approved `generator.parameters.label_catalog`. These determine the artifact
+identity and display-label catalog; this bundle will not invent either value.
+
+## Commands
+
+Run every command from the extracted bundle root. Each command uses only paths
+relative to that root (except the user-supplied absolute paths inside
+`config.env`). Do not run `git pull`, do not use SSH, and do not place
+credentials in `config.env` or `output/`.
+
+1. Verify the external archive checksum supplied with the bundle.
+
+   ```bash
+   sha256sum -c miracl-taxonomy-kt-bundle.tar.gz.sha256
+   ```
+
+2. Extract and enter the archive.
+
+   ```bash
+   tar -xzf miracl-taxonomy-kt-bundle.tar.gz
+   cd miracl-taxonomy-kt-bundle
+   sha256sum -c SHA256SUMS
+   ```
+
+3. Create the non-secret local configuration. Replace every placeholder; keep
+   the exact eight keys and do not add model revisions here.
+
+   ```bash
+   cp config.example.env config.env
+   ${EDITOR:-vi} config.env
+   ```
+
+4. Run the environment-only preflight. It does not read plan/approval files
+   and does not load a model.
+
+   ```bash
+   ./scripts/preflight.sh config.env
+   ```
+
+5. Collect the redacted environment report for review before placing an exact
+   execution approval.
+
+   ```bash
+   ./scripts/collect_results.sh config.env --preflight-only
+   ```
+
+6. After the real approval has been issued, copy the three read-only control
+   records into `control/`, then run the locked preflight. All three names are
+   required exactly as shown.
+
+   ```bash
+   install -m 0444 /PATH/TO/generation_plan.json control/generation_plan.json
+   install -m 0444 /PATH/TO/approval_record.json control/approval_record.json
+   install -m 0444 /PATH/TO/generator_code_contract.json control/generator_code_contract.json
+   ./scripts/preflight.sh config.env --require-lock
+   ```
+
+7. Start the plan-declared local vLLM command. It refuses a pre-existing
+   container name rather than replacing a process.
+
+   ```bash
+   ./scripts/start_vllm.sh config.env
+   ./scripts/wait_vllm.sh config.env
+   ```
+
+8. Verify the served model name locally. This checks `/v1/models`; it is not a
+   taxonomy generation request.
+
+   ```bash
+   ./scripts/verify_model_identity.sh config.env
+   ```
+
+9. Generate the 110K taxonomy once. A completed matching operation receipt
+   blocks a duplicate call. A partial operation may resume only the missing
+   batches and only within the plan's per-successful-batch retry limit.
+
+   ```bash
+   ./scripts/run_generation.sh config.env
+   ```
+
+10. Run the standalone source audit. Stop if it fails; projection is not
+    permitted after a failed audit.
+
+    ```bash
+    ./scripts/run_audit.sh config.env source
+    ```
+
+11. Project the audited 110K artifact into 20K and 50K by filter only, then
+    audit the complete manifest and all three artifacts.
+
+    ```bash
+    ./scripts/project_artifact.sh config.env
+    ./scripts/run_audit.sh config.env full
+    ```
+
+12. Collect only the approved result records. The archive excludes corpus
+    bodies, model weights, `config.env`, credentials, and cache directories.
+    It retains raw local-vLLM and normalized transport replies because the
+    receipt audit must be reproducible.
+
+    ```bash
+    ./scripts/collect_results.sh config.env complete
+    ```
+
+The final command prints the result tar path and writes its adjacent
+`.sha256` file. Upload that result archive and its checksum for local review.
+Do not start taxonomy A/B, Agent, focused Part 1/2, or AIHub legal evaluation.
+
+## Output and failure contract
+
+- `output/environment/preflight.json` is redacted: no hostname, IP, API key,
+  cache path, or control path is emitted.
+- `output/generation/operation_receipt.json` is the duplicate-run lock.
+- `output/generation/raw_response_hash_manifest.json` hashes every retained
+  response byte, including batches completed before a resume.
+- `output/generation/generation_receipt.json` is incomplete for partial or
+  failed runs and cannot authorize an artifact.
+- `output/audit/source_audit.json` must be `passed` before filter projection.
+- `output/audit/full_audit.json` and `output/projection/projection_result.json`
+  must both be `passed` before complete result collection.
+
+No stage automatically starts a subsequent experiment. A successful artifact
+does not authorize a taxonomy A/B, Agent execution, focused Part 1/2, or a
+legal primary evaluation.
