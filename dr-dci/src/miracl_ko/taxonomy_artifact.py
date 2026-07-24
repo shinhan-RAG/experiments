@@ -15,6 +15,7 @@ import json
 import math
 from pathlib import Path
 import re
+import subprocess
 from typing import Any, Iterable, Mapping
 import unicodedata
 
@@ -24,6 +25,7 @@ from src.miracl_ko.preparation import RETRIEVAL_UNIT, SCALE_SIZES, sha256_file, 
 TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v1"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
+TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v1"
 TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
 TAXONOMY_GENERATOR_CODE_CONTRACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-code-contract.v1"
@@ -140,7 +142,10 @@ def build_semantic_generator_inputs(corpus_records: Iterable[Mapping[str, Any]])
     :func:`build_taxonomy_generator_batch` and
     :func:`rejoin_taxonomy_generator_outputs` together.
     """
-    return build_taxonomy_generator_batch(corpus_records)["semantic_payload"]
+    return [
+        {"title": title, "text": text}
+        for _, title, text in _prepare_taxonomy_generator_transport(corpus_records)
+    ]
 
 
 def _validate_transport_record(record: Mapping[str, Any], *, index: int) -> tuple[str, str, str]:
@@ -162,13 +167,10 @@ def _validate_transport_record(record: Mapping[str, Any], *, index: int) -> tupl
     return corpus_id, title, text
 
 
-def build_taxonomy_generator_batch(corpus_records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
-    """Build an order-independent transport envelope for a semantic generator.
-
-    The envelope is the only place where ``corpus_id`` and a local request
-    index live.  The semantic payload has title/text only and is sorted once by
-    opaque corpus ID before an external generator sees it.
-    """
+def _prepare_taxonomy_generator_transport(
+    corpus_records: Iterable[Mapping[str, Any]],
+) -> list[tuple[str, str, str]]:
+    """Validate and stably sort non-semantic transport records once."""
     transport: list[tuple[str, str, str]] = []
     seen_ids: set[str] = set()
     for index, record in enumerate(corpus_records):
@@ -180,6 +182,25 @@ def build_taxonomy_generator_batch(corpus_records: Iterable[Mapping[str, Any]]) 
     if not transport:
         raise ValueError("taxonomy generator input requires at least one passage")
     transport.sort(key=lambda row: row[0])
+    return transport
+
+
+def _generation_request_sha256(batch: Mapping[str, Any]) -> str:
+    return sha256_json({
+        "generation_plan_sha256": batch["generation_plan_sha256"],
+        "mapping_envelope_sha256": batch["mapping_envelope_sha256"],
+        "semantic_payload_sha256": batch["semantic_payload_sha256"],
+        "batch_schema_version": batch["schema_version"],
+        "batch_ordinal": batch["batch_ordinal"],
+    })
+
+
+def _build_taxonomy_generator_batch(
+    transport: list[tuple[str, str, str]], *, generation_plan_sha256: str,
+    batch_ordinal: int, batch_start: int, run_total_records: int,
+) -> dict[str, Any]:
+    if not transport:
+        raise ValueError("taxonomy generator batch requires at least one passage")
     mapping_envelope = [
         {"request_index": index, "corpus_id": corpus_id}
         for index, (corpus_id, _, _) in enumerate(transport)
@@ -190,30 +211,72 @@ def build_taxonomy_generator_batch(corpus_records: Iterable[Mapping[str, Any]]) 
     ]
     batch = {
         "schema_version": TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION,
+        "generation_plan_sha256": generation_plan_sha256,
+        "batch_ordinal": batch_ordinal,
+        "batch_start": batch_start,
+        "batch_end": batch_start + len(transport),
+        "run_total_records": run_total_records,
         "mapping_envelope": mapping_envelope,
         "semantic_payload": semantic_payload,
         "mapping_envelope_sha256": sha256_json(mapping_envelope),
         "semantic_payload_sha256": sha256_json(semantic_payload),
     }
+    batch["generation_request_sha256"] = _generation_request_sha256(batch)
     validate_taxonomy_generator_batch(batch)
     return batch
+
+
+def build_taxonomy_generator_batch(
+    corpus_records: Iterable[Mapping[str, Any]], *, generation_plan_sha256: str,
+    batch_ordinal: int = 0, batch_start: int = 0, run_total_records: int | None = None,
+) -> dict[str, Any]:
+    """Build one request-bound batch for a semantic generator.
+
+    ``generation_request_sha256`` is transport metadata. It never enters a
+    prompt or semantic payload, but every response must return it verbatim.
+    Multi-batch 110K generation must use :func:`build_taxonomy_generator_run`
+    so ordinal/range completeness is also checked.
+    """
+    transport = _prepare_taxonomy_generator_transport(corpus_records)
+    if run_total_records is None:
+        run_total_records = len(transport)
+    return _build_taxonomy_generator_batch(
+        transport,
+        generation_plan_sha256=generation_plan_sha256,
+        batch_ordinal=batch_ordinal,
+        batch_start=batch_start,
+        run_total_records=run_total_records,
+    )
 
 
 def validate_taxonomy_generator_batch(batch: Mapping[str, Any]) -> None:
     """Validate a non-semantic mapping envelope before output rejoining."""
     if not isinstance(batch, Mapping) or set(batch) != {
-        "schema_version", "mapping_envelope", "semantic_payload",
-        "mapping_envelope_sha256", "semantic_payload_sha256",
+        "schema_version", "generation_plan_sha256", "batch_ordinal", "batch_start", "batch_end",
+        "run_total_records", "mapping_envelope", "semantic_payload",
+        "mapping_envelope_sha256", "semantic_payload_sha256", "generation_request_sha256",
     }:
         raise ValueError("taxonomy generator batch has missing or unsupported fields")
     if batch.get("schema_version") != TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION:
         raise ValueError("taxonomy generator batch schema_version is invalid")
+    _require_sha256(batch.get("generation_plan_sha256"), label="taxonomy generator batch plan")
+    for key in ("batch_ordinal", "batch_start", "batch_end", "run_total_records"):
+        if type(batch.get(key)) is not int:
+            raise ValueError(f"taxonomy generator batch {key} must be an integer")
+    if batch["batch_ordinal"] < 0 or batch["batch_start"] < 0:
+        raise ValueError("taxonomy generator batch ordinal and start must be non-negative")
+    if batch["run_total_records"] <= 0 or batch["batch_end"] <= batch["batch_start"]:
+        raise ValueError("taxonomy generator batch range is invalid")
+    if batch["batch_end"] > batch["run_total_records"]:
+        raise ValueError("taxonomy generator batch range exceeds run total")
     envelope = batch.get("mapping_envelope")
     payload = batch.get("semantic_payload")
     if not isinstance(envelope, list) or not envelope:
         raise ValueError("taxonomy generator mapping envelope must be a non-empty array")
     if not isinstance(payload, list) or len(payload) != len(envelope):
         raise ValueError("taxonomy generator semantic payload count must equal mapping envelope count")
+    if batch["batch_end"] - batch["batch_start"] != len(envelope):
+        raise ValueError("taxonomy generator batch range does not match payload count")
     previous_id: str | None = None
     seen_ids: set[str] = set()
     for index, row in enumerate(envelope):
@@ -237,14 +300,105 @@ def validate_taxonomy_generator_batch(batch: Mapping[str, Any]) -> None:
         raise ValueError("taxonomy generator mapping envelope hash does not match")
     if batch["semantic_payload_sha256"] != sha256_json(payload):
         raise ValueError("taxonomy generator semantic payload hash does not match")
+    _require_sha256(batch.get("generation_request_sha256"), label="taxonomy generation request")
+    if batch["generation_request_sha256"] != _generation_request_sha256(batch):
+        raise ValueError("taxonomy generator generation request hash does not match")
+
+
+def build_taxonomy_generator_run(
+    corpus_records: Iterable[Mapping[str, Any]], *, generation_plan_sha256: str, batch_size: int,
+) -> dict[str, Any]:
+    """Split one 110K-scale run into complete, request-bound transport batches."""
+    _require_sha256(generation_plan_sha256, label="taxonomy generator run plan")
+    if type(batch_size) is not int or batch_size <= 0:
+        raise ValueError("taxonomy generator run batch_size must be a positive integer")
+    transport = _prepare_taxonomy_generator_transport(corpus_records)
+    total = len(transport)
+    batches = [
+        _build_taxonomy_generator_batch(
+            transport[start:start + batch_size],
+            generation_plan_sha256=generation_plan_sha256,
+            batch_ordinal=ordinal,
+            batch_start=start,
+            run_total_records=total,
+        )
+        for ordinal, start in enumerate(range(0, total, batch_size))
+    ]
+    run = {
+        "schema_version": TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION,
+        "generation_plan_sha256": generation_plan_sha256,
+        "run_total_records": total,
+        "batches": batches,
+        "generation_run_sha256": sha256_json({
+            "generation_plan_sha256": generation_plan_sha256,
+            "generation_request_sha256s": [batch["generation_request_sha256"] for batch in batches],
+        }),
+    }
+    validate_taxonomy_generator_run(run)
+    return run
+
+
+def validate_taxonomy_generator_run(run: Mapping[str, Any]) -> None:
+    """Require complete, non-overlapping batches from one generation plan."""
+    required = {
+        "schema_version", "generation_plan_sha256", "run_total_records", "batches", "generation_run_sha256",
+    }
+    if not isinstance(run, Mapping) or set(run) != required:
+        raise ValueError("taxonomy generator run has missing or unsupported fields")
+    if run.get("schema_version") != TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION:
+        raise ValueError("taxonomy generator run schema_version is invalid")
+    _require_sha256(run.get("generation_plan_sha256"), label="taxonomy generator run plan")
+    if type(run.get("run_total_records")) is not int or run["run_total_records"] <= 0:
+        raise ValueError("taxonomy generator run total must be a positive integer")
+    batches = run.get("batches")
+    if not isinstance(batches, list) or not batches:
+        raise ValueError("taxonomy generator run batches must be a non-empty array")
+    next_start = 0
+    seen_ids: set[str] = set()
+    previous_id: str | None = None
+    for ordinal, batch in enumerate(batches):
+        validate_taxonomy_generator_batch(batch)
+        if batch["generation_plan_sha256"] != run["generation_plan_sha256"]:
+            raise ValueError("taxonomy generator run batch plan does not match run")
+        if batch["batch_ordinal"] != ordinal or batch["batch_start"] != next_start:
+            raise ValueError("taxonomy generator run batch ordinal or range is not contiguous")
+        if batch["run_total_records"] != run["run_total_records"]:
+            raise ValueError("taxonomy generator run batch total does not match run")
+        next_start = batch["batch_end"]
+        for row in batch["mapping_envelope"]:
+            corpus_id = row["corpus_id"]
+            if corpus_id in seen_ids or (previous_id is not None and corpus_id <= previous_id):
+                raise ValueError("taxonomy generator run passage IDs are duplicated or not globally sorted")
+            seen_ids.add(corpus_id)
+            previous_id = corpus_id
+    if next_start != run["run_total_records"]:
+        raise ValueError("taxonomy generator run batches are incomplete")
+    if len(seen_ids) != run["run_total_records"]:
+        raise ValueError("taxonomy generator run passage count does not match declared total")
+    _require_sha256(run.get("generation_run_sha256"), label="taxonomy generator run")
+    expected_hash = sha256_json({
+        "generation_plan_sha256": run["generation_plan_sha256"],
+        "generation_request_sha256s": [batch["generation_request_sha256"] for batch in batches],
+    })
+    if run["generation_run_sha256"] != expected_hash:
+        raise ValueError("taxonomy generator run hash does not match batches")
 
 
 def rejoin_taxonomy_generator_outputs(
-    batch: Mapping[str, Any], generator_outputs: Iterable[Mapping[str, Any]],
+    batch: Mapping[str, Any], generator_response: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
     """Rejoin request-indexed generator output using only the verified envelope."""
     validate_taxonomy_generator_batch(batch)
-    outputs = list(generator_outputs)
+    if not isinstance(generator_response, Mapping) or set(generator_response) != {
+        "generation_request_sha256", "outputs",
+    }:
+        raise ValueError("taxonomy generator response has missing or unsupported fields")
+    _require_sha256(generator_response.get("generation_request_sha256"), label="taxonomy generator response request")
+    if generator_response["generation_request_sha256"] != batch["generation_request_sha256"]:
+        raise ValueError("taxonomy generator response generation request does not match batch")
+    outputs = generator_response.get("outputs")
+    if not isinstance(outputs, list):
+        raise ValueError("taxonomy generator response outputs must be an array")
     envelope = batch["mapping_envelope"]
     if len(outputs) != len(envelope):
         raise ValueError("taxonomy generator output count does not match input count")
@@ -272,12 +426,47 @@ def rejoin_taxonomy_generator_outputs(
             raise ValueError("taxonomy generator output status is invalid")
         if status == "unknown" and (label_id != "unknown" or float(score) != 0.0):
             raise ValueError("taxonomy generator unknown output must use unknown label_id and score 0")
+        if status == "assigned" and label_id == "unknown":
+            raise ValueError("taxonomy generator assigned output must not use unknown label_id")
         assignments.append({
             "corpus_id": envelope_row["corpus_id"],
             "label_id": label_id,
             "score": float(score),
             "status": status,
         })
+    return assignments
+
+
+def rejoin_taxonomy_generator_run_outputs(
+    run: Mapping[str, Any], generator_responses: Iterable[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Rejoin all and only the response envelopes for one complete generation run."""
+    validate_taxonomy_generator_run(run)
+    responses = list(generator_responses)
+    batches = run["batches"]
+    if len(responses) != len(batches):
+        raise ValueError("taxonomy generator run response count does not match batch count")
+    responses_by_request: dict[str, Mapping[str, Any]] = {}
+    for response in responses:
+        if not isinstance(response, Mapping) or set(response) != {"generation_request_sha256", "outputs"}:
+            raise ValueError("taxonomy generator run response has missing or unsupported fields")
+        request_hash = response.get("generation_request_sha256")
+        _require_sha256(request_hash, label="taxonomy generator run response request")
+        if request_hash in responses_by_request:
+            raise ValueError("taxonomy generator run response request is duplicated")
+        responses_by_request[request_hash] = response
+    expected_requests = {batch["generation_request_sha256"] for batch in batches}
+    if set(responses_by_request) != expected_requests:
+        raise ValueError("taxonomy generator run response request is missing or from another run")
+    assignments = [
+        assignment
+        for batch in batches
+        for assignment in rejoin_taxonomy_generator_outputs(
+            batch, responses_by_request[batch["generation_request_sha256"]]
+        )
+    ]
+    if len(assignments) != run["run_total_records"]:
+        raise ValueError("taxonomy generator run assignments are incomplete")
     return assignments
 
 
@@ -763,7 +952,7 @@ def _validate_input_provenance(input_provenance: Any) -> None:
 
 
 def build_taxonomy_generation_plan(
-    *, input_provenance: Mapping[str, str], source_git_commit: str,
+    *, input_provenance: Mapping[str, str], generator_source_commit: str,
     generator_code_contract_sha256: str, generator_code_sha256: str,
     generator: Mapping[str, Any], input_contract: Mapping[str, Any],
 ) -> dict[str, Any]:
@@ -775,7 +964,7 @@ def build_taxonomy_generation_plan(
         "retrieval_unit": RETRIEVAL_UNIT,
         "source_scale": TAXONOMY_SOURCE_SCALE,
         "input_provenance": dict(input_provenance),
-        "source_git_commit": source_git_commit,
+        "generator_source_commit": generator_source_commit,
         "generator_code_contract_sha256": generator_code_contract_sha256,
         "generator_code_sha256": generator_code_sha256,
         "generator": dict(generator),
@@ -793,7 +982,7 @@ def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
     """Validate an artifact-free pre-generation plan."""
     required = {
         "schema_version", "dataset", "language", "retrieval_unit", "source_scale",
-        "input_provenance", "source_git_commit", "generator_code_contract_sha256",
+        "input_provenance", "generator_source_commit", "generator_code_contract_sha256",
         "generator_code_sha256", "generator", "input_contract",
         "batch_contract_schema_version", "output_artifact_schema_version",
         "projection_method", "determinism_mode",
@@ -807,8 +996,10 @@ def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
     if plan.get("retrieval_unit") != RETRIEVAL_UNIT or plan.get("source_scale") != TAXONOMY_SOURCE_SCALE:
         raise ValueError("taxonomy generation plan retrieval unit or source scale is invalid")
     _validate_input_provenance(plan.get("input_provenance"))
-    if not isinstance(plan.get("source_git_commit"), str) or not re.fullmatch(r"[0-9a-f]{40}", plan["source_git_commit"]):
-        raise ValueError("taxonomy generation plan source commit is invalid")
+    if not isinstance(plan.get("generator_source_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", plan["generator_source_commit"]
+    ):
+        raise ValueError("taxonomy generation plan generator source commit is invalid")
     _require_sha256(plan.get("generator_code_contract_sha256"), label="taxonomy generation plan code contract")
     _require_sha256(plan.get("generator_code_sha256"), label="taxonomy generation plan code aggregate")
     _validate_generator(plan.get("generator"))
@@ -833,7 +1024,7 @@ def generation_plan_sha256(plan: Mapping[str, Any]) -> str:
 def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthetic: bool = False) -> None:
     """Validate an approval object; synthetic records cannot authorize execution."""
     required = {
-        "schema_version", "approval_kind", "status", "approved_source_git_commit",
+        "schema_version", "approval_kind", "status", "approved_generator_source_commit",
         "approved_generation_plan_sha256", "approved_generator_contract_sha256",
         "approved_generator_code_sha256",
         "approved_by", "approved_at", "approval_basis",
@@ -842,10 +1033,10 @@ def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthe
         raise ValueError("taxonomy approval record has missing or unsupported fields")
     if record.get("schema_version") != TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION:
         raise ValueError("taxonomy approval record schema_version is invalid")
-    if not isinstance(record.get("approved_source_git_commit"), str) or not re.fullmatch(
-        r"[0-9a-f]{40}", record["approved_source_git_commit"]
+    if not isinstance(record.get("approved_generator_source_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", record["approved_generator_source_commit"]
     ):
-        raise ValueError("taxonomy approval record source commit is invalid")
+        raise ValueError("taxonomy approval record generator source commit is invalid")
     _require_sha256(record.get("approved_generation_plan_sha256"), label="taxonomy approval generation plan")
     _require_sha256(record.get("approved_generator_contract_sha256"), label="taxonomy approval generator contract")
     _require_sha256(record.get("approved_generator_code_sha256"), label="taxonomy approval generator code")
@@ -863,17 +1054,47 @@ def validate_taxonomy_approval_record(record: Mapping[str, Any], *, allow_synthe
     raise ValueError("taxonomy approval record kind/status is invalid")
 
 
+def approval_record_sha256(record: Mapping[str, Any]) -> str:
+    """Hash an approval record for post-generation manifest binding."""
+    validate_taxonomy_approval_record(record, allow_synthetic=True)
+    return sha256_json(record)
+
+
+def _generator_source_git_state(generator_source_root: Path) -> tuple[str, str]:
+    """Read the actual generator checkout state; control files live elsewhere."""
+    root = generator_source_root.resolve()
+    if not root.is_dir():
+        raise FileNotFoundError(f"taxonomy generator source root is missing: {root}")
+    try:
+        head = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            text=True,
+            capture_output=True,
+        ).stdout.strip()
+        porcelain = subprocess.run(
+            ["git", "-C", str(root), "status", "--porcelain"],
+            check=True,
+            text=True,
+            capture_output=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError("taxonomy generator source root must be a Git checkout") from error
+    if not re.fullmatch(r"[0-9a-f]{40}", head):
+        raise ValueError("taxonomy generator source Git HEAD is invalid")
+    return head, porcelain
+
+
 def validate_taxonomy_generation_preflight(
     generation_plan: Mapping[str, Any], *, approval_record: Mapping[str, Any] | None,
-    generator_code_contract: Mapping[str, Any] | None, actual_source_git_commit: str,
-    git_status_porcelain: str, verified_input_provenance: Mapping[str, str],
-    generator_repo_root: Path | None = None,
+    generator_code_contract: Mapping[str, Any] | None,
+    verified_input_provenance: Mapping[str, str], generator_source_root: Path,
 ) -> None:
     """Require independently approved code/source and a clean checkout.
 
-    A real generator must call this before generation.  This function performs
-    no generation; callers supply their observed Git HEAD and porcelain output
-    so a clean worktree is an explicit execution precondition.
+    A real generator must call this before generation.  The generator source
+    checkout is inspected directly. Plan/approval/control artifacts are read
+    separately and therefore cannot make that source checkout dirty.
     """
     if approval_record is None:
         raise FileNotFoundError("taxonomy generation approval record is missing")
@@ -881,13 +1102,12 @@ def validate_taxonomy_generation_preflight(
         raise FileNotFoundError("taxonomy generator code contract is missing")
     validate_taxonomy_generation_plan(generation_plan)
     validate_taxonomy_approval_record(approval_record)
-    validate_generator_code_contract(generator_code_contract, repo_root=generator_repo_root)
-    if not isinstance(actual_source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", actual_source_git_commit):
-        raise ValueError("taxonomy generation actual source commit is invalid")
-    if not isinstance(git_status_porcelain, str) or git_status_porcelain.strip():
+    actual_generator_source_commit, git_status_porcelain = _generator_source_git_state(generator_source_root)
+    if git_status_porcelain.strip():
         raise ValueError("taxonomy generation dirty Git worktree is prohibited")
-    if generation_plan["source_git_commit"] != actual_source_git_commit:
-        raise ValueError("taxonomy generation plan source commit does not match actual source commit")
+    if generation_plan["generator_source_commit"] != actual_generator_source_commit:
+        raise ValueError("taxonomy generation plan generator source commit does not match checkout")
+    validate_generator_code_contract(generator_code_contract, repo_root=generator_source_root)
     contract_hash = generator_contract_sha256(generator_code_contract)
     if generation_plan["generator_code_contract_sha256"] != contract_hash:
         raise ValueError("taxonomy generation plan code contract hash does not match verified contract")
@@ -900,8 +1120,8 @@ def validate_taxonomy_generation_preflight(
     plan_hash = generation_plan_sha256(generation_plan)
     if approval_record["approved_generation_plan_sha256"] != plan_hash:
         raise ValueError("taxonomy approval generation plan does not match current plan")
-    if approval_record["approved_source_git_commit"] != generation_plan["source_git_commit"]:
-        raise ValueError("taxonomy approval source commit does not match generation plan")
+    if approval_record["approved_generator_source_commit"] != generation_plan["generator_source_commit"]:
+        raise ValueError("taxonomy approval generator source commit does not match generation plan")
     if approval_record["approved_generator_contract_sha256"] != contract_hash:
         raise ValueError("taxonomy approval generator contract does not match generation plan")
     if approval_record["approved_generator_code_sha256"] != code_hash:
@@ -910,7 +1130,8 @@ def validate_taxonomy_generation_preflight(
 
 def build_taxonomy_artifact_manifest(
     *, full_artifact: Mapping[str, Any], artifact_records: Mapping[int, Mapping[str, Any]],
-    source_git_commit: str, generator_contract_sha256: str, generation_plan_sha256: str,
+    generator_source_commit: str, generator_contract_sha256: str, generation_plan_sha256: str,
+    approval_record_sha256: str,
 ) -> dict[str, Any]:
     """Build the tracked manifest; large artifact bodies remain outside Git."""
     full_audit = validate_taxonomy_artifact(full_artifact)
@@ -918,10 +1139,11 @@ def build_taxonomy_artifact_manifest(
         raise ValueError("taxonomy manifest requires the 110K identity artifact")
     if set(artifact_records) != set(SCALE_SIZES):
         raise ValueError("taxonomy manifest must contain 20K/50K/110K artifact records")
-    if not isinstance(source_git_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_git_commit):
-        raise ValueError("taxonomy manifest source_git_commit is invalid")
+    if not isinstance(generator_source_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", generator_source_commit):
+        raise ValueError("taxonomy manifest generator_source_commit is invalid")
     _require_sha256(generator_contract_sha256, label="taxonomy manifest generator contract")
     _require_sha256(generation_plan_sha256, label="taxonomy manifest generation plan")
+    _require_sha256(approval_record_sha256, label="taxonomy manifest approval record")
     normalized_records: dict[str, dict[str, Any]] = {}
     for scale in SCALE_SIZES:
         record = dict(artifact_records[scale])
@@ -940,9 +1162,10 @@ def build_taxonomy_artifact_manifest(
         "language": "ko",
         "source_revisions": dict(full_artifact["source_revisions"]),
         "retrieval_unit": RETRIEVAL_UNIT,
-        "source_git_commit": source_git_commit,
+        "generator_source_commit": generator_source_commit,
         "generator_contract_sha256": generator_contract_sha256,
         "generation_plan_sha256": generation_plan_sha256,
+        "approval_record_sha256": approval_record_sha256,
         "source_scale": TAXONOMY_SOURCE_SCALE,
         "input_contract": dict(full_artifact["input_contract"]),
         "provenance": provenance,
@@ -974,8 +1197,9 @@ def validate_taxonomy_artifact_manifest(
         raise ValueError("taxonomy artifact manifest must be an object")
     required = {
         "schema_version", "generated_at", "taxonomy_artifact_id", "dataset", "language", "source_revisions", "retrieval_unit",
-        "source_git_commit", "source_scale", "input_contract", "provenance",
-        "generator_contract_sha256", "generation_plan_sha256", "source_artifact_content_sha256", "artifacts",
+        "generator_source_commit", "source_scale", "input_contract", "provenance",
+        "generator_contract_sha256", "generation_plan_sha256", "approval_record_sha256",
+        "source_artifact_content_sha256", "artifacts",
     }
     if set(manifest) != required:
         raise ValueError("taxonomy artifact manifest has missing or unsupported fields")
@@ -991,12 +1215,13 @@ def validate_taxonomy_artifact_manifest(
             raise ValueError("taxonomy manifest source_revisions do not match verified fixture")
     if manifest.get("retrieval_unit") != RETRIEVAL_UNIT or manifest.get("source_scale") != TAXONOMY_SOURCE_SCALE:
         raise ValueError("taxonomy artifact manifest has invalid retrieval unit or source scale")
-    if not isinstance(manifest.get("source_git_commit"), str) or not re.fullmatch(
-        r"[0-9a-f]{40}", manifest["source_git_commit"]
+    if not isinstance(manifest.get("generator_source_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", manifest["generator_source_commit"]
     ):
-        raise ValueError("taxonomy artifact manifest source_git_commit is invalid")
+        raise ValueError("taxonomy artifact manifest generator_source_commit is invalid")
     _require_sha256(manifest.get("generator_contract_sha256"), label="taxonomy artifact manifest generator contract")
     _require_sha256(manifest.get("generation_plan_sha256"), label="taxonomy artifact manifest generation plan")
+    _require_sha256(manifest.get("approval_record_sha256"), label="taxonomy artifact manifest approval record")
     _validate_semantic_input_contract(manifest.get("input_contract"))
     _validate_provenance(manifest.get("provenance"))
     if expected_provenance is not None:
@@ -1065,30 +1290,29 @@ def validate_taxonomy_artifact_manifest(
 def validate_taxonomy_artifact_authorization(
     manifest: Mapping[str, Any], *, generation_plan: Mapping[str, Any],
     approval_record: Mapping[str, Any] | None, generator_code_contract: Mapping[str, Any] | None,
-    actual_source_git_commit: str, git_status_porcelain: str,
-    verified_input_provenance: Mapping[str, str], generator_repo_root: Path | None = None,
+    verified_input_provenance: Mapping[str, str], generator_source_root: Path,
 ) -> None:
     """Bind an integrity-checked artifact to an approved pre-generation plan."""
     validate_taxonomy_generation_preflight(
         generation_plan,
         approval_record=approval_record,
         generator_code_contract=generator_code_contract,
-        actual_source_git_commit=actual_source_git_commit,
-        git_status_porcelain=git_status_porcelain,
         verified_input_provenance=verified_input_provenance,
-        generator_repo_root=generator_repo_root,
+        generator_source_root=generator_source_root,
     )
     plan_hash = generation_plan_sha256(generation_plan)
     if manifest.get("generation_plan_sha256") != plan_hash:
         raise ValueError("taxonomy artifact manifest generation plan hash does not match authorization")
-    if manifest.get("source_git_commit") != generation_plan["source_git_commit"]:
-        raise ValueError("taxonomy artifact manifest source commit does not match generation plan")
+    if manifest.get("generator_source_commit") != generation_plan["generator_source_commit"]:
+        raise ValueError("taxonomy artifact manifest generator source commit does not match generation plan")
     if manifest.get("generator_contract_sha256") != generation_plan["generator_code_contract_sha256"]:
         raise ValueError("taxonomy artifact manifest generator contract does not match generation plan")
     if manifest.get("input_contract") != generation_plan["input_contract"]:
         raise ValueError("taxonomy artifact manifest input contract does not match generation plan")
     if manifest.get("provenance", {}).get("generator") != generation_plan["generator"]:
         raise ValueError("taxonomy artifact manifest generator metadata does not match generation plan")
+    if approval_record is None or manifest.get("approval_record_sha256") != approval_record_sha256(approval_record):
+        raise ValueError("taxonomy artifact manifest approval record does not match authorization")
     manifest_input_provenance = {
         key: manifest.get("provenance", {}).get(key)
         for key in generation_plan["input_provenance"]
@@ -1123,10 +1347,9 @@ def load_integrity_only_taxonomy_projection(
 def load_authorized_taxonomy_projection(
     manifest_path: Path, *, data_dir: Path, expected_ids_by_scale: Mapping[int, set[str]], scale: int,
     generation_plan: Mapping[str, Any], approval_record: Mapping[str, Any] | None,
-    generator_code_contract: Mapping[str, Any] | None, actual_source_git_commit: str,
-    git_status_porcelain: str, verified_input_provenance: Mapping[str, str],
+    generator_code_contract: Mapping[str, Any] | None,
+    verified_input_provenance: Mapping[str, str], generator_source_root: Path,
     expected_source_revisions: Mapping[str, str] | None = None,
-    generator_repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Return a projection only after integrity and generation authorization pass."""
     if not manifest_path.is_file():
@@ -1146,10 +1369,8 @@ def load_authorized_taxonomy_projection(
         generation_plan=generation_plan,
         approval_record=approval_record,
         generator_code_contract=generator_code_contract,
-        actual_source_git_commit=actual_source_git_commit,
-        git_status_porcelain=git_status_porcelain,
         verified_input_provenance=verified_input_provenance,
-        generator_repo_root=generator_repo_root,
+        generator_source_root=generator_source_root,
     )
     record = manifest["artifacts"][str(scale)]["artifact_file"]
     return _load_artifact(_validate_file_record(record, data_dir=data_dir, label=f"taxonomy {scale}"), label=f"taxonomy {scale}")

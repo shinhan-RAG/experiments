@@ -2,7 +2,7 @@
   "schema_version": "dr-dci.miracl-ko-taxonomy-approval-record.v1",
   "approval_kind": "synthetic_test",
   "status": "synthetic_only",
-  "approved_source_git_commit": "ffffffffffffffffffffffffffffffffffffffff",
+  "approved_generator_source_commit": "ffffffffffffffffffffffffffffffffffffffff",
   "approved_generation_plan_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "approved_generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "approved_generator_code_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",

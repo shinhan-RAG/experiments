@@ -11,7 +11,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-import subprocess
 import sys
 from typing import Any
 
@@ -67,20 +66,12 @@ def verified_taxonomy_provenance(
     }
 
 
-def git_source_state(repo_root: Path) -> tuple[str, str]:
-    head = subprocess.run(
-        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
-        check=True,
-        text=True,
-        capture_output=True,
-    ).stdout.strip()
-    porcelain = subprocess.run(
-        ["git", "-C", str(repo_root), "status", "--porcelain"],
-        check=True,
-        text=True,
-        capture_output=True,
-    ).stdout
-    return head, porcelain
+def require_external_control_path(path: Path, *, generator_source_root: Path, label: str) -> None:
+    """Keep mutable plan/approval/result controls out of the generator checkout."""
+    if path.resolve().is_relative_to(generator_source_root.resolve()):
+        raise ValueError(
+            f"{label} must be outside --generator-source-root; use a separate read-only control artifact path"
+        )
 
 
 def main() -> int:
@@ -108,6 +99,12 @@ def main() -> int:
         default=Path("config/miracl_ko_taxonomy_generator_code_contract.json"),
     )
     parser.add_argument(
+        "--generator-source-root",
+        type=Path,
+        default=REPO_ROOT,
+        help="clean Git checkout containing the generator code; control artifacts may live elsewhere",
+    )
+    parser.add_argument(
         "--integrity-only",
         action="store_true",
         help="validate body/hash/projection only; never marks an artifact experiment-ready",
@@ -128,6 +125,11 @@ def main() -> int:
         (REPO_ROOT / args.generator_code_contract).resolve()
         if not args.generator_code_contract.is_absolute()
         else args.generator_code_contract
+    )
+    generator_source_root = (
+        (REPO_ROOT / args.generator_source_root).resolve()
+        if not args.generator_source_root.is_absolute()
+        else args.generator_source_root.resolve()
     )
     if not revision_lock_path.is_file():
         raise FileNotFoundError(f"MIRACL revision lock is missing: {revision_lock_path}")
@@ -164,7 +166,13 @@ def main() -> int:
         ):
             if not path.is_file():
                 raise FileNotFoundError(f"{label} is missing: {path}")
-        actual_source_git_commit, git_status_porcelain = git_source_state(REPO_ROOT)
+        for path, label in (
+            (manifest_path, "taxonomy artifact manifest"),
+            (plan_path, "taxonomy generation plan"),
+            (approval_path, "taxonomy approval record"),
+            (generator_contract_path, "taxonomy generator code contract"),
+        ):
+            require_external_control_path(path, generator_source_root=generator_source_root, label=label)
         input_provenance = verified_taxonomy_provenance(
             data_dir=data_dir,
             subset_manifest=subset_manifest,
@@ -175,10 +183,8 @@ def main() -> int:
             generation_plan=load_json(plan_path),
             approval_record=load_json(approval_path),
             generator_code_contract=load_json(generator_contract_path),
-            actual_source_git_commit=actual_source_git_commit,
-            git_status_porcelain=git_status_porcelain,
             verified_input_provenance=input_provenance,
-            generator_repo_root=REPO_ROOT,
+            generator_source_root=generator_source_root,
         )
         report = {
             "artifact_integrity": integrity,

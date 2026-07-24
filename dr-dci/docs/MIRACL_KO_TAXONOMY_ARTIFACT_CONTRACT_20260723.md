@@ -46,9 +46,9 @@ The validator rejects query/qrel/qid/relevance/positive-negative/answer/gold/evi
 
 ### Generator batch and output rejoin
 
-`build_taxonomy_generator_batch()` is the sole external transport contract. It validates input transport records (`corpus_id`, `title`, `text`), sorts once by opaque `corpus_id`, then writes two hash-bound parallel arrays: `mapping_envelope` contains only `{request_index, corpus_id}` and never enters a semantic generator; `semantic_payload` contains only `{title, text}` in the same deterministic order.
+`build_taxonomy_generator_run()` is the sole multi-batch external transport contract. It validates input transport records (`corpus_id`, `title`, `text`), sorts the complete run once by opaque `corpus_id`, then writes non-overlapping, ordinal/range-bound batches. Each batch has two hash-bound parallel arrays: `mapping_envelope` contains only `{request_index, corpus_id}` and never enters a semantic generator; `semantic_payload` contains only `{title, text}` in the same deterministic order.
 
-A generator returns exactly one `{request_index, label_id, score, status}` object for every semantic payload row. `request_index` is transport metadata, never prompt content; neither request nor response contains `corpus_id`. Output order may vary. `rejoin_taxonomy_generator_outputs()` indexes responses by verified request index and rejects positional/legacy output, short/extra output, duplicate/missing/out-of-range/bool/non-integer request index, a changed envelope/hash/order, or an ID in semantic payload. Therefore reversed responses produce the same final passage mapping. `build_semantic_generator_inputs()` is retained only as a deprecated deterministic compatibility extractor; it has no output-binding contract and is prohibited for real generation/rejoin.
+A batch transport wrapper carries `generation_request_sha256 = SHA256(canonical JSON({generation_plan_sha256, mapping_envelope_sha256, semantic_payload_sha256, batch_schema_version, batch_ordinal}))`. It is never prompt content. A response envelope must contain that exact hash plus exactly one `{request_index, label_id, score, status}` output per semantic payload row; neither request nor response contains `corpus_id`. Output order may vary. `rejoin_taxonomy_generator_outputs()` first checks the request hash, then indexes outputs by verified request index. It rejects positional/legacy output, a different batch/run response, short/extra output, duplicate/missing/out-of-range/bool/non-integer request index, a changed envelope/hash/order, `assigned + unknown`, or an ID in semantic payload. `rejoin_taxonomy_generator_run_outputs()` additionally rejects missing, duplicate, non-contiguous, or foreign batch responses. Therefore reversed responses converge, but a same-sized response from another batch cannot attach labels to the wrong passages. `build_semantic_generator_inputs()` is retained only as a deprecated deterministic compatibility extractor; it has no output-binding contract and is prohibited for real generation/rejoin.
 
 ## Artifact schema and provenance
 
@@ -76,7 +76,7 @@ Each ignored artifact body contains:
 
 `unknown` is explicit (`label_id=unknown`, `score=0`, `status=unknown`); it is never an unrecorded fallback. Assignment IDs are unique, the label catalog has unique IDs and labels, assignments have finite `[0,1]` scores, and every expected passage has exactly one assignment.
 
-The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records an RFC3339 timezone-bearing `generated_at`, exact artifact body byte size/SHA-256 for all scales, source Git commit, source revisions, the input/provenance contract, `generator_contract_sha256`, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration. Generator parameters must be JSON-safe with no NaN/Infinity; boolean values are not valid seeds or assignment scores. Display labels must already be Unicode NFC with normalized single-space whitespace, so the artifact and consumer never silently normalize a category at match time.
+The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records an RFC3339 timezone-bearing `generated_at`, exact artifact body byte size/SHA-256 for all scales, `generator_source_commit`, source revisions, the input/provenance contract, `generator_contract_sha256`, `generation_plan_sha256`, `approval_record_sha256`, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration. Generator parameters must be JSON-safe with no NaN/Infinity; boolean values are not valid seeds or assignment scores. Display labels must already be Unicode NFC with normalized single-space whitespace, so the artifact and consumer never silently normalize a category at match time.
 
 ## Fixed-scale projection
 
@@ -102,11 +102,11 @@ This is not wired to `run_experiment.py`, the Agent, or `PullRetriever`. The val
 
 ## Generation plan, provenance, and approval boundary
 
-The artifact manifest is not an approval record. Before any artifact exists, an artifact-free `TaxonomyGenerationPlan` binds MIRACL identity/unit, source scale 110K, four fixed input SHA-256 values, source commit, code-contract/aggregate SHA, generator/model/tokenizer/prompt/seed/parameters, title/text-only input contract, batch schema version, output artifact schema version, fixed projection method, and determinism mode. The plan cannot contain an artifact body or artifact hash.
+The artifact manifest is not an approval record. Before any artifact exists, an artifact-free `TaxonomyGenerationPlan` binds MIRACL identity/unit, source scale 110K, four fixed input SHA-256 values, **`generator_source_commit`**, code-contract/aggregate SHA, generator/model/tokenizer/prompt/seed/parameters, title/text-only input contract, batch schema version, output artifact schema version, fixed projection method, and determinism mode. The plan cannot contain an artifact body or artifact hash.
 
-A real generation requires the plan plus three separate tracked objects: (1) a generator code contract with uniquely sorted relative file list, each byte SHA-256, and `generator_code_sha256 = SHA256(canonical JSON of aggregate method + file list)`; its canonical JSON SHA-256 is `generator_contract_sha256`; (2) an approval record that directly names `generation_plan_sha256`, source commit, code-contract/aggregate SHA, approver, RFC3339 time, and basis; and only after execution (3) a result manifest with body hashes and the approved plan hash.
+A real generation uses two roots. The `--generator-source-root` is a clean checkout at the plan's `generator_source_commit` and contains the code files named by the contract. The read-only control artifact paths (`--generation-plan`, `--approval-record`, `--generator-code-contract`, and post-run `--manifest`) must reside outside that checkout; the audit rejects an in-source control path. The approval record directly names `generation_plan_sha256`, `approved_generator_source_commit`, code-contract/aggregate SHA, approver, RFC3339 time, and basis. Only after execution does the result manifest bind body hashes to the plan, approval-record, and code-contract hashes. No single current HEAD is used as both generator identity and control-record identity.
 
-`validate_taxonomy_generation_preflight()` requires only the plan, approval, independently rechecked generator files/code contract, current Git HEAD/clean state, and independently verified input hashes. It does not require an artifact manifest. `validate_taxonomy_artifact_authorization()` then binds a completed integrity-checked artifact to the same plan. No approval record is created in `config/` by this work. The fixture contains a marked `synthetic_test` record which validates fixtures only and cannot authorize execution.
+`validate_taxonomy_generation_preflight()` independently reads Git HEAD and porcelain from `--generator-source-root`, requires that checkout to be clean and equal to the planned source commit, then rechecks its code bytes. It does not inspect control-path dirtiness and does not require an artifact manifest. `validate_taxonomy_artifact_authorization()` then binds a completed integrity-checked artifact to the same plan and exact approval-record hash. No approval record is created in `config/` by this work. The fixture contains a marked `synthetic_test` record which validates fixtures only and cannot authorize execution.
 
 ## Preflight, audit, and synthetic RED → GREEN harness
 
@@ -119,10 +119,10 @@ The following RED counterexamples are fixed in `tests/test_miracl_ko_taxonomy_ar
 - missing manifest/body, tampered artifact byte hash, missing seed/provenance, duplicate ID, and orphan/missing mapping;
 - changed common-passage label/score, source-outside projection, and non-exact projection;
 - deterministic generator content change;
-- reverse-order batch/rejoin ambiguity, missing/extra generator output, and semantic-payload ID leakage;
+- reverse-order batch/rejoin ambiguity, same-sized foreign-batch response, missing/extra/duplicate run response, non-contiguous batch ordinal/range, and semantic-payload ID leakage;
 - label-ID/display-label exact-match mismatch, unknown boost eligibility, score-weight drift, and consumer passage coverage drift;
 - reversed/duplicate/missing/out-of-range/bool request index and prohibited positional output rejoin;
-- artifact-free plan approval, wrong-plan/source/code/input/parameter drift, missing approval, dirty source, and synthetic approval execution attempt;
+- artifact-free plan approval, wrong-plan/source/code/input/parameter drift, missing approval, dirty generator source, stale/foreign approval, and synthetic approval execution attempt;
 - self-declared code/source provenance, non-RFC3339 timestamp, bool seed/score, non-finite parameter, and non-canonical label;
 - future focused control/treatment differences other than the taxonomy boost toggle.
 
@@ -134,15 +134,16 @@ The tracked three-passage fixture under `tests/fixtures/miracl_ko_taxonomy_artif
 cd /Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci
 PYTHONPATH=. pytest -q tests/test_miracl_ko_taxonomy_artifact.py
 
-# Real audit: all three authorization inputs are required by default; this
-# command fails loudly until they and the artifact manifest exist.
-PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py
+# Real audit: control records are read-only paths. The generator checkout is
+# separately supplied and must be clean at generator_source_commit.
+PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py \
+  --generator-source-root /path/to/clean-generator-source
 
 # Explicit diagnostic only: never experiment-ready and cannot feed a consumer.
 PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py --integrity-only
 ```
 
-The required temporal order is: (1) build/recheck the artifact-free plan and generator code contract in a clean worktree; (2) obtain the separate actual-execution approval for that exact plan hash; (3) run the one 110K generator through request-index correlation, then derive 50K/20K projections; (4) build the tracked artifact manifest from real body hashes and approved plan hash; (5) run the default authorized audit. It must not use query/qrel/relevance/gold/evidence inputs.
+The required temporal order is: (1) commit generator code as H and create a clean H checkout; (2) write plan/code-contract in a separate control root with `generator_source_commit=H`; (3) obtain the separate actual-execution approval for that exact plan hash; (4) run 110K generation from the clean H checkout through request-hash-bound batches, then derive 50K/20K projections; (5) write the result manifest in the control root with plan/approval/code hashes; (6) run the default authorized audit with explicit control paths and `--generator-source-root`. It must not use query/qrel/relevance/gold/evidence inputs.
 
 ## Non-results and next gate
 
