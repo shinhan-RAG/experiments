@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
 from typing import Any
@@ -22,6 +23,8 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = Path(__file__).resolve().parent / "kt_bundle"
 BUNDLE_NAME = "miracl-taxonomy-kt-bundle"
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 GENERATOR_FILES = (
     "taxonomy_vllm_generator.py",
     "src/miracl_ko/__init__.py",
