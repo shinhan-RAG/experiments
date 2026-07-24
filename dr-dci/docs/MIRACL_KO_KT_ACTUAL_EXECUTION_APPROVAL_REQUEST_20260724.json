@@ -1,0 +1,165 @@
+{
+  "approval_record_template": {
+    "actual_generation_authorized": false,
+    "approved_at": null,
+    "approved_by": null,
+    "approved_container_digest": null,
+    "approved_generator_code_sha256": null,
+    "approved_generator_contract_sha256": null,
+    "approved_model_revision": null,
+    "approved_source_commit": null,
+    "approved_tokenizer_revision": null,
+    "basis": null,
+    "generation_plan_sha256": null,
+    "schema_version": "dr-dci.miracl-ko-taxonomy-approval.v1",
+    "status": "template_not_an_approval_record"
+  },
+  "authorization_scopes_to_approve_separately": [
+    "model_and_runtime_selection",
+    "exact_generation_plan",
+    "one_kt_h200_execution",
+    "docker_image_and_hugging_face_cache_import",
+    "generation_and_standalone_source_audit",
+    "20k_50k_filter_projection_and_full_audit"
+  ],
+  "candidate_content_sha256": "aeabeb54d25ff21f1566288acdf587c0a67a0cef769ebd93777ea033f7035bb2",
+  "candidate_source": {
+    "existing_code_harness_tar_bytes": 60369,
+    "existing_code_harness_tar_sha256": "c4bd88e79174dbd7525193f83848165cf1e815a70e9d08562beabe126f55d7d1",
+    "generator_code_contract_sha256": "82d54968c0010e36c44771d289699abb1b33ef709f1e0b339a696d5d90ab3842",
+    "generator_code_sha256": "bfda9828a09074a0131c6192b0c4f629d3d1b1b67b9c2b74c2b39cf869c195b3",
+    "generator_source_commit": "b00b6e927c810dd870b004da6a6af19ecae9113e"
+  },
+  "container_launch_candidate": {
+    "docker_run_invariants": [
+      "--gpus all",
+      "--network host",
+      "HF_HUB_OFFLINE=1",
+      "TRANSFORMERS_OFFLINE=1",
+      "readonly bind mount of the exact Hugging Face snapshot cache"
+    ],
+    "entrypoint_arguments": [
+      "--model",
+      "Qwen/Qwen3-8B",
+      "--revision",
+      "b968826d9c46dd6066d109eabc6255188de91218",
+      "--tokenizer",
+      "Qwen/Qwen3-8B",
+      "--tokenizer-revision",
+      "b968826d9c46dd6066d109eabc6255188de91218",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000",
+      "--generation-config",
+      "vllm"
+    ],
+    "entrypoint_arguments_sha256": "PENDING_CANONICAL_HASH_FROM_FINAL_PLAN",
+    "execution_mode": "docker_image_default_openai_api_entrypoint",
+    "generation_config_mode": "request_controls_only",
+    "known_runner_incompatibility": "The b00b6e9 KT start_vllm.sh currently inserts plan.server_launch.command before entrypoint arguments. The official image has an API-server default entrypoint and accepts --model as the first supplied argument; inserting an extra token is not an executable launch. No actual plan or run is approved until the wrapper is corrected and its new source contract is pinned.",
+    "reasoning_parser_policy": "not_selected_until_the_frozen_taxonomy_prompt_and_request_template_are_supplied",
+    "structured_output_policy": "not_selected_until_the_frozen_taxonomy_json_schema_is_supplied",
+    "thinking_policy": "not_selected_until_the_frozen_taxonomy_prompt_and_request_template_are_supplied"
+  },
+  "explicitly_not_authorized": [
+    "taxonomy_ab_experiment",
+    "agent_execution",
+    "focused_part_1",
+    "focused_part_2",
+    "aihub_legal_primary_evaluation",
+    "external_inference_api",
+    "plan_mismatch_fallback"
+  ],
+  "fixed_input_candidates": {
+    "miracl": {
+      "corpora": {
+        "110k": {
+          "bytes": 58253611,
+          "relative_path": "data/miracl-ko/subsets/110k/corpus.jsonl",
+          "sha256": "76fc195065f29b96f02e1fc3d7bb8c1e2330c4e701c8c472602fa5ced9626030"
+        },
+        "20k": {
+          "bytes": 13441068,
+          "relative_path": "data/miracl-ko/subsets/20k/corpus.jsonl",
+          "sha256": "1ffc669b3b912473a7d7fdcf50d696a2d39a05bcb9bc3f436b4b6d1bac0d7498"
+        },
+        "50k": {
+          "bytes": 28405329,
+          "relative_path": "data/miracl-ko/subsets/50k/corpus.jsonl",
+          "sha256": "66e3f5ccdc7fc5b608c93eceff2345765f253fa0d64d3547f6a90b04e64b0dfc"
+        }
+      },
+      "preparation_contract_sha256": "2c806cc432319f24e9b4fbcd34380bf117bd223bc3c299e64090b6a966a92b21",
+      "revision_lock_sha256": "cc27c0a53a6eb002620a2dc03a16d5cd0dcf1663ab04983cf5d1032c4f356783",
+      "subset_manifest_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b"
+    },
+    "model_and_tokenizer": {
+      "license": "apache-2.0",
+      "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "repository": "Qwen/Qwen3-8B",
+      "revision_kind": "lowercase_40_hex_hugging_face_commit",
+      "source_url": "https://huggingface.co/Qwen/Qwen3-8B/tree/b968826d9c46dd6066d109eabc6255188de91218",
+      "tokenizer_repository": "Qwen/Qwen3-8B",
+      "tokenizer_revision": "b968826d9c46dd6066d109eabc6255188de91218"
+    },
+    "runtime": {
+      "cuda_build_version": "12.8.1",
+      "identity_sources": [
+        "https://raw.githubusercontent.com/vllm-project/vllm/v0.9.0/docker/Dockerfile",
+        "https://raw.githubusercontent.com/vllm-project/vllm/v0.9.0/requirements/cuda.txt"
+      ],
+      "image_digest": "sha256:df2c55e5107afea09ea1a50f9dd96c99ebf97a795334c4d08f691f3d79b2ab12",
+      "image_repository": "docker.io/vllm/vllm-openai",
+      "image_tag": "v0.9.0",
+      "platform": "linux/amd64",
+      "python_build_version": "3.12",
+      "pytorch_version": "2.7.0",
+      "registry_image_bytes": 11068018467,
+      "registry_source_url": "https://hub.docker.com/v2/repositories/vllm/vllm-openai/tags/v0.9.0",
+      "required_import_verification": "After docker load, record docker image inspect digest and execute the bundled offline runtime-version probe. Its vLLM/Python/CUDA/library report must equal this candidate before any model request.",
+      "torchvision_version": "0.22.0",
+      "vllm_source_tag": "v0.9.0",
+      "vllm_version": "0.9.0"
+    }
+  },
+  "generation_plan_candidate": {
+    "canonical_plan_sha256": null,
+    "mandatory_unresolved_inputs": [
+      "taxonomy generator algorithm and implementation version",
+      "complete Korean taxonomy prompt text and UTF-8 SHA-256",
+      "structured-output JSON schema, schema name, and SHA-256",
+      "label catalog, taxonomy_artifact_id, stable label_id/display-label/unknown rules",
+      "pooling/normalization and clustering/classification values or approved not_applicable values",
+      "sampling controls, seed, determinism mode, batch size, timeout, retry, and resume policy",
+      "thinking, reasoning-parser, chat-template, and request-body-template values",
+      "final corrected runner source contract and its clean source commit"
+    ],
+    "reason": "A valid actual_execution plan is intentionally impossible until every semantic and transport field below is fixed. A placeholder plan SHA would be a false approval target.",
+    "resolved_bindings": {
+      "dataset": "MIRACL",
+      "forbidden_inputs": [
+        "corpus_id in model payload",
+        "query",
+        "qrel",
+        "relevance",
+        "gold",
+        "evidence_id",
+        "answer"
+      ],
+      "language": "ko",
+      "projection_method": "filter_110k_mapping_by_corpus_id_v1",
+      "retrieval_unit": "passage",
+      "semantic_input_fields": [
+        "title",
+        "text"
+      ],
+      "source_scale": "110K"
+    },
+    "status": "not_a_valid_taxonomy_generation_plan"
+  },
+  "prepared_at": "2026-07-24",
+  "schema_version": "dr-dci.miracl-ko-kt-actual-execution-approval-request.v1",
+  "scope": "Phase K1 exact execution approval request only; no model/image/cache download, taxonomy generation, artifact, A/B, Agent, Part 1/2, or AIHub legal execution.",
+  "status": "blocked_pending_semantic_specification_and_runner_correction"
+}

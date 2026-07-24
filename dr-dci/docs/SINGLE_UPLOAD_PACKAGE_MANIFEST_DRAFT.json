@@ -1,0 +1,125 @@
+{
+  "draft_content_sha256": "0e9ed59ee3ed3b855a503352615f9e309adf63fc235a88968347937c9562e800",
+  "known_fixed_input_bytes": {
+    "existing_code_harness_tar": 60369,
+    "minimum_fixed_data_total": 100106970,
+    "miracl_20k_50k_110k_corpora": 100100008,
+    "revision_lock": 883,
+    "subset_manifest": 6079
+  },
+  "one_upload_contract": "One outer tar archive contains code, MIRACL fixture bodies, exact control records, a docker-save archive, an exact Hugging Face snapshot cache, and offline run/result wrappers. The KT host supplies only NVIDIA driver, Docker, NVIDIA Container Toolkit, H200 access, and disk capacity.",
+  "outcome_contract": {
+    "complete_and_audited": "An audited 110K taxonomy artifact plus 20K/50K filter projections and result evidence are obtained. This is not a taxonomy A/B result.",
+    "partial_or_failed": "Only diagnostic records, raw-response hashes where available, receipt status, and audit failure evidence are obtained. No artifact success may be claimed."
+  },
+  "package_name": "miracl-taxonomy-kt-offline-capsule",
+  "required_outer_entries": [
+    {
+      "actual_bytes": null,
+      "actual_sha256": null,
+      "content": "clean generator source, validators, offline run/audit/projection/result wrappers, and source manifest",
+      "relative_path": "code/",
+      "required": true
+    },
+    {
+      "actual_bytes": 6079,
+      "actual_sha256": "5523b9d94dea2731915daf2cd88afb305f346339a7bf6fd3530e0db41dfd116b",
+      "relative_path": "data/miracl-ko/subsets/manifest.json",
+      "required": true
+    },
+    {
+      "actual_bytes": 13441068,
+      "actual_sha256": "1ffc669b3b912473a7d7fdcf50d696a2d39a05bcb9bc3f436b4b6d1bac0d7498",
+      "relative_path": "data/miracl-ko/subsets/20k/corpus.jsonl",
+      "required": true
+    },
+    {
+      "actual_bytes": 28405329,
+      "actual_sha256": "66e3f5ccdc7fc5b608c93eceff2345765f253fa0d64d3547f6a90b04e64b0dfc",
+      "relative_path": "data/miracl-ko/subsets/50k/corpus.jsonl",
+      "required": true
+    },
+    {
+      "actual_bytes": 58253611,
+      "actual_sha256": "76fc195065f29b96f02e1fc3d7bb8c1e2330c4e701c8c472602fa5ced9626030",
+      "relative_path": "data/miracl-ko/subsets/110k/corpus.jsonl",
+      "required": true
+    },
+    {
+      "actual_bytes": 883,
+      "actual_sha256": "cc27c0a53a6eb002620a2dc03a16d5cd0dcf1663ab04983cf5d1032c4f356783",
+      "relative_path": "source/miracl_ko_revision_lock.json",
+      "required": true
+    },
+    {
+      "actual_bytes": null,
+      "actual_sha256": null,
+      "relative_path": "control/generation_plan.json",
+      "required": true,
+      "status": "must be a real approved plan; no placeholder is permitted"
+    },
+    {
+      "actual_bytes": null,
+      "actual_sha256": null,
+      "relative_path": "control/approval_record.json",
+      "required": true,
+      "status": "must be issued by the actual approver after the exact plan exists"
+    },
+    {
+      "actual_bytes": null,
+      "actual_sha256": null,
+      "relative_path": "control/generator_code_contract.json",
+      "required": true,
+      "status": "must match the final corrected runner source bytes"
+    },
+    {
+      "docker_save_bytes": null,
+      "docker_save_sha256": null,
+      "registry_image_bytes": 11068018467,
+      "registry_image_digest": "sha256:df2c55e5107afea09ea1a50f9dd96c99ebf97a795334c4d08f691f3d79b2ab12",
+      "relative_path": "images/vllm-openai-v0.9.0-linux-amd64.tar",
+      "required": true,
+      "status": "docker-save archive must be produced from the digest-pinned local image and recorded after creation"
+    },
+    {
+      "cache_manifest_bytes": null,
+      "cache_manifest_sha256": null,
+      "relative_path": "hf-cache/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/",
+      "repository": "Qwen/Qwen3-8B",
+      "required": true,
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "status": "exact cache file manifest and its byte total are created only after the offline cache is acquired; tokens, refs to mutable branches, and credentials are excluded"
+    },
+    {
+      "actual_bytes": null,
+      "actual_sha256": null,
+      "content": "single-entrypoint offline wrapper, checksum verifier, docker-load/import wrapper, and result collector",
+      "relative_path": "run/",
+      "required": true
+    }
+  ],
+  "result_collection_excludes": [
+    "MIRACL corpus bodies",
+    "Hugging Face model/tokenizer cache",
+    "docker-save archive",
+    "credentials",
+    "tokens",
+    "config.env"
+  ],
+  "schema_version": "dr-dci.miracl-ko-single-upload-package-draft.v1",
+  "size_and_disk_contract": {
+    "measurement_gate": "Before release, record docker-save bytes/SHA-256, HF snapshot cache manifest bytes/SHA-256, final outer archive bytes/SHA-256, docker graph bytes after docker load, and free disk. Do not approve a capacity from registry/model-card display sizes alone.",
+    "no_estimates_are_approval_values": true,
+    "outer_tar_bytes": "Measured byte size of the final uncompressed tar after all required entries are present.",
+    "outer_tar_gz_bytes": "Measured byte size of the final compressed upload archive; it is not the sum of compressed component estimates.",
+    "outer_uncompressed_formula": "B_code + B_miracl_fixture + B_control + B_docker_save + B_hf_snapshot_cache + B_run_wrappers + B_manifests",
+    "peak_disk_formula_while_keeping_upload_archive": "B_outer_tar_gz + B_outer_uncompressed + B_docker_graph_after_load + B_docker_load_temporary + B_generation_outputs + B_result_tar + B_required_safety_reserve"
+  },
+  "source_bindings": {
+    "approval_request_json": "docs/MIRACL_KO_KT_ACTUAL_EXECUTION_APPROVAL_REQUEST_20260724.json",
+    "existing_code_harness_tar_sha256": "c4bd88e79174dbd7525193f83848165cf1e815a70e9d08562beabe126f55d7d1",
+    "generator_source_commit_candidate": "b00b6e927c810dd870b004da6a6af19ecae9113e"
+  },
+  "status": "draft_not_buildable_until_exact_plan_and_authorization_exist",
+  "target_upload_directory": "~/source/embed_exp/"
+}
