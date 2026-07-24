@@ -12,6 +12,7 @@ from src.miracl_ko.taxonomy_artifact import (
     TAXONOMY_ARTIFACT_SCHEMA_VERSION,
     TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION,
     TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION,
+    TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION,
     TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION,
     TAXONOMY_MANIFEST_SCHEMA_VERSION,
     approval_record_sha256,
@@ -56,6 +57,14 @@ FIXTURE_DATA_DIR = (
 
 
 def source_artifact() -> dict:
+    server_arguments = ["--synthetic-taxonomy-server"]
+    response_schema = {
+        "type": "object",
+        "required": ["request_index", "label_id", "score", "status"],
+    }
+    canonical_sha256 = lambda value: hashlib.sha256(
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     return {
         "schema_version": TAXONOMY_ARTIFACT_SCHEMA_VERSION,
         "taxonomy_artifact_id": "miracl-ko-mock-taxonomy-v1",
@@ -119,6 +128,47 @@ def source_artifact() -> dict:
                 "label_id_rule": "fixed-synthetic-label-id-v1",
                 "unknown_outlier_handling": "unknown-label-score-zero-v1",
                 "display_label_rule": "fixed-synthetic-display-label-v1",
+                "vllm_execution": {
+                    "server_launch": {
+                        "command": "synthetic-vllm-serve",
+                        "arguments": server_arguments,
+                        "arguments_sha256": canonical_sha256(server_arguments),
+                        "generation_config_mode": "request_controls_only",
+                        "server_generation_config": None,
+                        "server_generation_config_sha256": "not_applicable",
+                    },
+                    "chat_template": {
+                        "mode": "explicit_template",
+                        "sha256": "1" * 64,
+                        "content_format": "openai_chat_messages_v1",
+                    },
+                    "thinking": {
+                        "enable_thinking": "disabled",
+                        "reasoning_parser": "not_applicable",
+                        "response_reasoning_content": "not_applicable",
+                    },
+                    "structured_output": {
+                        "mode": "json_schema",
+                        "content_format": "json_object_utf8_v1",
+                        "json_schema": response_schema,
+                        "json_schema_sha256": canonical_sha256(response_schema),
+                    },
+                    "sampling_request_controls": {
+                        "temperature": {"mode": "value", "value": 0.0},
+                        "max_tokens": {"mode": "value", "value": 16},
+                        "top_p": {"mode": "not_applicable", "value": None},
+                        "top_k": {"mode": "not_applicable", "value": None},
+                        "min_p": {"mode": "not_applicable", "value": None},
+                        "stop": {"mode": "not_applicable", "value": None},
+                        "stop_token_ids": {"mode": "not_applicable", "value": None},
+                        "presence_penalty": {"mode": "not_applicable", "value": None},
+                        "frequency_penalty": {"mode": "not_applicable", "value": None},
+                        "repetition_penalty": {"mode": "not_applicable", "value": None},
+                        "seed": {"mode": "value", "value": 7},
+                        "n": {"mode": "value", "value": 1},
+                        "logprobs": {"mode": "not_applicable", "value": None},
+                    },
+                },
             },
         },
         "label_catalog": [
@@ -168,6 +218,7 @@ def generation_plan_for(
             "batch_order": "batch_ordinal_ascending_v1",
             "timeout_seconds": 120,
             "max_retries": 0,
+            "max_retries_semantics": "per_batch_successful_response_v1",
             "resume_policy": "reuse_verified_complete_batches_only_v1",
             "idempotency_mode": "generation_request_sha256_response_file_v1",
         },
@@ -180,7 +231,7 @@ def manifest_receipt_for(
     source_commit: str = "f" * 40,
 ) -> dict:
     return {
-        "schema_version": "dr-dci.miracl-ko-taxonomy-generation-receipt.v1",
+        "schema_version": TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION,
         "status": "complete",
         "generation_plan_sha256": generation_plan_hash,
         "approval_record_sha256": approval_hash,
@@ -206,6 +257,37 @@ def manifest_receipt_for(
         "runtime": copy.deepcopy(artifact["provenance"]["generator"]["runtime"]),
         "determinism_status": "deterministic",
         "replay_required": False,
+    }
+
+
+def integrity_manifest_for(artifact: dict, artifact_records: dict[int, dict]) -> dict:
+    source_hash = taxonomy_artifact_sha256(artifact)
+    return {
+        "schema_version": TAXONOMY_MANIFEST_SCHEMA_VERSION,
+        "generated_at": "2026-07-24T12:00:00+00:00",
+        "taxonomy_artifact_id": artifact["taxonomy_artifact_id"],
+        "dataset": "MIRACL",
+        "language": "ko",
+        "source_revisions": copy.deepcopy(artifact["source_revisions"]),
+        "retrieval_unit": "passage",
+        "generator_source_commit": "f" * 40,
+        "generator_contract_sha256": "f" * 64,
+        "generation_plan_sha256": "f" * 64,
+        "approval_record_sha256": "f" * 64,
+        "generation_receipt_sha256": "f" * 64,
+        "source_scale": 110_000,
+        "input_contract": copy.deepcopy(artifact["input_contract"]),
+        "provenance": copy.deepcopy(artifact["provenance"]),
+        "source_artifact_content_sha256": source_hash,
+        "artifacts": {
+            str(scale): {
+                "role": "source" if scale == 110_000 else "filter_projection",
+                "artifact_file": copy.deepcopy(artifact_records[scale]),
+                "source_artifact_content_sha256": None if scale == 110_000 else source_hash,
+                "projection_method": "source_110k_identity_v1" if scale == 110_000 else "filter_110k_mapping_by_corpus_id_v1",
+            }
+            for scale in (20_000, 50_000, 110_000)
+        },
     }
 
 
@@ -255,7 +337,7 @@ def write_complete_receipt(
         for batch in run["batches"] for row in batch["mapping_envelope"]
     ]
     receipt = {
-        "schema_version": "dr-dci.miracl-ko-taxonomy-generation-receipt.v1",
+        "schema_version": TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION,
         "status": "complete",
         "generation_plan_sha256": generation_plan_sha256(plan),
         "approval_record_sha256": approval_record_sha256(approval),
@@ -476,7 +558,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             generation_run, generation_receipt, response_dir = write_complete_receipt(
                 control_root, artifact, external_plan, external_approval, external_contract
             )
-            validate_taxonomy_generation_receipt(
+            verified_receipt = validate_taxonomy_generation_receipt(
                 generation_receipt,
                 generation_plan=external_plan,
                 approval_record=external_approval,
@@ -494,7 +576,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 generator_contract_sha256=generator_contract_sha256(contract),
                 generation_plan_sha256=generation_plan_sha256(plan),
                 approval_record_sha256=approval_record_sha256(approval),
-                generation_receipt=generation_receipt,
+                verified_receipt=verified_receipt,
             )
             validate_taxonomy_artifact_authorization(
                 manifest,
@@ -810,7 +892,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 "approval_basis": "synthetic receipt contract regression fixture",
             }
             run, receipt, response_dir = write_complete_receipt(root, artifact, plan, approval, contract)
-            verified_assignments = validate_taxonomy_generation_receipt(
+            verified_receipt = validate_taxonomy_generation_receipt(
                 receipt,
                 generation_plan=plan,
                 approval_record=approval,
@@ -818,7 +900,50 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 generation_run=run,
                 raw_response_dir=response_dir,
             )
-            self.assertEqual(verified_assignments, artifact["assignments"])
+            self.assertEqual(list(verified_receipt.assignments), artifact["assignments"])
+
+            retry_over_limit = copy.deepcopy(receipt)
+            retry_over_limit["raw_response_files"][0]["attempt_count"] = 2
+            retry_over_limit["raw_response_files"][0]["retry_count"] = 1
+            retry_over_limit["batch_summary"]["retries"] = 1
+            with self.assertRaisesRegex(ValueError, "per-batch max_retries"):
+                validate_taxonomy_generation_receipt(
+                    retry_over_limit,
+                    generation_plan=plan,
+                    approval_record=approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+            retry_summary_mismatch = copy.deepcopy(receipt)
+            retry_summary_mismatch["batch_summary"]["retries"] = 1
+            with self.assertRaisesRegex(ValueError, "retry count"):
+                validate_taxonomy_generation_receipt(
+                    retry_summary_mismatch,
+                    generation_plan=plan,
+                    approval_record=approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+
+            altered_artifact = source_artifact()
+            altered_artifact["provenance"]["generator"]["generator_code_sha256"] = contract["generator_code_sha256"]
+            altered_launch = altered_artifact["provenance"]["generator"]["vllm_execution"]["server_launch"]
+            altered_launch["arguments"] = ["--synthetic-taxonomy-server", "--different-launch-control"]
+            altered_launch["arguments_sha256"] = hashlib.sha256(
+                json.dumps(altered_launch["arguments"], ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+            altered_plan = generation_plan_for(
+                altered_artifact,
+                generator_contract_hash=generator_contract_sha256(contract),
+                generator_code_hash=contract["generator_code_sha256"],
+            )
+            self.assertEqual(
+                altered_plan["generator"]["runtime"]["container_digest"],
+                plan["generator"]["runtime"]["container_digest"],
+            )
+            self.assertNotEqual(generation_plan_sha256(altered_plan), generation_plan_sha256(plan))
 
             different_controls = copy.deepcopy(plan["run_controls"])
             different_controls["batch_size"] = 1
@@ -841,6 +966,15 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                     generation_plan_sha256=generation_plan_sha256(plan),
                     batch_size=invalid_grouping["batch_size"],
                     run_controls=invalid_grouping,
+                )
+            invalid_retry_semantics = copy.deepcopy(plan["run_controls"])
+            invalid_retry_semantics["max_retries_semantics"] = "run_total_v1"
+            with self.assertRaisesRegex(ValueError, "max_retries semantics"):
+                build_taxonomy_generator_run(
+                    [{"corpus_id": "one#0", "title": "One", "text": "One"}],
+                    generation_plan_sha256=generation_plan_sha256(plan),
+                    batch_size=invalid_retry_semantics["batch_size"],
+                    run_controls=invalid_retry_semantics,
                 )
 
             first_response = response_dir / receipt["raw_response_files"][0]["relative_path"]
@@ -898,7 +1032,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 "total": len(run["batches"]), "succeeded": 0,
                 "failed": len(run["batches"]), "retries": 0,
             }
-            with self.assertRaisesRegex(ValueError, "partial or failed"):
+            with self.assertRaisesRegex(ValueError, "verified generation receipt"):
                 build_taxonomy_artifact_manifest(
                     full_artifact=artifact,
                     artifact_records={
@@ -909,7 +1043,65 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                     generator_contract_sha256=generator_contract_sha256(contract),
                     generation_plan_sha256=generation_plan_sha256(plan),
                     approval_record_sha256=approval_record_sha256(approval),
-                    generation_receipt=partial,
+                    verified_receipt=partial,
+                )
+            with self.assertRaisesRegex(ValueError, "verified generation receipt"):
+                build_taxonomy_artifact_manifest(
+                    full_artifact=artifact,
+                    artifact_records={
+                        scale: {"relative_path": f"{scale}.json", "byte_size": 0, "sha256": "a" * 64}
+                        for scale in (20_000, 50_000, 110_000)
+                    },
+                    generator_source_commit=plan["generator_source_commit"],
+                    generator_contract_sha256=generator_contract_sha256(contract),
+                    generation_plan_sha256=generation_plan_sha256(plan),
+                    approval_record_sha256=approval_record_sha256(approval),
+                    verified_receipt=manifest_receipt_for(
+                        artifact,
+                        generation_plan_hash=generation_plan_sha256(plan),
+                        approval_hash=approval_record_sha256(approval),
+                        contract_hash=generator_contract_sha256(contract),
+                        source_commit=plan["generator_source_commit"],
+                    ),
+                )
+            missing_raw = response_dir / receipt["raw_response_files"][0]["relative_path"]
+            missing_raw.unlink()
+            with self.assertRaisesRegex(FileNotFoundError, "raw response"):
+                validate_taxonomy_generation_receipt(
+                    receipt,
+                    generation_plan=plan,
+                    approval_record=approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+            wrong_plan_approval = copy.deepcopy(approval)
+            wrong_plan_approval["approved_generation_plan_sha256"] = generation_plan_sha256(altered_plan)
+            wrong_plan_receipt = copy.deepcopy(receipt)
+            wrong_plan_receipt["approval_record_sha256"] = approval_record_sha256(wrong_plan_approval)
+            with self.assertRaisesRegex(ValueError, "generation plan"):
+                validate_taxonomy_generation_receipt(
+                    wrong_plan_receipt,
+                    generation_plan=plan,
+                    approval_record=wrong_plan_approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
+            synthetic_approval = copy.deepcopy(approval)
+            synthetic_approval["approval_kind"] = "synthetic_test"
+            synthetic_approval["status"] = "synthetic_only"
+            synthetic_approval["approved_by"] = "synthetic-fixture"
+            synthetic_receipt = copy.deepcopy(receipt)
+            synthetic_receipt["approval_record_sha256"] = approval_record_sha256(synthetic_approval)
+            with self.assertRaisesRegex(ValueError, "synthetic"):
+                validate_taxonomy_generation_receipt(
+                    synthetic_receipt,
+                    generation_plan=plan,
+                    approval_record=synthetic_approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
                 )
             with self.assertRaisesRegex(ValueError, "forbidden"):
                 build_taxonomy_generator_run(
@@ -952,16 +1144,9 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             data_dir = Path(directory)
             path = data_dir / "110000.json"
             path.write_text(json.dumps(artifact), encoding="utf-8")
-            manifest = build_taxonomy_artifact_manifest(
-                full_artifact=artifact,
-                artifact_records={
-                    scale: file_record(path, relative_to=data_dir) for scale in (20_000, 50_000, 110_000)
-                },
-                generator_source_commit="f" * 40,
-                generator_contract_sha256="f" * 64,
-                generation_plan_sha256="f" * 64,
-                approval_record_sha256="f" * 64,
-                generation_receipt=manifest_receipt_for(artifact),
+            manifest = integrity_manifest_for(
+                artifact,
+                {scale: file_record(path, relative_to=data_dir) for scale in (20_000, 50_000, 110_000)},
             )
             manifest["generated_at"] = "2026-07-24T12:00:00"
             with self.assertRaisesRegex(ValueError, "generated_at"):
@@ -1045,17 +1230,9 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 path = artifact_dir / f"{scale}.json"
                 path.write_text(json.dumps(artifact, ensure_ascii=False, sort_keys=True), encoding="utf-8")
                 paths[scale] = path
-            manifest = build_taxonomy_artifact_manifest(
-                full_artifact=full,
-                artifact_records={
-                    scale: file_record(path, relative_to=data_dir)
-                    for scale, path in paths.items()
-                },
-                generator_source_commit="f" * 40,
-                generator_contract_sha256="f" * 64,
-                generation_plan_sha256="f" * 64,
-                approval_record_sha256="f" * 64,
-                generation_receipt=manifest_receipt_for(full),
+            manifest = integrity_manifest_for(
+                full,
+                {scale: file_record(path, relative_to=data_dir) for scale, path in paths.items()},
             )
             manifest_path = data_dir / "taxonomy_manifest.json"
             manifest_path.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
@@ -1198,6 +1375,14 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             generation_run, generation_receipt, response_dir = write_complete_receipt(
                 root, full, plan, approval, code_contract
             )
+            verified_receipt = validate_taxonomy_generation_receipt(
+                generation_receipt,
+                generation_plan=plan,
+                approval_record=approval,
+                generator_code_contract=code_contract,
+                generation_run=generation_run,
+                raw_response_dir=response_dir,
+            )
             manifest = build_taxonomy_artifact_manifest(
                 full_artifact=full,
                 artifact_records={scale: file_record(path, relative_to=data_dir) for scale, path in paths.items()},
@@ -1205,7 +1390,7 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
                 generator_contract_sha256=generator_contract_sha256(code_contract),
                 generation_plan_sha256=generation_plan_sha256(plan),
                 approval_record_sha256=approval_record_sha256(approval),
-                generation_receipt=generation_receipt,
+                verified_receipt=verified_receipt,
             )
             manifest_path = root / "artifact_manifest.json"
             manifest_path.write_text(json.dumps(manifest), encoding="utf-8")

@@ -10,10 +10,11 @@ The one provisional execution path is the repository's existing local
 `Qwen/Qwen3-8B` OpenAI-compatible vLLM chat-completions path. It is selected
 only because `scripts/utils.py` and the historical taxonomy helper already
 reference that path; it does **not** constitute a model/revision approval.
-Qwen's official repository documents Qwen3-8B deployment through vLLM, while
-vLLM documents the OpenAI-compatible serving and structured-output surfaces
-needed by a later transport implementation. [Qwen official repository](https://github.com/QwenLM/Qwen3)
-[vLLM official documentation](https://docs.vllm.ai/en/latest/)
+Qwen's official vLLM deployment guide documents Qwen3 thinking-mode and
+reasoning-parser controls; vLLM documents structured-output and sampling
+controls needed by a later transport implementation. [Qwen3 vLLM deployment guide](https://github.com/QwenLM/Qwen3/blob/main/docs/source/deployment/vllm.md)
+[vLLM structured outputs](https://docs.vllm.ai/en/latest/examples/features/structured_outputs/)
+[vLLM sampling parameters](https://docs.vllm.ai/en/v0.9.0/api/vllm/sampling_params.html)
 
 The configured `Alibaba-NLP/gte-Qwen2-1.5B-instruct` endpoint is not adopted
 as an alternative generator: it is configured in this repository as a
@@ -44,8 +45,11 @@ floating model tag are invalid.
 | Model/tokenizer | Repository, immutable model revision, tokenizer repository and immutable tokenizer revision. |
 | Representation | Pooling and normalization, or explicit `not_applicable` only when the selected LLM algorithm does not create embeddings. |
 | Category construction | Classification/clustering algorithm, library/version or explicit `not_applicable`, cluster-count/selection rule, stable `label_id` rule, unknown/outlier handling, and display-label rule. |
-| Prompt | Complete prompt/template text, UTF-8 SHA-256, structured response schema, temperature and max tokens. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
-| Controls | Integer seed, determinism/replay mode, JSON-safe parameters, batch size, corpus-ID-sorted contiguous grouping, ordinal order, timeout, retry cap, resume policy, and request-hash idempotency mode. |
+| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; `generation_config_mode`; and the complete canonical server generation-config object plus SHA-256, or explicit `not_applicable`. |
+| Template and reasoning | Chat-template mode, template SHA-256, content format, Qwen thinking enable/disable state, reasoning-parser policy, and whether reasoning content is retained. Unused values must be explicit `not_applicable`. |
+| Prompt and structured output | Complete prompt/template text and UTF-8 SHA-256; JSON structured-output schema, schema SHA-256, and content format, or explicit `not_applicable`. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
+| Request controls | Integer seed, determinism/replay mode, and every sampling/request control: `temperature`, `max_tokens`, `top_p`, `top_k`, `min_p`, `stop`, `stop_token_ids`, `presence_penalty`, `frequency_penalty`, `repetition_penalty`, `seed`, `n`, and `logprobs`. Each uses either an exact JSON-safe value or approved explicit `not_applicable`; `temperature`, `max_tokens`, and `seed` must match the top-level generator controls. |
+| Batch controls | Batch size, corpus-ID-sorted contiguous grouping, ordinal order, timeout, retry cap, resume policy, and request-hash idempotency mode. `max_retries` is a **per-successful-batch** limit; the receipt total is the sum of each successful batch's retry count and can therefore be larger than the per-batch limit. |
 | Runtime | Dependency-lock SHA-256 or immutable container digest, exact library versions, and model/tokenizer values repeated in the execution runtime receipt. |
 
 The mandatory semantic payload is one JSON object per passage:
@@ -62,8 +66,9 @@ evaluation outputs are rejected at the public input boundary.
 ## Plan, run, response, receipt
 
 1. The approved plan includes `run_controls` and hashes the complete generator
-   specification. A run whose batch size/grouping/order/retry/resume controls
-   differ is rejected before receipt validation.
+   specification, including vLLM serving/template/thinking/structured-output
+   and sampling controls. A run whose batch size/grouping/order/retry/resume
+   controls differ is rejected before receipt validation.
 2. `TaxonomyGeneratorRun` sorts opaque `corpus_id` once, then creates
    contiguous batches. A batch has a non-semantic mapping envelope and a
    title/text-only semantic payload.
@@ -75,14 +80,19 @@ evaluation outputs are rejected at the public input boundary.
    source commit, run hash, ordered request hashes, each raw response's byte
    size/SHA-256, result assignment SHA-256, batch success/failure/retry counts,
    timestamps, runtime, and determinism/replay declaration.
-5. A retry may replace a failed attempt but the receipt contains exactly one
-   verified successful response for each batch. It cannot reuse a response
-   from another run or plan. `partial`/`failed` receipts are diagnostic only;
-   only `complete` can create an artifact manifest.
+5. A retry may replace a failed attempt but each successful batch's
+   `retry_count` must not exceed the plan's per-batch `max_retries`; the
+   receipt summary is the exact sum across raw successful response records.
+   The receipt contains exactly one verified successful response for each
+   batch and cannot reuse a response from another run or plan.
+   `partial`/`failed` receipts are diagnostic only; only `complete` can create
+   an artifact manifest.
 6. The authorized audit re-hashes every raw response, recomputes the assignment
    list through request envelopes, and compares it with the 110K artifact
-   assignment list before the manifest's `generation_receipt_sha256` is
-   accepted.
+   assignment list before the validator mints the opaque
+   `VerifiedTaxonomyGenerationReceipt` token. The manifest builder accepts
+   that token, never a shape-only receipt mapping, and records its
+   `generation_receipt_sha256`.
 
 The 20K and 50K artifacts remain pure projections of the 110K assignment
 mapping. They do not retrain, rename labels, or change shared assignment
@@ -98,9 +108,10 @@ scores.
 3. Approved Korean taxonomy algorithm: complete prompt/JSON schema, category
    construction rule, label ID/display-label rule, unknown/outlier rule,
    seed, determinism/replay declaration, and acceptance QA thresholds.
-4. Approved execution controls: batch size, timeout, retry/resume policy,
-   request-response storage location, retention/access policy for raw
-   responses, and maximum allowed retries.
+4. Approved execution controls: exact vLLM launch/config/template/thinking/
+   reasoning-parser/structured-output/sampling values, batch size, timeout,
+   per-batch retry/resume policy, request-response storage location, and
+   retention/access policy for raw responses.
 5. An actual execution approval record identifying the approver, timestamp,
    basis, exact plan hash, source commit, code-contract hash, and code hash.
 6. A clean generator-source checkout and separately read-only control root;

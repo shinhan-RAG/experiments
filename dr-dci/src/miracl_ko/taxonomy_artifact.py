@@ -10,6 +10,7 @@ smaller nested fixtures without changing any shared assignment.
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -27,8 +28,8 @@ TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v2"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
 TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v2"
-TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v2"
-TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v1"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v3"
+TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v2"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
 TAXONOMY_GENERATOR_CODE_CONTRACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-code-contract.v1"
 TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-approval-record.v1"
@@ -69,6 +70,23 @@ TAXONOMY_BATCH_GROUPING = "corpus_id_sorted_contiguous_v1"
 TAXONOMY_BATCH_ORDER = "batch_ordinal_ascending_v1"
 TAXONOMY_RESUME_POLICY = "reuse_verified_complete_batches_only_v1"
 TAXONOMY_IDEMPOTENCY_MODE = "generation_request_sha256_response_file_v1"
+TAXONOMY_MAX_RETRIES_SEMANTICS = "per_batch_successful_response_v1"
+_VERIFIED_RECEIPT_TOKEN = object()
+
+
+@dataclass(frozen=True)
+class VerifiedTaxonomyGenerationReceipt:
+    """Opaque result returned only after raw receipt verification succeeds."""
+
+    receipt_sha256: str
+    generation_plan_sha256: str
+    approval_record_sha256: str
+    generator_contract_sha256: str
+    generator_source_commit: str
+    generation_run_sha256: str
+    assignment_canonical_sha256: str
+    assignments: tuple[dict[str, Any], ...]
+    _verification_token: object = field(repr=False, compare=False)
 
 
 def utc_now() -> str:
@@ -322,6 +340,7 @@ def _default_run_controls(batch_size: int) -> dict[str, Any]:
         "batch_order": TAXONOMY_BATCH_ORDER,
         "timeout_seconds": 120,
         "max_retries": 0,
+        "max_retries_semantics": TAXONOMY_MAX_RETRIES_SEMANTICS,
         "resume_policy": TAXONOMY_RESUME_POLICY,
         "idempotency_mode": TAXONOMY_IDEMPOTENCY_MODE,
     }
@@ -330,6 +349,7 @@ def _default_run_controls(batch_size: int) -> dict[str, Any]:
 def _validate_run_controls(controls: Any) -> None:
     required = {
         "batch_size", "batch_grouping", "batch_order", "timeout_seconds", "max_retries",
+        "max_retries_semantics",
         "resume_policy", "idempotency_mode",
     }
     if not isinstance(controls, Mapping) or set(controls) != required:
@@ -340,6 +360,8 @@ def _validate_run_controls(controls: Any) -> None:
         raise ValueError("taxonomy generator run timeout_seconds must be a positive integer")
     if type(controls.get("max_retries")) is not int or controls["max_retries"] < 0:
         raise ValueError("taxonomy generator run max_retries must be a non-negative integer")
+    if controls.get("max_retries_semantics") != TAXONOMY_MAX_RETRIES_SEMANTICS:
+        raise ValueError("taxonomy generator run max_retries semantics is invalid")
     if controls.get("batch_grouping") != TAXONOMY_BATCH_GROUPING:
         raise ValueError("taxonomy generator run batch_grouping is invalid")
     if controls.get("batch_order") != TAXONOMY_BATCH_ORDER:
@@ -574,7 +596,7 @@ def _validate_generation_generator_spec(generator: Any) -> None:
         "pooling", "normalization", "clustering_or_classification_algorithm",
         "clustering_library", "clustering_library_version", "cluster_selection_rule",
         "prompt_template", "generation_controls", "runtime", "label_id_rule",
-        "unknown_outlier_handling", "display_label_rule",
+        "unknown_outlier_handling", "display_label_rule", "vllm_execution",
     }
     if not isinstance(generator, Mapping) or set(generator) != required:
         raise ValueError("taxonomy generation generator specification has missing or unsupported fields")
@@ -595,6 +617,7 @@ def _validate_generation_generator_spec(generator: Any) -> None:
         raise ValueError("taxonomy generator temperature must be a finite non-negative number")
     if type(controls.get("max_tokens")) is not int or controls["max_tokens"] <= 0:
         raise ValueError("taxonomy generator max_tokens must be a positive integer")
+    _validate_vllm_execution(generator.get("vllm_execution"), generator=generator)
     runtime = generator.get("runtime")
     runtime_required = {
         "model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision",
@@ -613,6 +636,169 @@ def _validate_generation_generator_spec(generator: Any) -> None:
     for library, version in versions.items():
         _require_nonempty_string(library, label="taxonomy generator runtime library name")
         _require_nonempty_string(version, label="taxonomy generator runtime library version")
+
+
+def _validate_vllm_control(value: Any, *, label: str, validator: Any) -> Any:
+    if not isinstance(value, Mapping) or set(value) != {"mode", "value"}:
+        raise ValueError(f"taxonomy vLLM {label} control is invalid")
+    mode = value.get("mode")
+    if mode == "not_applicable":
+        if value.get("value") is not None:
+            raise ValueError(f"taxonomy vLLM {label} not_applicable control must use null value")
+        return None
+    if mode != "value":
+        raise ValueError(f"taxonomy vLLM {label} control mode is invalid")
+    validator(value.get("value"), label=label)
+    return value["value"]
+
+
+def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) -> None:
+    """Require every serving and request behavior to be explicit in the plan."""
+    required = {
+        "server_launch", "chat_template", "thinking", "structured_output", "sampling_request_controls",
+    }
+    if not isinstance(execution, Mapping) or set(execution) != required:
+        raise ValueError("taxonomy vLLM execution has missing or unsupported fields")
+    launch = execution.get("server_launch")
+    launch_required = {
+        "command", "arguments", "arguments_sha256", "generation_config_mode",
+        "server_generation_config", "server_generation_config_sha256",
+    }
+    if not isinstance(launch, Mapping) or set(launch) != launch_required:
+        raise ValueError("taxonomy vLLM server_launch is invalid")
+    _require_nonempty_string(launch.get("command"), label="taxonomy vLLM launch command")
+    arguments = launch.get("arguments")
+    if not isinstance(arguments, list):
+        raise ValueError("taxonomy vLLM launch arguments must be an array")
+    for argument in arguments:
+        _require_nonempty_string(argument, label="taxonomy vLLM launch argument")
+    _require_sha256(launch.get("arguments_sha256"), label="taxonomy vLLM launch arguments")
+    if launch["arguments_sha256"] != sha256_json(arguments):
+        raise ValueError("taxonomy vLLM launch arguments sha256 does not match arguments")
+    if launch.get("generation_config_mode") not in {"request_controls_only", "server_generation_config"}:
+        raise ValueError("taxonomy vLLM generation_config_mode is invalid")
+    server_config_hash = launch.get("server_generation_config_sha256")
+    if launch["generation_config_mode"] == "request_controls_only":
+        if launch.get("server_generation_config") is not None or server_config_hash != "not_applicable":
+            raise ValueError("taxonomy vLLM unused server generation config must be not_applicable")
+    else:
+        if not isinstance(launch.get("server_generation_config"), Mapping) or not launch["server_generation_config"]:
+            raise ValueError("taxonomy vLLM server generation config is invalid")
+        _validate_json_value(launch["server_generation_config"], label="taxonomy vLLM server generation config")
+        _require_sha256(server_config_hash, label="taxonomy vLLM server generation config")
+        if server_config_hash != sha256_json(launch["server_generation_config"]):
+            raise ValueError("taxonomy vLLM server generation config sha256 does not match config")
+
+    template = execution.get("chat_template")
+    if not isinstance(template, Mapping) or set(template) != {"mode", "sha256", "content_format"}:
+        raise ValueError("taxonomy vLLM chat_template is invalid")
+    if template.get("mode") not in {"resolved_model_template", "explicit_template", "not_applicable"}:
+        raise ValueError("taxonomy vLLM chat_template mode is invalid")
+    if template["mode"] == "not_applicable":
+        if template.get("sha256") != "not_applicable" or template.get("content_format") != "not_applicable":
+            raise ValueError("taxonomy vLLM unused chat_template must be explicitly not_applicable")
+    else:
+        _require_sha256(template.get("sha256"), label="taxonomy vLLM chat_template")
+        _require_nonempty_string(template.get("content_format"), label="taxonomy vLLM chat_template content_format")
+
+    thinking = execution.get("thinking")
+    if not isinstance(thinking, Mapping) or set(thinking) != {
+        "enable_thinking", "reasoning_parser", "response_reasoning_content",
+    }:
+        raise ValueError("taxonomy vLLM thinking policy is invalid")
+    if thinking.get("enable_thinking") not in {"enabled", "disabled", "not_applicable"}:
+        raise ValueError("taxonomy vLLM thinking enable policy is invalid")
+    if thinking["enable_thinking"] == "enabled":
+        _require_nonempty_string(thinking.get("reasoning_parser"), label="taxonomy vLLM reasoning_parser")
+        if thinking["reasoning_parser"] == "not_applicable":
+            raise ValueError("enabled taxonomy vLLM thinking requires a reasoning_parser")
+        if thinking.get("response_reasoning_content") not in {"included", "excluded"}:
+            raise ValueError("enabled taxonomy vLLM thinking requires response reasoning-content policy")
+    elif thinking.get("reasoning_parser") != "not_applicable" or thinking.get("response_reasoning_content") != "not_applicable":
+        raise ValueError("disabled or unused taxonomy vLLM thinking must be explicitly not_applicable")
+
+    structured = execution.get("structured_output")
+    if not isinstance(structured, Mapping) or set(structured) != {
+        "mode", "content_format", "json_schema", "json_schema_sha256",
+    }:
+        raise ValueError("taxonomy vLLM structured_output is invalid")
+    if structured.get("mode") not in {"json_schema", "not_applicable"}:
+        raise ValueError("taxonomy vLLM structured_output mode is invalid")
+    if structured["mode"] == "json_schema":
+        if not isinstance(structured.get("json_schema"), Mapping) or not structured["json_schema"]:
+            raise ValueError("taxonomy vLLM structured output json_schema is invalid")
+        _require_nonempty_string(structured.get("content_format"), label="taxonomy vLLM structured output content_format")
+        _require_sha256(structured.get("json_schema_sha256"), label="taxonomy vLLM structured output schema")
+        if structured["json_schema_sha256"] != sha256_json(structured["json_schema"]):
+            raise ValueError("taxonomy vLLM structured output schema sha256 does not match schema")
+    elif (
+        structured.get("content_format") != "not_applicable"
+        or structured.get("json_schema") is not None
+        or structured.get("json_schema_sha256") != "not_applicable"
+    ):
+        raise ValueError("unused taxonomy vLLM structured output must be explicitly not_applicable")
+
+    sampling = execution.get("sampling_request_controls")
+    control_specs = {
+        "temperature": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be finite and non-negative"))
+            if type(value) not in {int, float} or not math.isfinite(float(value)) or float(value) < 0 else None
+        ),
+        "max_tokens": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be a positive integer"))
+            if type(value) is not int or value <= 0 else None
+        ),
+        "top_p": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be in (0, 1]"))
+            if type(value) not in {int, float} or not math.isfinite(float(value)) or not 0 < float(value) <= 1 else None
+        ),
+        "top_k": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be an integer >= -1"))
+            if type(value) is not int or value < -1 else None
+        ),
+        "min_p": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be in [0, 1]"))
+            if type(value) not in {int, float} or not math.isfinite(float(value)) or not 0 <= float(value) <= 1 else None
+        ),
+        "stop": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be an array of strings"))
+            if not isinstance(value, list) or any(not isinstance(item, str) for item in value) else None
+        ),
+        "stop_token_ids": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be an array of non-negative integers"))
+            if not isinstance(value, list) or any(type(item) is not int or item < 0 for item in value) else None
+        ),
+        "presence_penalty": lambda value, *, label: _validate_json_value(value, label=f"taxonomy vLLM {label}"),
+        "frequency_penalty": lambda value, *, label: _validate_json_value(value, label=f"taxonomy vLLM {label}"),
+        "repetition_penalty": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be finite and positive"))
+            if type(value) not in {int, float} or not math.isfinite(float(value)) or float(value) <= 0 else None
+        ),
+        "seed": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be an integer"))
+            if type(value) is not int else None
+        ),
+        "n": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be a positive integer"))
+            if type(value) is not int or value <= 0 else None
+        ),
+        "logprobs": lambda value, *, label: (
+            (_ for _ in ()).throw(ValueError(f"taxonomy vLLM {label} must be boolean"))
+            if type(value) is not bool else None
+        ),
+    }
+    if not isinstance(sampling, Mapping) or set(sampling) != set(control_specs):
+        raise ValueError("taxonomy vLLM sampling_request_controls are incomplete")
+    values = {
+        name: _validate_vllm_control(sampling[name], label=name, validator=validator)
+        for name, validator in control_specs.items()
+    }
+    if values["temperature"] != generator["generation_controls"]["temperature"]:
+        raise ValueError("taxonomy vLLM temperature does not match generator controls")
+    if values["max_tokens"] != generator["generation_controls"]["max_tokens"]:
+        raise ValueError("taxonomy vLLM max_tokens does not match generator controls")
+    if values["seed"] != generator["seed"]:
+        raise ValueError("taxonomy vLLM seed does not match generator seed")
 
 
 def generator_spec_sha256(generator: Mapping[str, Any]) -> str:
@@ -1370,11 +1556,24 @@ def taxonomy_generation_receipt_sha256(receipt: Mapping[str, Any]) -> str:
     return sha256_json(receipt)
 
 
+def _require_verified_taxonomy_generation_receipt(
+    receipt: Any,
+) -> VerifiedTaxonomyGenerationReceipt:
+    if (
+        not isinstance(receipt, VerifiedTaxonomyGenerationReceipt)
+        or receipt._verification_token is not _VERIFIED_RECEIPT_TOKEN
+    ):
+        raise ValueError(
+            "taxonomy artifact manifest requires a verified generation receipt from raw-response validation"
+        )
+    return receipt
+
+
 def validate_taxonomy_generation_receipt(
     receipt: Mapping[str, Any], *, generation_plan: Mapping[str, Any],
     approval_record: Mapping[str, Any], generator_code_contract: Mapping[str, Any],
     generation_run: Mapping[str, Any], raw_response_dir: Path,
-) -> list[dict[str, Any]] | None:
+) -> VerifiedTaxonomyGenerationReceipt | None:
     """Validate raw response bytes and the complete-run assignment receipt.
 
     A receipt is the only bridge from transport responses to a future artifact.
@@ -1383,7 +1582,7 @@ def validate_taxonomy_generation_receipt(
     """
     _validate_taxonomy_generation_receipt_shape(receipt)
     validate_taxonomy_generation_plan(generation_plan)
-    validate_taxonomy_approval_record(approval_record, allow_synthetic=True)
+    validate_taxonomy_approval_record(approval_record)
     validate_generator_code_contract(generator_code_contract)
     validate_taxonomy_generator_run_against_plan(generation_run, generation_plan)
     plan_hash = generation_plan_sha256(generation_plan)
@@ -1395,6 +1594,14 @@ def validate_taxonomy_generation_receipt(
         raise ValueError("taxonomy generation receipt approval hash does not match approval record")
     if receipt["generator_contract_sha256"] != contract_hash:
         raise ValueError("taxonomy generation receipt generator contract hash does not match contract")
+    if approval_record["approved_generation_plan_sha256"] != plan_hash:
+        raise ValueError("taxonomy approval generation plan does not match receipt plan")
+    if approval_record["approved_generator_source_commit"] != generation_plan["generator_source_commit"]:
+        raise ValueError("taxonomy approval generator source commit does not match receipt plan")
+    if approval_record["approved_generator_contract_sha256"] != contract_hash:
+        raise ValueError("taxonomy approval generator contract does not match receipt contract")
+    if approval_record["approved_generator_code_sha256"] != generation_plan["generator_code_sha256"]:
+        raise ValueError("taxonomy approval generator code does not match receipt plan")
     if receipt["generator_source_commit"] != generation_plan["generator_source_commit"]:
         raise ValueError("taxonomy generation receipt generator source commit does not match plan")
     if receipt["generation_run_sha256"] != generation_run["generation_run_sha256"]:
@@ -1409,8 +1616,11 @@ def validate_taxonomy_generation_receipt(
     records: dict[int, Mapping[str, Any]] = {}
     responses: list[Mapping[str, Any]] = []
     retries = 0
+    max_retries_per_batch = generation_plan["run_controls"]["max_retries"]
     for record in receipt["raw_response_files"]:
         _validate_receipt_raw_response_record(record, raw_response_dir=raw_response_dir)
+        if record["retry_count"] > max_retries_per_batch:
+            raise ValueError("taxonomy generation receipt batch retry_count exceeds approved per-batch max_retries")
         ordinal = record["batch_ordinal"]
         if ordinal in records or ordinal >= len(generation_run["batches"]):
             raise ValueError("taxonomy generation receipt has duplicate or out-of-range successful batch")
@@ -1439,13 +1649,23 @@ def validate_taxonomy_generation_receipt(
     assignments = rejoin_taxonomy_generator_run_outputs(generation_run, responses)
     if receipt["assignment_canonical_sha256"] != sha256_json(assignments):
         raise ValueError("taxonomy generation receipt assignment hash does not match raw responses")
-    return assignments
+    return VerifiedTaxonomyGenerationReceipt(
+        receipt_sha256=taxonomy_generation_receipt_sha256(receipt),
+        generation_plan_sha256=receipt["generation_plan_sha256"],
+        approval_record_sha256=receipt["approval_record_sha256"],
+        generator_contract_sha256=receipt["generator_contract_sha256"],
+        generator_source_commit=receipt["generator_source_commit"],
+        generation_run_sha256=receipt["generation_run_sha256"],
+        assignment_canonical_sha256=receipt["assignment_canonical_sha256"],
+        assignments=tuple(dict(row) for row in assignments),
+        _verification_token=_VERIFIED_RECEIPT_TOKEN,
+    )
 
 
 def build_taxonomy_artifact_manifest(
     *, full_artifact: Mapping[str, Any], artifact_records: Mapping[int, Mapping[str, Any]],
     generator_source_commit: str, generator_contract_sha256: str, generation_plan_sha256: str,
-    approval_record_sha256: str, generation_receipt: Mapping[str, Any],
+    approval_record_sha256: str, verified_receipt: VerifiedTaxonomyGenerationReceipt,
 ) -> dict[str, Any]:
     """Build the tracked manifest; large artifact bodies remain outside Git."""
     full_audit = validate_taxonomy_artifact(full_artifact)
@@ -1458,18 +1678,16 @@ def build_taxonomy_artifact_manifest(
     _require_sha256(generator_contract_sha256, label="taxonomy manifest generator contract")
     _require_sha256(generation_plan_sha256, label="taxonomy manifest generation plan")
     _require_sha256(approval_record_sha256, label="taxonomy manifest approval record")
-    _validate_taxonomy_generation_receipt_shape(generation_receipt)
-    if generation_receipt.get("status") != "complete":
-        raise ValueError("taxonomy artifact manifest cannot be built from partial or failed generation receipt")
-    if generation_receipt["generation_plan_sha256"] != generation_plan_sha256:
+    verified_receipt = _require_verified_taxonomy_generation_receipt(verified_receipt)
+    if verified_receipt.generation_plan_sha256 != generation_plan_sha256:
         raise ValueError("taxonomy artifact manifest receipt plan hash does not match manifest")
-    if generation_receipt["approval_record_sha256"] != approval_record_sha256:
+    if verified_receipt.approval_record_sha256 != approval_record_sha256:
         raise ValueError("taxonomy artifact manifest receipt approval hash does not match manifest")
-    if generation_receipt["generator_contract_sha256"] != generator_contract_sha256:
+    if verified_receipt.generator_contract_sha256 != generator_contract_sha256:
         raise ValueError("taxonomy artifact manifest receipt generator contract hash does not match manifest")
-    if generation_receipt["generator_source_commit"] != generator_source_commit:
+    if verified_receipt.generator_source_commit != generator_source_commit:
         raise ValueError("taxonomy artifact manifest receipt generator source commit does not match manifest")
-    if generation_receipt["assignment_canonical_sha256"] != sha256_json(full_artifact["assignments"]):
+    if verified_receipt.assignment_canonical_sha256 != sha256_json(full_artifact["assignments"]):
         raise ValueError("taxonomy artifact manifest receipt assignment hash does not match artifact")
     normalized_records: dict[str, dict[str, Any]] = {}
     for scale in SCALE_SIZES:
@@ -1493,7 +1711,7 @@ def build_taxonomy_artifact_manifest(
         "generator_contract_sha256": generator_contract_sha256,
         "generation_plan_sha256": generation_plan_sha256,
         "approval_record_sha256": approval_record_sha256,
-        "generation_receipt_sha256": taxonomy_generation_receipt_sha256(generation_receipt),
+        "generation_receipt_sha256": verified_receipt.receipt_sha256,
         "source_scale": TAXONOMY_SOURCE_SCALE,
         "input_contract": dict(full_artifact["input_contract"]),
         "provenance": provenance,
@@ -1640,7 +1858,7 @@ def validate_taxonomy_artifact_authorization(
         raise FileNotFoundError("taxonomy generation raw response directory is missing")
     if approval_record is None or generator_code_contract is None:
         raise FileNotFoundError("taxonomy generation authorization control is missing")
-    receipt_assignments = validate_taxonomy_generation_receipt(
+    verified_receipt = validate_taxonomy_generation_receipt(
         generation_receipt,
         generation_plan=generation_plan,
         approval_record=approval_record,
@@ -1648,7 +1866,7 @@ def validate_taxonomy_artifact_authorization(
         generation_run=generation_run,
         raw_response_dir=raw_response_dir,
     )
-    if receipt_assignments is None:
+    if verified_receipt is None:
         raise ValueError("partial or failed taxonomy generation receipt cannot authorize an artifact")
     plan_hash = generation_plan_sha256(generation_plan)
     if manifest.get("generation_plan_sha256") != plan_hash:
@@ -1663,7 +1881,7 @@ def validate_taxonomy_artifact_authorization(
         raise ValueError("taxonomy artifact manifest generator metadata does not match generation plan")
     if approval_record is None or manifest.get("approval_record_sha256") != approval_record_sha256(approval_record):
         raise ValueError("taxonomy artifact manifest approval record does not match authorization")
-    if manifest.get("generation_receipt_sha256") != taxonomy_generation_receipt_sha256(generation_receipt):
+    if manifest.get("generation_receipt_sha256") != verified_receipt.receipt_sha256:
         raise ValueError("taxonomy artifact manifest generation receipt does not match authorization")
     manifest_input_provenance = {
         key: manifest.get("provenance", {}).get(key)
@@ -1677,7 +1895,7 @@ def validate_taxonomy_artifact_authorization(
     validate_taxonomy_artifact(source_artifact)
     if taxonomy_artifact_sha256(source_artifact) != manifest.get("source_artifact_content_sha256"):
         raise ValueError("taxonomy artifact manifest source body does not match authorization")
-    if sha256_json(source_artifact["assignments"]) != generation_receipt["assignment_canonical_sha256"]:
+    if sha256_json(source_artifact["assignments"]) != verified_receipt.assignment_canonical_sha256:
         raise ValueError("taxonomy artifact assignments do not match generation receipt")
 
 
