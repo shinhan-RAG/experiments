@@ -60,6 +60,11 @@ FIXTURE_DATA_DIR = (
 def source_artifact() -> dict:
     prompt_template = "Synthetic taxonomy test prompt: title and text only."
     server_arguments = [
+        "synthetic/mock-model",
+        "--revision", "synthetic-model-revision",
+        "--tokenizer", "synthetic/mock-tokenizer",
+        "--tokenizer-revision", "synthetic-tokenizer-revision",
+        "--served-model-name", "synthetic-taxonomy-service",
         "--synthetic-taxonomy-server", "--generation-config", "vllm",
         "--chat-template", "synthetic-qwen3.jinja",
     ]
@@ -74,7 +79,7 @@ def source_artifact() -> dict:
         "schema_version": TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION,
         "endpoint": "/v1/chat/completions",
         "body": {
-            "model": "synthetic/mock-model",
+            "model": "synthetic-taxonomy-service",
             "messages": [
                 {"role": "system", "content": prompt_template},
                 {"role": "user", "content": "{{taxonomy_semantic_payload_json}}"},
@@ -160,6 +165,7 @@ def source_artifact() -> dict:
                         "server_generation_config": None,
                         "server_generation_config_sha256": "not_applicable",
                         "server_generation_config_launch_value": "not_applicable",
+                        "model_tokenizer_binding_kind": "actual_execution",
                     },
                     "chat_template": {
                         "mode": "explicit_template",
@@ -1010,6 +1016,11 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
             altered_artifact["provenance"]["generator"]["generator_code_sha256"] = contract["generator_code_sha256"]
             altered_launch = altered_artifact["provenance"]["generator"]["vllm_execution"]["server_launch"]
             altered_launch["arguments"] = [
+                "synthetic/mock-model",
+                "--revision", "synthetic-model-revision",
+                "--tokenizer", "synthetic/mock-tokenizer",
+                "--tokenizer-revision", "synthetic-tokenizer-revision",
+                "--served-model-name", "synthetic-taxonomy-service",
                 "--synthetic-taxonomy-server", "--different-launch-control",
                 "--generation-config", "vllm", "--chat-template", "synthetic-qwen3.jinja",
             ]
@@ -1208,6 +1219,11 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
         missing_request_controls_override = copy.deepcopy(artifact)
         missing_launch = missing_request_controls_override["provenance"]["generator"]["vllm_execution"]["server_launch"]
         missing_launch["arguments"] = [
+            "synthetic/mock-model",
+            "--revision", "synthetic-model-revision",
+            "--tokenizer", "synthetic/mock-tokenizer",
+            "--tokenizer-revision", "synthetic-tokenizer-revision",
+            "--served-model-name", "synthetic-taxonomy-service",
             "--synthetic-taxonomy-server", "--chat-template", "synthetic-qwen3.jinja",
         ]
         missing_launch["arguments_sha256"] = canonical_sha256(missing_launch["arguments"])
@@ -1276,15 +1292,162 @@ class MiraclKoTaxonomyArtifactTests(unittest.TestCase):
         server_launch["server_generation_config_sha256"] = canonical_sha256(server_config)
         server_launch["server_generation_config_launch_value"] = "/approved/generation-config"
         server_launch["arguments"] = [
+            "synthetic/mock-model",
+            "--revision", "synthetic-model-revision",
+            "--tokenizer", "synthetic/mock-tokenizer",
+            "--tokenizer-revision", "synthetic-tokenizer-revision",
+            "--served-model-name", "synthetic-taxonomy-service",
             "--synthetic-taxonomy-server", "--generation-config", "/approved/generation-config",
             "--chat-template", "synthetic-qwen3.jinja",
         ]
         server_launch["arguments_sha256"] = canonical_sha256(server_launch["arguments"])
         generation_plan_for(server_config_mode)
-        server_launch["arguments"][2] = "/other/generation-config"
+        server_launch["arguments"][11] = "/other/generation-config"
         server_launch["arguments_sha256"] = canonical_sha256(server_launch["arguments"])
         with self.assertRaisesRegex(ValueError, "server generation-config"):
             generation_plan_for(server_config_mode)
+
+    def test_vllm_launch_model_tokenizer_identity_is_bound(self):
+        """RED regressions: launch identity must be plan- and request-bound."""
+        def canonical_sha256(value: object) -> str:
+            return hashlib.sha256(
+                json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+
+        artifact = source_artifact()
+        plan = generation_plan_for(artifact)
+        self.assertEqual(
+            plan["generator"]["vllm_execution"]["request_body_template"]["body"]["model"],
+            "synthetic-taxonomy-service",
+        )
+
+        explicit_model = copy.deepcopy(artifact)
+        explicit_model_launch = explicit_model["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        explicit_model_launch["arguments"] = [
+            "--model", "synthetic/mock-model", *explicit_model_launch["arguments"][1:]
+        ]
+        explicit_model_launch["arguments_sha256"] = canonical_sha256(explicit_model_launch["arguments"])
+        generation_plan_for(explicit_model)
+
+        no_served_name = copy.deepcopy(artifact)
+        no_served_execution = no_served_name["provenance"]["generator"]["vllm_execution"]
+        no_served_launch = no_served_execution["server_launch"]
+        del no_served_launch["arguments"][7:9]
+        no_served_launch["arguments_sha256"] = canonical_sha256(no_served_launch["arguments"])
+        no_served_execution["request_body_template"]["body"]["model"] = "synthetic/mock-model"
+        no_served_execution["request_body_template_sha256"] = canonical_sha256(
+            no_served_execution["request_body_template"]
+        )
+        generation_plan_for(no_served_name)
+
+        other_launch_model = copy.deepcopy(artifact)
+        other_launch = other_launch_model["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        other_launch["arguments"][0] = "synthetic/other-model"
+        other_launch["arguments_sha256"] = canonical_sha256(other_launch["arguments"])
+        self.assertEqual(
+            other_launch_model["provenance"]["generator"]["runtime"]["container_digest"],
+            plan["generator"]["runtime"]["container_digest"],
+        )
+        with self.assertRaisesRegex(ValueError, "launch model"):
+            generation_plan_for(other_launch_model)
+
+        wrong_revision = copy.deepcopy(artifact)
+        wrong_revision_launch = wrong_revision["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        wrong_revision_launch["arguments"][2] = "other-revision"
+        wrong_revision_launch["arguments_sha256"] = canonical_sha256(wrong_revision_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "launch revision"):
+            generation_plan_for(wrong_revision)
+
+        wrong_tokenizer = copy.deepcopy(artifact)
+        wrong_tokenizer_launch = wrong_tokenizer["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        wrong_tokenizer_launch["arguments"][4] = "synthetic/other-tokenizer"
+        wrong_tokenizer_launch["arguments_sha256"] = canonical_sha256(wrong_tokenizer_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "launch tokenizer"):
+            generation_plan_for(wrong_tokenizer)
+
+        wrong_tokenizer_revision = copy.deepcopy(artifact)
+        wrong_tokenizer_revision_launch = (
+            wrong_tokenizer_revision["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        )
+        wrong_tokenizer_revision_launch["arguments"][6] = "other-tokenizer-revision"
+        wrong_tokenizer_revision_launch["arguments_sha256"] = canonical_sha256(
+            wrong_tokenizer_revision_launch["arguments"]
+        )
+        with self.assertRaisesRegex(ValueError, "launch tokenizer revision"):
+            generation_plan_for(wrong_tokenizer_revision)
+
+        wrong_served_request = copy.deepcopy(artifact)
+        wrong_served_execution = wrong_served_request["provenance"]["generator"]["vllm_execution"]
+        wrong_served_execution["request_body_template"]["body"]["model"] = "wrong-service-name"
+        wrong_served_execution["request_body_template_sha256"] = canonical_sha256(
+            wrong_served_execution["request_body_template"]
+        )
+        with self.assertRaisesRegex(ValueError, "request body template"):
+            generation_plan_for(wrong_served_request)
+
+        positional_and_explicit = copy.deepcopy(artifact)
+        duplicate_model_launch = positional_and_explicit["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        duplicate_model_launch["arguments"] += ["--model", "synthetic/mock-model"]
+        duplicate_model_launch["arguments_sha256"] = canonical_sha256(duplicate_model_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "both positional and --model"):
+            generation_plan_for(positional_and_explicit)
+
+        duplicate_revision = copy.deepcopy(artifact)
+        duplicate_revision_launch = duplicate_revision["provenance"]["generator"]["vllm_execution"]["server_launch"]
+        duplicate_revision_launch["arguments"] += ["--revision", "conflicting-revision"]
+        duplicate_revision_launch["arguments_sha256"] = canonical_sha256(duplicate_revision_launch["arguments"])
+        with self.assertRaisesRegex(ValueError, "launch revision is duplicated"):
+            generation_plan_for(duplicate_revision)
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            generator_path = root / "generator.py"
+            generator_path.write_text("# deterministic mock\n", encoding="utf-8")
+            contract = build_generator_code_contract(root, ["generator.py"])
+            synthetic_binding = source_artifact()
+            synthetic_binding["provenance"]["generator"]["generator_code_sha256"] = (
+                contract["generator_code_sha256"]
+            )
+            synthetic_binding["provenance"]["generator"]["vllm_execution"]["server_launch"][
+                "model_tokenizer_binding_kind"
+            ] = "synthetic_test"
+            synthetic_plan = generation_plan_for(
+                synthetic_binding,
+                generator_contract_hash=generator_contract_sha256(contract),
+                generator_code_hash=contract["generator_code_sha256"],
+            )
+            actual_approval = {
+                "schema_version": TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION,
+                "approval_kind": "actual_execution",
+                "status": "approved_for_generation",
+                "approved_generation_plan_sha256": generation_plan_sha256(synthetic_plan),
+                "approved_generator_source_commit": synthetic_plan["generator_source_commit"],
+                "approved_generator_contract_sha256": generator_contract_sha256(contract),
+                "approved_generator_code_sha256": contract["generator_code_sha256"],
+                "approved_by": "named-approver",
+                "approved_at": "2026-07-24T12:00:00+00:00",
+                "approval_basis": "synthetic binding rejection regression fixture",
+            }
+            with self.assertRaisesRegex(ValueError, "synthetic taxonomy vLLM model/tokenizer binding"):
+                validate_taxonomy_generation_preflight(
+                    synthetic_plan,
+                    approval_record=actual_approval,
+                    generator_code_contract=contract,
+                    verified_input_provenance=synthetic_plan["input_provenance"],
+                    generator_source_root=root,
+                )
+            run, receipt, response_dir = write_complete_receipt(
+                root, synthetic_binding, synthetic_plan, actual_approval, contract,
+            )
+            with self.assertRaisesRegex(ValueError, "synthetic taxonomy vLLM model/tokenizer binding"):
+                validate_taxonomy_generation_receipt(
+                    receipt,
+                    generation_plan=synthetic_plan,
+                    approval_record=actual_approval,
+                    generator_code_contract=contract,
+                    generation_run=run,
+                    raw_response_dir=response_dir,
+                )
 
     def test_strict_types_canonical_labels_and_manifest_timestamp(self):
         artifact = source_artifact()

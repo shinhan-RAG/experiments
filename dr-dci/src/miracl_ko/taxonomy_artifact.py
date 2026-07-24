@@ -28,7 +28,7 @@ TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
 TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v2"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
 TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v2"
-TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v4"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v5"
 TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v2"
 TAXONOMY_VLLM_REQUEST_BODY_TEMPLATE_SCHEMA_VERSION = "dr-dci.miracl-ko-vllm-request-body-template.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
@@ -662,7 +662,10 @@ def _vllm_launch_option_values(arguments: list[str], option: str) -> list[str]:
         if argument == option:
             if index + 1 == len(arguments):
                 raise ValueError(f"taxonomy vLLM launch option {option} has no value")
-            values.append(arguments[index + 1])
+            value = arguments[index + 1]
+            if value.startswith("--"):
+                raise ValueError(f"taxonomy vLLM launch option {option} has no value")
+            values.append(value)
         elif argument.startswith(f"{option}="):
             value = argument.removeprefix(f"{option}=")
             if not value:
@@ -681,14 +684,108 @@ def _forbid_vllm_launch_option(arguments: list[str], option: str, *, label: str)
         raise ValueError(f"taxonomy vLLM {label} must not appear in launch arguments")
 
 
+def _require_single_vllm_launch_option(
+    arguments: list[str], option: str, *, label: str, required: bool = True,
+) -> str | None:
+    """Read one unambiguous launch option from the approved transport command."""
+    values = _vllm_launch_option_values(arguments, option)
+    if not values:
+        if required:
+            raise ValueError(f"taxonomy vLLM launch {label} is missing")
+        return None
+    if len(values) != 1:
+        raise ValueError(f"taxonomy vLLM launch {label} is duplicated")
+    return values[0]
+
+
+def _vllm_positional_model(arguments: list[str]) -> str | None:
+    """Extract the one supported positional model form without guessing defaults.
+
+    The transport command is recorded separately, so the argument vector may
+    begin either with ``MODEL`` or with vLLM's ``serve MODEL`` subcommand form.
+    Other bare tokens are deliberately not treated as model identifiers.
+    """
+    if not arguments or arguments[0].startswith("--"):
+        return None
+    model_index = 1 if arguments[0] == "serve" else 0
+    if model_index == len(arguments) or arguments[model_index].startswith("--"):
+        raise ValueError("taxonomy vLLM launch positional model has no value")
+    return arguments[model_index]
+
+
+def _extract_vllm_launch_identity(
+    arguments: list[str], *, generator: Mapping[str, Any], binding_kind: str,
+) -> dict[str, str | None]:
+    """Bind actual launch identity to the approved generator specification.
+
+    This parser intentionally accepts only one model identity: one positional
+    model *or* one ``--model``.  Requiring explicit immutable revisions avoids
+    silently inheriting mutable server or Hub defaults.
+    """
+    if binding_kind not in {"actual_execution", "synthetic_test"}:
+        raise ValueError("taxonomy vLLM model/tokenizer binding kind is invalid")
+    positional_model = _vllm_positional_model(arguments)
+    explicit_model = _require_single_vllm_launch_option(
+        arguments, "--model", label="model", required=False,
+    )
+    if positional_model is not None and explicit_model is not None:
+        raise ValueError("taxonomy vLLM launch cannot use both positional and --model")
+    model = positional_model if positional_model is not None else explicit_model
+    if model is None:
+        raise ValueError("taxonomy vLLM launch model is missing")
+    revision = _require_single_vllm_launch_option(arguments, "--revision", label="revision")
+    tokenizer = _require_single_vllm_launch_option(arguments, "--tokenizer", label="tokenizer")
+    tokenizer_revision = _require_single_vllm_launch_option(
+        arguments, "--tokenizer-revision", label="tokenizer revision",
+    )
+    served_model_name = _require_single_vllm_launch_option(
+        arguments, "--served-model-name", label="served-model-name", required=False,
+    )
+    expected = {
+        "model": generator["model_repository"],
+        "revision": generator["model_revision"],
+        "tokenizer": generator["tokenizer_repository"],
+        "tokenizer revision": generator["tokenizer_revision"],
+    }
+    actual = {
+        "model": model,
+        "revision": revision,
+        "tokenizer": tokenizer,
+        "tokenizer revision": tokenizer_revision,
+    }
+    for label, value in actual.items():
+        if value != expected[label]:
+            raise ValueError(f"taxonomy vLLM launch {label} does not match generator specification")
+    return {
+        "model": model,
+        "revision": revision,
+        "tokenizer": tokenizer,
+        "tokenizer_revision": tokenizer_revision,
+        "served_model_name": served_model_name,
+        "binding_kind": binding_kind,
+    }
+
+
+def _vllm_model_tokenizer_binding_kind(generator: Mapping[str, Any]) -> str:
+    """Return the explicit test/actual identity binding classification."""
+    execution = generator.get("vllm_execution")
+    if not isinstance(execution, Mapping) or not isinstance(execution.get("server_launch"), Mapping):
+        raise ValueError("taxonomy vLLM server_launch is invalid")
+    binding_kind = execution["server_launch"].get("model_tokenizer_binding_kind")
+    if binding_kind not in {"actual_execution", "synthetic_test"}:
+        raise ValueError("taxonomy vLLM model/tokenizer binding kind is invalid")
+    return binding_kind
+
+
 def _expected_vllm_request_body_template(
     *, generator: Mapping[str, Any], execution: Mapping[str, Any], sampling_values: Mapping[str, Any],
+    request_model: str,
 ) -> dict[str, Any]:
     """Derive the exact OpenAI-compatible request template from approved controls."""
     structured = execution["structured_output"]
     thinking = execution["thinking"]
     body: dict[str, Any] = {
-        "model": generator["model_repository"],
+        "model": request_model,
         "messages": [
             {"role": "system", "content": generator["prompt_template"]},
             {"role": "user", "content": "{{taxonomy_semantic_payload_json}}"},
@@ -737,7 +834,7 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
     launch_required = {
         "command", "arguments", "arguments_sha256", "generation_config_mode",
         "server_generation_config", "server_generation_config_sha256",
-        "server_generation_config_launch_value",
+        "server_generation_config_launch_value", "model_tokenizer_binding_kind",
     }
     if not isinstance(launch, Mapping) or set(launch) != launch_required:
         raise ValueError("taxonomy vLLM server_launch is invalid")
@@ -750,6 +847,11 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
     _require_sha256(launch.get("arguments_sha256"), label="taxonomy vLLM launch arguments")
     if launch["arguments_sha256"] != sha256_json(arguments):
         raise ValueError("taxonomy vLLM launch arguments sha256 does not match arguments")
+    launch_identity = _extract_vllm_launch_identity(
+        arguments,
+        generator=generator,
+        binding_kind=_vllm_model_tokenizer_binding_kind(generator),
+    )
     if launch.get("generation_config_mode") not in {"request_controls_only", "server_generation_config"}:
         raise ValueError("taxonomy vLLM generation_config_mode is invalid")
     _forbid_vllm_launch_option(
@@ -916,7 +1018,10 @@ def _validate_vllm_execution(execution: Any, *, generator: Mapping[str, Any]) ->
     if values["seed"] != generator["seed"]:
         raise ValueError("taxonomy vLLM seed does not match generator seed")
     request_body_template = _expected_vllm_request_body_template(
-        generator=generator, execution=execution, sampling_values=values,
+        generator=generator,
+        execution=execution,
+        sampling_values=values,
+        request_model=launch_identity["served_model_name"] or launch_identity["model"],
     )
     if execution.get("request_body_template") != request_body_template:
         raise ValueError("taxonomy vLLM request body template does not match declared launch/request controls")
@@ -1545,6 +1650,8 @@ def validate_taxonomy_generation_preflight(
     if generator_code_contract is None:
         raise FileNotFoundError("taxonomy generator code contract is missing")
     validate_taxonomy_generation_plan(generation_plan)
+    if _vllm_model_tokenizer_binding_kind(generation_plan["generator"]) == "synthetic_test":
+        raise ValueError("synthetic taxonomy vLLM model/tokenizer binding cannot authorize actual generation")
     validate_taxonomy_approval_record(approval_record)
     actual_generator_source_commit, git_status_porcelain = _generator_source_git_state(generator_source_root)
     if git_status_porcelain.strip():
@@ -1706,6 +1813,8 @@ def validate_taxonomy_generation_receipt(
     """
     _validate_taxonomy_generation_receipt_shape(receipt)
     validate_taxonomy_generation_plan(generation_plan)
+    if _vllm_model_tokenizer_binding_kind(generation_plan["generator"]) == "synthetic_test":
+        raise ValueError("synthetic taxonomy vLLM model/tokenizer binding cannot produce a verified receipt")
     validate_taxonomy_approval_record(approval_record)
     validate_generator_code_contract(generator_code_contract)
     validate_taxonomy_generator_run_against_plan(generation_run, generation_plan)

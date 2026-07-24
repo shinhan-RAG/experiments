@@ -15,7 +15,7 @@ reasoning-parser controls; vLLM documents structured-output and sampling
 controls needed by a later transport implementation. [Qwen3 vLLM deployment guide](https://github.com/QwenLM/Qwen3/blob/main/docs/source/deployment/vllm.md)
 [vLLM structured outputs](https://docs.vllm.ai/en/latest/examples/features/structured_outputs/)
 [vLLM sampling parameters](https://docs.vllm.ai/en/v0.9.0/api/vllm/sampling_params.html)
-[vLLM generation-config server argument](https://docs.vllm.ai/en/latest/configuration/engine_args/)
+[vLLM engine arguments: model, revision, tokenizer, and served name](https://docs.vllm.ai/en/latest/configuration/engine_args/)
 
 The configured `Alibaba-NLP/gte-Qwen2-1.5B-instruct` endpoint is not adopted
 as an alternative generator: it is configured in this repository as a
@@ -46,7 +46,7 @@ floating model tag are invalid.
 | Model/tokenizer | Repository, immutable model revision, tokenizer repository and immutable tokenizer revision. |
 | Representation | Pooling and normalization, or explicit `not_applicable` only when the selected LLM algorithm does not create embeddings. |
 | Category construction | Classification/clustering algorithm, library/version or explicit `not_applicable`, cluster-count/selection rule, stable `label_id` rule, unknown/outlier handling, and display-label rule. |
-| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; `generation_config_mode`; and the complete canonical server generation-config object, source launch value, and SHA-256, or explicit `not_applicable`. `request_controls_only` must launch with exactly `--generation-config vllm` and may not set an unmodelled `--override-generation-config`; `server_generation_config` must use the approved source launch value. |
+| vLLM serving | Exact launch command and arguments plus their canonical SHA-256; exactly one positional model or one `--model`; exactly one each of `--revision`, `--tokenizer`, and `--tokenizer-revision`; and at most one `--served-model-name`. All four identity values must exactly match the declared generator/runtime model and tokenizer fields. Duplicate/conflicting forms fail. If a served name is present, the canonical request `model` is that name; otherwise it is the approved model repository. `model_tokenizer_binding_kind=actual_execution` is required for real preflight/receipts; `synthetic_test` is fixture-only. The plan also fixes `generation_config_mode` and the complete canonical server generation-config object, source launch value, and SHA-256, or explicit `not_applicable`. `request_controls_only` must launch with exactly `--generation-config vllm` and may not set an unmodelled `--override-generation-config`; `server_generation_config` must use the approved source launch value. |
 | Template and reasoning | Chat-template mode, template SHA-256, content format, and the exact `--chat-template` launch value when explicit; Qwen thinking enable/disable state, reasoning-parser policy, and whether reasoning content is retained. The canonical request template must carry `chat_template_kwargs.enable_thinking`; enabled reasoning must have the matching `--reasoning-parser`, while disabled thinking forbids it. Unused values must be explicit `not_applicable`. |
 | Prompt and structured output | Complete prompt/template text and UTF-8 SHA-256; JSON structured-output schema, schema name/SHA-256, and content format, or explicit `not_applicable`. The canonical request template must include the same `response_format` JSON schema. The prompt must not interpolate `corpus_id`, query, qrel, relevance, answer, gold, or evidence. |
 | Request controls | Integer seed, determinism/replay mode, and every sampling/request control: `temperature`, `max_tokens`, `top_p`, `top_k`, `min_p`, `stop`, `stop_token_ids`, `presence_penalty`, `frequency_penalty`, `repetition_penalty`, `seed`, `n`, and `logprobs`. Each uses either an exact JSON-safe value or approved explicit `not_applicable`; `temperature`, `max_tokens`, and `seed` must match the top-level generator controls. |
@@ -67,7 +67,8 @@ evaluation outputs are rejected at the public input boundary.
 ## Plan, run, response, receipt
 
 1. The approved plan includes `run_controls` and hashes the complete generator
-   specification, including vLLM serving/template/thinking/structured-output
+   specification, including vLLM launch model/tokenizer identity, served-name
+   request routing, serving/template/thinking/structured-output
    and sampling controls. It also contains a canonical OpenAI-compatible
    request-body template and its SHA-256. That template is derived from, and
    must exactly equal, the declared launch/template/thinking/schema/sampling
@@ -115,7 +116,8 @@ scores.
 3. Approved Korean taxonomy algorithm: complete prompt/JSON schema, category
    construction rule, label ID/display-label rule, unknown/outlier rule,
    seed, determinism/replay declaration, and acceptance QA thresholds.
-4. Approved execution controls: exact vLLM launch/config/template/thinking/
+4. Approved execution controls: exact vLLM launch model/revision/tokenizer/
+   tokenizer-revision/served-name binding, config/template/thinking/
    reasoning-parser/structured-output/sampling values, batch size, timeout,
    per-batch retry/resume policy, request-response storage location, and
    retention/access policy for raw responses.
