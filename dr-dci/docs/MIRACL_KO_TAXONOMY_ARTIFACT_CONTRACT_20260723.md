@@ -52,7 +52,7 @@ A batch transport wrapper carries `generation_request_sha256 = SHA256(canonical 
 
 ## Artifact schema and provenance
 
-The schema versions are `dr-dci.miracl-ko-taxonomy-artifact.v1` and `dr-dci.miracl-ko-taxonomy-manifest.v1`.
+The schema versions are `dr-dci.miracl-ko-taxonomy-artifact.v1` and `dr-dci.miracl-ko-taxonomy-manifest.v2`.
 
 Each ignored artifact body contains:
 
@@ -76,7 +76,7 @@ Each ignored artifact body contains:
 
 `unknown` is explicit (`label_id=unknown`, `score=0`, `status=unknown`); it is never an unrecorded fallback. Assignment IDs are unique, the label catalog has unique IDs and labels, assignments have finite `[0,1]` scores, and every expected passage has exactly one assignment.
 
-The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records an RFC3339 timezone-bearing `generated_at`, exact artifact body byte size/SHA-256 for all scales, `generator_source_commit`, source revisions, the input/provenance contract, `generator_contract_sha256`, `generation_plan_sha256`, `approval_record_sha256`, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration. Generator parameters must be JSON-safe with no NaN/Infinity; boolean values are not valid seeds or assignment scores. Display labels must already be Unicode NFC with normalized single-space whitespace, so the artifact and consumer never silently normalize a category at match time.
+The body deliberately has no wall-clock timestamp so that an actually deterministic generator can be compared with a canonical content SHA-256. The **outer tracked manifest** records an RFC3339 timezone-bearing `generated_at`, exact artifact body byte size/SHA-256 for all scales, `generator_source_commit`, source revisions, the input/provenance contract, `generator_contract_sha256`, `generation_plan_sha256`, `approval_record_sha256`, `generation_receipt_sha256`, and each projection's source-artifact content hash. A non-deterministic generator must declare `replay_required`; it cannot claim deterministic regeneration. Generator parameters must be JSON-safe with no NaN/Infinity; boolean values are not valid seeds or assignment scores. Display labels must already be Unicode NFC with normalized single-space whitespace, so the artifact and consumer never silently normalize a category at match time.
 
 ## Fixed-scale projection
 
@@ -104,9 +104,15 @@ This is not wired to `run_experiment.py`, the Agent, or `PullRetriever`. The val
 
 The artifact manifest is not an approval record. Before any artifact exists, an artifact-free `TaxonomyGenerationPlan` binds MIRACL identity/unit, source scale 110K, four fixed input SHA-256 values, **`generator_source_commit`**, code-contract/aggregate SHA, generator/model/tokenizer/prompt/seed/parameters, title/text-only input contract, batch schema version, output artifact schema version, fixed projection method, and determinism mode. The plan cannot contain an artifact body or artifact hash.
 
-A real generation uses two roots. The `--generator-source-root` is a clean checkout at the plan's `generator_source_commit` and contains the code files named by the contract. The read-only control artifact paths (`--generation-plan`, `--approval-record`, `--generator-code-contract`, and post-run `--manifest`) must reside outside that checkout; the audit rejects an in-source control path. The approval record directly names `generation_plan_sha256`, `approved_generator_source_commit`, code-contract/aggregate SHA, approver, RFC3339 time, and basis. Only after execution does the result manifest bind body hashes to the plan, approval-record, and code-contract hashes. No single current HEAD is used as both generator identity and control-record identity.
+Real generation uses two roots. The `--generator-source-root` is a clean checkout at the plan's `generator_source_commit` and contains the code files named by the contract. The read-only control artifact paths (`--generation-plan`, `--approval-record`, `--generator-code-contract`, `--generation-run`, `--generation-receipt`, and post-run `--manifest`) must reside outside that checkout; the audit rejects an in-source control path. The approval record directly names `generation_plan_sha256`, `approved_generator_source_commit`, code-contract/aggregate SHA, approver, RFC3339 time, and basis. Only after execution does the result manifest bind body hashes to the plan, approval-record, code-contract, and complete receipt hashes. No single current HEAD is used as both generator identity and control-record identity.
 
-`validate_taxonomy_generation_preflight()` independently reads Git HEAD and porcelain from `--generator-source-root`, requires that checkout to be clean and equal to the planned source commit, then rechecks its code bytes. It does not inspect control-path dirtiness and does not require an artifact manifest. `validate_taxonomy_artifact_authorization()` then binds a completed integrity-checked artifact to the same plan and exact approval-record hash. No approval record is created in `config/` by this work. The fixture contains a marked `synthetic_test` record which validates fixtures only and cannot authorize execution.
+`validate_taxonomy_generation_preflight()` independently reads Git HEAD and porcelain from `--generator-source-root`, requires that checkout to be clean and equal to the planned source commit, then rechecks its code bytes. It does not inspect control-path dirtiness and does not require an artifact manifest. The plan also fixes `run_controls`: batch size, corpus-ID-sorted contiguous grouping, ordinal batch order, timeout, retry cap, resume policy, and idempotency mode. A `TaxonomyGeneratorRun` with different controls cannot produce an authorized receipt.
+
+### Execution receipt
+
+`TaxonomyGenerationReceipt` is the post-run raw-evidence contract. It binds plan, approval, generator contract/source, and `generation_run_sha256`; lists the ordered request-envelope hashes; hashes and sizes every raw response file; records batch total/success/failure/retry counts, start/end timestamps, exact model/tokenizer/runtime/library provenance, determinism/replay status, and the canonical assignment SHA-256. Raw responses retain only transport metadata and generator output; `corpus_id` remains in the external mapping envelope.
+
+Only `status=complete` with every planned batch recorded exactly once, raw bytes matching the listed SHA-256, and rejoined assignments whose canonical SHA matches the receipt can form a manifest. `partial` and `failed` receipts are diagnostic records only. The authorized audit verifies plan/approval/run/source bindings, re-hashes raw responses, recomputes the rejoined assignments, and compares them with the 110K artifact assignments. `--integrity-only` remains explicitly non-authorizing. No approval record is created in `config/` by this work. The fixture contains marked synthetic values which validate contracts only and cannot authorize execution.
 
 ## Preflight, audit, and synthetic RED → GREEN harness
 
@@ -123,6 +129,7 @@ The following RED counterexamples are fixed in `tests/test_miracl_ko_taxonomy_ar
 - label-ID/display-label exact-match mismatch, unknown boost eligibility, score-weight drift, and consumer passage coverage drift;
 - reversed/duplicate/missing/out-of-range/bool request index and prohibited positional output rejoin;
 - artifact-free plan approval, wrong-plan/source/code/input/parameter drift, missing approval, dirty generator source, stale/foreign approval, and synthetic approval execution attempt;
+- plan/run batch-control mismatch, raw-response byte tampering, cross-run receipt injection, duplicate successful-batch receipt entries, partial/failed receipt manifest construction, and receipt/assignment mismatch;
 - self-declared code/source provenance, non-RFC3339 timestamp, bool seed/score, non-finite parameter, and non-canonical label;
 - future focused control/treatment differences other than the taxonomy boost toggle.
 
@@ -134,16 +141,24 @@ The tracked three-passage fixture under `tests/fixtures/miracl_ko_taxonomy_artif
 cd /Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci
 PYTHONPATH=. pytest -q tests/test_miracl_ko_taxonomy_artifact.py
 
-# Real audit: control records are read-only paths. The generator checkout is
+# Real audit: plan, approval, code contract, run, receipt, raw responses, and
+# manifest are read-only external controls. The generator checkout is
 # separately supplied and must be clean at generator_source_commit.
 PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py \
-  --generator-source-root /path/to/clean-generator-source
+  --generator-source-root /path/to/clean-generator-source \
+  --generation-plan /control/plan.json \
+  --approval-record /control/approval.json \
+  --generator-code-contract /control/generator-code-contract.json \
+  --generation-run /control/generation-run.json \
+  --generation-receipt /control/generation-receipt.json \
+  --raw-response-dir /artifact-store/raw-responses \
+  --manifest /control/artifact-manifest.json
 
 # Explicit diagnostic only: never experiment-ready and cannot feed a consumer.
 PYTHONPATH=. python scripts/audit_miracl_ko_taxonomy_artifact.py --integrity-only
 ```
 
-The required temporal order is: (1) commit generator code as H and create a clean H checkout; (2) write plan/code-contract in a separate control root with `generator_source_commit=H`; (3) obtain the separate actual-execution approval for that exact plan hash; (4) run 110K generation from the clean H checkout through request-hash-bound batches, then derive 50K/20K projections; (5) write the result manifest in the control root with plan/approval/code hashes; (6) run the default authorized audit with explicit control paths and `--generator-source-root`. It must not use query/qrel/relevance/gold/evidence inputs.
+The required temporal order is: (1) commit generator code as H and create a clean H checkout; (2) write plan/code-contract in a separate control root with `generator_source_commit=H`; (3) obtain the separate actual-execution approval for that exact plan hash; (4) materialize the approved `TaxonomyGeneratorRun`; (5) run 110K generation from the clean H checkout through request-hash-bound batches, recording one verified raw response per successful batch and deriving a complete receipt; (6) derive 50K/20K projections; (7) write the result manifest in the control root with plan/approval/code/receipt hashes; (8) run the default authorized audit with explicit control paths and `--generator-source-root`. It must not use query/qrel/relevance/gold/evidence inputs.
 
 ## Non-results and next gate
 

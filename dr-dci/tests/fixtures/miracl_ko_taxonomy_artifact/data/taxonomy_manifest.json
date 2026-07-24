@@ -1,5 +1,5 @@
 {
-  "schema_version": "dr-dci.miracl-ko-taxonomy-manifest.v1",
+  "schema_version": "dr-dci.miracl-ko-taxonomy-manifest.v2",
   "generated_at": "2026-07-24T00:00:00+00:00",
   "taxonomy_artifact_id": "miracl-ko-synthetic-taxonomy-v1",
   "dataset": "MIRACL",
@@ -10,6 +10,7 @@
   "generator_contract_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "generation_plan_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "approval_record_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "generation_receipt_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "source_scale": 110000,
   "input_contract": {
     "mapping_key": "corpus_id",

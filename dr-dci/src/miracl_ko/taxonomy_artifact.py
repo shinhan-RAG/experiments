@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections import Counter
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -23,10 +24,11 @@ from src.miracl_ko.preparation import RETRIEVAL_UNIT, SCALE_SIZES, sha256_file, 
 
 
 TAXONOMY_ARTIFACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-artifact.v1"
-TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v1"
+TAXONOMY_MANIFEST_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-manifest.v2"
 TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-batch.v1"
-TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v1"
-TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v1"
+TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-run.v2"
+TAXONOMY_GENERATION_PLAN_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-plan.v2"
+TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generation-receipt.v1"
 TAXONOMY_FLAT_L1_ADAPTER_SCHEMA_VERSION = "dr-dci.miracl-ko-flat-l1-adapter.v1"
 TAXONOMY_GENERATOR_CODE_CONTRACT_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-generator-code-contract.v1"
 TAXONOMY_APPROVAL_RECORD_SCHEMA_VERSION = "dr-dci.miracl-ko-taxonomy-approval-record.v1"
@@ -63,6 +65,10 @@ FILTER_PROJECTION_METHOD = "filter_110k_mapping_by_corpus_id_v1"
 GENERATOR_CODE_AGGREGATE_METHOD = "sha256-json-canonical-v1"
 FLAT_L1_SCORE_HANDLING = "not_used_by_existing_soft_boost"
 FLAT_L1_UNKNOWN_HANDLING = "excluded_from_boost_eligibility"
+TAXONOMY_BATCH_GROUPING = "corpus_id_sorted_contiguous_v1"
+TAXONOMY_BATCH_ORDER = "batch_ordinal_ascending_v1"
+TAXONOMY_RESUME_POLICY = "reuse_verified_complete_batches_only_v1"
+TAXONOMY_IDEMPOTENCY_MODE = "generation_request_sha256_response_file_v1"
 
 
 def utc_now() -> str:
@@ -79,6 +85,10 @@ def _require_nonempty_string(value: Any, *, label: str) -> str:
     if not isinstance(value, str) or not value:
         raise ValueError(f"{label} must be a non-empty string")
     return value
+
+
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 def _require_rfc3339_timestamp(value: Any, *, label: str) -> str:
@@ -305,13 +315,51 @@ def validate_taxonomy_generator_batch(batch: Mapping[str, Any]) -> None:
         raise ValueError("taxonomy generator generation request hash does not match")
 
 
+def _default_run_controls(batch_size: int) -> dict[str, Any]:
+    return {
+        "batch_size": batch_size,
+        "batch_grouping": TAXONOMY_BATCH_GROUPING,
+        "batch_order": TAXONOMY_BATCH_ORDER,
+        "timeout_seconds": 120,
+        "max_retries": 0,
+        "resume_policy": TAXONOMY_RESUME_POLICY,
+        "idempotency_mode": TAXONOMY_IDEMPOTENCY_MODE,
+    }
+
+
+def _validate_run_controls(controls: Any) -> None:
+    required = {
+        "batch_size", "batch_grouping", "batch_order", "timeout_seconds", "max_retries",
+        "resume_policy", "idempotency_mode",
+    }
+    if not isinstance(controls, Mapping) or set(controls) != required:
+        raise ValueError("taxonomy generator run controls have missing or unsupported fields")
+    if type(controls.get("batch_size")) is not int or controls["batch_size"] <= 0:
+        raise ValueError("taxonomy generator run batch_size must be a positive integer")
+    if type(controls.get("timeout_seconds")) is not int or controls["timeout_seconds"] <= 0:
+        raise ValueError("taxonomy generator run timeout_seconds must be a positive integer")
+    if type(controls.get("max_retries")) is not int or controls["max_retries"] < 0:
+        raise ValueError("taxonomy generator run max_retries must be a non-negative integer")
+    if controls.get("batch_grouping") != TAXONOMY_BATCH_GROUPING:
+        raise ValueError("taxonomy generator run batch_grouping is invalid")
+    if controls.get("batch_order") != TAXONOMY_BATCH_ORDER:
+        raise ValueError("taxonomy generator run batch_order is invalid")
+    if controls.get("resume_policy") != TAXONOMY_RESUME_POLICY:
+        raise ValueError("taxonomy generator run resume_policy is invalid")
+    if controls.get("idempotency_mode") != TAXONOMY_IDEMPOTENCY_MODE:
+        raise ValueError("taxonomy generator run idempotency_mode is invalid")
+
+
 def build_taxonomy_generator_run(
     corpus_records: Iterable[Mapping[str, Any]], *, generation_plan_sha256: str, batch_size: int,
+    run_controls: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Split one 110K-scale run into complete, request-bound transport batches."""
     _require_sha256(generation_plan_sha256, label="taxonomy generator run plan")
-    if type(batch_size) is not int or batch_size <= 0:
-        raise ValueError("taxonomy generator run batch_size must be a positive integer")
+    controls = dict(run_controls) if run_controls is not None else _default_run_controls(batch_size)
+    _validate_run_controls(controls)
+    if controls["batch_size"] != batch_size:
+        raise ValueError("taxonomy generator run batch_size does not match run controls")
     transport = _prepare_taxonomy_generator_transport(corpus_records)
     total = len(transport)
     batches = [
@@ -328,9 +376,11 @@ def build_taxonomy_generator_run(
         "schema_version": TAXONOMY_GENERATOR_RUN_SCHEMA_VERSION,
         "generation_plan_sha256": generation_plan_sha256,
         "run_total_records": total,
+        "run_controls": controls,
         "batches": batches,
         "generation_run_sha256": sha256_json({
             "generation_plan_sha256": generation_plan_sha256,
+            "run_controls": controls,
             "generation_request_sha256s": [batch["generation_request_sha256"] for batch in batches],
         }),
     }
@@ -341,7 +391,7 @@ def build_taxonomy_generator_run(
 def validate_taxonomy_generator_run(run: Mapping[str, Any]) -> None:
     """Require complete, non-overlapping batches from one generation plan."""
     required = {
-        "schema_version", "generation_plan_sha256", "run_total_records", "batches", "generation_run_sha256",
+        "schema_version", "generation_plan_sha256", "run_total_records", "run_controls", "batches", "generation_run_sha256",
     }
     if not isinstance(run, Mapping) or set(run) != required:
         raise ValueError("taxonomy generator run has missing or unsupported fields")
@@ -350,6 +400,7 @@ def validate_taxonomy_generator_run(run: Mapping[str, Any]) -> None:
     _require_sha256(run.get("generation_plan_sha256"), label="taxonomy generator run plan")
     if type(run.get("run_total_records")) is not int or run["run_total_records"] <= 0:
         raise ValueError("taxonomy generator run total must be a positive integer")
+    _validate_run_controls(run.get("run_controls"))
     batches = run.get("batches")
     if not isinstance(batches, list) or not batches:
         raise ValueError("taxonomy generator run batches must be a non-empty array")
@@ -378,10 +429,23 @@ def validate_taxonomy_generator_run(run: Mapping[str, Any]) -> None:
     _require_sha256(run.get("generation_run_sha256"), label="taxonomy generator run")
     expected_hash = sha256_json({
         "generation_plan_sha256": run["generation_plan_sha256"],
+        "run_controls": run["run_controls"],
         "generation_request_sha256s": [batch["generation_request_sha256"] for batch in batches],
     })
     if run["generation_run_sha256"] != expected_hash:
         raise ValueError("taxonomy generator run hash does not match batches")
+
+
+def validate_taxonomy_generator_run_against_plan(
+    run: Mapping[str, Any], generation_plan: Mapping[str, Any],
+) -> None:
+    """Bind actual batch sizing/grouping to the approved generation plan."""
+    validate_taxonomy_generator_run(run)
+    validate_taxonomy_generation_plan(generation_plan)
+    if run["generation_plan_sha256"] != generation_plan_sha256(generation_plan):
+        raise ValueError("taxonomy generator run generation plan does not match approved plan")
+    if run["run_controls"] != generation_plan["run_controls"]:
+        raise ValueError("taxonomy generator run controls do not match approved plan")
 
 
 def rejoin_taxonomy_generator_outputs(
@@ -492,6 +556,69 @@ def _validate_generator(generator: Any) -> None:
     _validate_json_value(generator["parameters"], label="taxonomy generator parameters")
     if generator.get("determinism_mode") not in {"deterministic", "replay_required"}:
         raise ValueError("taxonomy generator determinism_mode is invalid")
+
+
+def _validate_generation_generator_spec(generator: Any) -> None:
+    """Validate the complete execution specification required in a plan.
+
+    Artifact provenance retains a compact, backwards-compatible generator
+    description.  A pre-generation plan is stricter: it must be sufficient to
+    reproduce an approved model call without guessing a model revision, prompt,
+    runtime, batch policy, or label policy.
+    """
+    _validate_generator(generator)
+    required = {
+        "generator_type", "generator_version", "generator_code_sha256", "model_or_algorithm",
+        "model_or_tokenizer_version", "prompt_template_sha256", "seed", "parameters", "determinism_mode",
+        "model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision",
+        "pooling", "normalization", "clustering_or_classification_algorithm",
+        "clustering_library", "clustering_library_version", "cluster_selection_rule",
+        "prompt_template", "generation_controls", "runtime", "label_id_rule",
+        "unknown_outlier_handling", "display_label_rule",
+    }
+    if not isinstance(generator, Mapping) or set(generator) != required:
+        raise ValueError("taxonomy generation generator specification has missing or unsupported fields")
+    for key in (
+        "model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision", "pooling",
+        "normalization", "clustering_or_classification_algorithm", "clustering_library",
+        "clustering_library_version", "cluster_selection_rule", "prompt_template", "label_id_rule",
+        "unknown_outlier_handling", "display_label_rule",
+    ):
+        _require_nonempty_string(generator.get(key), label=f"taxonomy generator specification {key}")
+    if generator["prompt_template_sha256"] != _sha256_text(generator["prompt_template"]):
+        raise ValueError("taxonomy generator prompt template sha256 does not match template")
+    controls = generator.get("generation_controls")
+    if not isinstance(controls, Mapping) or set(controls) != {"temperature", "max_tokens"}:
+        raise ValueError("taxonomy generator generation_controls are invalid")
+    temperature = controls.get("temperature")
+    if type(temperature) not in {int, float} or not math.isfinite(float(temperature)) or float(temperature) < 0:
+        raise ValueError("taxonomy generator temperature must be a finite non-negative number")
+    if type(controls.get("max_tokens")) is not int or controls["max_tokens"] <= 0:
+        raise ValueError("taxonomy generator max_tokens must be a positive integer")
+    runtime = generator.get("runtime")
+    runtime_required = {
+        "model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision",
+        "library_versions", "dependency_lock_sha256", "container_digest",
+    }
+    if not isinstance(runtime, Mapping) or set(runtime) != runtime_required:
+        raise ValueError("taxonomy generator runtime has missing or unsupported fields")
+    for key in ("model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision", "container_digest"):
+        _require_nonempty_string(runtime.get(key), label=f"taxonomy generator runtime {key}")
+        if key in {"model_repository", "model_revision", "tokenizer_repository", "tokenizer_revision"} and runtime[key] != generator[key]:
+            raise ValueError(f"taxonomy generator runtime {key} does not match generator specification")
+    _require_sha256(runtime.get("dependency_lock_sha256"), label="taxonomy generator runtime dependency lock")
+    versions = runtime.get("library_versions")
+    if not isinstance(versions, Mapping) or not versions:
+        raise ValueError("taxonomy generator runtime library_versions must be a non-empty object")
+    for library, version in versions.items():
+        _require_nonempty_string(library, label="taxonomy generator runtime library name")
+        _require_nonempty_string(version, label="taxonomy generator runtime library version")
+
+
+def generator_spec_sha256(generator: Mapping[str, Any]) -> str:
+    """Hash the complete, execution-relevant generator specification."""
+    _validate_generation_generator_spec(generator)
+    return sha256_json(generator)
 
 
 def _validate_provenance(provenance: Any) -> None:
@@ -955,6 +1082,7 @@ def build_taxonomy_generation_plan(
     *, input_provenance: Mapping[str, str], generator_source_commit: str,
     generator_code_contract_sha256: str, generator_code_sha256: str,
     generator: Mapping[str, Any], input_contract: Mapping[str, Any],
+    run_controls: Mapping[str, Any],
 ) -> dict[str, Any]:
     """Build the artifact-free object that must be approved before generation."""
     plan = {
@@ -968,8 +1096,10 @@ def build_taxonomy_generation_plan(
         "generator_code_contract_sha256": generator_code_contract_sha256,
         "generator_code_sha256": generator_code_sha256,
         "generator": dict(generator),
+        "generator_spec_sha256": generator_spec_sha256(generator),
         "input_contract": dict(input_contract),
         "batch_contract_schema_version": TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION,
+        "run_controls": dict(run_controls),
         "output_artifact_schema_version": TAXONOMY_ARTIFACT_SCHEMA_VERSION,
         "projection_method": FILTER_PROJECTION_METHOD,
         "determinism_mode": generator.get("determinism_mode"),
@@ -983,8 +1113,8 @@ def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
     required = {
         "schema_version", "dataset", "language", "retrieval_unit", "source_scale",
         "input_provenance", "generator_source_commit", "generator_code_contract_sha256",
-        "generator_code_sha256", "generator", "input_contract",
-        "batch_contract_schema_version", "output_artifact_schema_version",
+        "generator_code_sha256", "generator", "generator_spec_sha256", "input_contract",
+        "batch_contract_schema_version", "run_controls", "output_artifact_schema_version",
         "projection_method", "determinism_mode",
     }
     if not isinstance(plan, Mapping) or set(plan) != required:
@@ -1002,12 +1132,16 @@ def validate_taxonomy_generation_plan(plan: Mapping[str, Any]) -> None:
         raise ValueError("taxonomy generation plan generator source commit is invalid")
     _require_sha256(plan.get("generator_code_contract_sha256"), label="taxonomy generation plan code contract")
     _require_sha256(plan.get("generator_code_sha256"), label="taxonomy generation plan code aggregate")
-    _validate_generator(plan.get("generator"))
+    _validate_generation_generator_spec(plan.get("generator"))
     if plan["generator"]["generator_code_sha256"] != plan["generator_code_sha256"]:
         raise ValueError("taxonomy generation plan generator code hash does not match generator metadata")
+    _require_sha256(plan.get("generator_spec_sha256"), label="taxonomy generation plan generator specification")
+    if plan["generator_spec_sha256"] != generator_spec_sha256(plan["generator"]):
+        raise ValueError("taxonomy generation plan generator specification hash does not match generator metadata")
     _validate_semantic_input_contract(plan.get("input_contract"))
     if plan.get("batch_contract_schema_version") != TAXONOMY_GENERATOR_BATCH_SCHEMA_VERSION:
         raise ValueError("taxonomy generation plan batch contract version is invalid")
+    _validate_run_controls(plan.get("run_controls"))
     if plan.get("output_artifact_schema_version") != TAXONOMY_ARTIFACT_SCHEMA_VERSION:
         raise ValueError("taxonomy generation plan output artifact schema version is invalid")
     if plan.get("projection_method") != FILTER_PROJECTION_METHOD:
@@ -1128,10 +1262,190 @@ def validate_taxonomy_generation_preflight(
         raise ValueError("taxonomy approval generator code does not match generation plan")
 
 
+def _validate_receipt_raw_response_record(record: Any, *, raw_response_dir: Path | None = None) -> Mapping[str, Any]:
+    required = {
+        "batch_ordinal", "generation_request_sha256", "relative_path", "byte_size", "sha256",
+        "attempt_count", "retry_count",
+    }
+    if not isinstance(record, Mapping) or set(record) != required:
+        raise ValueError("taxonomy generation receipt raw response record has missing or unsupported fields")
+    if type(record.get("batch_ordinal")) is not int or record["batch_ordinal"] < 0:
+        raise ValueError("taxonomy generation receipt raw response batch_ordinal is invalid")
+    _require_sha256(record.get("generation_request_sha256"), label="taxonomy generation receipt raw response request")
+    if not isinstance(record.get("relative_path"), str) or not record["relative_path"]:
+        raise ValueError("taxonomy generation receipt raw response relative_path is invalid")
+    if Path(record["relative_path"]).is_absolute() or ".." in Path(record["relative_path"]).parts:
+        raise ValueError("taxonomy generation receipt raw response relative_path escapes response root")
+    if type(record.get("byte_size")) is not int or record["byte_size"] < 0:
+        raise ValueError("taxonomy generation receipt raw response byte_size is invalid")
+    _require_sha256(record.get("sha256"), label="taxonomy generation receipt raw response")
+    if type(record.get("attempt_count")) is not int or record["attempt_count"] <= 0:
+        raise ValueError("taxonomy generation receipt raw response attempt_count is invalid")
+    if type(record.get("retry_count")) is not int or record["retry_count"] < 0:
+        raise ValueError("taxonomy generation receipt raw response retry_count is invalid")
+    if record["attempt_count"] != record["retry_count"] + 1:
+        raise ValueError("taxonomy generation receipt raw response attempt/retry counts do not match")
+    if raw_response_dir is not None:
+        root = raw_response_dir.resolve()
+        path = (root / record["relative_path"]).resolve()
+        if not path.is_relative_to(root) or not path.is_file():
+            raise FileNotFoundError(f"taxonomy generation raw response is missing: {record['relative_path']}")
+        if path.stat().st_size != record["byte_size"]:
+            raise ValueError("taxonomy generation raw response byte_size does not match receipt")
+        if sha256_file(path) != record["sha256"]:
+            raise ValueError("taxonomy generation raw response sha256 does not match receipt")
+    return record
+
+
+def _validate_taxonomy_generation_receipt_shape(receipt: Mapping[str, Any]) -> None:
+    required = {
+        "schema_version", "status", "generation_plan_sha256", "approval_record_sha256",
+        "generator_contract_sha256", "generator_source_commit", "generation_run_sha256",
+        "ordered_generation_request_sha256s", "raw_response_files", "assignment_canonical_sha256",
+        "batch_summary", "started_at", "ended_at", "runtime", "determinism_status", "replay_required",
+    }
+    if not isinstance(receipt, Mapping) or set(receipt) != required:
+        raise ValueError("taxonomy generation receipt has missing or unsupported fields")
+    if receipt.get("schema_version") != TAXONOMY_GENERATION_RECEIPT_SCHEMA_VERSION:
+        raise ValueError("taxonomy generation receipt schema_version is invalid")
+    if receipt.get("status") not in {"complete", "failed", "partial"}:
+        raise ValueError("taxonomy generation receipt status is invalid")
+    for key in (
+        "generation_plan_sha256", "approval_record_sha256", "generator_contract_sha256", "generation_run_sha256",
+    ):
+        _require_sha256(receipt.get(key), label=f"taxonomy generation receipt {key}")
+    if not isinstance(receipt.get("generator_source_commit"), str) or not re.fullmatch(
+        r"[0-9a-f]{40}", receipt["generator_source_commit"]
+    ):
+        raise ValueError("taxonomy generation receipt generator_source_commit is invalid")
+    requests = receipt.get("ordered_generation_request_sha256s")
+    if not isinstance(requests, list) or not requests:
+        raise ValueError("taxonomy generation receipt ordered request hashes must be a non-empty array")
+    for request in requests:
+        _require_sha256(request, label="taxonomy generation receipt ordered request")
+    if len(set(requests)) != len(requests):
+        raise ValueError("taxonomy generation receipt ordered request hashes are duplicated")
+    raw_responses = receipt.get("raw_response_files")
+    if not isinstance(raw_responses, list):
+        raise ValueError("taxonomy generation receipt raw_response_files must be an array")
+    summary = receipt.get("batch_summary")
+    if not isinstance(summary, Mapping) or set(summary) != {"total", "succeeded", "failed", "retries"}:
+        raise ValueError("taxonomy generation receipt batch_summary is invalid")
+    for key in ("total", "succeeded", "failed", "retries"):
+        if type(summary.get(key)) is not int or summary[key] < 0:
+            raise ValueError(f"taxonomy generation receipt batch_summary {key} is invalid")
+    if summary["total"] != len(requests) or summary["succeeded"] + summary["failed"] != summary["total"]:
+        raise ValueError("taxonomy generation receipt batch_summary totals do not match requests")
+    if len(raw_responses) != summary["succeeded"]:
+        raise ValueError("taxonomy generation receipt successful batch count does not match raw response records")
+    seen_ordinals: set[int] = set()
+    for record in raw_responses:
+        _validate_receipt_raw_response_record(record)
+        if record["batch_ordinal"] in seen_ordinals:
+            raise ValueError("taxonomy generation receipt raw response batch_ordinal is duplicated")
+        seen_ordinals.add(record["batch_ordinal"])
+    if receipt["status"] == "complete":
+        if summary["succeeded"] != summary["total"] or summary["failed"] != 0:
+            raise ValueError("complete taxonomy generation receipt must succeed for every batch")
+        _require_sha256(receipt.get("assignment_canonical_sha256"), label="taxonomy generation receipt assignment")
+    elif receipt.get("assignment_canonical_sha256") is not None:
+        raise ValueError("partial or failed taxonomy generation receipt cannot contain assignment hash")
+    _require_rfc3339_timestamp(receipt.get("started_at"), label="taxonomy generation receipt started_at")
+    _require_rfc3339_timestamp(receipt.get("ended_at"), label="taxonomy generation receipt ended_at")
+    started = datetime.fromisoformat(receipt["started_at"].replace("Z", "+00:00"))
+    ended = datetime.fromisoformat(receipt["ended_at"].replace("Z", "+00:00"))
+    if ended < started:
+        raise ValueError("taxonomy generation receipt ended_at precedes started_at")
+    if receipt.get("determinism_status") not in {"deterministic", "replay_required"}:
+        raise ValueError("taxonomy generation receipt determinism_status is invalid")
+    if type(receipt.get("replay_required")) is not bool:
+        raise ValueError("taxonomy generation receipt replay_required must be a boolean")
+    if receipt["replay_required"] != (receipt["determinism_status"] == "replay_required"):
+        raise ValueError("taxonomy generation receipt replay_required does not match determinism_status")
+
+
+def taxonomy_generation_receipt_sha256(receipt: Mapping[str, Any]) -> str:
+    """Hash a structurally valid execution receipt before manifest binding."""
+    _validate_taxonomy_generation_receipt_shape(receipt)
+    return sha256_json(receipt)
+
+
+def validate_taxonomy_generation_receipt(
+    receipt: Mapping[str, Any], *, generation_plan: Mapping[str, Any],
+    approval_record: Mapping[str, Any], generator_code_contract: Mapping[str, Any],
+    generation_run: Mapping[str, Any], raw_response_dir: Path,
+) -> list[dict[str, Any]] | None:
+    """Validate raw response bytes and the complete-run assignment receipt.
+
+    A receipt is the only bridge from transport responses to a future artifact.
+    It may describe a failed or partial run for diagnosis, but only a complete
+    receipt returns verified assignments and can be bound to a manifest.
+    """
+    _validate_taxonomy_generation_receipt_shape(receipt)
+    validate_taxonomy_generation_plan(generation_plan)
+    validate_taxonomy_approval_record(approval_record, allow_synthetic=True)
+    validate_generator_code_contract(generator_code_contract)
+    validate_taxonomy_generator_run_against_plan(generation_run, generation_plan)
+    plan_hash = generation_plan_sha256(generation_plan)
+    contract_hash = generator_contract_sha256(generator_code_contract)
+    approval_hash = approval_record_sha256(approval_record)
+    if receipt["generation_plan_sha256"] != plan_hash:
+        raise ValueError("taxonomy generation receipt plan hash does not match plan")
+    if receipt["approval_record_sha256"] != approval_hash:
+        raise ValueError("taxonomy generation receipt approval hash does not match approval record")
+    if receipt["generator_contract_sha256"] != contract_hash:
+        raise ValueError("taxonomy generation receipt generator contract hash does not match contract")
+    if receipt["generator_source_commit"] != generation_plan["generator_source_commit"]:
+        raise ValueError("taxonomy generation receipt generator source commit does not match plan")
+    if receipt["generation_run_sha256"] != generation_run["generation_run_sha256"]:
+        raise ValueError("taxonomy generation receipt generation run hash does not match run")
+    if receipt["runtime"] != generation_plan["generator"]["runtime"]:
+        raise ValueError("taxonomy generation receipt runtime does not match approved generator specification")
+    if receipt["determinism_status"] != generation_plan["determinism_mode"]:
+        raise ValueError("taxonomy generation receipt determinism_status does not match plan")
+    expected_requests = [batch["generation_request_sha256"] for batch in generation_run["batches"]]
+    if receipt["ordered_generation_request_sha256s"] != expected_requests:
+        raise ValueError("taxonomy generation receipt ordered request hashes do not match run")
+    records: dict[int, Mapping[str, Any]] = {}
+    responses: list[Mapping[str, Any]] = []
+    retries = 0
+    for record in receipt["raw_response_files"]:
+        _validate_receipt_raw_response_record(record, raw_response_dir=raw_response_dir)
+        ordinal = record["batch_ordinal"]
+        if ordinal in records or ordinal >= len(generation_run["batches"]):
+            raise ValueError("taxonomy generation receipt has duplicate or out-of-range successful batch")
+        expected_batch = generation_run["batches"][ordinal]
+        if record["generation_request_sha256"] != expected_batch["generation_request_sha256"]:
+            raise ValueError("taxonomy generation receipt raw response belongs to another batch or run")
+        path = (raw_response_dir.resolve() / record["relative_path"]).resolve()
+        try:
+            response = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            raise ValueError("taxonomy generation receipt raw response JSON is invalid") from error
+        if not isinstance(response, Mapping):
+            raise ValueError("taxonomy generation receipt raw response must be an object")
+        if response.get("generation_request_sha256") != record["generation_request_sha256"]:
+            raise ValueError("taxonomy generation receipt raw response request does not match file record")
+        records[ordinal] = record
+        responses.append(response)
+        retries += record["retry_count"]
+    if list(records) != sorted(records):
+        raise ValueError("taxonomy generation receipt raw response records must be batch-ordinal sorted")
+    summary = receipt["batch_summary"]
+    if len(records) != summary["succeeded"] or retries != summary["retries"]:
+        raise ValueError("taxonomy generation receipt successful batch or retry count does not match raw records")
+    if receipt["status"] != "complete":
+        return None
+    assignments = rejoin_taxonomy_generator_run_outputs(generation_run, responses)
+    if receipt["assignment_canonical_sha256"] != sha256_json(assignments):
+        raise ValueError("taxonomy generation receipt assignment hash does not match raw responses")
+    return assignments
+
+
 def build_taxonomy_artifact_manifest(
     *, full_artifact: Mapping[str, Any], artifact_records: Mapping[int, Mapping[str, Any]],
     generator_source_commit: str, generator_contract_sha256: str, generation_plan_sha256: str,
-    approval_record_sha256: str,
+    approval_record_sha256: str, generation_receipt: Mapping[str, Any],
 ) -> dict[str, Any]:
     """Build the tracked manifest; large artifact bodies remain outside Git."""
     full_audit = validate_taxonomy_artifact(full_artifact)
@@ -1144,6 +1458,19 @@ def build_taxonomy_artifact_manifest(
     _require_sha256(generator_contract_sha256, label="taxonomy manifest generator contract")
     _require_sha256(generation_plan_sha256, label="taxonomy manifest generation plan")
     _require_sha256(approval_record_sha256, label="taxonomy manifest approval record")
+    _validate_taxonomy_generation_receipt_shape(generation_receipt)
+    if generation_receipt.get("status") != "complete":
+        raise ValueError("taxonomy artifact manifest cannot be built from partial or failed generation receipt")
+    if generation_receipt["generation_plan_sha256"] != generation_plan_sha256:
+        raise ValueError("taxonomy artifact manifest receipt plan hash does not match manifest")
+    if generation_receipt["approval_record_sha256"] != approval_record_sha256:
+        raise ValueError("taxonomy artifact manifest receipt approval hash does not match manifest")
+    if generation_receipt["generator_contract_sha256"] != generator_contract_sha256:
+        raise ValueError("taxonomy artifact manifest receipt generator contract hash does not match manifest")
+    if generation_receipt["generator_source_commit"] != generator_source_commit:
+        raise ValueError("taxonomy artifact manifest receipt generator source commit does not match manifest")
+    if generation_receipt["assignment_canonical_sha256"] != sha256_json(full_artifact["assignments"]):
+        raise ValueError("taxonomy artifact manifest receipt assignment hash does not match artifact")
     normalized_records: dict[str, dict[str, Any]] = {}
     for scale in SCALE_SIZES:
         record = dict(artifact_records[scale])
@@ -1166,6 +1493,7 @@ def build_taxonomy_artifact_manifest(
         "generator_contract_sha256": generator_contract_sha256,
         "generation_plan_sha256": generation_plan_sha256,
         "approval_record_sha256": approval_record_sha256,
+        "generation_receipt_sha256": taxonomy_generation_receipt_sha256(generation_receipt),
         "source_scale": TAXONOMY_SOURCE_SCALE,
         "input_contract": dict(full_artifact["input_contract"]),
         "provenance": provenance,
@@ -1199,6 +1527,7 @@ def validate_taxonomy_artifact_manifest(
         "schema_version", "generated_at", "taxonomy_artifact_id", "dataset", "language", "source_revisions", "retrieval_unit",
         "generator_source_commit", "source_scale", "input_contract", "provenance",
         "generator_contract_sha256", "generation_plan_sha256", "approval_record_sha256",
+        "generation_receipt_sha256",
         "source_artifact_content_sha256", "artifacts",
     }
     if set(manifest) != required:
@@ -1222,6 +1551,7 @@ def validate_taxonomy_artifact_manifest(
     _require_sha256(manifest.get("generator_contract_sha256"), label="taxonomy artifact manifest generator contract")
     _require_sha256(manifest.get("generation_plan_sha256"), label="taxonomy artifact manifest generation plan")
     _require_sha256(manifest.get("approval_record_sha256"), label="taxonomy artifact manifest approval record")
+    _require_sha256(manifest.get("generation_receipt_sha256"), label="taxonomy artifact manifest generation receipt")
     _validate_semantic_input_contract(manifest.get("input_contract"))
     _validate_provenance(manifest.get("provenance"))
     if expected_provenance is not None:
@@ -1291,6 +1621,8 @@ def validate_taxonomy_artifact_authorization(
     manifest: Mapping[str, Any], *, generation_plan: Mapping[str, Any],
     approval_record: Mapping[str, Any] | None, generator_code_contract: Mapping[str, Any] | None,
     verified_input_provenance: Mapping[str, str], generator_source_root: Path,
+    generation_run: Mapping[str, Any] | None, generation_receipt: Mapping[str, Any] | None,
+    raw_response_dir: Path | None, source_artifact: Mapping[str, Any],
 ) -> None:
     """Bind an integrity-checked artifact to an approved pre-generation plan."""
     validate_taxonomy_generation_preflight(
@@ -1300,6 +1632,24 @@ def validate_taxonomy_artifact_authorization(
         verified_input_provenance=verified_input_provenance,
         generator_source_root=generator_source_root,
     )
+    if generation_run is None:
+        raise FileNotFoundError("taxonomy generation run is missing")
+    if generation_receipt is None:
+        raise FileNotFoundError("taxonomy generation receipt is missing")
+    if raw_response_dir is None:
+        raise FileNotFoundError("taxonomy generation raw response directory is missing")
+    if approval_record is None or generator_code_contract is None:
+        raise FileNotFoundError("taxonomy generation authorization control is missing")
+    receipt_assignments = validate_taxonomy_generation_receipt(
+        generation_receipt,
+        generation_plan=generation_plan,
+        approval_record=approval_record,
+        generator_code_contract=generator_code_contract,
+        generation_run=generation_run,
+        raw_response_dir=raw_response_dir,
+    )
+    if receipt_assignments is None:
+        raise ValueError("partial or failed taxonomy generation receipt cannot authorize an artifact")
     plan_hash = generation_plan_sha256(generation_plan)
     if manifest.get("generation_plan_sha256") != plan_hash:
         raise ValueError("taxonomy artifact manifest generation plan hash does not match authorization")
@@ -1313,12 +1663,22 @@ def validate_taxonomy_artifact_authorization(
         raise ValueError("taxonomy artifact manifest generator metadata does not match generation plan")
     if approval_record is None or manifest.get("approval_record_sha256") != approval_record_sha256(approval_record):
         raise ValueError("taxonomy artifact manifest approval record does not match authorization")
+    if manifest.get("generation_receipt_sha256") != taxonomy_generation_receipt_sha256(generation_receipt):
+        raise ValueError("taxonomy artifact manifest generation receipt does not match authorization")
     manifest_input_provenance = {
         key: manifest.get("provenance", {}).get(key)
         for key in generation_plan["input_provenance"]
     }
     if manifest_input_provenance != generation_plan["input_provenance"]:
         raise ValueError("taxonomy artifact manifest input provenance does not match generation plan")
+    # The source identity artifact assignment order is canonical by corpus_id;
+    # this exact comparison prevents a valid receipt from being bound to a
+    # differently assembled taxonomy body.
+    validate_taxonomy_artifact(source_artifact)
+    if taxonomy_artifact_sha256(source_artifact) != manifest.get("source_artifact_content_sha256"):
+        raise ValueError("taxonomy artifact manifest source body does not match authorization")
+    if sha256_json(source_artifact["assignments"]) != generation_receipt["assignment_canonical_sha256"]:
+        raise ValueError("taxonomy artifact assignments do not match generation receipt")
 
 
 def load_integrity_only_taxonomy_projection(
@@ -1349,6 +1709,8 @@ def load_authorized_taxonomy_projection(
     generation_plan: Mapping[str, Any], approval_record: Mapping[str, Any] | None,
     generator_code_contract: Mapping[str, Any] | None,
     verified_input_provenance: Mapping[str, str], generator_source_root: Path,
+    generation_run: Mapping[str, Any] | None, generation_receipt: Mapping[str, Any] | None,
+    raw_response_dir: Path | None,
     expected_source_revisions: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Return a projection only after integrity and generation authorization pass."""
@@ -1371,6 +1733,17 @@ def load_authorized_taxonomy_projection(
         generator_code_contract=generator_code_contract,
         verified_input_provenance=verified_input_provenance,
         generator_source_root=generator_source_root,
+        generation_run=generation_run,
+        generation_receipt=generation_receipt,
+        raw_response_dir=raw_response_dir,
+        source_artifact=_load_artifact(
+            _validate_file_record(
+                manifest["artifacts"][str(TAXONOMY_SOURCE_SCALE)]["artifact_file"],
+                data_dir=data_dir,
+                label="taxonomy 110K",
+            ),
+            label="taxonomy 110K",
+        ),
     )
     record = manifest["artifacts"][str(scale)]["artifact_file"]
     return _load_artifact(_validate_file_record(record, data_dir=data_dir, label=f"taxonomy {scale}"), label=f"taxonomy {scale}")

@@ -99,6 +99,21 @@ def main() -> int:
         default=Path("config/miracl_ko_taxonomy_generator_code_contract.json"),
     )
     parser.add_argument(
+        "--generation-run",
+        type=Path,
+        default=Path("config/miracl_ko_taxonomy_generation_run.json"),
+    )
+    parser.add_argument(
+        "--generation-receipt",
+        type=Path,
+        default=Path("config/miracl_ko_taxonomy_generation_receipt.json"),
+    )
+    parser.add_argument(
+        "--raw-response-dir",
+        type=Path,
+        default=Path("data/miracl-ko/taxonomy/raw-responses"),
+    )
+    parser.add_argument(
         "--generator-source-root",
         type=Path,
         default=REPO_ROOT,
@@ -125,6 +140,21 @@ def main() -> int:
         (REPO_ROOT / args.generator_code_contract).resolve()
         if not args.generator_code_contract.is_absolute()
         else args.generator_code_contract
+    )
+    generation_run_path = (
+        (REPO_ROOT / args.generation_run).resolve()
+        if not args.generation_run.is_absolute()
+        else args.generation_run
+    )
+    generation_receipt_path = (
+        (REPO_ROOT / args.generation_receipt).resolve()
+        if not args.generation_receipt.is_absolute()
+        else args.generation_receipt
+    )
+    raw_response_dir = (
+        (REPO_ROOT / args.raw_response_dir).resolve()
+        if not args.raw_response_dir.is_absolute()
+        else args.raw_response_dir.resolve()
     )
     generator_source_root = (
         (REPO_ROOT / args.generator_source_root).resolve()
@@ -163,6 +193,8 @@ def main() -> int:
             (plan_path, "taxonomy generation plan"),
             (approval_path, "taxonomy approval record"),
             (generator_contract_path, "taxonomy generator code contract"),
+            (generation_run_path, "taxonomy generation run"),
+            (generation_receipt_path, "taxonomy generation receipt"),
         ):
             if not path.is_file():
                 raise FileNotFoundError(f"{label} is missing: {path}")
@@ -171,6 +203,9 @@ def main() -> int:
             (plan_path, "taxonomy generation plan"),
             (approval_path, "taxonomy approval record"),
             (generator_contract_path, "taxonomy generator code contract"),
+            (generation_run_path, "taxonomy generation run"),
+            (generation_receipt_path, "taxonomy generation receipt"),
+            (raw_response_dir, "taxonomy generation raw response directory"),
         ):
             require_external_control_path(path, generator_source_root=generator_source_root, label=label)
         input_provenance = verified_taxonomy_provenance(
@@ -185,6 +220,12 @@ def main() -> int:
             generator_code_contract=load_json(generator_contract_path),
             verified_input_provenance=input_provenance,
             generator_source_root=generator_source_root,
+            generation_run=load_json(generation_run_path),
+            generation_receipt=load_json(generation_receipt_path),
+            raw_response_dir=raw_response_dir,
+            source_artifact=load_json(
+                data_dir / taxonomy_manifest["artifacts"][str(110_000)]["artifact_file"]["relative_path"]
+            ),
         )
         report = {
             "artifact_integrity": integrity,
