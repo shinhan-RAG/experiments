@@ -489,6 +489,8 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             "retrieved_docs": result["retrieved_docs"],
             "turns": 1,
             "latency_seconds": latency_seconds,
+            "reranker_used": result.get("reranker_used"),
+            "reranker_error": result.get("reranker_error"),
         }
 
     results = [None] * len(queries)

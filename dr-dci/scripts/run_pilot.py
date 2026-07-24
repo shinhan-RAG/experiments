@@ -4,7 +4,8 @@
 구성요소 (모두 실제):
 - 모델 엔드포인트는 config/experiment.yaml의 models 섹션을 그대로 사용한다
   (임베딩/리랭커: H200 서버 포트 기준, agent/judge: OpenAI API).
-- 리랭커는 선택. 없으면 HybridRAG가 자동 fallback (리랭크 생략)한다.
+- 리랭커는 선택. url을 비워두면 리랭크를 명시적으로 생략하고, url이 설정됐는데
+  호출이 실패하면 조용한 fallback 대신 중단한다 (arm 라벨-실제 구성 불일치 방지).
 - H200 서버 없이 로컬 테스트할 때는 scripts/serve/의 WSL vLLM 스크립트를 띄우거나
   PILOT_EMBED=openai 로 OpenAI 임베딩으로 전환할 수 있다.
 
