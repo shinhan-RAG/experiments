@@ -3,7 +3,7 @@
 ## Dataset Size
 
 - Documents: 9,251
-- Queries: 2,833
+- Queries: 592
 - Queries with positive gold: 592
 - Positive qrels: 1,145
 - Unique gold documents: 1,077

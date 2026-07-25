@@ -19,11 +19,20 @@
   },
   "ko-strategyqa": {
     "documents": 9251,
-    "queries": 2833,
+    "queries": 592,
     "document_token_p50": 64.0,
     "document_token_p95": 150.0,
     "multi_gold_query_rate": 0.643581,
     "zero_overlap_query_rate": 0.258446,
     "query_token_coverage_p50": 0.25
+  },
+  "longdoc": {
+    "documents": 5642,
+    "queries": 1981,
+    "document_token_p50": 665.0,
+    "document_token_p95": 747.0,
+    "multi_gold_query_rate": 0.0,
+    "zero_overlap_query_rate": 0.003534,
+    "query_token_coverage_p50": 0.8125
   }
 }

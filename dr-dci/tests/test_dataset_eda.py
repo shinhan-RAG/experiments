@@ -7,7 +7,7 @@ from src.eval.dataset_eda import analyze_dataset, render_markdown
 
 
 def write_jsonl(path, rows):
-    with path.open("w") as stream:
+    with path.open("w", encoding="utf-8") as stream:
         for row in rows:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
 
