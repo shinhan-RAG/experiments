@@ -53,6 +53,13 @@ datasets:
     queries: 50
   ko-strategyqa:
     queries: 50
+  # 법률(청크형) 데이터셋 — corpus는 data/aihub/<variant>, qrels는 parent 기준.
+  # 질의는 agent_queries_50.jsonl(층화 50문항)이 자동 사용된다.
+  aihub-smoke20k:
+    queries: 50
+  aihub-full:
+    subsets: [20000, 50000, 110000, 170000]
+    queries: 50
   shinhan:
     # 신한라이프 실무문서(약관/상품/LICO) 28건 → 2,802청크, 균등샘플 50쿼리
     # 피터님 실험 데이터셋을 실제 도메인 문서로 재구성한 버전
