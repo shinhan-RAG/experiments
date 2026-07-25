@@ -58,6 +58,11 @@ datasets:
   legal-qa:
     # QA데이터: aihub 판례 corpus를 공유(qrels가 precedent parent를 가리킴)
     queries: 50
+  longdoc:
+    # 장문 법률 문서: 보험업법 등 금융법령 4건 + 판례 합본 2,075건 → 5,642청크.
+    # ruling-anon과 같은 규칙(판시사항=질의, 본문에서 제외)으로 1,981질의를 빌드한다.
+    #   python scripts/build_longdoc_queries.py
+    queries: 50
 
 # Experiment parts
 parts:
@@ -136,6 +141,12 @@ parts:
         augment: false
         queries: 50
       - name: "legal-qa"
+        subset: null
+        augment: false
+        queries: 50
+      # longdoc: 금융법령 + 장문 판례. 신한라이프 문서(약관·판례)와 가장 가까운 도메인이라
+      # 규모가 아닌 문서 길이 축에서 방법론 일반화를 본다.
+      - name: "longdoc"
         subset: null
         augment: false
         queries: 50

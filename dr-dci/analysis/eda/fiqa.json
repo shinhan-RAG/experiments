@@ -1,25 +1,25 @@
 {
   "eda_version": 1,
   "dataset": "fiqa",
-  "generated_at_utc": "2026-07-21T08:41:53.842325+00:00",
+  "generated_at_utc": "2026-07-25T18:49:42.282821+00:00",
   "source": {
-    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/fiqa",
+    "directory": "C:\\Users\\Atdev-pc\\Desktop\\test\\experiments\\dr-dci\\data\\raw\\fiqa",
     "configured_huggingface_ids": {
       "corpus_queries": "BeIR/fiqa",
       "qrels": "BeIR/fiqa-qrels"
     },
     "files": {
       "corpus.jsonl": {
-        "sha256": "ec682921b2f308f8ba524e155b3aa3e2a33f76a55397e3ed6b60245829d69f98",
-        "bytes": 46814512
+        "sha256": "651ab67569665f0feda939d8b10fe3024c5d79e314bd645bae55dde45b75df92",
+        "bytes": 46937395
       },
       "queries.jsonl": {
-        "sha256": "0074610e27a62e8fe983c5e118c3c26c3566a7be42363b7ab918ebcaf7fdf196",
-        "bytes": 653449
+        "sha256": "7a90cb1d03ac18e4401ea24a77443d8c9f974b681def559a7c0763bbfcfb56a9",
+        "bytes": 604298
       },
       "qrels.jsonl": {
-        "sha256": "caee8f712e93efee918a78277875ded4b4c57c48187614b0e62c083793dffdb2",
-        "bytes": 79822
+        "sha256": "2094e3e678bb9dfee1d1541ec67d21d0d4954348077c9f1278136c1f5960b7d1",
+        "bytes": 90058
       }
     }
   },
