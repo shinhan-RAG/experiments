@@ -34,13 +34,69 @@ def duplicate_arms(steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _load_json(path: Path) -> Any:
-    with path.open() as stream:
+    with path.open(encoding="utf-8") as stream:
         return json.load(stream)
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
-    with path.open() as stream:
+    with path.open(encoding="utf-8") as stream:
         return [json.loads(line) for line in stream if line.strip()]
+
+
+def _iter_jsonl(path: Path):
+    with path.open(encoding="utf-8") as stream:
+        for line in stream:
+            if line.strip():
+                yield json.loads(line)
+
+
+# aihub 계열(법률)은 data/raw/<ds>가 아닌 data/aihub/<variant>에 있고,
+# 서브셋을 doc-id가 아닌 parent-id 목록({size}_parent_ids.json)으로 정의한다.
+# run_experiment.dataset_dir / scripts.utils.dataset_dir 와 동일하게 유지한다.
+AIHUB_DATASET_DIRS = {
+    "aihub-full": ("aihub", "full"),
+    "aihub-smoke20k": ("aihub", "smoke20k"),
+}
+
+
+def _dataset_dir(data_dir: Path, dataset: str) -> Path:
+    if dataset in AIHUB_DATASET_DIRS:
+        group, variant = AIHUB_DATASET_DIRS[dataset]
+        return data_dir / group / variant
+    return data_dir / "raw" / dataset
+
+
+def _parent_subset_path(data_dir: Path, dataset: str, size: int) -> Path:
+    return _dataset_dir(data_dir, dataset) / f"{size // 1000}k_parent_ids.json"
+
+
+def _is_chunked(data_dir: Path, dataset: str, sizes: list[int]) -> bool:
+    return any(_parent_subset_path(data_dir, dataset, size).exists() for size in sizes)
+
+
+def _augmentation_expected_ids(
+    data_dir: Path, dataset: str, sizes: list[int],
+    subset_ids: dict[int, set[str]],
+) -> dict[int, set[str]]:
+    """Return per-size id sets at the *augmentation* unit.
+
+    Augmentations (taxonomy/prefix/metadata/tags) are keyed by chunk ``_id``.
+    For chunked (법률) corpora the subset is defined by parent ids, so expand
+    each parent to its chunk ids via the corpus. BEIR corpora already carry
+    doc(=chunk) ids, so the subset ids pass through unchanged.
+    """
+    if not _is_chunked(data_dir, dataset, sizes):
+        return subset_ids
+    chunks_by_parent: dict[str, set[str]] = defaultdict(set)
+    for row in _iter_jsonl(_dataset_dir(data_dir, dataset) / "corpus.jsonl"):
+        chunks_by_parent[str(row.get("parent_id", row["_id"]))].add(str(row["_id"]))
+    expanded: dict[int, set[str]] = {}
+    for size, parents in subset_ids.items():
+        chunk_ids: set[str] = set()
+        for parent in parents:
+            chunk_ids |= chunks_by_parent.get(parent, set())
+        expanded[size] = chunk_ids
+    return expanded
 
 
 def _artifact_path(data_dir: Path, dataset: str, size: int, feature: str,
@@ -63,8 +119,8 @@ def required_features(steps: list[dict[str, Any]]) -> dict[str, set[str]]:
 
 
 def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, Any]:
-    raw_dir = data_dir / "raw" / dataset
-    qrels = _load_jsonl(raw_dir / "qrels.jsonl")
+    ds_dir = _dataset_dir(data_dir, dataset)
+    qrels = _load_jsonl(ds_dir / "qrels.jsonl")
     positive_gold = {
         str(row["corpus-id"]) for row in qrels if float(row.get("score", 0)) >= 1
     }
@@ -74,19 +130,26 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
     blockers = []
     subset_ids_by_size: dict[int, set[str]] = {}
     for size in sizes:
-        path = data_dir / "subsets" / dataset / f"{size // 1000}k.json"
-        if not path.exists():
-            blockers.append(f"missing subset manifest: {path}")
-            continue
-        payload = _load_json(path)
-        raw_ids = [str(value) for value in payload.get("doc_ids", [])]
+        parent_path = _parent_subset_path(data_dir, dataset, size)
+        if parent_path.exists():
+            # 청크형(법률) corpus: 서브셋은 parent 문서 ID의 평문 배열이다.
+            raw_ids = [str(value) for value in _load_json(parent_path)]
+            declared_size = None
+        else:
+            path = data_dir / "subsets" / dataset / f"{size // 1000}k.json"
+            if not path.exists():
+                blockers.append(f"missing subset manifest: {path}")
+                continue
+            payload = _load_json(path)
+            raw_ids = [str(value) for value in payload.get("doc_ids", [])]
+            declared_size = payload.get("subset_size")
         ids = set(raw_ids)
         subset_ids_by_size[size] = ids
         missing_gold = sorted(positive_gold - ids)
         nested = previous_ids is None or previous_ids <= ids
         report = {
             "size": size,
-            "declared_size": payload.get("subset_size"),
+            "declared_size": declared_size,
             "actual_unique_size": len(ids),
             "duplicate_id_count": len(raw_ids) - len(ids),
             "positive_gold_count": len(positive_gold),
@@ -202,12 +265,17 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
         raise ValueError("no Part 1 treatment arms selected")
     subset_report = audit_subsets(data_dir, dataset, sizes)
     duplicates = duplicate_arms(part1["steps"])
+    # 청크형 corpus는 서브셋이 parent 단위지만 augmentation은 chunk 단위이므로,
+    # 커버리지 검사는 parent 서브셋을 chunk id 집합으로 펼쳐서 비교한다.
+    aug_expected = _augmentation_expected_ids(
+        data_dir, dataset, sizes, subset_report.pop("_ids")
+    )
     augmentation_report = audit_augmentations(
         data_dir,
         dataset,
         sizes,
         selected_steps,
-        subset_report.pop("_ids"),
+        aug_expected,
     )
     blockers = [*subset_report["blockers"], *augmentation_report["blockers"]]
     if duplicates:
