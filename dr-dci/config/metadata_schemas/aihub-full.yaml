@@ -1,0 +1,78 @@
+dataset: aihub-full
+domain: korean_legal
+description: "Korean court precedents / administrative decisions and legal reference books"
+
+fields:
+  source_type:
+    type: enum
+    description: "Kind of source document"
+    values:
+      - precedent
+      - decision
+      - book
+      - other
+
+  court_level:
+    type: enum
+    description: "Deciding body level (null if undetectable)"
+    nullable: true
+    values:
+      - supreme
+      - high
+      - district
+      - administrative
+      - constitutional
+      - tribunal
+      - other
+
+  year:
+    type: integer
+    description: "Decision or publication year (null if undetectable)"
+    range: [1950, 2025]
+    nullable: true
+
+  case_type:
+    type: enum
+    description: "Primary legal area (mirrors taxonomy L1)"
+    nullable: true
+    values:
+      - civil
+      - criminal
+      - administrative
+      - family
+      - commercial
+      - labor
+      - tax
+      - constitutional
+      - other
+
+  disposition:
+    type: enum
+    description: "Outcome of the ruling (null if undetectable)"
+    nullable: true
+    values:
+      - affirmed
+      - reversed
+      - dismissed
+      - remanded
+      - partial
+      - other
+
+  entities:
+    type: list
+    description: "Key named entities in the document"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "Entity name"
+      category:
+        type: enum
+        values:
+          - statute
+          - party
+          - court
+          - monetary_amount
+          - date
+          - legal_concept
+          - other

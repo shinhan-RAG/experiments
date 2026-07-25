@@ -8,11 +8,9 @@
 import json
 import re
 from pathlib import Path
-from utils import run_batch_llm, parse_llm_content
+from utils import run_batch_llm, parse_llm_content, load_corpus_subset
 
 DATA_DIR = Path(__file__).parent.parent / "data"
-RAW_DIR = DATA_DIR / "raw"
-SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "tags"
 
 # 하위 태그 정의
@@ -44,11 +42,6 @@ SYSTEM_PROMPT_C = f"""You are a document structure analyst. Determine the elemen
 Options: {ELEMENT_TYPES}
 
 Respond in JSON: {{"type": "..."}}"""
-
-
-def load_jsonl(path: Path) -> list:
-    with open(path, encoding="utf-8") as f:
-        return [json.loads(line) for line in f]
 
 
 def split_elements(doc: dict) -> list:
@@ -113,10 +106,15 @@ def tag_elements_batch(elements: list, approach: str) -> list:
         if raw is None:
             result = {"type": "paragraph", "sub": "summary" if approach == "A" else "what"}
         else:
+            default = {"type": "paragraph", "sub": "summary" if approach == "A" else "what"}
             try:
-                result = json.loads(parse_llm_content(raw))
-            except json.JSONDecodeError:
-                result = {"type": "paragraph", "sub": "summary" if approach == "A" else "what"}
+                parsed = json.loads(parse_llm_content(raw))
+                # 일부 LLM(gpt-4o-mini)은 객체 대신 배열/스칼라를 반환 → dict로 정규화
+                if isinstance(parsed, list):
+                    parsed = next((x for x in parsed if isinstance(x, dict)), {})
+                result = parsed if isinstance(parsed, dict) else default
+            except (json.JSONDecodeError, TypeError):
+                result = default
 
         el_type = result.get("type", "paragraph")
         if el_type not in ELEMENT_TYPES:
@@ -137,25 +135,24 @@ def tag_elements_batch(elements: list, approach: str) -> list:
     return tagged
 
 
-def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
-    """서브셋 문서에 대해 3가지 방식의 @el: 태그 생성"""
-    print(f"=== Building @el: Tags for {dataset} ({subset_size // 1000}K) ===")
+def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000,
+               approaches: tuple = ("A", "B", "C")):
+    """서브셋 문서에 대해 요청한 방식(들)의 @el: 태그 생성.
 
-    # 이미 존재하면 스킵 (approach C 기준)
-    check_path = OUTPUT_DIR / dataset / "approach_c" / f"{subset_size // 1000}k.json"
-    if check_path.exists():
-        print(f"  Already exists: {check_path}, skipping.")
+    Part1은 approach A만 있으면 되므로 approaches=("A",)로 태깅량을 1/3로 줄일 수
+    있다(B/C는 Part3에서 추가 빌드)."""
+    print(f"=== Building @el: Tags for {dataset} ({subset_size // 1000}K) "
+          f"approaches={list(approaches)} ===")
+
+    size_key = f"{subset_size // 1000}k"
+    # 요청한 approach가 모두 이미 있으면 스킵
+    if all((OUTPUT_DIR / dataset / f"approach_{a.lower()}" / f"{size_key}.json").exists()
+           for a in approaches):
+        print(f"  Already exists for {list(approaches)}, skipping.")
         return
 
-    # 서브셋 doc IDs
-    subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path, encoding="utf-8") as f:
-        subset_info = json.load(f)
-    doc_ids = set(subset_info["doc_ids"])
-
-    # corpus 로드 (서브셋만)
-    corpus = load_jsonl(RAW_DIR / dataset / "corpus.jsonl")
-    corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
+    # 서브셋 corpus 로드 (aihub=parent-id 서브셋, BEIR=doc-id 서브셋)
+    corpus_subset = load_corpus_subset(DATA_DIR, dataset, subset_size)
     print(f"  Docs to process: {len(corpus_subset)}")
 
     # 전체 elements 생성
@@ -165,7 +162,7 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
         all_elements.extend(elements)
     print(f"  Total elements: {len(all_elements)}")
 
-    for approach in ["A", "B", "C"]:
+    for approach in approaches:
         print(f"\n  --- Approach {approach} ---")
 
         # 배치 태깅
@@ -195,8 +192,14 @@ def build_tags(dataset: str = "trec-covid", subset_size: int = 10_000):
 
 if __name__ == "__main__":
     import sys
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    argv = sys.argv[1:]
+    args = [a for a in argv if not a.startswith("-")]
     dataset = args[0] if args else "trec-covid"
-    sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
+    sizes = [20_000, 50_000, 110_000] if "--all" in argv else [20_000]
+    # --approaches A  또는  --approaches A,B,C  (기본 A,B,C)
+    approaches = ("A", "B", "C")
+    if "--approaches" in argv:
+        raw = argv[argv.index("--approaches") + 1]
+        approaches = tuple(x.strip().upper() for x in raw.split(",") if x.strip())
     for size in sizes:
-        build_tags(dataset, size)
+        build_tags(dataset, size, approaches=approaches)

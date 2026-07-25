@@ -10,11 +10,9 @@ import json
 import re
 import yaml
 from pathlib import Path
-from utils import run_batch_llm, parse_llm_content
+from utils import run_batch_llm, parse_llm_content, load_corpus_subset
 
 DATA_DIR = Path(__file__).parent.parent / "data"
-RAW_DIR = DATA_DIR / "raw"
-SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "metadata"
 SCHEMA_DIR = Path(__file__).parent.parent / "config" / "metadata_schemas"
 
@@ -131,11 +129,6 @@ def build_json_schema(schema: dict) -> dict:
     }
 
 
-def load_jsonl(path: Path) -> list:
-    with open(path, encoding="utf-8") as f:
-        return [json.loads(line) for line in f]
-
-
 def build_default_result(schema: dict) -> dict:
     """스키마 기반 기본값 생성"""
     fields = schema["fields"]
@@ -168,15 +161,8 @@ def build_metadata(dataset: str = "trec-covid", subset_size: int = 10_000):
     print(f"  Domain: {schema['domain']}")
     print(f"  Fields: {list(schema['fields'].keys())}")
 
-    # 서브셋 doc IDs
-    subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path, encoding="utf-8") as f:
-        subset_info = json.load(f)
-    doc_ids = set(subset_info["doc_ids"])
-
-    # corpus 로드
-    corpus = load_jsonl(RAW_DIR / dataset / "corpus.jsonl")
-    corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
+    # 서브셋 corpus 로드 (aihub=parent-id 서브셋, BEIR=doc-id 서브셋)
+    corpus_subset = load_corpus_subset(DATA_DIR, dataset, subset_size)
     print(f"  Docs to process: {len(corpus_subset)}")
 
     # 프롬프트 준비

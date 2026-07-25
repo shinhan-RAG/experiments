@@ -25,7 +25,7 @@ def main() -> int:
                         help="Corpus size to audit; repeatable. Defaults to Part 2 sizes")
     args = parser.parse_args()
 
-    with args.config.open() as stream:
+    with args.config.open(encoding="utf-8") as stream:
         config = yaml.safe_load(stream)
     selected = set(args.steps or ["baseline", "taxonomy_only"])
     report = audit_part12(config, args.data_dir, step_names=selected, sizes=args.sizes)

@@ -9,6 +9,7 @@ DR-DCI Augmentation Experiment Runner
 
 import json
 import os
+import random
 import yaml
 import argparse
 import subprocess
@@ -30,6 +31,8 @@ from src.eval.comparison import (
 )
 from src.eval.judge import Judge, compute_metrics
 from src.eval import span_metrics
+from src.eval.part12_contracts import audit_part12
+from src.eval.retrieval_metrics import rank_metrics
 
 
 BASE_DIR = Path(__file__).parent
@@ -38,8 +41,18 @@ CONFIG_DIR = BASE_DIR / "config"
 RESULTS_DIR = BASE_DIR / "results"
 
 
-def load_config():
-    with open(CONFIG_DIR / "experiment.yaml", encoding="utf-8") as f:
+def load_config(path: str | None = None):
+    """실험 config 로드. path 미지정 시 기본 experiment.yaml.
+
+    법률 파트는 --config config/experiment_legal.yaml 로 기존 config를 건드리지
+    않고 병렬 실행한다. 상대경로는 프로젝트 루트 기준으로도 해석한다."""
+    if path:
+        cfg_path = Path(path)
+        if not cfg_path.is_absolute() and not cfg_path.exists():
+            cfg_path = BASE_DIR / path
+    else:
+        cfg_path = CONFIG_DIR / "experiment.yaml"
+    with open(cfg_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -49,6 +62,11 @@ AIHUB_DATASET_DIRS = {
     "aihub-full": ("aihub", "full"),
     "aihub-smoke20k": ("aihub", "smoke20k"),
 }
+
+# corpus를 갖지 않고 다른 데이터셋의 corpus를 공유하는 질의 전용 데이터셋.
+# legal-qa는 자체 corpus 없이 aihub 판례 corpus를 gold로 쓴다(qrels가 precedent
+# parent를 가리킴). 질의/qrels/answers는 legal-qa 디렉토리에서 로드한다.
+CORPUS_ALIAS = {"legal-qa": "aihub-full"}
 
 
 def dataset_dir(dataset: str) -> Path:
@@ -60,8 +78,9 @@ def dataset_dir(dataset: str) -> Path:
 
 
 def load_corpus(dataset: str, subset_size: int = None):
-    """corpus 로드 (서브셋 적용)"""
-    raw_dir = dataset_dir(dataset)
+    """corpus 로드 (서브셋 적용). corpus 미보유 데이터셋은 CORPUS_ALIAS로 공유."""
+    corpus_dataset = CORPUS_ALIAS.get(dataset, dataset)
+    raw_dir = dataset_dir(corpus_dataset)
     corpus = []
     with open(raw_dir / "corpus.jsonl", encoding="utf-8") as f:
         for line in f:
@@ -77,7 +96,7 @@ def load_corpus(dataset: str, subset_size: int = None):
             corpus = [doc for doc in corpus
                       if doc.get("parent_id", doc["_id"]) in parent_ids]
         else:
-            subset_path = DATA_DIR / "subsets" / dataset / f"{size_key}.json"
+            subset_path = DATA_DIR / "subsets" / corpus_dataset / f"{size_key}.json"
             with open(subset_path, encoding="utf-8") as f:
                 doc_ids = set(json.load(f)["doc_ids"])
             corpus = [doc for doc in corpus if doc["_id"] in doc_ids]
@@ -121,12 +140,38 @@ def load_supporting_spans(dataset: str) -> dict:
     spans = {}
     if not path.exists():
         return spans
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             m = json.loads(line)
             if m.get("supporting_spans"):
                 spans[str(m["qid"])] = m["supporting_spans"]
     return spans
+
+
+def parent_map_from_corpus(corpus: list) -> dict:
+    """청크형 corpus의 {chunk_id → parent_id}. BEIR corpus면 빈 dict.
+
+    법률 corpus는 `_id`가 청크 ID이고 qrels의 corpus-id는 parent 문서를
+    가리키므로, 평가 전에 검색 결과를 parent 수준으로 사상해야 한다."""
+    return {
+        str(doc["_id"]): str(doc["parent_id"])
+        for doc in corpus
+        if doc.get("parent_id") and doc["parent_id"] != doc["_id"]
+    }
+
+
+def to_parent_ids(ids: list, parent_map: dict) -> list:
+    """ID 목록을 parent 수준으로 사상하고 첫 등장 순서 유지로 중복 제거."""
+    if not parent_map:
+        return list(ids)
+    seen = set()
+    out = []
+    for doc_id in ids:
+        pid = parent_map.get(str(doc_id), str(doc_id))
+        if pid not in seen:
+            seen.add(pid)
+            out.append(pid)
+    return out
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
@@ -358,12 +403,12 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     if step_config.get("taxonomy"):
         schema_path = CONFIG_DIR / "taxonomy_schemas" / f"{dataset}.yaml"
         if schema_path.exists():
-            with open(schema_path) as f:
+            with open(schema_path, encoding="utf-8") as f:
                 taxonomy_schema = yaml.safe_load(f)
     if step_config.get("metadata"):
         schema_path = CONFIG_DIR / "metadata_schemas" / f"{dataset}.yaml"
         if schema_path.exists():
-            with open(schema_path) as f:
+            with open(schema_path, encoding="utf-8") as f:
                 metadata_schema = yaml.safe_load(f)
 
     # Agent
@@ -386,7 +431,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
     )
 
     # Judge
-    with open(CONFIG_DIR / "judge_prompt.txt") as f:
+    with open(CONFIG_DIR / "judge_prompt.txt", encoding="utf-8") as f:
         judge_prompt = f.read()
     judge = Judge(
         llm_url=models["judge_llm"]["url"],
@@ -522,7 +567,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     parent_map = parent_map_from_corpus(corpus)
 
     # Judge
-    with open(CONFIG_DIR / "judge_prompt.txt") as f:
+    with open(CONFIG_DIR / "judge_prompt.txt", encoding="utf-8") as f:
         judge_prompt = f.read()
     judge = Judge(
         llm_url=models["judge_llm"]["url"],
@@ -631,7 +676,7 @@ def run_part1(config: dict, *, focused: bool = False):
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     ref_answers = {}
     if ref_path.exists():
-        with open(ref_path) as f:
+        with open(ref_path, encoding="utf-8") as f:
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
@@ -723,7 +768,7 @@ def run_part2(config: dict, *, focused: bool = False):
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     ref_answers = {}
     if ref_path.exists():
-        with open(ref_path) as f:
+        with open(ref_path, encoding="utf-8") as f:
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
@@ -826,11 +871,6 @@ def run_part2(config: dict, *, focused: bool = False):
         analysis=analysis,
     )
 
-        print(f"\n  --- Hybrid RAG @ {size_key} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
-        metrics = compute_metrics(results)
-        all_results[f"hybrid_{size_key}"] = {"results": results, "metrics": metrics}
-        print(f"    Metrics: {metrics}")
 
 def run_part2_scale_probe(config: dict):
     """Part 2 선행 probe: 같은 질의를 nested subset(20K/50K/110K)에서 dense
@@ -921,7 +961,7 @@ def run_part3(config: dict):
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     ref_answers = {}
     if ref_path.exists():
-        with open(ref_path) as f:
+        with open(ref_path, encoding="utf-8") as f:
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
@@ -938,31 +978,76 @@ def run_part3(config: dict):
     save_results("part3_tags", all_results)
 
 
+def _sample_generalization_queries(queries: list, qrels: list, corpus: list,
+                                   n: int, seed: int) -> list:
+    """gold가 (서브)corpus 안에 존재하는 질의만 남겨 결정적으로 n개 표본.
+
+    sampled_queries.json이 없는 데이터셋(ruling-anon/legal-qa 등)에서 기존 50질의
+    설계와 맞추기 위한 폴백. gold가 corpus에 없으면 recall 분모에서 빠지므로 제외."""
+    from collections import defaultdict
+    parent_map = parent_map_from_corpus(corpus)
+    present = set(parent_map.values()) if parent_map else {doc["_id"] for doc in corpus}
+    gold_by_q = defaultdict(set)
+    for entry in qrels:
+        if entry["score"] >= 1:
+            gold_by_q[str(entry["query-id"])].add(str(entry["corpus-id"]))
+    eligible = [
+        q for q in queries
+        if gold_by_q.get(str(q["_id"])) and (gold_by_q[str(q["_id"])] & present)
+    ]
+    random.Random(seed).shuffle(eligible)
+    return eligible[:n]
+
+
 def run_part4(config: dict):
-    """Part 4: 일반화 검증"""
+    """Part 4: 일반화 검증.
+
+    datasets 항목은 문자열(fiqa 등, 20K·full-stack 기본) 또는
+    {name, subset, augment, queries} dict(법률 데이터셋)를 모두 허용한다."""
+    part_cfg = config["parts"]["part4_generalization"]
+    seed = config.get("seed", 42)
+    names = [e if isinstance(e, str) else e["name"] for e in part_cfg["datasets"]]
     print("\n" + "=" * 60)
-    print("Part 4: Generalization (FiQA, Ko-StrategyQA)")
+    print(f"Part 4: Generalization ({', '.join(names)})")
     print("=" * 60)
 
-    part_cfg = config["parts"]["part4_generalization"]
-
     all_results = {}
-    for dataset in part_cfg["datasets"]:
-        subset_size = 20_000
+    for entry in part_cfg["datasets"]:
+        if isinstance(entry, str):
+            dataset, subset_size, augment, n_q = entry, 20_000, True, 50
+        else:
+            dataset = entry["name"]
+            subset_size = entry.get("subset", 20_000)
+            augment = entry.get("augment", True)
+            n_q = entry.get("queries", 50)
+
         corpus = load_corpus(dataset, subset_size)
         queries, qrels = load_queries(dataset)
 
-        # sampled queries만 사용
+        # 질의 표본: sampled_queries.json 있으면 사용, 없으면 gold 보유 질의에서 결정적 샘플
         sampled_path = DATA_DIR / "subsets" / dataset / "sampled_queries.json"
         if sampled_path.exists():
             with open(sampled_path) as f:
                 sampled = json.load(f)
             query_ids = set(str(qid) for qid in sampled["query_ids"])
             queries = [q for q in queries if str(q["_id"]) in query_ids]
+        elif len(queries) > n_q:
+            queries = _sample_generalization_queries(queries, qrels, corpus, n_q, seed)
+        print(f"  {dataset}: corpus={len(corpus)} queries={len(queries)} "
+              f"subset={subset_size} augment={augment}")
 
-        ref_answers = {}  # FiQA/Ko-StrategyQA는 reference answer 없음 → recall만 평가
+        # reference answers (있으면 accuracy judge; 없으면 recall-only)
+        ref_answers = {}
+        ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
+        if ref_path.exists():
+            with open(ref_path, encoding="utf-8") as f:
+                for item in json.load(f):
+                    ref_answers[item["query_id"]] = item["reference_answer"]
 
-        step_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
+        if augment:
+            step_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
+        else:
+            step_config = {"taxonomy": False, "tags": False, "prefix": False, "metadata": False}
 
         print(f"\n  --- DR-DCI @ {dataset} ---")
         results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, subset_size, dataset)
@@ -994,7 +1079,7 @@ def run_part5(config: dict, probe_only: bool = False):
     ref_answers = {}
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     if ref_path.exists():
-        with open(ref_path) as f:
+        with open(ref_path, encoding="utf-8") as f:
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
@@ -1104,7 +1189,7 @@ def save_results(
     for key, val in results.items():
         summary[key] = val.get("metrics", "probe_only")
 
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "manifest": manifest or {},
@@ -1133,6 +1218,9 @@ def main():
                         help="part5 데이터셋 오버라이드(예: fiqa)")
     parser.add_argument("--subset", type=int, default=-1,
                         help="part5 subset 크기 오버라이드(0=전체 코퍼스)")
+    parser.add_argument("--config", default="",
+                        help="실험 config 경로 (예: config/experiment_legal.yaml). "
+                             "미지정 시 config/experiment.yaml")
     parser.add_argument("--all", action="store_true", help="Run all parts")
     parser.add_argument("--focused", action="store_true",
                         help="part1/2: run the narrow baseline vs taxonomy experiment")
@@ -1141,7 +1229,7 @@ def main():
                              "(agent/judge 생략, 임베딩 endpoint만 필요)")
     args = parser.parse_args()
 
-    config = load_config()
+    config = load_config(args.config)
 
     if args.all:
         run_part1(config, focused=args.focused)
