@@ -58,6 +58,7 @@ models:
 agent:
   max_turns: 10
   pull_top_k: 20
+  max_pull_top_k: 200
   taxonomy_boost: 1.5
   bm25_top_k: 20
   rrf_k: 60

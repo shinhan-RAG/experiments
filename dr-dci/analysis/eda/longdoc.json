@@ -1,0 +1,168 @@
+{
+  "eda_version": 1,
+  "dataset": "longdoc",
+  "generated_at_utc": "2026-07-25T18:49:49.029148+00:00",
+  "source": {
+    "directory": "C:\\Users\\Atdev-pc\\Desktop\\test\\experiments\\dr-dci\\data\\raw\\longdoc",
+    "configured_huggingface_ids": {},
+    "files": {
+      "corpus.jsonl": {
+        "sha256": "c4b1c707cb0fb8b72f25313965b418bf44cc684720d2212551705d99247b74e6",
+        "bytes": 33775247
+      },
+      "queries.jsonl": {
+        "sha256": "a2bd3e5166033103f5631b407a3a311a7da087ea6e0d100e74f662f6ab2c9362",
+        "bytes": 1191141
+      },
+      "qrels.jsonl": {
+        "sha256": "bcbc32dbf10699088c6fa8335e65663183ba6c90f01345434ab393ce2a4b3ce0",
+        "bytes": 169726
+      }
+    }
+  },
+  "corpus": {
+    "document_count": 5642,
+    "empty_document_count": 0,
+    "title_present_rate": 1.0,
+    "contains_korean_rate": 1.0,
+    "contains_latin_rate": 0.294754,
+    "characters": {
+      "count": 5642,
+      "min": 348.0,
+      "mean": 2480.0659,
+      "p25": 2167.25,
+      "p50": 2856.0,
+      "p75": 2985.0,
+      "p90": 3025.0,
+      "p95": 3034.0,
+      "p99": 3054.0,
+      "max": 3109.0
+    },
+    "tokens_regex": {
+      "count": 5642,
+      "min": 72.0,
+      "mean": 588.09,
+      "p25": 511.0,
+      "p50": 665.0,
+      "p75": 706.0,
+      "p90": 732.0,
+      "p95": 747.0,
+      "p99": 771.0,
+      "max": 847.0
+    },
+    "paragraphs": {
+      "count": 5642,
+      "min": 1.0,
+      "mean": 4.8088,
+      "p25": 3.0,
+      "p50": 3.0,
+      "p75": 4.0,
+      "p90": 4.0,
+      "p95": 5.0,
+      "p99": 53.0,
+      "max": 83.0
+    },
+    "short_document_rates": {
+      "tokens_le_64": 0.0,
+      "tokens_le_128": 0.016838,
+      "tokens_le_256": 0.078873,
+      "tokens_le_512": 0.250798,
+      "tokens_le_1024": 1.0
+    },
+    "chars_le_4000_rate": 1.0
+  },
+  "queries": {
+    "query_count": 1981,
+    "characters": {
+      "count": 1981,
+      "min": 8.0,
+      "mean": 226.7976,
+      "p25": 101.0,
+      "p50": 175.0,
+      "p75": 302.0,
+      "p90": 444.0,
+      "p95": 582.0,
+      "p99": 871.6,
+      "max": 1481.0
+    },
+    "tokens_regex": {
+      "count": 1981,
+      "min": 2.0,
+      "mean": 52.583,
+      "p25": 23.0,
+      "p50": 41.0,
+      "p75": 71.0,
+      "p90": 103.0,
+      "p95": 133.0,
+      "p99": 207.4,
+      "max": 353.0
+    }
+  },
+  "relevance": {
+    "qrels_total": 1981,
+    "positive_qrels": 1981,
+    "relevance_score_counts": {
+      "1": 1981
+    },
+    "queries_with_positive_gold": 1981,
+    "queries_without_positive_gold": 0,
+    "unique_gold_documents": 1981,
+    "missing_gold_documents": 0,
+    "gold_documents_per_query": {
+      "count": 1981,
+      "min": 1.0,
+      "mean": 1.0,
+      "p25": 1.0,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "multi_gold_query_rate": 0.0,
+    "metric_population": "queries with at least one positive qrel"
+  },
+  "lexical_alignment": {
+    "evaluated_query_count": 1981,
+    "query_token_coverage_in_gold": {
+      "count": 1981,
+      "min": 0.0,
+      "mean": 0.7854,
+      "p25": 0.68,
+      "p50": 0.8125,
+      "p75": 0.9302,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "max_query_gold_jaccard": {
+      "count": 1981,
+      "min": 0.0,
+      "mean": 0.0643,
+      "p25": 0.0306,
+      "p50": 0.0547,
+      "p75": 0.0868,
+      "p90": 0.1279,
+      "p95": 0.1538,
+      "p99": 0.2092,
+      "max": 0.2751
+    },
+    "zero_token_overlap_query_rate": 0.003534,
+    "exact_normalized_query_in_gold_rate": 0.047956,
+    "rare_query_term_ratio": {
+      "count": 1981,
+      "min": 0.0,
+      "mean": 0.1857,
+      "p25": 0.12,
+      "p50": 0.1714,
+      "p75": 0.2353,
+      "p90": 0.3049,
+      "p95": 0.36,
+      "p99": 0.5,
+      "max": 1.0
+    },
+    "rare_document_frequency_limit": 5
+  }
+}

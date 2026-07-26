@@ -16,6 +16,12 @@ pytrec_eval/BEIR convention: linear graded gain with a log2(rank+1) discount
 import math
 
 
+def validate_unique_ranked_ids(ranked_ids: list[str]) -> None:
+    """A rank metric is defined only over unique retrieval item IDs."""
+    if len(ranked_ids) != len(set(ranked_ids)):
+        raise ValueError("ranked list must contain unique IDs")
+
+
 def recall_at_k(ranked_ids: list[str], gold_ids: set[str], k: int) -> float:
     if not gold_ids:
         raise ValueError("recall_at_k requires a non-empty gold set")
@@ -38,13 +44,17 @@ def precision_at_k(ranked_ids: list[str], gold_ids: set[str], k: int) -> float:
 def ndcg_at_k(ranked_ids: list[str], gains: dict[str, float], k: int) -> float:
     if not gains:
         raise ValueError("ndcg_at_k requires non-empty graded gains")
+    validate_unique_ranked_ids(ranked_ids)
     dcg = sum(
         gains.get(doc_id, 0.0) / math.log2(rank + 2)
         for rank, doc_id in enumerate(ranked_ids[:k])
     )
     ideal = sorted(gains.values(), reverse=True)[:k]
     idcg = sum(gain / math.log2(rank + 2) for rank, gain in enumerate(ideal))
-    return dcg / idcg if idcg > 0 else 0.0
+    value = dcg / idcg if idcg > 0 else 0.0
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"nDCG@{k} outside [0, 1]: {value}")
+    return value
 
 
 def rank_metrics(ranked_ids: list[str], gold_ids: set[str],
@@ -54,6 +64,7 @@ def rank_metrics(ranked_ids: list[str], gold_ids: set[str],
     Without graded gains, nDCG falls back to binary gains over the positive
     gold set so the metric keys stay identical across callers.
     """
+    validate_unique_ranked_ids(ranked_ids)
     if gains is None:
         gains = {doc_id: 1.0 for doc_id in gold_ids}
     return {

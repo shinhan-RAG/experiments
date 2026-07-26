@@ -1,9 +1,9 @@
 {
   "eda_version": 1,
   "dataset": "ko-strategyqa",
-  "generated_at_utc": "2026-07-21T08:41:54.067827+00:00",
+  "generated_at_utc": "2026-07-25T18:49:43.195856+00:00",
   "source": {
-    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/ko-strategyqa",
+    "directory": "C:\\Users\\Atdev-pc\\Desktop\\test\\experiments\\dr-dci\\data\\raw\\ko-strategyqa",
     "configured_huggingface_ids": {
       "preferred": "taeminlee/Ko-StrategyQA",
       "alternate_candidates_in_code": [
@@ -13,16 +13,16 @@
     },
     "files": {
       "corpus.jsonl": {
-        "sha256": "f2315999e5807fb44b7d1479201dda934e94c17d342d88c159cb26ed7142385b",
-        "bytes": 12942394
+        "sha256": "a83e4e8c8744e90ca15058077c922ce4e9f186a6923b5966dd666bcbe25a5037",
+        "bytes": 7269634
       },
       "queries.jsonl": {
-        "sha256": "c4f2acbca4f8f1f3f300b2d7fd9a4b8be2421dae8648ce83981943001a66596a",
-        "bytes": 424812
+        "sha256": "fbded7262b1984ad5b6d17d40bdd1a4e6b70c16e680d307fa0f886791b09a0bf",
+        "bytes": 61374
       },
       "qrels.jsonl": {
-        "sha256": "1ae505cb9f1014e926e4eaefb5efacc17df27a2ad737f9344105c7580f106590",
-        "bytes": 92704
+        "sha256": "4661a27cd734f705cde261def2dd2abe2a710b3f18b305465da5b41c4802faa9",
+        "bytes": 97219
       }
     }
   },
@@ -78,40 +78,40 @@
     "chars_le_4000_rate": 0.999568
   },
   "queries": {
-    "query_count": 2833,
+    "query_count": 592,
     "characters": {
-      "count": 2833,
-      "min": 9.0,
-      "mean": 22.6244,
+      "count": 592,
+      "min": 10.0,
+      "mean": 22.7534,
       "p25": 18.0,
       "p50": 22.0,
-      "p75": 26.0,
-      "p90": 31.0,
-      "p95": 35.0,
-      "p99": 43.0,
-      "max": 67.0
+      "p75": 27.0,
+      "p90": 31.9,
+      "p95": 34.0,
+      "p99": 44.0,
+      "max": 60.0
     },
     "tokens_regex": {
-      "count": 2833,
+      "count": 592,
       "min": 2.0,
-      "mean": 5.3251,
+      "mean": 5.3615,
       "p25": 4.0,
       "p50": 5.0,
       "p75": 6.0,
       "p90": 8.0,
       "p95": 9.0,
-      "p99": 10.68,
-      "max": 16.0
+      "p99": 11.0,
+      "max": 13.0
     }
   },
   "relevance": {
     "qrels_total": 1145,
     "positive_qrels": 1145,
     "relevance_score_counts": {
-      "1.0": 1145
+      "1": 1145
     },
     "queries_with_positive_gold": 592,
-    "queries_without_positive_gold": 2241,
+    "queries_without_positive_gold": 0,
     "unique_gold_documents": 1077,
     "missing_gold_documents": 0,
     "gold_documents_per_query": {

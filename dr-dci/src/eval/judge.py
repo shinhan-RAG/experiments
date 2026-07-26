@@ -5,11 +5,20 @@ LLM-as-Judge 평가기
 - Efficiency: Gold R@W / Pull 횟수
 """
 
-import json
 import os
 import time
 import requests
 import numpy as np
+
+VALID_JUDGMENTS = {"correct", "incorrect"}
+
+
+def parse_judgment(raw: str) -> str:
+    """Judge 출력 전체가 허용된 단어일 때만 인정한다."""
+    if raw is None:
+        return "format_error"
+    cleaned = raw.strip().lower().strip("\"'`.,!:; \n\t")
+    return cleaned if cleaned in VALID_JUDGMENTS else "format_error"
 
 
 class Judge:
@@ -67,16 +76,11 @@ class Judge:
 
     @staticmethod
     def parse_judgment(value: str) -> str:
-        normalized = value.strip().strip('"\'').lower().rstrip(".!")
-        if normalized == "correct":
-            return "correct"
-        if normalized == "incorrect":
-            return "incorrect"
-        return "error"
+        return parse_judgment(value)
 
     @staticmethod
     def gold_recall_at_workspace(workspace_docs: list[str], gold_doc_ids: list[str]) -> float:
-        """Document Gold R@W = |workspace document IDs ∩ gold document IDs| / |gold document IDs|."""
+        """Gold R@W = |Workspace ∩ gold_docs| / |gold_docs|"""
         if not gold_doc_ids:
             return 0.0
         intersection = set(workspace_docs) & set(gold_doc_ids)
@@ -105,119 +109,88 @@ def compute_metrics(results: list[dict]) -> dict:
 
     judged = [
         r for r in results
-        if r.get("judgment") in {"correct", "incorrect"}
+        if r.get("judgment") in VALID_JUDGMENTS
     ]
     accuracy = (
         sum(1 for r in judged if r["judgment"] == "correct") / len(judged)
         if judged else None
     )
     avg_recall = sum(r.get("gold_recall", 0) for r in results) / n
-    first_pull_recalls = [
-        r["first_pull_document_gold_recall"] for r in results
-        if r.get("first_pull_document_gold_recall") is not None
-    ]
-    workspace_expansion_recalls = [
-        r["workspace_expansion_document_gold_recall"] for r in results
-        if r.get("workspace_expansion_document_gold_recall") is not None
-    ]
     avg_efficiency = sum(r.get("efficiency", 0) for r in results) / n
     avg_pulls = sum(r.get("pull_count", 0) for r in results) / n
     avg_taxonomy_pulls = sum(r.get("taxonomy_filtered_pulls", 0) for r in results) / n
-    avg_taxonomy_eligible = sum(
-        r.get("taxonomy_boost_eligible_documents", 0) for r in results
-    ) / n
-    avg_taxonomy_positive_score = sum(
-        r.get("taxonomy_boosted_positive_score_documents", 0) for r in results
-    ) / n
-    avg_taxonomy_returned = sum(
-        r.get("taxonomy_boosted_returned_documents", 0) for r in results
-    ) / n
-    avg_taxonomy_rank_changed_pulls = sum(
-        r.get("taxonomy_boost_rank_changed_pulls", 0) for r in results
-    ) / n
-    avg_taxonomy_entered = sum(
-        r.get("taxonomy_boost_top_k_entered_documents", 0) for r in results
-    ) / n
-    avg_taxonomy_exited = sum(
-        r.get("taxonomy_boost_top_k_exited_documents", 0) for r in results
-    ) / n
-    taxonomy_target_score_count = sum(
-        r.get("taxonomy_boost_target_score_count", 0) for r in results
-    )
-    taxonomy_negative_score_count = sum(
-        r.get("taxonomy_boost_target_negative_score_count", 0) for r in results
-    )
-    taxonomy_target_score_mins = [
-        r["taxonomy_boost_target_score_min"] for r in results
-        if r.get("taxonomy_boost_target_score_min") is not None
-    ]
-    taxonomy_target_score_maxes = [
-        r["taxonomy_boost_target_score_max"] for r in results
-        if r.get("taxonomy_boost_target_score_max") is not None
-    ]
     avg_candidates = sum(r.get("retrieved_candidates", 0) for r in results) / n
     avg_workspace_docs = sum(len(r.get("workspace_docs", r.get("retrieved_docs", []))) for r in results) / n
     avg_turns = sum(r.get("turns", 0) for r in results) / n
     avg_latency = sum(r.get("latency_seconds", 0) for r in results) / n
     latencies = [r.get("latency_seconds", 0) for r in results]
-    avg_telemetry_latency = sum(
-        r.get("taxonomy_boost_telemetry_seconds", 0) for r in results
-    ) / n
-    avg_latency_without_telemetry = sum(
-        r.get("latency_without_taxonomy_boost_telemetry_seconds", r.get("latency_seconds", 0))
-        for r in results
-    ) / n
     candidate_efficiencies = [
         r.get("gold_recall", 0) * 100 / r.get("retrieved_candidates", 0)
         for r in results
         if r.get("retrieved_candidates", 0) > 0
     ]
 
-    return {
+    recall_vals = [r.get("gold_recall", 0) for r in results]
+    ci_lo, ci_hi = bootstrap_ci(recall_vals)
+
+    out = {
         "n": n,
         "accuracy": round(accuracy, 4) if accuracy is not None else None,
         "judged_n": len(judged),
-        "judge_error_n": sum(1 for r in results if r.get("judgment") == "error"),
+        "n_judged": len(judged),
+        "judge_error_n": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
+        "judge_error_count": sum(
+            1 for r in results if r.get("judgment") in {"error", "format_error"}
+        ),
         "avg_gold_recall": round(avg_recall, 4),
-        "avg_first_pull_document_gold_recall": round(
-            sum(first_pull_recalls) / len(first_pull_recalls), 4
-        ) if first_pull_recalls else None,
-        "avg_workspace_expansion_document_gold_recall": round(
-            sum(workspace_expansion_recalls) / len(workspace_expansion_recalls), 4
-        ) if workspace_expansion_recalls else None,
+        "recall_ci95": [ci_lo, ci_hi],
         "avg_efficiency": round(avg_efficiency, 4),
         "avg_pulls": round(avg_pulls, 2),
         "avg_taxonomy_filtered_pulls": round(avg_taxonomy_pulls, 2),
-        "avg_taxonomy_boost_eligible_documents": round(avg_taxonomy_eligible, 2),
-        "avg_taxonomy_boosted_positive_score_documents": round(
-            avg_taxonomy_positive_score, 2
-        ),
-        "avg_taxonomy_boosted_returned_documents": round(avg_taxonomy_returned, 2),
-        "avg_taxonomy_boost_rank_changed_pulls": round(
-            avg_taxonomy_rank_changed_pulls, 2
-        ),
-        "avg_taxonomy_boost_top_k_entered_documents": round(avg_taxonomy_entered, 2),
-        "avg_taxonomy_boost_top_k_exited_documents": round(avg_taxonomy_exited, 2),
-        "taxonomy_boost_target_score_count": taxonomy_target_score_count,
-        "taxonomy_boost_target_negative_score_count": taxonomy_negative_score_count,
-        "taxonomy_boost_target_negative_score_rate": round(
-            taxonomy_negative_score_count / taxonomy_target_score_count, 4
-        ) if taxonomy_target_score_count else None,
-        "taxonomy_boost_target_score_min": min(taxonomy_target_score_mins)
-        if taxonomy_target_score_mins else None,
-        "taxonomy_boost_target_score_max": max(taxonomy_target_score_maxes)
-        if taxonomy_target_score_maxes else None,
         "avg_retrieved_candidates": round(avg_candidates, 2),
         "avg_workspace_docs": round(avg_workspace_docs, 2),
         "avg_turns": round(avg_turns, 2),
         "avg_latency_seconds": round(avg_latency, 3),
-        "avg_taxonomy_boost_telemetry_seconds": round(avg_telemetry_latency, 6),
-        "avg_latency_without_taxonomy_boost_telemetry_seconds": round(
-            avg_latency_without_telemetry, 3
-        ),
         "p50_latency_seconds": round(float(np.percentile(latencies, 50)), 3),
         "p95_latency_seconds": round(float(np.percentile(latencies, 95)), 3),
         "avg_gold_recall_per_100_candidates": round(
             sum(candidate_efficiencies) / len(candidate_efficiencies), 4
         ) if candidate_efficiencies else 0.0,
     }
+
+    # 청크단위 검색 지표 집계 (recall@k/ndcg@k + span coverage/density/f1).
+    # 질의마다 키가 다를 수 있어(span 없는 질의는 span 키 없음) 키별로 존재하는 값만 평균.
+    chunk_evals = [r["span_metrics"] for r in results if r.get("span_metrics")]
+    if chunk_evals:
+        all_keys = set()
+        for e in chunk_evals:
+            all_keys |= set(e.keys())
+        cm = {}
+        for k in sorted(all_keys):
+            vals = [e[k] for e in chunk_evals if k in e]
+            if vals:
+                cm[k] = round(sum(vals) / len(vals), 4)
+        out["chunk_metrics"] = cm
+        out["chunk_metrics_n"] = len(chunk_evals)
+
+    return out
+
+
+def bootstrap_ci(values: list[float], n_boot: int = 1000, seed: int = 42) -> tuple:
+    """평균의 95% bootstrap 신뢰구간. 50문항 ±5%p 노이즈 판별용.
+    (Date.now/Math.random 미사용 — 고정 seed 의 결정적 리샘플링)"""
+    import random
+    if not values:
+        return (0.0, 0.0)
+    rng = random.Random(seed)
+    N = len(values)
+    means = []
+    for _ in range(n_boot):
+        s = sum(values[rng.randrange(N)] for _ in range(N)) / N
+        means.append(s)
+    means.sort()
+    lo = means[int(0.025 * n_boot)]
+    hi = means[int(0.975 * n_boot)]
+    return (round(lo, 4), round(hi, 4))

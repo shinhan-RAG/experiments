@@ -7,18 +7,16 @@
 import json
 import yaml
 from pathlib import Path
-from utils import run_batch_llm, parse_llm_content
+from utils import run_batch_llm, parse_llm_content, load_corpus_subset
 
 DATA_DIR = Path(__file__).parent.parent / "data"
-RAW_DIR = DATA_DIR / "raw"
-SUBSET_DIR = DATA_DIR / "subsets"
 OUTPUT_DIR = DATA_DIR / "taxonomy"
 SCHEMA_DIR = Path(__file__).parent.parent / "config" / "taxonomy_schemas"
 
 
 def load_schema(dataset: str) -> dict:
     schema_path = SCHEMA_DIR / f"{dataset}.yaml"
-    with open(schema_path) as f:
+    with open(schema_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -41,11 +39,6 @@ L3 is a free-form keyword (1-3 words) describing the specific topic."""
 USER_TEMPLATE = "Title: {title}\nText (first 300 chars): {text}\n\nClassify this document."
 
 
-def load_jsonl(path: Path) -> list:
-    with open(path) as f:
-        return [json.loads(line) for line in f]
-
-
 def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
     """서브셋 문서에 대해 taxonomy 생성"""
     print(f"=== Building Taxonomy for {dataset} ({subset_size // 1000}K) ===")
@@ -62,16 +55,8 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
     l1_list = schema["L1"]
     print(f"  Domain: {schema['domain']}, L1 categories: {l1_list}")
 
-    # 서브셋 doc IDs 로드
-    subset_path = SUBSET_DIR / dataset / f"{subset_size // 1000}k.json"
-    with open(subset_path) as f:
-        subset_info = json.load(f)
-    doc_ids = set(subset_info["doc_ids"])
-    print(f"  Subset docs: {len(doc_ids)}")
-
-    # corpus 로드
-    corpus = load_jsonl(RAW_DIR / dataset / "corpus.jsonl")
-    corpus_subset = [doc for doc in corpus if doc["_id"] in doc_ids]
+    # 서브셋 corpus 로드 (aihub=parent-id 서브셋, BEIR=doc-id 서브셋)
+    corpus_subset = load_corpus_subset(DATA_DIR, dataset, subset_size)
     print(f"  Loaded {len(corpus_subset)} docs from corpus")
 
     # 프롬프트 준비
@@ -107,7 +92,7 @@ def build_taxonomy(dataset: str = "trec-covid", subset_size: int = 10_000):
 
     # 저장
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     # 통계

@@ -35,6 +35,11 @@ from src.eval.comparison import (
     compare_result_rows,
 )
 from src.eval.judge import Judge, compute_metrics
+from src.eval import span_metrics
+from src.eval.legal_execution_gate import (
+    require_legal_execution_gate,
+    require_longdoc_diagnostic_contract,
+)
 from src.eval.part12_contracts import audit_part12
 from src.eval.part12_result_contract import (
     REQUIRED_RUNTIME_DEPENDENCIES,
@@ -50,42 +55,113 @@ CONFIG_DIR = BASE_DIR / "config"
 RESULTS_DIR = BASE_DIR / "results"
 
 
-def load_config():
-    with open(CONFIG_DIR / "experiment.yaml") as f:
+def load_config(path: str | None = None):
+    """Load the selected experiment configuration without changing defaults."""
+    config_path = Path(path) if path else CONFIG_DIR / "experiment.yaml"
+    if not config_path.is_absolute() and not config_path.exists():
+        config_path = BASE_DIR / config_path
+    with config_path.open(encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
+AIHUB_DATASET_DIRS = {
+    "aihub-full": ("aihub", "full"),
+    "aihub-smoke20k": ("aihub", "smoke20k"),
+}
+
+# Query-only data can share a corpus while retaining its own queries and qrels.
+CORPUS_ALIAS = {"legal-qa": "aihub-full"}
+
+
+def dataset_dir(dataset: str) -> Path:
+    """Return the directory holding a dataset's own corpus or query files."""
+    if dataset in AIHUB_DATASET_DIRS:
+        group, variant = AIHUB_DATASET_DIRS[dataset]
+        return DATA_DIR / group / variant
+    return DATA_DIR / "raw" / dataset
+
+
 def load_corpus(dataset: str, subset_size: int = None):
-    """corpus 로드 (서브셋 적용)"""
-    raw_dir = DATA_DIR / "raw" / dataset
+    """Load a corpus with either flat-ID or parent-ID subset semantics."""
+    corpus_dataset = CORPUS_ALIAS.get(dataset, dataset)
+    raw_dir = dataset_dir(corpus_dataset)
     corpus = []
-    with open(raw_dir / "corpus.jsonl") as f:
+    with (raw_dir / "corpus.jsonl").open(encoding="utf-8") as f:
         for line in f:
             corpus.append(json.loads(line))
 
     if subset_size:
-        subset_path = DATA_DIR / "subsets" / dataset / f"{subset_size // 1000}k.json"
-        with open(subset_path) as f:
-            doc_ids = set(json.load(f)["doc_ids"])
-        corpus = [doc for doc in corpus if doc["_id"] in doc_ids]
+        size_key = f"{subset_size // 1000}k"
+        parent_subset_path = raw_dir / f"{size_key}_parent_ids.json"
+        if parent_subset_path.exists():
+            parent_ids = set(json.loads(parent_subset_path.read_text(encoding="utf-8")))
+            corpus = [
+                doc for doc in corpus
+                if str(doc.get("parent_id", doc["_id"])) in parent_ids
+            ]
+        else:
+            subset_path = DATA_DIR / "subsets" / corpus_dataset / f"{size_key}.json"
+            with subset_path.open(encoding="utf-8") as f:
+                doc_ids = set(str(value) for value in json.load(f)["doc_ids"])
+            corpus = [doc for doc in corpus if str(doc["_id"]) in doc_ids]
 
     return corpus
 
 
 def load_queries(dataset: str):
-    """쿼리 + qrels 로드"""
-    raw_dir = DATA_DIR / "raw" / dataset
+    """Load a dataset's queries and qrels, preferring an approved sample file."""
+    raw_dir = dataset_dir(dataset)
+    query_path = raw_dir / "agent_queries_50.jsonl"
+    if not query_path.exists():
+        query_path = raw_dir / "queries.jsonl"
     queries = []
-    with open(raw_dir / "queries.jsonl") as f:
+    with query_path.open(encoding="utf-8") as f:
         for line in f:
             queries.append(json.loads(line))
 
     qrels = []
-    with open(raw_dir / "qrels.jsonl") as f:
+    with (raw_dir / "qrels.jsonl").open(encoding="utf-8") as f:
         for line in f:
             qrels.append(json.loads(line))
 
     return queries, qrels
+
+
+def parent_map_from_corpus(corpus: list[dict]) -> dict[str, str]:
+    """Map AIHub retrieval chunks to qrel parent IDs; flat corpora map to none."""
+    return {
+        str(doc["_id"]): str(doc["parent_id"])
+        for doc in corpus
+        if doc.get("parent_id") and str(doc["parent_id"]) != str(doc["_id"])
+    }
+
+
+def to_parent_ids(ids: list[str], parent_map: dict[str, str]) -> list[str]:
+    """Project chunks to parents with stable first-seen deduplication."""
+    if not parent_map:
+        return list(ids)
+    seen = set()
+    parent_ids = []
+    for value in ids:
+        parent_id = parent_map.get(str(value), str(value))
+        if parent_id not in seen:
+            seen.add(parent_id)
+            parent_ids.append(parent_id)
+    return parent_ids
+
+
+def load_supporting_spans(dataset: str) -> dict[str, list[dict]]:
+    """Load optional S0 supporting spans without manufacturing missing spans."""
+    path = dataset_dir(dataset) / "qa_meta.jsonl"
+    if not path.exists():
+        return {}
+    spans = {}
+    with path.open(encoding="utf-8") as stream:
+        for line in stream:
+            row = json.loads(line)
+            if row.get("supporting_spans"):
+                spans[str(row["qid"])] = row["supporting_spans"]
+    return spans
 
 
 def load_augmentations(dataset: str, subset_size: int | None, step_config: dict):
@@ -212,7 +288,8 @@ def positive_gold_gains_by_query(qrels: list) -> dict:
 
 
 def run_pull_probe(retriever: PullRetriever, queries: list,
-                   query_gold: dict, query_gains: dict = None) -> list:
+                   query_gold: dict, query_gains: dict = None,
+                   parent_map: dict[str, str] | None = None) -> list:
     """retrieval-only probe: 원 질의 텍스트로 backend를 직접 1회 pull해
     rank 지표(Recall@5/20·Hit@5/10·P@20·nDCG@10)를 잰다 — agent의 질의
     재작성과 독립인 검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
@@ -225,7 +302,11 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
         gains = query_gains.get(qid) if query_gains else None
         text = q.get("title") or q.get("text", "")
         started = time.perf_counter()
-        ranked = [r["doc_id"] for r in retriever.pull(text)]
+        pulled = retriever.pull(text)
+        candidates = pulled["results"] if isinstance(pulled, dict) else pulled
+        ranked = to_parent_ids(
+            [r["doc_id"] for r in candidates], parent_map or {}
+        )
         latency = time.perf_counter() - started
         rows.append({
             "query_id": qid,
@@ -234,6 +315,65 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
             "ranked_top20": ranked[:20],
         })
     return rows
+
+
+def failed_query_row(query: dict, exc: Exception, *, requested_features: dict,
+                     single_pull: bool) -> dict:
+    """Record a failed query explicitly; never turn it into a baseline result."""
+    query_id = str(query.get("_id", ""))
+    return {
+        "query_id": query_id,
+        "query_text": query.get("title") or query.get("text", ""),
+        "answer": "",
+        "gold_recall": 0.0,
+        "efficiency": 0.0,
+        "pull_count": 0,
+        "retrieved_candidates": 0,
+        "added_documents": 0,
+        "workspace_docs": [],
+        "workspace_parent_docs": [],
+        "read_docs": [],
+        "turns": 0,
+        "latency_seconds": 0.0,
+        "latency_without_taxonomy_boost_telemetry_seconds": 0.0,
+        "taxonomy_boost_telemetry_seconds": 0.0,
+        "pull_queries": [],
+        "pull_traces": [],
+        "rule_violations": ["query_harness_error"],
+        "trace": [],
+        "requested_features": dict(requested_features),
+        "single_pull": single_pull,
+        "failed": True,
+        "termination_reason": "harness_error",
+        "error": f"{type(exc).__name__}: {exc}",
+        "judgment": "agent_error",
+    }
+
+
+def check_arm_failure_rate(rows: list[dict], *, threshold: float = 0.2) -> None:
+    """Abort an arm when harness/LLM failures would invalidate comparison."""
+    if not rows:
+        raise RuntimeError("experiment arm produced no query rows")
+    failures = sum(
+        bool(row.get("failed")) or row.get("termination_reason") in {"harness_error", "llm_error"}
+        for row in rows
+    )
+    if failures / len(rows) > threshold:
+        raise RuntimeError(
+            f"experiment arm failure rate {failures}/{len(rows)} exceeds {threshold:.0%}"
+        )
+
+
+def assign_judgment(row: dict, ref_answers: dict, judge: Judge) -> None:
+    """Do not send empty/failed agent output to the answer judge."""
+    if not row.get("answer"):
+        row["judgment"] = "agent_error" if row.get("query_id") in ref_answers else "n/a"
+    elif row.get("query_id") in ref_answers:
+        row["judgment"] = judge.evaluate_accuracy(
+            row["query_text"], ref_answers[row["query_id"]], row["answer"]
+        )
+    else:
+        row["judgment"] = "n/a"
 
 
 def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
@@ -258,6 +398,8 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         )
 
     corpus_dict = {doc["_id"]: doc for doc in corpus}
+    parent_map = parent_map_from_corpus(corpus)
+    query_spans = load_supporting_spans(dataset)
 
     # Load schemas for agent prompt
     taxonomy_schema = None
@@ -326,16 +468,30 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "taxonomy_boost_telemetry_seconds", 0.0
         ) or 0.0)
         gold_docs = list(query_gold.get(qid, []))
-        gold_recall = Judge.gold_recall_at_workspace(result["workspace_docs"], gold_docs)
+        workspace_parent_ids = to_parent_ids(result["workspace_docs"], parent_map)
+        gold_recall = Judge.gold_recall_at_workspace(workspace_parent_ids, gold_docs)
         pull_traces = result.get("pull_traces", [])
         first_pull_docs = (
             pull_traces[0].get("workspace_document_ids_after", [])
             if pull_traces else None
         )
         first_pull_gold_recall = (
-            Judge.gold_recall_at_workspace(first_pull_docs, gold_docs)
+            Judge.gold_recall_at_workspace(
+                to_parent_ids(first_pull_docs, parent_map), gold_docs
+            )
             if first_pull_docs is not None else None
         )
+        evidence_metrics = None
+        if query_spans.get(qid):
+            # A pull-order workspace is not a ranked list: only evidence
+            # diagnostics apply, never source-chunk nDCG or generic nDCG.
+            evidence_metrics = span_metrics.evaluate_workspace_evidence(
+                [
+                    {"chunk_id": doc_id, "text": corpus_dict.get(doc_id, {}).get("text", "")}
+                    for doc_id in result["workspace_docs"]
+                ],
+                query_spans[qid],
+            )
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -353,6 +509,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
             "retrieved_candidates": result["retrieved_candidates"],
             "added_documents": result["added_documents"],
             "workspace_docs": result["workspace_docs"],
+            "workspace_parent_docs": workspace_parent_ids,
             "turns": result["turns"],
             "tool_call_counts": result.get("tool_call_counts", {}),
             "tool_calls_total": result.get("tool_calls_total", 0),
@@ -398,6 +555,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                 0.0, latency_seconds - taxonomy_boost_telemetry_seconds
             ),
             "single_pull": single_pull,
+            "evidence_metrics": evidence_metrics,
         }
 
     results = [None] * len(queries)
@@ -405,16 +563,18 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
         futures = {executor.submit(run_single_query, i, q): i for i, q in enumerate(queries)}
         for future in as_completed(futures):
             idx = futures[future]
-            results[idx] = future.result()
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                results[idx] = failed_query_row(
+                    queries[idx], exc, requested_features=step_config, single_pull=single_pull
+                )
+
+    check_arm_failure_rate(results)
 
     # Judge 병렬 실행
     def judge_single(r):
-        if r["query_id"] in ref_answers:
-            r["judgment"] = judge.evaluate_accuracy(
-                r["query_text"], ref_answers[r["query_id"]], r["answer"]
-            )
-        else:
-            r["judgment"] = "n/a"
+        assign_judgment(r, ref_answers, judge)
 
     with ThreadPoolExecutor(max_workers=16) as executor:
         executor.map(judge_single, results)
@@ -423,7 +583,7 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
 
 
 def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
-               ref_answers: dict) -> list:
+               ref_answers: dict, *, dataset: str | None = None) -> list:
     """Hybrid RAG baseline 실행"""
     models = config["models"]
     hybrid_cfg = config["hybrid"]
@@ -443,6 +603,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
 
     print("    Indexing corpus...")
     pipeline.index(corpus)
+    parent_map = parent_map_from_corpus(corpus)
 
     # Judge
     with open(CONFIG_DIR / "judge_prompt.txt") as f:
@@ -467,7 +628,9 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
         result = pipeline.run(query_text)
         latency_seconds = time.perf_counter() - started
         gold_docs = list(query_gold.get(qid, []))
-        gold_recall = Judge.gold_recall_at_workspace(result["retrieved_docs"], gold_docs)
+        gold_recall = Judge.gold_recall_at_workspace(
+            to_parent_ids(result["retrieved_docs"], parent_map), gold_docs
+        )
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -871,6 +1034,10 @@ def run_part1(config: dict, *, focused: bool = False):
     if focused:
         steps = focused_taxonomy_steps(steps)
 
+    require_legal_execution_gate(
+        config, artifact_root=BASE_DIR, part="part1", steps=steps
+    )
+
     print("\n" + "=" * 60)
     print(f"Part 1: Technique Stacking ({dataset}, {subset_size // 1000}K)")
     print("=" * 60)
@@ -1036,6 +1203,9 @@ def run_part2(config: dict, *, focused: bool = False):
          "workspace_taxonomy": False},
     ]
     selected_steps = focused_arms if focused else [{"name": "stack_all", **best_config}]
+    require_legal_execution_gate(
+        config, artifact_root=BASE_DIR, part="part2", steps=selected_steps
+    )
     preflight = _part12_preflight(
         config,
         step_names={"baseline", "taxonomy_only"} if focused else {"stack_all"},
@@ -1209,6 +1379,7 @@ def run_part2_scale_probe(config: dict):
     part_cfg = config["parts"]["part2_scaling"]
     dataset = part_cfg["dataset"]
     sizes = [int(size) for size in part_cfg["subsets"]]
+    require_legal_execution_gate(config, artifact_root=BASE_DIR, part="part2")
     # 모델 호출 전 무비용 계약 검사(nested·gold 보존). baseline은 산출물이
     # 필요 없으므로 augmentation 부재로 차단되지 않는다.
     preflight = _part12_preflight(config, step_names={"baseline"}, sizes=sizes)
@@ -1225,7 +1396,8 @@ def run_part2_scale_probe(config: dict):
         print(f"\n  --- dense probe @ {size_key} ---")
         retriever = build_pull_retriever(config, {"pull_backend": "dense"}, corpus)
         probes[size_key] = run_pull_probe(retriever, queries, query_gold,
-                                          query_gains=query_gains)
+                                          query_gains=query_gains,
+                                          parent_map=parent_map_from_corpus(corpus))
         all_results[f"dense_{size_key}"] = {"probe_rows": probes[size_key]}
 
     analysis = {}
@@ -1287,6 +1459,12 @@ def run_part3(config: dict):
     part_cfg = config["parts"]["part3_tags"]
     dataset = part_cfg["dataset"]
     subset_size = part_cfg["subset"]
+    require_legal_execution_gate(
+        config,
+        artifact_root=BASE_DIR,
+        part="part3",
+        steps=[{"tags": approach} for approach in part_cfg["approaches"]],
+    )
 
     corpus = load_corpus(dataset, subset_size)
     queries, qrels = load_queries(dataset)
@@ -1319,9 +1497,17 @@ def run_part4(config: dict):
 
     part_cfg = config["parts"]["part4_generalization"]
 
+    require_legal_execution_gate(config, artifact_root=BASE_DIR, part="part4")
+
     all_results = {}
-    for dataset in part_cfg["datasets"]:
-        subset_size = 20_000
+    for entry in part_cfg["datasets"]:
+        if isinstance(entry, str):
+            entry = {"name": entry, "subset": 20_000, "augment": True, "queries": 50}
+        require_longdoc_diagnostic_contract(entry)
+        dataset = entry["name"]
+        subset_size = entry.get("subset", 20_000)
+        augment = bool(entry.get("augment", True))
+        query_limit = int(entry.get("queries", 50))
         corpus = load_corpus(dataset, subset_size)
         queries, qrels = load_queries(dataset)
 
@@ -1332,10 +1518,17 @@ def run_part4(config: dict):
                 sampled = json.load(f)
             query_ids = set(str(qid) for qid in sampled["query_ids"])
             queries = [q for q in queries if str(q["_id"]) in query_ids]
+        elif len(queries) > query_limit:
+            queries = sorted(queries, key=lambda query: str(query["_id"]))[:query_limit]
 
         ref_answers = {}  # FiQA/Ko-StrategyQA는 reference answer 없음 → recall만 평가
 
-        step_config = {"taxonomy": True, "tags": "A", "prefix": True, "metadata": True}
+        step_config = {
+            "taxonomy": augment,
+            "tags": "A" if augment else False,
+            "prefix": augment,
+            "metadata": augment,
+        }
 
         print(f"\n  --- DR-DCI @ {dataset} ---")
         results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, subset_size, dataset)
@@ -1344,7 +1537,7 @@ def run_part4(config: dict):
         print(f"    Metrics: {metrics}")
 
         print(f"\n  --- Hybrid RAG @ {dataset} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers)
+        results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
         metrics = compute_metrics(results)
         all_results[f"hybrid_{dataset}"] = {"results": results, "metrics": metrics}
         print(f"    Metrics: {metrics}")
@@ -1361,6 +1554,7 @@ def run_part5(config: dict, probe_only: bool = False):
     part_cfg = config["parts"]["part5_pull_backend"]
     dataset = part_cfg["dataset"]
     subset_size = part_cfg["subset"]
+    require_legal_execution_gate(config, artifact_root=BASE_DIR, part="part5")
     corpus = load_corpus(dataset, subset_size)
     queries, qrels = load_queries(dataset)
 
@@ -1388,7 +1582,8 @@ def run_part5(config: dict, probe_only: bool = False):
         # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
         # backend 외 변인 없이 rank 지표를 먼저 잰다.
         probes[backend] = run_pull_probe(retriever, queries, query_gold,
-                                         query_gains=query_gains)
+                                         query_gains=query_gains,
+                                         parent_map=parent_map_from_corpus(corpus))
         if probe_only:
             all_results[backend] = {"probe_rows": probes[backend]}
             continue
@@ -1640,7 +1835,7 @@ def save_results(
     for key, val in results.items():
         summary[key] = val.get("metrics", "probe_only")
 
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "manifest": manifest or {},
@@ -1654,6 +1849,30 @@ def save_results(
         )
 
     print(f"\n  Results saved: {out_path}")
+    return out_path
+
+
+def save_s0_results(
+    rows: list[dict],
+    *,
+    input_corpus_manifest_sha256: str,
+    output_corpus_manifest_sha256: str,
+    query_qrel_manifest_sha256: str,
+    analysis: dict | None = None,
+) -> Path:
+    """Persist S0 only with its non-confirmatory status and known-positive qrel."""
+    manifest = span_metrics.build_s0_result_manifest(
+        input_corpus_manifest_sha256=input_corpus_manifest_sha256,
+        output_corpus_manifest_sha256=output_corpus_manifest_sha256,
+        query_qrel_manifest_sha256=query_qrel_manifest_sha256,
+    )
+    manifest["git_commit"] = current_git_commit()
+    return save_results(
+        "s0_exploratory_chunk_smoke",
+        {"s0": {"metrics": span_metrics.aggregate(rows), "rows": rows}},
+        manifest=manifest,
+        analysis=analysis,
+    )
 
 
 def main():
@@ -1669,6 +1888,8 @@ def main():
                         help="part5 데이터셋 오버라이드(예: fiqa)")
     parser.add_argument("--subset", type=int, default=-1,
                         help="part5 subset 크기 오버라이드(0=전체 코퍼스)")
+    parser.add_argument("--config", default="",
+                        help="experiment config path; default is config/experiment.yaml")
     parser.add_argument("--all", action="store_true", help="Run all parts")
     parser.add_argument("--focused", action="store_true",
                         help="part1/2: run the narrow baseline vs taxonomy experiment")
@@ -1677,7 +1898,7 @@ def main():
                              "(agent/judge 생략, 임베딩 endpoint만 필요)")
     args = parser.parse_args()
 
-    config = load_config()
+    config = load_config(args.config or None)
 
     if args.all:
         run_part1(config, focused=args.focused)

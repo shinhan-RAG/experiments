@@ -57,7 +57,7 @@ def distribution(values: list[float]) -> dict:
 
 
 def read_jsonl(path: Path):
-    with path.open() as stream:
+    with path.open(encoding="utf-8") as stream:
         for line_number, line in enumerate(stream, start=1):
             if not line.strip():
                 continue
@@ -112,6 +112,7 @@ def analyze_dataset(dataset: str, raw_dir: Path) -> dict:
     korean_docs = 0
     latin_docs = 0
     corpus_ids = set()
+    gold_space_ids = set()  # qrels가 가리키는 단위(청크형이면 parent, BEIR면 doc)
     gold_token_sets = {}
     gold_normalized_texts = {}
     query_term_df = Counter()
@@ -133,9 +134,18 @@ def analyze_dataset(dataset: str, raw_dir: Path) -> dict:
         latin_docs += bool(LATIN_RE.search(combined))
         for term in token_set & all_query_terms:
             query_term_df[term] += 1
-        if doc_id in gold_ids:
-            gold_token_sets[doc_id] = token_set
-            gold_normalized_texts[doc_id] = " ".join(tokens)
+        # 청크형 corpus(longdoc·ruling-anon·aihub)는 qrels가 parent를 가리키므로
+        # gold는 parent 단위로 청크를 합쳐서 본다. BEIR corpus면 parent_id가 없어
+        # doc_id 그대로이며 기존 동작과 같다.
+        gold_key = str(row.get("parent_id") or doc_id)
+        gold_space_ids.add(gold_key)
+        if gold_key in gold_ids:
+            if gold_key in gold_token_sets:
+                gold_token_sets[gold_key] |= token_set
+                gold_normalized_texts[gold_key] += " " + " ".join(tokens)
+            else:
+                gold_token_sets[gold_key] = set(token_set)
+                gold_normalized_texts[gold_key] = " ".join(tokens)
 
     query_chars = [len(text) for text in queries.values()]
     query_tokens = [len(tokenize(text)) for text in queries.values()]
@@ -217,7 +227,7 @@ def analyze_dataset(dataset: str, raw_dir: Path) -> dict:
             "queries_with_positive_gold": evaluated_query_count,
             "queries_without_positive_gold": query_count - evaluated_query_count,
             "unique_gold_documents": len(gold_ids),
-            "missing_gold_documents": len(gold_ids - corpus_ids),
+            "missing_gold_documents": len(gold_ids - gold_space_ids),
             "gold_documents_per_query": distribution(gold_counts),
             "multi_gold_query_rate": round(
                 sum(v > 1 for v in gold_counts) / evaluated_query_count, 6

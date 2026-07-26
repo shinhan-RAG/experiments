@@ -1,0 +1,66 @@
+dataset: aihub-full
+domain: korean_legal
+
+L1:
+  - Civil
+  - Criminal
+  - Administrative
+  - Family
+  - Commercial
+  - Labor
+  - Tax
+  - Constitutional
+  - Other
+
+L2:
+  Civil:
+    - Contract
+    - Tort
+    - Property
+    - Real_Estate
+    - Loan_Guarantee
+    - Damages
+  Criminal:
+    - Fraud
+    - Violence
+    - Property_Crime
+    - Traffic
+    - Drug
+    - Sexual_Offense
+  Administrative:
+    - Disposition
+    - Licensing
+    - Tax_Administration
+    - Public_Official
+    - Information_Disclosure
+  Family:
+    - Divorce
+    - Inheritance
+    - Support
+    - Custody
+    - Property_Division
+  Commercial:
+    - Company
+    - Insurance
+    - Bill_Check
+    - Bankruptcy
+    - Securities
+  Labor:
+    - Dismissal
+    - Wages
+    - Industrial_Accident
+    - Union
+  Tax:
+    - Income_Tax
+    - VAT
+    - Local_Tax
+    - Customs
+  Constitutional:
+    - Fundamental_Rights
+    - Election
+    - Governance
+  Other:
+    - Intellectual_Property
+    - Medical
+    - ICT_Privacy
+    - General

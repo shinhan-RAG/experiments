@@ -35,12 +35,12 @@ def duplicate_arms(steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _load_json(path: Path) -> Any:
-    with path.open() as stream:
+    with path.open(encoding="utf-8") as stream:
         return json.load(stream)
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
-    with path.open() as stream:
+    with path.open(encoding="utf-8") as stream:
         return [json.loads(line) for line in stream if line.strip()]
 
 
@@ -50,6 +50,43 @@ def _sha256_file(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+AIHUB_DATASET_DIRS = {
+    "aihub-full": ("aihub", "full"),
+    "aihub-smoke20k": ("aihub", "smoke20k"),
+}
+
+
+def _dataset_dir(data_dir: Path, dataset: str) -> Path:
+    if dataset in AIHUB_DATASET_DIRS:
+        group, variant = AIHUB_DATASET_DIRS[dataset]
+        return data_dir / group / variant
+    return data_dir / "raw" / dataset
+
+
+def _parent_subset_path(data_dir: Path, dataset: str, size: int) -> Path:
+    return _dataset_dir(data_dir, dataset) / f"{size // 1000}k_parent_ids.json"
+
+
+def _augmentation_expected_ids(
+    data_dir: Path, dataset: str, sizes: list[int], subset_ids: dict[int, set[str]]
+) -> dict[int, set[str]]:
+    """Expand legal parent subsets to chunk IDs for augmentation coverage only."""
+    if not any(_parent_subset_path(data_dir, dataset, size).exists() for size in sizes):
+        return subset_ids
+    chunks_by_parent: dict[str, set[str]] = defaultdict(set)
+    corpus_path = _dataset_dir(data_dir, dataset) / "corpus.jsonl"
+    for row in _load_jsonl(corpus_path):
+        chunks_by_parent[str(row.get("parent_id", row["_id"]))].add(str(row["_id"]))
+    return {
+        size: {
+            chunk_id
+            for parent_id in parent_ids
+            for chunk_id in chunks_by_parent.get(parent_id, set())
+        }
+        for size, parent_ids in subset_ids.items()
+    }
 
 
 def _artifact_path(data_dir: Path, dataset: str, size: int, feature: str,
@@ -72,7 +109,7 @@ def required_features(steps: list[dict[str, Any]]) -> dict[str, set[str]]:
 
 
 def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, Any]:
-    raw_dir = data_dir / "raw" / dataset
+    raw_dir = _dataset_dir(data_dir, dataset)
     qrels = _load_jsonl(raw_dir / "qrels.jsonl")
     positive_gold = {
         str(row["corpus-id"]) for row in qrels if float(row.get("score", 0)) >= 1
@@ -83,19 +120,25 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
     blockers = []
     subset_ids_by_size: dict[int, set[str]] = {}
     for size in sizes:
-        path = data_dir / "subsets" / dataset / f"{size // 1000}k.json"
-        if not path.exists():
-            blockers.append(f"missing subset manifest: {path}")
-            continue
-        payload = _load_json(path)
-        raw_ids = [str(value) for value in payload.get("doc_ids", [])]
+        parent_path = _parent_subset_path(data_dir, dataset, size)
+        if parent_path.exists():
+            raw_ids = [str(value) for value in _load_json(parent_path)]
+            declared_size = None
+        else:
+            path = data_dir / "subsets" / dataset / f"{size // 1000}k.json"
+            if not path.exists():
+                blockers.append(f"missing subset manifest: {path}")
+                continue
+            payload = _load_json(path)
+            raw_ids = [str(value) for value in payload.get("doc_ids", [])]
+            declared_size = payload.get("subset_size")
         ids = set(raw_ids)
         subset_ids_by_size[size] = ids
         missing_gold = sorted(positive_gold - ids)
         nested = previous_ids is None or previous_ids <= ids
         report = {
             "size": size,
-            "declared_size": payload.get("subset_size"),
+            "declared_size": declared_size,
             "actual_unique_size": len(ids),
             "duplicate_id_count": len(raw_ids) - len(ids),
             "positive_gold_count": len(positive_gold),
@@ -236,12 +279,15 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
     subset_report = audit_subsets(data_dir, dataset, sizes)
     duplicates = duplicate_arms(part1["steps"])
     selected_duplicates = duplicate_arms(selected_steps)
+    augmentation_expected_ids = _augmentation_expected_ids(
+        data_dir, dataset, sizes, subset_report.pop("_ids")
+    )
     augmentation_report = audit_augmentations(
         data_dir,
         dataset,
         sizes,
         selected_steps,
-        subset_report.pop("_ids"),
+        augmentation_expected_ids,
         subset_report.pop("_positive_gold"),
     )
     blockers = [*subset_report["blockers"], *augmentation_report["blockers"]]

@@ -1,25 +1,25 @@
 {
   "eda_version": 1,
   "dataset": "trec-covid",
-  "generated_at_utc": "2026-07-21T08:41:51.699444+00:00",
+  "generated_at_utc": "2026-07-25T18:49:33.037314+00:00",
   "source": {
-    "directory": "/Users/donggyu/Documents/논문/PageIndex/experiments/dr-dci/data/raw/trec-covid",
+    "directory": "C:\\Users\\Atdev-pc\\Desktop\\test\\experiments\\dr-dci\\data\\raw\\trec-covid",
     "configured_huggingface_ids": {
       "corpus_queries": "BeIR/trec-covid",
       "qrels": "BeIR/trec-covid-qrels"
     },
     "files": {
       "corpus.jsonl": {
-        "sha256": "c78448cd2df29e296e2114d27f3153661f9daad50db3cc6dbf95dfea52c7c5d0",
-        "bytes": 199684676
+        "sha256": "ea081751be9f44496e32dd7299d954dcd149985bbeea57f99de784f71fa88b08",
+        "bytes": 199658266
       },
       "queries.jsonl": {
-        "sha256": "83e0c835df617e8e3ba940827c04c5d48df5bed1a007f470076a6d1bcade3f74",
-        "bytes": 5153
+        "sha256": "907c698f2d7ac0417eb9a9cab0f942d303048d1b7e9210d96ccbf746839ed0b9",
+        "bytes": 4803
       },
       "qrels.jsonl": {
-        "sha256": "0652294332e23c0a8eabed1b50f5bb2ab3235dc4650489c927fffebfab06606b",
-        "bytes": 3236229
+        "sha256": "bf00974302162192ed41a87829fb519208ece1a9a10ac8a438d3cf673c58ced0",
+        "bytes": 3634245
       }
     }
   },

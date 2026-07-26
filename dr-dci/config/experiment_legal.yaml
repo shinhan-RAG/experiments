@@ -1,0 +1,188 @@
+# DR-DCI Augmentation Experiment Config — 법률(AI Hub) 대용량 파트
+# 기존 config/experiment.yaml(trec-covid 등)은 그대로 두고, 이 파일로 법률
+# 데이터셋(aihub-full 판례 · ruling-anon · legal-qa) 파트를 병렬 실행한다.
+#   python run_experiment.py --part 1 --config config/experiment_legal.yaml
+
+seed: 42
+
+# Execution wiring is not authorization.  All references stay null until Gate
+# L0 artifacts and actual approvals exist; the runner rejects this config
+# before it loads a query or constructs an endpoint client.
+legal_execution_gate:
+  schema_version: "legal-execution-gate-v1"
+  status: "pending"
+  gate_l0_approval_manifest: null
+  immutable_inputs:
+    corpus: null
+    subset: null
+    final_query: null
+    exclusion_list: null
+  metric_effect_approval: null
+  execution_approval: null
+  tag_execution_contract: null
+
+# Model endpoints (H200 server) — 기본 config와 동일
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+# DR-DCI agent settings
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+# Hybrid RAG baseline settings
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+# Datasets (법률)
+datasets:
+  aihub-full:
+    # AI Hub 판례+서적: parent 170K / chunk ~300K, 층화 50쿼리(agent_queries_50)
+    subsets: [20000, 50000, 110000]
+    queries: 50
+  ruling-anon:
+    # 판결서 익명처리: 판시사항 요지를 질의로, 판결 본문을 gold로 하는 자립형 검색셋
+    queries: 50
+  legal-qa:
+    # QA데이터: aihub 판례 corpus를 공유(qrels가 precedent parent를 가리킴)
+    queries: 50
+  longdoc:
+    # 장문 법률 문서: 보험업법 등 금융법령 4건 + 판례 합본 2,075건 → 5,642청크.
+    # ruling-anon과 같은 규칙(판시사항=질의, 본문에서 제외)으로 1,981질의를 빌드한다.
+    #   python scripts/build_longdoc_queries.py
+    queries: 50
+
+# Experiment parts
+parts:
+  part1_stacking:
+    dataset: "aihub-full"
+    subset: 20000
+    steps:
+      - name: "baseline"
+        description: "DR-DCI raw (no augmentation)"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "taxonomy_only"
+        description: "Taxonomy only"
+        taxonomy: true
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "tags_only"
+        description: "Tags only"
+        taxonomy: false
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "prefix_only"
+        description: "Prefix only"
+        taxonomy: false
+        tags: false
+        prefix: true
+        metadata: false
+      - name: "metadata_only"
+        description: "Metadata only"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: true
+      - name: "stack_tax_tags"
+        description: "Stacked: +Taxonomy +Tags"
+        taxonomy: true
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "stack_tax_tags_prefix"
+        description: "Stacked: +Taxonomy +Tags +Prefix"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: false
+      - name: "stack_all"
+        description: "Stacked: All augmentations"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: true
+
+  part2_scaling:
+    dataset: "aihub-full"
+    methods: ["dr-dci-final", "single-pull", "hybrid-rag"]
+    subsets: [20000, 50000, 110000]
+    include_single_pull: true
+
+  part3_tags:
+    dataset: "aihub-full"
+    subset: 20000
+    approaches: ["A", "B", "C"]
+
+  part4_generalization:
+    methods: ["dr-dci-final", "hybrid-rag"]
+    # 법률 일반화: ruling-anon(자립형)과 legal-qa(aihub corpus 공유)를 전체 corpus에서
+    # baseline DR-DCI vs Hybrid로 비교(방법론 일반화). full-stack이 필요하면 해당
+    # 데이터셋 augmentation을 빌드한 뒤 subset을 지정하고 augment: true로 바꾼다.
+    datasets:
+      - name: "ruling-anon"
+        subset: null
+        augment: false
+        queries: 50
+      - name: "legal-qa"
+        subset: null
+        augment: false
+        queries: 50
+      # longdoc is a source-parent diagnostic fixture.  Its single-gold,
+      # synthetic/compiled source contract cannot support confirmatory
+      # generalization, H4, or product claims.
+      - name: "longdoc"
+        subset: null
+        augment: false
+        queries: 50
+        evaluation_role: "diagnostic_only"
+        confirmatory_gate_status: "not_advanced"
+        source_revision_sha256: null
+        lexical_overlap_stratum: null
+
+  part5_pull_backend:
+    dataset: "aihub-full"
+    subset: 20000
+    backends: ["dense", "hybrid_rrf"]
+    fixed_augmentations:
+      taxonomy: true
+      tags: "A"
+      prefix: true
+      metadata: true
+
+# Evaluation
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"

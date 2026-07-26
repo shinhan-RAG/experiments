@@ -21,11 +21,16 @@ class StaticEmbeddingRetriever(PullRetriever):
 
 
 class StaticPullRetriever:
-    def pull(self, query, taxonomy_filter=None):
-        return [
+    def pull(self, query, taxonomy_filter=None, top_k=None, exclude_ids=None):
+        rows = [
             {"doc_id": "d1", "score": 1.0},
             {"doc_id": "d2", "score": 0.5},
         ]
+        excluded = exclude_ids or set()
+        rows = [row for row in rows if row["doc_id"] not in excluded]
+        limit = top_k or len(rows)
+        return {"results": rows[:limit], "requested": limit,
+                "duplicates_excluded": len(excluded & {"d1", "d2"})}
 
 
 class TelemetryPullRetriever:
@@ -103,7 +108,7 @@ class ExperimentContractTests(unittest.TestCase):
     def test_judge_does_not_match_incorrect_as_correct(self):
         self.assertEqual(Judge.parse_judgment("correct"), "correct")
         self.assertEqual(Judge.parse_judgment("incorrect"), "incorrect")
-        self.assertEqual(Judge.parse_judgment("probably correct"), "error")
+        self.assertEqual(Judge.parse_judgment("probably correct"), "format_error")
 
     def test_embedding_cache_key_covers_content_and_model(self):
         base = embedding_cache_key(
@@ -150,7 +155,7 @@ class ExperimentContractTests(unittest.TestCase):
         )
         dense.doc_ids = ["lexical", "dense"]
         dense.embedding_matrix = np.asarray([[0.0, 1.0], [1.0, 0.0]])
-        self.assertEqual(dense.pull("ZXQ991")[0]["doc_id"], "dense")
+        self.assertEqual(dense.pull("ZXQ991")["results"][0]["doc_id"], "dense")
 
         hybrid = StaticEmbeddingRetriever(
             RetrieverConfig("unused", "model", top_k=1, backend="hybrid_rrf", bm25_top_k=2),
@@ -160,8 +165,34 @@ class ExperimentContractTests(unittest.TestCase):
         hybrid.embedding_matrix = np.asarray([[0.0, 1.0], [1.0, 0.0]])
         hybrid.bm25.fit(documents)
         results = hybrid.pull("ZXQ991")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["doc_id"], "lexical")
+        self.assertEqual(len(results["results"]), 1)
+        self.assertEqual(results["results"][0]["doc_id"], "lexical")
+
+    def test_hybrid_baseline_uses_the_same_query_instruction_contract(self):
+        from src.hybrid.pipeline import HybridRAG
+
+        pipeline = HybridRAG(
+            embedding_url="unused", embedding_model="model",
+            reranker_url="", reranker_model="",
+            llm_url="unused", llm_model="model",
+            dense_top_k=1, bm25_top_k=1, rerank_top_k=1,
+            query_instruction="PREFIX: ",
+        )
+        pipeline.doc_ids = ["d1"]
+        pipeline.embedding_matrix = np.asarray([[1.0, 0.0]])
+        pipeline.corpus = {"d1": {"title": "t", "text": "body"}}
+        pipeline.bm25.fit([{"_id": "d1", "title": "t", "text": "body"}])
+        seen = []
+
+        def embed(texts, batch_size=256):
+            seen.extend(texts)
+            return [np.asarray([1.0, 0.0]) for _ in texts]
+
+        pipeline._embed_batch = embed
+        pipeline._rerank = lambda query, candidates: candidates
+        pipeline._generate_answer = lambda query, context: "answer"
+        pipeline.run("question")
+        self.assertEqual(seen, ["PREFIX: question"])
 
     def test_taxonomy_boost_only_increases_positive_scores_and_reports_rank_effect(self):
         retriever = StaticEmbeddingRetriever(
@@ -238,6 +269,7 @@ class ExperimentContractTests(unittest.TestCase):
             corpus=corpus,
             max_turns=2,
             workspace_max_docs=1,
+            min_pulls=1,
         )
         responses = iter([
             {
@@ -545,6 +577,7 @@ class AgentAccountingTests(unittest.TestCase):
             corpus={"d1": {"title": "t", "text": "본문"},
                     "d2": {"title": "t2", "text": "본문2"}},
             max_turns=5, workspace_max_docs=10,
+            min_pulls=1,
         )
         scripted = [
             {"content": None, "_usage": {"prompt_tokens": 10, "completion_tokens": 3},
@@ -574,6 +607,105 @@ class AgentAccountingTests(unittest.TestCase):
         self.assertEqual(result["llm_completion_tokens"], 10)
         self.assertEqual(result["pull_count"], 1)
         self.assertEqual(result["answer"], "답")
+
+
+class FailureHandlingTests(unittest.TestCase):
+    def test_failed_query_row_has_metric_defaults(self):
+        from run_experiment import failed_query_row
+
+        row = failed_query_row(
+            {"_id": "q9", "title": "질의"}, RuntimeError("boom"),
+            requested_features={"taxonomy": True}, single_pull=False,
+        )
+        self.assertEqual(row["query_id"], "q9")
+        self.assertTrue(row["failed"])
+        self.assertEqual(row["termination_reason"], "harness_error")
+        self.assertIn("boom", row["error"])
+        self.assertEqual(row["answer"], "")
+        # 집계 함수가 기대하는 필드가 기본값으로 존재해야 한다
+        for key in ("gold_recall", "pull_count", "retrieved_candidates",
+                    "workspace_docs", "turns", "latency_seconds",
+                    "rule_violations", "trace"):
+            self.assertIn(key, row)
+        compute_metrics([row])  # 예외 없이 집계 가능
+
+    def test_arm_aborts_when_failure_rate_exceeds_threshold(self):
+        from run_experiment import check_arm_failure_rate
+
+        ok = {"termination_reason": "answered"}
+        bad = {"termination_reason": "llm_error"}
+        check_arm_failure_rate([ok, ok, ok, ok, bad], threshold=0.2)  # 20%까지 허용
+        with self.assertRaises(RuntimeError):
+            check_arm_failure_rate([ok, ok, bad, bad], threshold=0.2)
+
+    def test_empty_answer_is_not_sent_to_judge(self):
+        from run_experiment import assign_judgment
+
+        class ExplodingJudge:
+            def evaluate_accuracy(self, *a, **k):
+                raise AssertionError("judge must not be called for empty answers")
+
+        row = {"query_id": "q1", "query_text": "질의", "answer": ""}
+        assign_judgment(row, {"q1": "ref"}, ExplodingJudge())
+        self.assertEqual(row["judgment"], "agent_error")
+
+        answered = {"query_id": "q2", "query_text": "질의", "answer": "정상"}
+        assign_judgment(answered, {}, ExplodingJudge())
+        self.assertEqual(answered["judgment"], "n/a")
+
+
+class RerankerVisibilityTests(unittest.TestCase):
+    @staticmethod
+    def _pipeline(reranker_url="http://mock-rerank", allow=False):
+        from src.hybrid.pipeline import HybridRAG
+
+        p = HybridRAG(
+            embedding_url="u", embedding_model="m",
+            reranker_url=reranker_url, reranker_model="rr",
+            llm_url="u", llm_model="m",
+            dense_top_k=1, bm25_top_k=1, rerank_top_k=1,
+            allow_reranker_fallback=allow,
+        )
+        p.corpus = {"d1": {"title": "t", "text": "body"}}
+        return p
+
+    def test_hybrid_rerank_failure_raises_by_default(self):
+        import requests
+        from unittest.mock import patch
+
+        from src.retrieval import RerankerError
+
+        p = self._pipeline()
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=requests.exceptions.ConnectionError("down")):
+            with self.assertRaises(RerankerError):
+                p._rerank("q", [("d1", 1.0)])
+
+    def test_hybrid_rerank_fallback_records_error_when_allowed(self):
+        import requests
+        from unittest.mock import patch
+
+        p = self._pipeline(allow=True)
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=requests.exceptions.ConnectionError("down")):
+            out = p._rerank("q", [("d1", 1.0)])
+        self.assertEqual(out, [("d1", 1.0)])
+        self.assertIn("ConnectionError", p.last_rerank_error)
+
+    def test_hybrid_run_skips_rerank_without_url_and_reports_status(self):
+        from unittest.mock import patch
+
+        p = self._pipeline(reranker_url="")
+        p.doc_ids = ["d1"]
+        p.embedding_matrix = np.asarray([[1.0, 0.0]])
+        p.bm25.fit([{"_id": "d1", "title": "t", "text": "body"}])
+        p._embed_batch = lambda texts, batch_size=256: [np.asarray([1.0, 0.0]) for _ in texts]
+        p._generate_answer = lambda query, context: "answer"
+        with patch("src.hybrid.pipeline.requests.post",
+                   side_effect=AssertionError("no network call expected")):
+            result = p.run("question")
+        self.assertFalse(result["reranker_used"])
+        self.assertIsNone(result["reranker_error"])
 
 
 class EmbeddingAuthTests(unittest.TestCase):
