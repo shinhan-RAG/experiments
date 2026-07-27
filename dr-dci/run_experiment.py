@@ -136,7 +136,12 @@ def load_supporting_spans(dataset: str) -> dict:
     반환: {qid(str): [{"text": ...}, ...]}  — span 기반 지표(coverage/density/f1)용.
     span이 없는 데이터셋(trec-covid 등)은 빈 dict → span 지표는 자동으로 건너뜀.
     """
+    # aihub 계열은 QA를 청킹 variant와 무관하게 data/aihub/qa/ 에 공유 저장한다.
     path = DATA_DIR / "raw" / dataset / "qa_meta.jsonl"
+    if not path.exists():
+        alt = DATA_DIR / "aihub" / "qa" / "qa_meta.jsonl"
+        if alt.exists():
+            path = alt
     spans = {}
     if not path.exists():
         return spans
@@ -468,8 +473,11 @@ def run_dr_dci(config: dict, corpus: list, queries: list, qrels: list,
                 {"chunk_id": did, "text": corpus_dict.get(did, {}).get("text", "")}
                 for did in result["workspace_docs"]
             ]
+            # parent 단위 corpus(aihub)면 gold가 parent라 청크 recall과 단위가
+            # 다르다 → 청크 recall은 생략하고 span 지표(coverage/density)만 잰다.
+            chunk_gold = set() if parent_map else set(gold_docs)
             span_eval = span_metrics.evaluate_query(
-                ranked_chunks, set(gold_docs), query_spans.get(qid)
+                ranked_chunks, chunk_gold, query_spans.get(qid)
             )
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
@@ -598,8 +606,11 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
                 {"chunk_id": did, "text": corpus_dict.get(did, {}).get("text", "")}
                 for did in result["retrieved_docs"]
             ]
+            # parent 단위 corpus(aihub)면 gold가 parent라 청크 recall과 단위가
+            # 다르다 → 청크 recall은 생략하고 span 지표(coverage/density)만 잰다.
+            chunk_gold = set() if parent_map else set(gold_docs)
             span_eval = span_metrics.evaluate_query(
-                ranked_chunks, set(gold_docs), query_spans.get(qid)
+                ranked_chunks, chunk_gold, query_spans.get(qid)
             )
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {

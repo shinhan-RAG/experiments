@@ -80,13 +80,16 @@ def span_scores(ranked_chunks, supporting_spans, k):
 
 # ---------- 통합 ----------
 def evaluate_query(ranked_chunks, gold_chunk_ids, supporting_spans=None, ks=(5, 10, 20)):
-    """qrels 지표(recall/ndcg)는 gold만 있으면 항상 계산.
+    """청크단위 recall/ndcg는 gold(청크 ID)가 있을 때만 계산.
+    parent 단위 평가(gold가 parent라 청크 ID와 단위가 다름)에서는 gold를 비워
+    호출하며, 그 경우 청크 recall/ndcg는 건너뛰고 span 지표만 계산한다.
     span 지표(coverage/density/f1)는 supporting_spans가 있을 때만 추가."""
     ranked_ids = [c["chunk_id"] for c in ranked_chunks]
     out = {}
-    for k in ks:
-        out[f"recall@{k}"] = round(recall_at_k(ranked_ids, gold_chunk_ids, k), 4)
-        out[f"ndcg@{k}"] = round(ndcg_at_k(ranked_ids, gold_chunk_ids, k), 4)
+    if gold_chunk_ids:
+        for k in ks:
+            out[f"recall@{k}"] = round(recall_at_k(ranked_ids, gold_chunk_ids, k), 4)
+            out[f"ndcg@{k}"] = round(ndcg_at_k(ranked_ids, gold_chunk_ids, k), 4)
     if supporting_spans:
         for k in ks:
             s = span_scores(ranked_chunks, supporting_spans, k)
