@@ -5,8 +5,8 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
-import tempfile
 import unittest
+from unittest.mock import patch
 
 from src.miracl_ko.flat_l1 import (
     build_flat_l1_generation_plan,
@@ -46,12 +46,24 @@ class MiraclKoFlatL1ExecutionTests(unittest.TestCase):
                 "config/miracl_ko_taxonomy/vllm_v0_9_0_runtime_identity.json",
             ],
         )
-        return build_flat_l1_generation_plan(
-            repo_root=REPO_ROOT,
-            generator_source_commit="a" * 40,
-            generator_code_contract_sha256=generator_contract_sha256(contract),
-            generator_code_sha256=contract["generator_code_sha256"],
-        )
+        synthetic_input_provenance = {
+            "revision_lock_sha256": "a" * 64,
+            "preparation_contract_sha256": "b" * 64,
+            "input_110k_corpus_sha256": "c" * 64,
+            "input_subset_manifest_sha256": "d" * 64,
+        }
+        # Flat-L1 control tests are independent from the byte-level fixture
+        # validator and must not read locally untracked MIRACL data.
+        with patch(
+            "src.miracl_ko.flat_l1.input_provenance",
+            return_value=synthetic_input_provenance,
+        ):
+            return build_flat_l1_generation_plan(
+                repo_root=REPO_ROOT,
+                generator_source_commit="a" * 40,
+                generator_code_contract_sha256=generator_contract_sha256(contract),
+                generator_code_sha256=contract["generator_code_sha256"],
+            )
 
     def test_plan_fixes_one_passage_requests_and_transport_concurrency(self):
         plan = self._plan()

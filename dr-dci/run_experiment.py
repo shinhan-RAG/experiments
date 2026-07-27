@@ -67,7 +67,10 @@ def load_config(path: str | None = None):
 AIHUB_DATASET_DIRS = {
     "aihub-full": ("aihub", "full"),
     "aihub-smoke20k": ("aihub", "smoke20k"),
+    "aihub-smoke": ("aihub", "smoke"),
+    "aihub-element": ("aihub", "element"),
 }
+AIHUB_SHARED_QA_DATASETS = {"aihub-smoke", "aihub-element"}
 
 # Query-only data can share a corpus while retaining its own queries and qrels.
 CORPUS_ALIAS = {"legal-qa": "aihub-full"}
@@ -153,6 +156,8 @@ def to_parent_ids(ids: list[str], parent_map: dict[str, str]) -> list[str]:
 def load_supporting_spans(dataset: str) -> dict[str, list[dict]]:
     """Load optional S0 supporting spans without manufacturing missing spans."""
     path = dataset_dir(dataset) / "qa_meta.jsonl"
+    if not path.exists() and dataset in AIHUB_SHARED_QA_DATASETS:
+        path = DATA_DIR / "aihub" / "qa" / "qa_meta.jsonl"
     if not path.exists():
         return {}
     spans = {}
@@ -604,6 +609,8 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
     print("    Indexing corpus...")
     pipeline.index(corpus)
     parent_map = parent_map_from_corpus(corpus)
+    corpus_dict = {str(doc["_id"]): doc for doc in corpus}
+    query_spans = load_supporting_spans(dataset) if dataset else {}
 
     # Judge
     with open(CONFIG_DIR / "judge_prompt.txt") as f:
@@ -632,6 +639,18 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             to_parent_ids(result["retrieved_docs"], parent_map), gold_docs
         )
         efficiency = Judge.efficiency(gold_recall, result["pull_count"])
+        evidence_metrics = None
+        if query_spans.get(qid):
+            evidence_metrics = span_metrics.evaluate_workspace_evidence(
+                [
+                    {
+                        "chunk_id": doc_id,
+                        "text": corpus_dict.get(str(doc_id), {}).get("text", ""),
+                    }
+                    for doc_id in result["retrieved_docs"]
+                ],
+                query_spans[qid],
+            )
         print(f"    [{i+1}/{len(queries)}] {query_text[:50]}...")
         return {
             "query_id": qid,
@@ -642,6 +661,7 @@ def run_hybrid(config: dict, corpus: list, queries: list, qrels: list,
             "pull_count": result["pull_count"],
             "retrieved_candidates": len(result["retrieved_docs"]),
             "retrieved_docs": result["retrieved_docs"],
+            "evidence_metrics": evidence_metrics,
             "turns": 1,
             "latency_seconds": latency_seconds,
         }

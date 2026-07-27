@@ -17,6 +17,8 @@ MAX_CONCURRENT = 32
 AIHUB_DATASET_DIRS = {
     "aihub-full": ("aihub", "full"),
     "aihub-smoke20k": ("aihub", "smoke20k"),
+    "aihub-smoke": ("aihub", "smoke"),
+    "aihub-element": ("aihub", "element"),
 }
 
 
