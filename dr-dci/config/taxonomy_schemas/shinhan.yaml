@@ -1,0 +1,44 @@
+dataset: shinhan
+domain: korean_insurance
+
+# L1은 코퍼스의 doc 접두어 분포(약관__/상품__/보험금심사__/고객상담__/LICO__)를 그대로 반영한다.
+# 분류기가 본문 앞 300자만 보므로(scripts/build_taxonomy.py:66) 카테고리를 잘게 쪼개지 않는다.
+L1:
+  - Terms              # 약관__ : 판매약관 · 상품요약서
+  - Product            # 상품__ : 판매예규 · 사업방법서 · 산출방법서 · 상품전략
+  - ClaimsReview       # 보험금심사__ : 심사지침 · 지급기준 · 분쟁/판례
+  - CustomerService    # 고객상담__ : 업무매뉴얼 · 스크립트 · 라이팅가이드
+  - SalesEducation     # LICO__ : 교육자료 · 니즈자료 · 상품안내장 · 영업소식지
+  - Other
+
+L2:
+  Terms:
+    - Coverage           # 보장내용 · 지급사유
+    - Exclusion          # 면책 · 부지급 사유
+    - PolicyChange       # 계약변경 · 부활 · 해지
+    - Premium            # 보험료 납입 · 납입면제
+    - Surrender          # 해약환급금
+    - Definition         # 용어정의 · 질병분류
+  Product:
+    - ProductSpec        # 사업방법서 · 상품구조 · 특약라인업
+    - Pricing_Actuarial  # 산출방법서 · 영업보험료 · 준비금
+    - SalesRule          # 판매예규 · 인수기준 · 모집규정
+    - ProductStrategy    # 상품전략위원회 · VNB · 개정리스트
+    - Approval           # 신상품심의 · 배타적사용권
+  ClaimsReview:
+    - ReviewGuideline    # 심사지침 · 업무처리매뉴얼
+    - PaymentCriteria    # 지급기준 · 본인부담상한액
+    - Dispute_Precedent  # 분쟁사례 · 대법원 판례
+    - Reimbursement      # 실손 · 위험분담제 환급
+  CustomerService:
+    - ClaimIntake        # 보험금 청구접수 · 구비서류
+    - Script             # 상담 스크립트 · 본인확인
+    - ContractChange     # 계약변경 업무매뉴얼
+    - WritingGuide       # CX 라이팅가이드
+  SalesEducation:
+    - TrainingMaterial   # FC 교육자료 · 테마교육
+    - Brochure           # 상품안내장 · 브로셔
+    - SalesNews          # 영업방향 · 소식지
+    - NeedsAnalysis      # 니즈환기 · 노후설계
+  Other:
+    - General

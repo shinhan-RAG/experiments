@@ -135,6 +135,7 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
             # 청크형(법률) corpus: 서브셋은 parent 문서 ID의 평문 배열이다.
             raw_ids = [str(value) for value in _load_json(parent_path)]
             declared_size = None
+            full_corpus = False
         else:
             path = data_dir / "subsets" / dataset / f"{size // 1000}k.json"
             if not path.exists():
@@ -143,6 +144,10 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
             payload = _load_json(path)
             raw_ids = [str(value) for value in payload.get("doc_ids", [])]
             declared_size = payload.get("subset_size")
+            # A corpus smaller than the nominal size can only ever yield a short
+            # subset. The manifest must say so explicitly, so that a subset which
+            # silently lost documents is still caught.
+            full_corpus = bool(payload.get("full_corpus"))
         ids = set(raw_ids)
         subset_ids_by_size[size] = ids
         missing_gold = sorted(positive_gold - ids)
@@ -155,9 +160,10 @@ def audit_subsets(data_dir: Path, dataset: str, sizes: list[int]) -> dict[str, A
             "positive_gold_count": len(positive_gold),
             "missing_positive_gold_count": len(missing_gold),
             "nested_with_previous": nested,
+            "full_corpus": full_corpus,
         }
         reports.append(report)
-        if len(ids) != size:
+        if len(ids) != size and not full_corpus:
             blockers.append(f"subset {size} has {len(ids)} unique documents")
         if report["duplicate_id_count"]:
             blockers.append(f"subset {size} contains duplicate document IDs")
@@ -251,12 +257,18 @@ def audit_part12(config: dict[str, Any], data_dir: Path, *,
                  step_names: set[str] | None = None,
                  sizes: list[int] | None = None) -> dict[str, Any]:
     part1 = config["parts"]["part1_stacking"]
-    part2 = config["parts"]["part2_scaling"]
-    dataset = str(part2["dataset"])
-    if dataset != str(part1["dataset"]):
+    # Part 2 is optional: a corpus can be too small for the scaling experiment
+    # (shinhan is 2.8K chunks vs the 20K minimum) and still need the Part 1 audit.
+    part2 = config["parts"].get("part2_scaling")
+    dataset = str(part1["dataset"])
+    if part2 is not None and str(part2["dataset"]) != dataset:
         raise ValueError("Part 1 and Part 2 must use the same dataset for this audit")
 
-    sizes = sizes or [int(size) for size in part2["subsets"]]
+    if not sizes:
+        if part2 is not None:
+            sizes = [int(size) for size in part2["subsets"]]
+        else:
+            sizes = [int(part1["subset"])]
     selected_steps = [
         step for step in part1["steps"]
         if step_names is None or str(step["name"]) in step_names

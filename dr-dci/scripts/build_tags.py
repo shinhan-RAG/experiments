@@ -8,7 +8,7 @@
 import json
 import re
 from pathlib import Path
-from utils import run_batch_llm, parse_llm_content, load_corpus_subset
+from utils import run_batch_llm, parse_llm_content, load_corpus_subset, parse_sizes
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUT_DIR = DATA_DIR / "tags"
@@ -195,7 +195,7 @@ if __name__ == "__main__":
     argv = sys.argv[1:]
     args = [a for a in argv if not a.startswith("-")]
     dataset = args[0] if args else "trec-covid"
-    sizes = [20_000, 50_000, 110_000] if "--all" in argv else [20_000]
+    sizes = parse_sizes(argv)
     # --approaches A  또는  --approaches A,B,C  (기본 A,B,C)
     approaches = ("A", "B", "C")
     if "--approaches" in argv:

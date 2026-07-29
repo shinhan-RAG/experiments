@@ -1,0 +1,83 @@
+dataset: shinhan
+domain: korean_insurance
+description: "신한라이프 실무문서 — 판매약관 · 상품요약서 · 사업/산출방법서 · 보험금 심사지침 · 상담 매뉴얼 · FC 교육자료"
+
+# scripts/build_metadata.build_json_schema 는 enum / integer / entities 세 형태만 처리한다.
+# 그 외 타입(자유 문자열 등)은 프롬프트와 guided_json 양쪽에서 조용히 누락되므로 쓰지 않는다.
+fields:
+  doc_type:
+    type: enum
+    description: "문서 종류"
+    values:
+      - terms              # 판매약관
+      - product_summary    # 상품요약서
+      - business_method    # 사업방법서 · 판매예규
+      - actuarial          # 산출방법서 · 요율/준비금
+      - claims_guideline   # 보험금 심사지침 · 지급기준
+      - service_manual     # 상담 · 계약변경 업무매뉴얼
+      - training           # FC 교육자료 · 브로셔 · 소식지
+      - other
+
+  product_line:
+    type: enum
+    description: "상품군 (판별 불가면 null)"
+    nullable: true
+    values:
+      - whole_life         # 종신 (밸런스핏 · 변액유니버설종신 등)
+      - health             # 건강 · 통합건강 (ONE더우먼 등)
+      - annuity            # 연금 (톤틴연금 등)
+      - indemnity          # 실손
+      - variable           # 변액
+      - multi              # 여러 상품군을 함께 다룸
+      - none               # 특정 상품에 매이지 않는 일반 문서
+
+  element_type:
+    type: enum
+    description: "청크의 표현 형태. corpus.jsonl 의 element_type 과 같은 축이며 본문을 보고 재판정한다."
+    values:
+      - table
+      - formula
+      - text
+
+  coverage_topic:
+    type: enum
+    description: "이 청크가 실제로 다루는 주제 (해당 없으면 other)"
+    nullable: true
+    values:
+      - coverage_scope     # 보장범위 · 지급사유
+      - exclusion          # 면책 · 부지급
+      - premium_payment    # 보험료 납입 · 납입면제
+      - surrender_value    # 해약환급금
+      - underwriting       # 인수심사 · 고지의무 · 간편심사
+      - claim_procedure    # 청구절차 · 구비서류
+      - contract_change    # 계약변경 · 부활 · 해지
+      - disease_definition # 질병정의 · 질병분류코드
+      - pricing            # 요율 · 준비금 · 수익성
+      - sales_process      # 모집 · 판매채널 · 영업방향
+      - other
+
+  effective_year:
+    type: integer
+    description: "시행일 · 개정일 · 발행 연도 (판별 불가면 null)"
+    range: [2015, 2027]
+    nullable: true
+
+  entities:
+    type: list
+    description: "청크의 핵심 개체"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "개체명 (원문 표기 그대로)"
+      category:
+        type: enum
+        values:
+          - product_name   # 상품명 (신한톤틴연금보험 등)
+          - rider_name     # 특약명
+          - disease_code   # 질병분류코드 (I60, C50 등)
+          - amount         # 금액 · 비율 · 한도
+          - date           # 일자 · 기간
+          - statute        # 법령 · 판례 · 고시
+          - organization   # 기관 · 부서 · 채널
+          - other

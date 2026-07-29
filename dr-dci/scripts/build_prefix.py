@@ -7,7 +7,7 @@
 
 import json
 from pathlib import Path
-from utils import run_batch_llm, strip_thinking, load_corpus_subset
+from utils import run_batch_llm, strip_thinking, load_corpus_subset, parse_sizes
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUT_DIR = DATA_DIR / "prefix"
@@ -89,6 +89,5 @@ if __name__ == "__main__":
     import sys
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     dataset = args[0] if args else "trec-covid"
-    sizes = [20_000, 50_000, 110_000] if "--all" in sys.argv else [20_000]
-    for size in sizes:
+    for size in parse_sizes(sys.argv[1:]):
         build_prefix(dataset, size)

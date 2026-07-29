@@ -1,0 +1,144 @@
+# DR-DCI Augmentation Experiment Config — 신한라이프 실무문서
+# config/experiment_legal.yaml 과 모델·에이전트 설정을 동일하게 두고 parts 만 교체한다.
+#   python run_experiment.py --part 4 --config config/experiment_shinhan.yaml
+#   python run_experiment.py --part 1 --config config/experiment_shinhan.yaml
+#   python run_experiment.py --part 3 --config config/experiment_shinhan.yaml
+#
+# 데이터: data/raw/shinhan/  (28문서 → 2,802청크, 질의 50)
+#   - parent_id 가 없는 청크 단위 corpus → qrels/평가가 청크 단위다.
+#     parent 단위로 평가하는 법률 데이터셋과 절대 점수를 직접 비교하면 안 된다.
+#   - 준비 스크립트: build_shinhan_reference_answers.py / build_shinhan_subset.py
+#                    audit_shinhan_corpus.py
+
+seed: 42
+
+# Model endpoints — experiment_legal.yaml 과 동일하게 유지(조건 일치를 위해 바꾸지 말 것)
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+# DR-DCI agent settings
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+# Hybrid RAG baseline settings
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+# Datasets (문서용 — 코드가 읽지 않는다)
+datasets:
+  shinhan:
+    # 신한라이프 실무문서(약관/상품/보험금심사/고객상담/LICO) 28건 → 2,802청크, 균등샘플 50쿼리
+    queries: 50
+
+# Experiment parts
+parts:
+  part1_stacking:
+    dataset: "shinhan"
+    # subset 은 반드시 non-null. null 이면 load_augmentations 가 조용히 None 을 반환해
+    # (run_experiment.py:193-194) 8개 arm 이 전부 baseline 으로 붕괴하는데 라벨만 남는다.
+    # 3000 -> size_key "3k" -> data/subsets/shinhan/3k.json (전체 2,802청크)
+    subset: 3000
+    steps:
+      - name: "baseline"
+        description: "DR-DCI raw (no augmentation)"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "taxonomy_only"
+        description: "Taxonomy only"
+        taxonomy: true
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "tags_only"
+        description: "Tags only"
+        taxonomy: false
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "prefix_only"
+        description: "Prefix only"
+        taxonomy: false
+        tags: false
+        prefix: true
+        metadata: false
+      - name: "metadata_only"
+        description: "Metadata only"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: true
+      - name: "stack_tax_tags"
+        description: "Stacked: +Taxonomy +Tags"
+        taxonomy: true
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "stack_tax_tags_prefix"
+        description: "Stacked: +Taxonomy +Tags +Prefix"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: false
+      - name: "stack_all"
+        description: "Stacked: All augmentations"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: true
+
+  # part2_scaling: 신한 코퍼스는 2,802청크로 규모 확장 실험의 최소 조건(20K청크)을
+  #                충족하지 못하므로 대상에서 제외한다. 같은 데이터를 복제해 크기만
+  #                늘리는 것은 의미 있는 규모 실험이 아니다.
+  #                규모 변화 결과는 aihub-full(experiment_legal.yaml) 실험을 인용할 것.
+
+  part3_tags:
+    dataset: "shinhan"
+    subset: 3000
+    approaches: ["A", "B", "C"]
+
+  part4_generalization:
+    methods: ["dr-dci-final", "hybrid-rag"]
+    # 일반화 검증이므로 augmentation 없이 전체 코퍼스에서 DR-DCI vs Hybrid 를 본다.
+    # 2026-07-28 실행(results/part4_generalization/20260728_180549.json)과 동일 조건이며,
+    # 이번에는 data/reference_answers/shinhan.json 이 있어 accuracy 축이 함께 측정된다.
+    datasets:
+      - name: "shinhan"
+        subset: null
+        augment: false
+        queries: 50
+
+# Evaluation
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"

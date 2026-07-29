@@ -28,6 +28,20 @@ def dataset_dir(data_dir: Path, dataset: str) -> Path:
     return data_dir / "raw" / dataset
 
 
+def parse_sizes(argv: list[str]) -> list[int]:
+    """빌더 공통 서브셋 크기 파싱.
+
+    --size=3000        -> [3000]        (신한처럼 20K 미만 코퍼스용)
+    --size=20000 --size=50000 -> [20000, 50000]
+    --all              -> [20000, 50000, 110000]
+    (없음)             -> [20000]       기존 동작 유지
+    """
+    sizes = [int(a.split("=", 1)[1]) for a in argv if a.startswith("--size=")]
+    if sizes:
+        return sizes
+    return [20_000, 50_000, 110_000] if "--all" in argv else [20_000]
+
+
 def load_jsonl(path: Path) -> list:
     with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f]
