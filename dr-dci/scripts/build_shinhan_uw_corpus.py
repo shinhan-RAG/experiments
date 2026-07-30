@@ -515,6 +515,31 @@ def extract_entities(text: str) -> list[dict]:
     return found
 
 
+def split_elements_like_build_tags(doc: dict) -> list[dict]:
+    """scripts/build_tags.py:47-77 의 split_elements 를 그대로 옮긴 것.
+
+    왜 복제하는가 — approach_p(결정론적)와 approach_a/b/c(LLM)가 **같은 단위로**
+    쪼개져야 Part 1 의 parser_meta_only vs tags_only 비교가 성립한다. 청크당
+    1개 태그 대 청크당 14개 태그를 비교하면 태그 어휘의 차이가 아니라 granularity
+    차이를 재게 된다. build_tags.py 를 import 하면 모듈 로드 시 LLM 설정을 끌고
+    오므로 로직만 미러링하고, 바뀌면 여기도 함께 고친다.
+    """
+    elements: list[dict] = []
+    for para in re.split(r"\n{2,}", doc.get("text", "")):
+        para = para.strip()
+        if not para:
+            continue
+        lower = para.lower()
+        if len(para) < 20 and any(k in lower for k in ("page", "header", "footer", "©")):
+            continue
+        if len(para) < 50 and elements and any(
+                k in lower for k in ("fig", "table", "note", "source", "caption")):
+            elements[-1]["text"] += "\n" + para
+            continue
+        elements.append({"idx": len(elements), "text": para, "doc_id": doc["_id"]})
+    return elements
+
+
 def build_parser_augmentations(chunks: list[dict],
                                doc_meta: dict[str, tuple[str, str, int | None]]
                                ) -> tuple[dict, list[dict]]:
@@ -542,8 +567,11 @@ def build_parser_augmentations(chunks: list[dict],
             "effective_year": year,
             "entities": extract_entities(chunk["text"]),
         }
-        tags.append({"idx": 0, "text": chunk["text"], "doc_id": cid,
-                     "tag": f"@el:{element}"})
+        # 청크의 모든 element 에 그 청크의 파서 element_type 을 부여한다.
+        # 분할 단위를 build_tags.py 와 똑같이 맞춰야 approach A/B/C 와 비교 가능하다.
+        for elem in split_elements_like_build_tags(chunk):
+            elem["tag"] = f"@el:{element}"
+            tags.append(elem)
     return metadata, tags
 
 
