@@ -1,0 +1,98 @@
+# DR-DCI 실험 config — 신한 + 법률 혼합 코퍼스 · Part 2(규모 확장) 전용
+#
+#   python run_experiment.py --part 2 --config config/experiment_shinhan_mixed.yaml
+#
+# 왜 이 config 가 있는가
+# ---------------------
+# 신한 코퍼스는 2,802청크로 Part 2 의 최소 조건(20K)을 못 채운다. 같은 데이터를 복제해
+# 크기만 늘리는 것은 규모 실험이 아니므로, **같은 보험 도메인의 법률 문서를 distractor 로만**
+# 섞어 20k / 50k / 110k 를 만든다.  빌더: scripts/build_shinhan_mixed.py
+#
+#   질의·gold  : 신한 50건 고정 (data/raw/shinhan-mixed/{queries,qrels}.jsonl)
+#   distractor : 법률 보험 관련 청크. `<source>::<id>` 접두사가 붙어 있고 gold 가 될 일이 없다.
+#   규모        = 방해 문서량.  20k ⊂ 50k ⊂ 110k 중첩이라 곡선이 노이즈 증가만 반영한다.
+#
+# 평가 단위 경고
+# -------------
+# 신한 청크는 `parent_id` 가 없어 parent_map_from_corpus(run_experiment.py:156-165)가
+# 자기 자신으로 사상한다 → **청크 단위 평가.** 법률 Part 2(parent 단위)와 절대 점수를
+# 직접 비교하지 말 것.
+#
+# Part 1·3 은 이 config 로 돌리지 않는다. 증강 4종이 순정 shinhan 2,802청크(size_key "3k")
+# 기준으로 생성되므로 혼합 코퍼스와 키가 맞지 않는다. Part 1·3 은 experiment_shinhan.yaml 을 쓴다.
+
+seed: 42
+
+# 모델 엔드포인트 — experiment_legal.yaml / experiment_shinhan.yaml 과 동일하게 유지한다.
+# 배치 128 shim(:8102)으로 전환했다면 아래 embedding url 을 8102 로 바꾼 사본을 만들 것.
+#   sed 's|localhost:8101|localhost:8102|' config/experiment_shinhan_mixed.yaml \
+#     > config/experiment_shinhan_mixed_b128.yaml
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+datasets:
+  shinhan-mixed:
+    # 신한 2,802청크(gold 축) + 법률 보험 distractor. 전체 corpus 110,000청크.
+    # 서브셋은 data/subsets/shinhan-mixed/{20k,50k,110k}.json 의 doc_ids 로 정의된다
+    # (run_experiment.load_corpus:98-102). `*_parent_ids.json` 을 만들지 말 것 —
+    # 존재하면 parent 분기를 타서 신한 청크가 잘못 필터링된다.
+    subsets: [20000, 50000, 110000]
+    queries: 50
+
+parts:
+  part2_scaling:
+    dataset: "shinhan-mixed"
+    methods: ["dr-dci-final", "single-pull", "hybrid-rag"]
+    subsets: [20000, 50000, 110000]
+    include_single_pull: true
+
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"
+
+# 해석 시 주의
+# -----------
+# 1. 20k 에서 hybrid recall 이 순정 3k(2,802청크) 대비 거의 떨어지지 않으면
+#    "규모에 강건하다"가 아니라 "distractor 가 너무 쉬웠다"를 먼저 의심할 것.
+#    법률 판례 문체는 신한 실무문서(약관·표·수식)와 확연히 달라 dense 가 쉽게 걸러낸다.
+# 2. density·span_f1 은 보고 제외(이론 최대 ≈0.002, src/eval/span_metrics.py:75).
+#    efficiency 도 제외(gold_recall/pull_count 정의라 1-pull hybrid 가 구조적으로 승리).
+# 3. 질의 50 · 질의당 gold 1 → 점수가 2%p 단위로 움직인다.
+#    "효과 없음"과 "표본 부족으로 판정 불가"를 구분해 서술할 것.
+# 4. 신한 원본 한계가 그대로 이어진다 — 중복 청크 610건(21.8%), 4096자 절단 326건(11.6%),
+#    단일 문서가 신한 부분의 49.8% 차지. data/raw/shinhan-mixed/manifest.json 참조.

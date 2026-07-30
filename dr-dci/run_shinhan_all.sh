@@ -9,7 +9,9 @@
 # Part 2는 실행하지 않는다. 신한 코퍼스는 2,802청크로 규모 확장 실험의 최소 조건
 # (20K청크)을 충족하지 못한다. 규모 결과는 aihub-full 실험을 인용할 것.
 cd "$(dirname "$0")" || exit 1
-CFG=config/experiment_shinhan.yaml
+# 임베딩 백엔드를 바꿔 돌릴 때 config를 환경변수로 덮어쓴다.
+#   CFG=config/experiment_shinhan_b128.yaml ./run_shinhan_all.sh 1 3 4
+CFG="${CFG:-config/experiment_shinhan.yaml}"
 TS=$(date +%Y%m%d_%H%M%S)
 PARTS=("$@")
 [ ${#PARTS[@]} -eq 0 ] && PARTS=(1 3)
