@@ -32,6 +32,7 @@ C10 gold ⊆ corpus, gold ∩ distractor = ∅ 를 자기검증한다.
 
   python scripts/build_shinhan_uw_corpus.py
   python scripts/build_shinhan_uw_corpus.py --no-distractor      # gold 축만
+  python scripts/build_shinhan_uw_corpus.py --rebuild-aug-only   # 결정론적 증강만 재생성
 """
 from __future__ import annotations
 
@@ -820,6 +821,60 @@ def _dump(path: Path, payload) -> None:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
 
+def rebuild_aug_only() -> int:
+    """이미 있는 corpus.jsonl 로 결정론적 metadata·태그만 다시 만든다.
+
+    파싱 원본 JSON 이 없는 환경(서버)에서도 쓸 수 있어야 한다 — 원본은 저장소
+    밖에 있고 gitignore 대상이다. doc_meta 는 파일명 대신 corpus 의 `doc`
+    (= 원본 파일명의 stem)에서 유도하며, DOC_RULES·DATE_IN_NAME 이 stem 에도
+    같게 걸리는 것을 확인했다.
+
+    corpus.jsonl 자체는 건드리지 않는다. 코퍼스가 바뀌었다면 원본에서
+    전체 빌드를 다시 해야 한다.
+    """
+    out_dir = DATA_DIR / "raw" / DATASET
+    corpus_path = out_dir / "corpus.jsonl"
+    if not corpus_path.exists():
+        raise FileNotFoundError(
+            f"{corpus_path} 없음. 먼저 전체 빌드를 하거나 데이터를 받아야 한다.")
+    corpus = load_jsonl(corpus_path)
+    size_key = f"{SUBSET_SIZE // 1000}k"
+
+    doc_meta = {row["doc"]: doc_rules(row["doc"]) for row in corpus
+                if not row.get("distractor_source")}
+    metadata, tags = build_parser_augmentations(corpus, doc_meta)
+
+    meta_path = DATA_DIR / "metadata" / f"{DATASET}-parser_{size_key}.json"
+    tag_path = DATA_DIR / "tags" / DATASET / "approach_p" / f"{size_key}.json"
+    meta_path.parent.mkdir(parents=True, exist_ok=True)
+    tag_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False)
+    with open(tag_path, "w", encoding="utf-8") as f:
+        json.dump(tags, f, ensure_ascii=False)
+
+    ids = {row["_id"] for row in corpus}
+    assert set(metadata) == ids, "metadata 가 일부 청크를 빠뜨렸다"
+    assert {t["doc_id"] for t in tags} <= ids, "태그에 corpus 밖 doc_id 가 있다"
+    missing_tags = ids - {t["doc_id"] for t in tags}
+    gold_elems = sum(1 for t in tags if "::" not in t["doc_id"])
+    n_gold = sum(1 for row in corpus if not row.get("distractor_source"))
+    n_dist = len(corpus) - n_gold
+
+    print(f"=== {DATASET} 결정론적 증강 재생성 (corpus.jsonl 기준) ===")
+    print(f"  corpus     : {len(corpus):,}청크 (gold {n_gold} / distractor {n_dist:,})")
+    print(f"  metadata   : {len(metadata):,}건 -> {meta_path}")
+    print(f"  approach_p : {len(tags):,} element -> {tag_path}")
+    print(f"    gold       {gold_elems:,} (청크당 {gold_elems / max(n_gold,1):.2f})")
+    print(f"    distractor {len(tags) - gold_elems:,} "
+          f"(청크당 {(len(tags) - gold_elems) / max(n_dist,1):.2f})")
+    print(f"  태그 분포  : {dict(Counter(t['tag'] for t in tags))}")
+    print(f"  태그 0개 청크: {len(missing_tags)}")
+    print("\n  build_tags.py 의 approach A/B/C 와 같은 element 단위여야 한다 — "
+          "달라지면 Part 1 의 parser_meta_only vs tags_only 비교가 깨진다.")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -827,7 +882,12 @@ def main() -> int:
                     help="파싱본 JSON 디렉터리")
     ap.add_argument("--no-distractor", action="store_true",
                     help="기존 신한 코퍼스를 섞지 않고 gold 축만 만든다")
+    ap.add_argument("--rebuild-aug-only", action="store_true",
+                    help="기존 corpus.jsonl 로 결정론적 metadata·태그만 재생성 "
+                         "(파싱 원본 불요 — 서버에서 쓴다)")
     args = ap.parse_args()
+    if args.rebuild_aug_only:
+        return rebuild_aug_only()
     return build(Path(args.src), not args.no_distractor)
 
 
