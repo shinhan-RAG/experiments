@@ -1,1 +1,9 @@
 dr-dci/cache/
+.claude
+.agents
+.codeboarding
+data
+.mcp.json
+.gitignore
+
+0730 임시 검증/

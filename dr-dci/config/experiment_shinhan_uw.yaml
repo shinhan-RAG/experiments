@@ -1,0 +1,163 @@
+# DR-DCI Augmentation Experiment Config — 신한라이프 언더라이팅 파싱본 (shinhan-uw)
+#
+#   python run_experiment.py --part 1 --config config/experiment_shinhan_uw.yaml
+#   python run_experiment.py --part 3 --config config/experiment_shinhan_uw.yaml
+#   python run_experiment.py --part 4 --config config/experiment_shinhan_uw.yaml
+#
+# 데이터: data/raw/shinhan-uw/  (gold 7문서 563청크 + distractor 2,802청크 = 3,365청크, 질의 50)
+#   - 준비 스크립트:
+#       scripts/build_shinhan_uw_corpus.py              (LLM 불요, 결정론적)
+#       scripts/build_shinhan_uw_qa.py                  (gpt-4o-mini)
+#       scripts/build_shinhan_reference_answers.py --dataset shinhan-uw
+#   - parent_id 가 없는 청크 단위 corpus → qrels/평가가 청크 단위다.
+#     parent 단위로 평가하는 법률 데이터셋과 절대 점수를 직접 비교하면 안 된다.
+#   - 기존 `shinhan` 데이터셋과도 절대 점수를 비교하면 안 된다 — 문서·파서·청킹이 전부 다르다.
+#   - distractor(shinhan-legacy::) 는 노이즈 전용이며 gold 가 될 일이 없다.
+
+seed: 42
+
+# Model endpoints — experiment_legal.yaml / experiment_shinhan.yaml 과 동일하게 유지
+# (조건 일치를 위해 바꾸지 말 것)
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+# DR-DCI agent settings
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+# Hybrid RAG baseline settings
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+# Datasets (문서용 — 코드가 읽지 않는다)
+datasets:
+  shinhan-uw:
+    # 신한라이프 언더라이팅 실무문서 7건(pdf3/xlsx3/pptx1) 파싱본 → gold 563청크
+    # + 기존 신한 코퍼스 2,802청크(distractor 전용). 질의 50, 질의당 gold 1.
+    queries: 50
+
+# Experiment parts
+parts:
+  part1_stacking:
+    dataset: "shinhan-uw"
+    # subset 은 반드시 non-null. null 이면 load_augmentations 가 조용히 None 을 반환해
+    # (run_experiment.py:193-194) 모든 arm 이 baseline 으로 붕괴하는데 라벨만 남는다.
+    # 4000 -> size_key "4k" -> data/subsets/shinhan-uw/4k.json (전체 3,365청크, full_corpus)
+    subset: 4000
+    steps:
+      - name: "baseline"
+        description: "DR-DCI raw (no augmentation)"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "taxonomy_only"
+        description: "Taxonomy only"
+        taxonomy: true
+        tags: false
+        prefix: false
+        metadata: false
+      - name: "tags_only"
+        description: "Tags only (LLM, approach A = 의미역)"
+        taxonomy: false
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "prefix_only"
+        description: "Prefix only"
+        taxonomy: false
+        tags: false
+        prefix: true
+        metadata: false
+      - name: "metadata_only"
+        description: "Metadata only (LLM 생성)"
+        taxonomy: false
+        tags: false
+        prefix: false
+        metadata: true
+      # 이 파싱본만 가능한 arm — 파서가 블록 라벨을 직접 주므로 LLM 없이
+      # element 태그와 메타데이터를 만들 수 있다. tags_only / metadata_only 와
+      # 비교하면 "LLM 증강이 파서가 공짜로 주는 사실보다 얼마나 나은가"를 잰다.
+      - name: "parser_meta_only"
+        description: "Parser-derived tags + metadata only (LLM 비용 0, 결정론적)"
+        taxonomy: false
+        tags: "P"
+        prefix: false
+        metadata: true
+        metadata_variant: "parser"
+      - name: "stack_tax_tags"
+        description: "Stacked: +Taxonomy +Tags"
+        taxonomy: true
+        tags: "A"
+        prefix: false
+        metadata: false
+      - name: "stack_tax_tags_prefix"
+        description: "Stacked: +Taxonomy +Tags +Prefix"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: false
+      - name: "stack_all"
+        description: "Stacked: All augmentations"
+        taxonomy: true
+        tags: "A"
+        prefix: true
+        metadata: true
+
+  # part2_scaling: shinhan-uw 는 gold 563청크 + distractor 2,802청크로 규모 확장 실험의
+  #                최소 조건(20K청크)을 충족하지 못하므로 대상에서 제외한다.
+  #                규모 곡선은 aihub-full(experiment_legal.yaml) 또는
+  #                shinhan-mixed(build_shinhan_mixed.py) 결과를 인용할 것.
+  #                audit_part12 는 part2_scaling 이 없으면 Part 1 subset 만 검사한다
+  #                (src/eval/part12_contracts.py:262).
+
+  part3_tags:
+    dataset: "shinhan-uw"
+    subset: 4000
+    # A(의미역) / B(질문유형) / C(타입만). 파서 라벨 기반 P 는 Part 1 의
+    # parser_meta_only arm 에서 이미 비교하므로 여기서는 LLM 방식 3종만 본다.
+    approaches: ["A", "B", "C"]
+
+  part4_generalization:
+    methods: ["dr-dci-final", "hybrid-rag"]
+    # 일반화 검증이므로 augmentation 없이 전체 코퍼스에서 DR-DCI vs Hybrid 를 본다.
+    # data/reference_answers/shinhan-uw.json (50건) 이 있어 accuracy 축이 함께 측정된다.
+    datasets:
+      - name: "shinhan-uw"
+        subset: null
+        augment: false
+        queries: 50
+
+# Evaluation
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"

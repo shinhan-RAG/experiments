@@ -6,11 +6,13 @@
 이 파일이 없으면 judge가 한 건도 실행되지 않아 accuracy가 통째로 `None`이 된다
 (run_experiment.assign_judgment). 2026-07-28 Part 4 실행이 `judged 0`으로 나온 원인이다.
 
-출력: data/reference_answers/shinhan.json
+출력: data/reference_answers/<dataset>.json
       [{"query_id": "1", "reference_answer": "..."}, ...]
 
   python scripts/build_shinhan_reference_answers.py
+  python scripts/build_shinhan_reference_answers.py --dataset shinhan-uw
 """
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -23,12 +25,12 @@ OUTPUT_DIR = DATA_DIR / "reference_answers"
 DATASET = "shinhan"
 
 
-def build() -> None:
-    ds_dir = dataset_dir(DATA_DIR, DATASET)
+def build(dataset: str = DATASET) -> None:
+    ds_dir = dataset_dir(DATA_DIR, dataset)
     meta_path = ds_dir / "qa_meta.jsonl"
     if not meta_path.exists():
         raise FileNotFoundError(
-            f"{meta_path} 없음. 신한 데이터가 {ds_dir}에 있어야 한다 "
+            f"{meta_path} 없음. {dataset} 데이터가 {ds_dir}에 있어야 한다 "
             "(run_experiment.load_supporting_spans 도 같은 경로를 읽는다)."
         )
 
@@ -50,11 +52,11 @@ def build() -> None:
         out.append({"query_id": qid, "reference_answer": answer})
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"{DATASET}.json"
+    out_path = OUTPUT_DIR / f"{dataset}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
 
-    print(f"=== reference answers: {DATASET} ===")
+    print(f"=== reference answers: {dataset} ===")
     print(f"  qa_meta   : {len(meta)}")
     print(f"  queries   : {len(queries)}")
     print(f"  written   : {len(out)}")
@@ -71,4 +73,7 @@ def build() -> None:
 
 
 if __name__ == "__main__":
-    build()
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--dataset", default=DATASET,
+                    help="데이터셋 이름 (기본 shinhan, 언더라이팅 파싱본은 shinhan-uw)")
+    build(ap.parse_args().dataset)

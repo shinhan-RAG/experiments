@@ -107,6 +107,70 @@ class Part12ContractTests(unittest.TestCase):
             self.assertTrue(any("scale is not the only variable" in item
                                 for item in report["blockers"]))
 
+    def test_metadata_variant_is_a_distinct_treatment(self):
+        """variant 만 다른 arm 은 서로 다른 처치다.
+
+        FEATURE_KEYS 에 metadata_variant 가 빠지면 두 arm 이 같은 처치로
+        오판돼 duplicate_arms 가 실행을 막는다.
+        """
+        duplicates = duplicate_arms([
+            {"name": "metadata_only", "metadata": True},
+            {"name": "parser_meta_only", "metadata": True,
+             "metadata_variant": "parser"},
+        ])
+        self.assertEqual(duplicates, [])
+
+    def test_metadata_variant_audits_its_own_artifact_file(self):
+        """variant 별로 다른 파일을 확인해야 한다.
+
+        LLM 생성분(fixture_1k.json)이 있어도 variant 파일
+        (fixture-parser_1k.json)이 없으면 블록해야 한다 — 그러지 않으면
+        parser arm 이 라벨만 남고 처치 없이 돌아간다.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            data = Path(directory)
+            write_jsonl(data / "raw" / "fixture" / "qrels.jsonl", [
+                {"query-id": "q1", "corpus-id": "gold", "score": 1},
+            ])
+            ids = ["gold", *[f"n{i}" for i in range(999)]]
+            write_json(data / "subsets" / "fixture" / "1k.json", {
+                "subset_size": 1000, "doc_ids": ids,
+            })
+            write_json(data / "metadata" / "fixture_1k.json",
+                       {doc_id: {"doc_type": "x"} for doc_id in ids})
+            config = {"parts": {"part1_stacking": {
+                "dataset": "fixture", "subset": 1000, "steps": [
+                    {"name": "metadata_only", "metadata": True},
+                    {"name": "parser_meta_only", "metadata": True,
+                     "metadata_variant": "parser"},
+                ]}}}
+
+            report = audit_part12(config, data)
+            self.assertEqual(report["status"], "blocked")
+            self.assertTrue(any("fixture-parser_1k.json" in item
+                                for item in report["blockers"]),
+                            report["blockers"])
+
+            # variant 파일을 채우면 통과한다
+            write_json(data / "metadata" / "fixture-parser_1k.json",
+                       {doc_id: {"element_type": "table"} for doc_id in ids})
+            report = audit_part12(config, data)
+            self.assertEqual(report["status"], "ready", report["blockers"])
+
+    def test_load_augmentations_reads_metadata_variant_path(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(
+            run_experiment, "DATA_DIR", Path(tmp)
+        ):
+            write_json(Path(tmp) / "metadata" / "ds-parser_1k.json",
+                       {"c1": {"element_type": "table"}})
+            # variant 요청 시 variant 파일을 읽는다
+            _, _, _, metadata = run_experiment.load_augmentations(
+                "ds", 1000, {"metadata": True, "metadata_variant": "parser"})
+            self.assertEqual(metadata, {"c1": {"element_type": "table"}})
+            # variant 없는 요청은 기존 경로를 쓰고, 없으면 하드 실패한다
+            with self.assertRaises(FileNotFoundError):
+                run_experiment.load_augmentations("ds", 1000, {"metadata": True})
+
     def test_paired_agent_comparison_keeps_quality_and_cost_separate(self):
         control = [{"query_id": "q1", "gold_recall": 0.0, "pull_count": 1,
                     "latency_seconds": 1.0, "judgment": "incorrect"}]

@@ -226,8 +226,14 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
             prefix = json.load(f)
 
     if step_config.get("metadata"):
-        path = DATA_DIR / "metadata" / f"{dataset}_{size_key}.json"
-        required(path, "metadata")
+        # metadata_variant 는 같은 데이터셋에 대해 서로 다른 방식으로 만든
+        # 메타데이터를 구분한다. 예: variant "parser" 는 파서 라벨만으로 만든
+        # 결정론적 메타데이터(LLM 비용 0)로, LLM 생성분과 같은 arm 구조에서
+        # 비교하기 위한 기준선이다.
+        variant = step_config.get("metadata_variant")
+        name = f"{dataset}-{variant}" if variant else dataset
+        path = DATA_DIR / "metadata" / f"{name}_{size_key}.json"
+        required(path, f"metadata({variant})" if variant else "metadata")
         with open(path, encoding="utf-8") as f:
             metadata = json.load(f)
 

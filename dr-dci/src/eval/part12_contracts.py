@@ -14,7 +14,10 @@ from pathlib import Path
 from typing import Any
 
 
-FEATURE_KEYS = ("taxonomy", "tags", "prefix", "metadata", "pull_backend")
+# metadata_variant 가 빠지면 variant 만 다른 두 arm 이 같은 처치로 오판돼
+# duplicate_arms 가 실행을 막는다. 처치 변수는 전부 여기 있어야 한다.
+FEATURE_KEYS = ("taxonomy", "tags", "prefix", "metadata", "metadata_variant",
+                "pull_backend")
 
 
 def arm_signature(step: dict[str, Any]) -> tuple[tuple[str, Any], ...]:
@@ -100,19 +103,31 @@ def _augmentation_expected_ids(
 
 
 def _artifact_path(data_dir: Path, dataset: str, size: int, feature: str,
-                   tag_approach: str = "A") -> Path:
+                   variant: str = "") -> Path:
+    """variant 의 뜻은 feature 마다 다르다 — tags 는 접근법(A/B/C/P),
+    metadata 는 생성 방식(예: parser). run_experiment.load_augmentations 의
+    경로 규칙과 반드시 같아야 한다."""
     size_key = f"{size // 1000}k"
     if feature == "tags":
-        return data_dir / "tags" / dataset / f"approach_{tag_approach.lower()}" / f"{size_key}.json"
-    return data_dir / feature / f"{dataset}_{size_key}.json"
+        approach = (variant or "A").lower()
+        return data_dir / "tags" / dataset / f"approach_{approach}" / f"{size_key}.json"
+    name = f"{dataset}-{variant}" if feature == "metadata" and variant else dataset
+    return data_dir / feature / f"{name}_{size_key}.json"
 
 
 def required_features(steps: list[dict[str, Any]]) -> dict[str, set[str]]:
+    """arm 들이 실제로 요구하는 산출물 변종 집합.
+
+    metadata 는 variant 별로 서로 다른 파일이므로 variant 를 키로 모은다
+    (variant 없음 = "").
+    """
     required = {"taxonomy": set(), "tags": set(), "prefix": set(), "metadata": set()}
     for step in steps:
-        for feature in ("taxonomy", "prefix", "metadata"):
+        for feature in ("taxonomy", "prefix"):
             if step.get(feature):
                 required[feature].add("enabled")
+        if step.get("metadata"):
+            required["metadata"].add(str(step.get("metadata_variant") or ""))
         if step.get("tags"):
             required["tags"].add(str(step["tags"]).upper())
     return required
@@ -204,9 +219,11 @@ def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
     blockers = []
 
     feature_variants: list[tuple[str, str]] = []
-    for feature in ("taxonomy", "prefix", "metadata"):
+    for feature in ("taxonomy", "prefix"):
         if required[feature]:
             feature_variants.append((feature, ""))
+    for variant in sorted(required["metadata"]):
+        feature_variants.append(("metadata", variant))
     for approach in sorted(required["tags"]):
         feature_variants.append(("tags", approach))
 
@@ -214,7 +231,7 @@ def audit_augmentations(data_dir: Path, dataset: str, sizes: list[int],
         previous: dict[str, Any] | None = None
         previous_size: int | None = None
         for size in sizes:
-            path = _artifact_path(data_dir, dataset, size, feature, variant or "A")
+            path = _artifact_path(data_dir, dataset, size, feature, variant)
             if not path.exists():
                 blockers.append(f"missing {feature} artifact: {path}")
                 reports.append({"feature": feature, "variant": variant, "size": size,

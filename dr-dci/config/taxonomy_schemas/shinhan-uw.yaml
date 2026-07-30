@@ -1,0 +1,42 @@
+dataset: shinhan-uw
+domain: korean_insurance_underwriting
+
+# 이 코퍼스는 7문서 전부가 언더라이팅(인수심사) 실무문서다 — 약관도 상담자료도 없다.
+# 그래서 config/taxonomy_schemas/shinhan.yaml 의 L1(약관/상품/보험금심사/고객상담/LICO)을
+# 재사용할 수 없다. 그 L1 은 기존 코퍼스의 문서 접두어 분포에 맞춰 만든 것이라
+# 여기서는 전부 한 칸(ClaimsReview)으로 뭉쳐 분류축이 죽는다.
+#
+# 분류기가 본문 앞 300자만 보므로(scripts/build_taxonomy.py:66) 카테고리를 잘게 쪼개지 않는다.
+# distractor(shinhan-legacy::, 약관·상담자료 중심)도 같은 축으로 분류되므로
+# Other/General 로 흘러가는 것이 정상이다.
+L1:
+  - IssueLimit         # 담보별·상품별 가입한도, 보험권/기계약 합산한도
+  - SimplifiedIssue    # 간편심사 예외질환, 간편심사형 인수조건
+  - MedicalUW          # 질환별 인수기준, 메디컬 UW 가이드라인
+  - HealthExam         # 건강진단(무진단/종합진단) 기준
+  - OperationNotice    # 시행공문·개정안내·변경사항 요약
+  - Other              # 위에 속하지 않음 (distractor 포함)
+
+L2:
+  IssueLimit:
+    - CoverageLimit      # 담보별 가입한도 표
+    - AggregateLimit     # 보험권 합산 · 기계약 합산 한도
+    - LinkedCondition    # 연계조건 · 최소보험료 · 주계약 연동
+    - ChannelRule        # 채널 차등 · 유의FC · 보험업종사자 기준
+  SimplifiedIssue:
+    - ExceptionDisease   # 간편예외질환 목록 · 신한대표KCD
+    - ElapsedPeriod      # 최소경과기간 · N년 이내 조건
+    - HospitalDays       # 합산 입원일수 · 수술여부 조건
+  MedicalUW:
+    - DiseaseCriteria    # 질환별 가능/부담보/거절 판정
+    - ReviewConsideration # 심사 고려사항 · 상세고지 · 서류심사
+    - DiseaseDefinition  # 질병해설 · 유사질병명 · 질병분류
+  HealthExam:
+    - ExamThreshold      # 연령·가입금액별 진단 기준금액
+    - NoExamPlan         # 무진단플랜 대상 · 예외
+  OperationNotice:
+    - EffectiveChange    # 시행 내용 · 적용기간
+    - Terminated         # 시행종료 항목
+    - ChangeLog          # 변경사항 요약 · 버전 이력
+  Other:
+    - General
