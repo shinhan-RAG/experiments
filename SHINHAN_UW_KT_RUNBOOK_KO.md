@@ -35,20 +35,57 @@ conda root는 `/home/work/source/miniconda3`.
 | `data/tags/shinhan-uw/approach_p/4k.json` | 3,365 (결정론적) | 코퍼스 빌더 |
 | 감사: `corpus_stats` · `audit_{duplicates,long_chunks,element_type}` · `manifest` · `qa_manifest` | — | 코퍼스/QA 빌더 |
 
-서버에서 만들어야 하는 것은 **LLM 증강 4종**뿐이다:
+서버에서 만들어야 하는 것은 **LLM 증강**뿐이다:
 `taxonomy` · `prefix` · `metadata`(LLM) · `tags` A/B/C.
+
+**업로드할 tarball은 `shinhan_uw_data.tar.gz`(2.9MB) 하나다.**
+`part4_datasets.tar.gz`·`aug_part*.tar.gz`는 **법률 실험용**이며 이번 작업과 무관하다
+(법률 Part 4를 재개할 때만 필요하다).
+
+### 파트별 선행 조건
+
+| 파트 | 증강 필요 | `:8100` Qwen3-8B | `:8002` 리랭커 | 지금 실행 가능? |
+|---|---|---|---|---|
+| **Part 4** (DR-DCI vs Hybrid) | ✗ (`augment: false`) | 불요 | **필요** | **예** — `:8101`+`:8002`만 있으면 된다 |
+| Part 1 (9 arm 적층) | ✓ | 필요 | 불요 | 증강 생성 후 |
+| Part 3 (태그 A/B/C) | ✓ | 필요 | 불요 | 증강 생성 후 |
+
+Part 1의 `baseline`·`parser_meta_only` 두 arm은 결정론적 산출물만 쓰므로 증강 없이도
+로드되지만, 한 파트는 arm 전체를 한 번에 돌리므로 Part 1 자체는 증강이 있어야 시작된다.
 
 ---
 
-## 0. GPU 여유 확인 — 먼저 할 일
+## 0. 환경 점검 — 먼저 할 일
+
+GPU 여유 · 로컬 모델 가중치 · conda 환경 · 서비스 · 데이터를 한 번에 확인한다.
+읽기 전용이라 아무것도 바꾸지 않는다.
 
 ```bash
-nvidia-smi
+cd ~/source/embed_exp/experiments/dr-dci
+bash scripts/check_kt_env.sh
+```
+
+종료 코드로 판정한다.
+
+| exit | 뜻 |
+|---|---|
+| **0** | Part 1 / 3 / 4 전부 실행 가능 → 바로 preflight(4단계) |
+| **1** | **Part 4 만 지금 실행 가능** (`augment: false` 라 증강 불요). Part 1/3 은 `:8100` 기동 후 증강 생성 필요 |
+| **2** | 실행 불가 — 임베딩(`:8101`) 또는 데이터가 없다 |
+
+수동으로 볼 때는:
+
+```bash
+nvidia-smi                                                    # 여유 VRAM
+nvidia-smi --query-compute-apps=pid,used_memory --format=csv   # 점유 프로세스
+ls -d ~/.cache/huggingface/hub/models--Qwen--Qwen3-8B          # 로컬 가중치 존재 여부
+du -sh ~/.cache/huggingface/hub/models--*                      # 모델별 캐시 크기
+curl -s localhost:8101/v1/models; curl -s localhost:8002/v1/models; curl -s localhost:8100/v1/models
 ```
 
 7/29 기준 A100 2장이 거의 만석이었다(78.9/81.9 GiB, 76.6/81.9 GiB). Qwen3-8B는
-bf16 ~16GB + KV가 필요하다. **안 들어가면 co-tenant 작업이 끝날 때까지 기다린다.**
-남의 프로세스를 죽이지 않는다.
+bf16 ~16GB + KV가 필요해 **여유 24GB 이상**이 안전하다.
+**안 들어가면 co-tenant 작업이 끝날 때까지 기다린다. 남의 프로세스를 죽이지 않는다.**
 
 ## 1. 증강 생성 LLM 기동 (`:8100` Qwen3-8B)
 
