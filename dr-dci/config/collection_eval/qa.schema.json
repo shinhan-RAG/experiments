@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shinhan-rag.local/schemas/collection-qa-v1",
+  "title": "Collection-grounded QA record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "qa_id",
+    "collection_id",
+    "query",
+    "split",
+    "gold_document_ids",
+    "gold_element_ids",
+    "gold_chunk_ids",
+    "evidence",
+    "generation"
+  ],
+  "properties": {
+    "schema_version": {"const": "shinhan.collection-qa.v1"},
+    "qa_id": {"type": "string", "minLength": 1},
+    "collection_id": {"type": "string", "minLength": 1},
+    "query": {"type": "string", "minLength": 1},
+    "split": {"enum": ["dev", "test"]},
+    "gold_document_ids": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+    "gold_element_ids": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+    "gold_chunk_ids": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "document_id",
+          "element_id",
+          "chunk_ids",
+          "quote",
+          "source_location",
+          "alignment"
+        ],
+        "properties": {
+          "document_id": {"type": "string", "minLength": 1},
+          "element_id": {"type": "string", "minLength": 1},
+          "chunk_ids": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+          "quote": {"type": "string", "minLength": 8},
+          "source_location": {"$ref": "#/$defs/sourceLocation"},
+          "alignment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "method"],
+            "properties": {
+              "status": {"const": "verified"},
+              "method": {
+                "enum": [
+                  "exact_offset",
+                  "exact_text",
+                  "normalized_text",
+                  "parser_derived"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generator_id",
+        "revision",
+        "prompt_sha256",
+        "anchor_element_id"
+      ],
+      "properties": {
+        "generator_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "prompt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "anchor_element_id": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyUniqueStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "sourceLocation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "basis", "char_start", "char_end"],
+          "properties": {
+            "status": {"const": "verified"},
+            "basis": {"enum": ["source_text", "element_text"]},
+            "char_start": {"type": "integer", "minimum": 0},
+            "char_end": {"type": "integer", "minimum": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "basis", "char_start", "char_end"],
+          "properties": {
+            "status": {"const": "unavailable"},
+            "basis": {"const": "unavailable"},
+            "char_start": {"type": "null"},
+            "char_end": {"type": "null"}
+          }
+        }
+      ]
+    }
+  }
+}

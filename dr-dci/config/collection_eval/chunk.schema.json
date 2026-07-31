@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shinhan-rag.local/schemas/collection-chunk-v1",
+  "title": "Collection chunk",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "collection_id",
+    "chunk_id",
+    "document_id",
+    "text",
+    "source_location"
+  ],
+  "properties": {
+    "schema_version": {"const": "shinhan.collection-chunk.v1"},
+    "collection_id": {"type": "string", "minLength": 1},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "document_id": {"type": "string", "minLength": 1},
+    "text": {"type": "string", "minLength": 1},
+    "source_location": {"$ref": "qa.schema.json#/$defs/sourceLocation"}
+  }
+}
