@@ -30,15 +30,17 @@ git status --short
 If `origin/feature_ralph` has advanced, use the advanced commit. Do not reset,
 rebase, or delete another worker's branch or worktree.
 
-## 2. Branch and worktree order
+## 2. Local EDA and branch order
 
-Use one branch and one worktree per owner. Merge each PR before creating a
-dependent branch.
+EDA is performed in a user-owned local directory without creating or modifying
+a Git branch. Only Claude implementation sessions modify the repository. Use
+one branch and one worktree per Claude implementation stage, and merge each PR
+before creating a dependent branch.
 
-| Order | Branch | Owner scope | Depends on |
+| Order | Location or branch | Owner scope | Depends on |
 |---:|---|---|---|
-| 1 | `feat/ralph-collection-eda` | read-only data profiling and reports | contract baseline |
-| 2 | `feat/ralph-element-alignment` | adapter/alignment/parser and fixtures | accepted EDA |
+| 1 | local EDA directory, no branch | read-only data profiling and reports | contract baseline |
+| 2 | `feat/ralph-element-alignment` | adapter/alignment/parser and fixtures | accepted local EDA |
 | 3 | `feat/ralph-collection-eval` | three retrieval modes and local/global evaluation | element alignment |
 | 4 | `feat/ralph-part1-4-integration` | Peter Part 1-4 wiring only | collection evaluation |
 
@@ -70,9 +72,9 @@ new reviewed commit.
 
 Use the following prompt after the dataset location is available.
 
-> Work in the `shinhan-RAG/experiments` repository on a new
-> `feat/ralph-collection-eda` branch created from the latest
-> `origin/feature_ralph`. Use a separate worktree.
+> Work in a new user-owned local EDA directory. Read the
+> `shinhan-RAG/experiments` contract files as reference, but do not create a
+> branch, commit, PR, or worktree and do not modify the repository.
 >
 > Perform read-only EDA for every supplied collection. Do not modify source
 > data, call an LLM, generate QA, generate semantic tags, choose retrieval
@@ -131,14 +133,25 @@ Use the following prompt after the dataset location is available.
 > different implementations, report the maximum required implementation and
 > the per-collection decision. Do not infer unavailable coordinates.
 >
-> Add deterministic EDA code and synthetic tests. External data paths must be
-> CLI arguments, not hardcoded local paths. Fail loudly on unreadable files,
-> unsupported schemas, duplicate IDs, and truncated input. Open a PR to
-> `feature_ralph`; do not open a PR to `dev`.
+> Also produce:
+>
+> - `eda_handoff_manifest.json`
+> - `eda_handoff_manifest.json.sha256`
+>
+> The handoff manifest records every report's relative path, bytes, SHA-256,
+> analyzer code path and SHA-256, source inventory SHA-256, creation time,
+> redaction status, and final adapter/alignment/parser decision. The sidecar
+> verifies the manifest itself.
+>
+> Keep deterministic EDA code and synthetic tests in the same local EDA
+> directory. External data paths must be CLI arguments, not hardcoded local
+> paths. Fail loudly on unreadable files, unsupported schemas, duplicate IDs,
+> and truncated input. Do not copy raw or report artifacts into Git.
 
-## 4. EDA acceptance gate
+## 4. Local EDA acceptance gate
 
-The EDA PR can merge only when all statements below are true:
+The local EDA handoff can be passed to Claude only when all statements below
+are true:
 
 - every source file has byte size and SHA-256;
 - raw source files remain unchanged and untracked;
@@ -151,16 +164,21 @@ The EDA PR can merge only when all statements below are true:
 - the parser decision is one of the three allowed values with evidence;
 - synthetic EDA tests pass without access to private data;
 - reports contain no unredacted sensitive text.
+- `eda_handoff_manifest.json.sha256` verifies;
+- every report and analyzer hash in the handoff manifest verifies.
 
 If these conditions are not met, the next implementation branch must not start.
 
 ## 5. Session B: element adapter/alignment/parser prompt
 
-Use this prompt only after the EDA PR is accepted and merged.
+Use this prompt only after the local EDA handoff is accepted and all hashes
+verify.
 
 > Create `feat/ralph-element-alignment` from the latest
-> `origin/feature_ralph` in a separate worktree. Read the accepted EDA reports
-> and implement only the selected `adapter`, `alignment_layer`, or `parser`.
+> `origin/feature_ralph` in a separate worktree. Verify the local
+> `eda_handoff_manifest.json` sidecar and every recorded report hash. Read the
+> accepted EDA reports and implement only the selected `adapter`,
+> `alignment_layer`, or `parser`.
 >
 > Convert each collection to the document, chunk, and element schemas under
 > `config/collection_eval/`. Generate namespaced IDs and deterministic output
@@ -230,7 +248,6 @@ To reduce conflicts:
 
 | Branch | Primary paths |
 |---|---|
-| EDA | `scripts/collection_eda*`, `docs/*EDA*`, EDA tests |
 | Element alignment | `src/data/collection_*`, conversion scripts and tests |
 | Collection eval | `src/eval/collection_*`, QA/tag builders, eval tests |
 | Part 1-4 integration | `run_experiment.py`, `config/experiment*.yaml`, integration tests |
