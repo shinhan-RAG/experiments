@@ -5,6 +5,15 @@ Pull Retriever: 에이전트가 호출하는 검색 함수
 - Taxonomy: pull 시 soft boost (네비게이션)
 - Metadata/Tags: workspace 탐색 전용
 
+Backend 4종:
+- dense          : cosine 순위. taxonomy_filter가 오면 soft bonus(+0.15) — 기존 동작 유지
+- hybrid_rrf     : dense + BM25 RRF fusion
+- taxonomy_boosted: dense와 동일 경로. 호출자가 질의별 taxonomy_filter(라우팅)를 넘겨
+                   soft bonus로 카테고리를 우대한다 — "부드러운 라우팅" arm
+- taxonomy_routed: 하드 라우팅. filter에 맞는 카테고리 문서를 (raw cosine 순으로) 먼저,
+                   나머지 문서를 그 뒤에 backfill — 오라우팅 시에도 gold가 사라지지 않고
+                   순위만 밀린다. filter가 없거나 카테고리에 문서가 없으면 dense로 폴백.
+
 가이드 반영 사항:
 - P0-2: pull(query, top_k, exclude_ids) — workspace 기존 문서 제외 + 다음 rank 후보 backfill,
         rank/score 포함 결과와 pull 통계 반환
@@ -75,9 +84,11 @@ class PullRetriever:
             h.update(text.encode("utf-8", errors="ignore"))
         return h.hexdigest()[:16]
 
+    SUPPORTED_BACKENDS = {"dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted"}
+
     def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
         """문서를 인덱싱. 디스크 캐시 활용."""
-        if self.config.backend not in {"dense", "hybrid_rrf"}:
+        if self.config.backend not in self.SUPPORTED_BACKENDS:
             raise ValueError(f"unsupported retrieval backend: {self.config.backend}")
         self.doc_embeddings.clear()
         self.doc_taxonomy.clear()
@@ -141,12 +152,12 @@ class PullRetriever:
         결과: [{doc_id, score, rank}] — rank는 1부터.
         """
         sims = self._dense_scores(query, taxonomy_filter)
-        order = np.argsort(-sims, kind="stable")
+        order = self._order_indices(sims, taxonomy_filter)
         dense = [
             {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": r + 1}
             for r, i in enumerate(order)
         ]
-        if self.config.backend == "dense":
+        if self.config.backend != "hybrid_rrf":
             return dense
 
         lexical = self.bm25.search(query, self.config.bm25_top_k)
@@ -156,6 +167,32 @@ class PullRetriever:
         for rank, row in enumerate(fused, 1):
             row["rank"] = rank
         return fused
+
+    def _matches_filter(self, doc_id: str, taxonomy_filter: dict) -> bool:
+        tax = self.doc_taxonomy.get(doc_id, {})
+        return isinstance(tax, dict) and all(
+            tax.get(k) == v for k, v in taxonomy_filter.items()
+        )
+
+    def _order_indices(self, sims: np.ndarray, taxonomy_filter: dict = None) -> np.ndarray:
+        """dense 계열 backend의 최종 정렬 인덱스.
+
+        taxonomy_routed + filter: 카테고리 매치 문서를 cosine 순으로 앞에, 나머지를
+        뒤에 backfill. filter 없음/카테고리 무문서면 순수 dense 폴백(오라우팅 안전장치).
+        """
+        order = np.argsort(-sims, kind="stable")
+        if (self.config.backend != "taxonomy_routed" or not taxonomy_filter
+                or not self.doc_taxonomy):
+            return order
+        match = np.array(
+            [self._matches_filter(did, taxonomy_filter) for did in self.doc_ids],
+            dtype=bool,
+        )
+        if not match.any():
+            return order
+        in_cat = order[match[order]]
+        out_cat = order[~match[order]]
+        return np.concatenate([in_cat, out_cat])
 
     def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
         """질의와 문서 행렬의 cosine score를 계산한다."""
@@ -168,10 +205,11 @@ class PullRetriever:
         query_norm = np.linalg.norm(query_emb)
         sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
 
-        if taxonomy_filter and self.doc_taxonomy:
+        # taxonomy_routed는 raw cosine 위에서 하드 재정렬하므로 bonus를 섞지 않는다
+        if (taxonomy_filter and self.doc_taxonomy
+                and self.config.backend != "taxonomy_routed"):
             for i, did in enumerate(self.doc_ids):
-                tax = self.doc_taxonomy.get(did, {})
-                if isinstance(tax, dict) and all(tax.get(k) == v for k, v in taxonomy_filter.items()):
+                if self._matches_filter(did, taxonomy_filter):
                     sims[i] += self.config.taxonomy_bonus
         return sims
 
@@ -199,9 +237,9 @@ class PullRetriever:
 
         # reranker가 있으면 여유 있게 후보를 모은 뒤 rerank
         gather_k = k * 4 if self.config.reranker_url else k
-        if self.config.backend == "dense":
+        if self.config.backend != "hybrid_rrf":
             sims = self._dense_scores(query, taxonomy_filter)
-            order = np.argsort(-sims, kind="stable")
+            order = self._order_indices(sims, taxonomy_filter)
             ranked = (
                 {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
                 for rank, i in enumerate(order, 1)

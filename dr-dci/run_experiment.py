@@ -285,10 +285,13 @@ def positive_gold_gains_by_query(qrels: list) -> dict:
 
 def run_pull_probe(retriever: PullRetriever, queries: list,
                    query_gold: dict, query_gains: dict = None,
-                   parent_map: dict = None) -> list:
+                   parent_map: dict = None, routing: dict = None) -> list:
     """retrieval-only probe: 원 질의 텍스트로 backend를 직접 1회 pull해
     rank 지표(Recall@5/20·Hit@5/10·P@20·nDCG@10)를 잰다 — agent의 질의
-    재작성과 독립인 검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요)."""
+    재작성과 독립인 검색 품질 축. LLM/judge 불요(임베딩 endpoint만 필요).
+
+    routing: 질의별 taxonomy_filter 맵 {qid: {"L1": ...}} — taxonomy_routed/
+    taxonomy_boosted backend에서 질의 라우팅으로 전달된다."""
     rows = []
     for q in queries:
         qid = str(q["_id"])
@@ -297,18 +300,22 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
             continue                      # gold 없는 질의는 분모 제외
         gains = query_gains.get(qid) if query_gains else None
         text = q.get("title") or q.get("text", "")
+        tax_filter = routing.get(qid) if routing else None
         started = time.perf_counter()
-        pulled = retriever.pull(text)
+        pulled = retriever.pull(text, taxonomy_filter=tax_filter)
         candidates = pulled["results"] if isinstance(pulled, dict) else pulled
         ranked = to_parent_ids([r["doc_id"] for r in candidates],
                                parent_map or {})
         latency = time.perf_counter() - started
-        rows.append({
+        row = {
             "query_id": qid,
             **rank_metrics(ranked, gold, gains=gains),
             "probe_latency_seconds": latency,
             "ranked_top20": ranked[:20],
-        })
+        }
+        if tax_filter is not None:
+            row["routed_filter"] = tax_filter
+        rows.append(row)
     return rows
 
 
@@ -1075,10 +1082,29 @@ def run_part4(config: dict):
     save_results("part4_generalization", all_results)
 
 
+TAXONOMY_BACKENDS = {"taxonomy_routed", "taxonomy_boosted"}
+
+
+def load_query_routing(dataset: str, subset_size: int | None) -> dict:
+    """질의→카테고리 라우팅 맵 로드 (scripts/build_query_routing.py 산출물).
+
+    반환: {qid: {"L1": ...}} — retriever.pull(taxonomy_filter=...)에 그대로 쓴다."""
+    size_key = f"{(subset_size or 0) // 1000}k" if subset_size else "full"
+    path = DATA_DIR / "routing" / f"{dataset}_{size_key}.json"
+    if not path.exists():
+        raise FileNotFoundError(
+            f"query routing missing: {path} — "
+            f"python scripts/build_query_routing.py {dataset} --size={subset_size} 로 먼저 생성할 것"
+        )
+    with open(path, encoding="utf-8") as f:
+        raw = json.load(f)
+    return {str(qid): {"L1": entry["L1"]} for qid, entry in raw["routing"].items()}
+
+
 def run_part5(config: dict, probe_only: bool = False):
     """Part 5: compare pull backends while holding the agent loop fixed."""
     print("\n" + "=" * 60)
-    print("Part 5: Pull Backend (Dense vs Hybrid RRF)")
+    print("Part 5: Pull Backend Comparison")
     print("=" * 60)
 
     part_cfg = config["parts"]["part5_pull_backend"]
@@ -1099,8 +1125,16 @@ def run_part5(config: dict, probe_only: bool = False):
     query_gains = positive_gold_gains_by_query(qrels)
     all_results = {}
     probes = {}
+    routing = None
+    if any(b in TAXONOMY_BACKENDS for b in part_cfg["backends"]):
+        routing = load_query_routing(dataset, subset_size)
+        print(f"  query routing: {len(routing)}건 로드")
+
     for backend in part_cfg["backends"]:
         step_config = {**fixed, "pull_backend": backend}
+        if backend in TAXONOMY_BACKENDS:
+            # 라우팅/부스트는 taxonomy 아티팩트가 인덱스에 실려 있어야 작동한다
+            step_config["taxonomy"] = True
         print(f"\n  --- pull backend: {backend} ---")
         taxonomy, tags, prefix, metadata = load_augmentations(
             dataset, subset_size, step_config
@@ -1110,10 +1144,17 @@ def run_part5(config: dict, probe_only: bool = False):
         )
         # retrieval-only probe(진단 축): 같은 retriever 인스턴스로 agent 실행과
         # backend 외 변인 없이 rank 지표를 먼저 잰다.
-        probes[backend] = run_pull_probe(retriever, queries, query_gold,
-                                         query_gains=query_gains,
-                                         parent_map=parent_map_from_corpus(corpus))
-        if probe_only:
+        probes[backend] = run_pull_probe(
+            retriever, queries, query_gold,
+            query_gains=query_gains,
+            parent_map=parent_map_from_corpus(corpus),
+            routing=routing if backend in TAXONOMY_BACKENDS else None,
+        )
+        if probe_only or backend in TAXONOMY_BACKENDS:
+            if not probe_only:
+                # agent 루프는 질의별 라우팅을 모른다 — taxonomy backend는
+                # 검색 축(probe)만 비교하고 agent 실행은 명시적으로 생략한다.
+                print(f"    [notice] {backend}는 probe 전용 — agent 실행 생략")
             all_results[backend] = {"probe_rows": probes[backend]}
             continue
         results = run_dr_dci(
@@ -1146,16 +1187,25 @@ def run_part5(config: dict, probe_only: bool = False):
         "seed": config["seed"],
         "git_commit": current_git_commit(),
     }
-    comparison = None
-    if not probe_only:
-        comparison = compare_paired_results(
-            all_results["dense"]["results"],
-            all_results["hybrid_rrf"]["results"],
-            seed=config["seed"],
+    # 비교는 dense를 기준축으로 나머지 backend 전부와 paired로 잰다
+    analysis = {}
+    baseline_backend = "dense"
+    for backend in part_cfg["backends"]:
+        if backend == baseline_backend or baseline_backend not in probes:
+            continue
+        analysis[f"probe_{baseline_backend}_vs_{backend}"] = compare_probe_rows(
+            probes[baseline_backend], probes[backend], seed=config["seed"]
         )
-    probe_analysis = compare_probe_rows(
-        probes["dense"], probes["hybrid_rrf"], seed=config["seed"]
-    )
+        both_full = all(
+            "results" in all_results.get(b, {})
+            for b in (baseline_backend, backend)
+        )
+        if not probe_only and both_full:
+            analysis[f"{baseline_backend}_vs_{backend}"] = compare_paired_results(
+                all_results[baseline_backend]["results"],
+                all_results[backend]["results"],
+                seed=config["seed"],
+            )
     manifest["probe"] = (
         "retrieval-only rank metrics on the original query text; "
         "denominator = queries with positive gold only"
@@ -1169,8 +1219,7 @@ def run_part5(config: dict, probe_only: bool = False):
         "part5_pull_backend",
         all_results,
         manifest=manifest,
-        analysis={"dense_vs_hybrid_rrf": comparison,
-                  "probe_dense_vs_hybrid_rrf": probe_analysis},
+        analysis=analysis,
     )
 
 

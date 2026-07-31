@@ -1,0 +1,80 @@
+# Part 5 확장 — taxonomy를 검색 경로에 적극 투입했을 때 효율이 오르는지 검증
+#
+# 배경: 법률·신한·paper-ha 3개 도메인에서 taxonomy 증강(프롬프트 주입)은 전부 음(−)이었다.
+# 그러나 그 실험들은 taxonomy가 pull 경로에 없는 설계였고, baseline recall이 천장이라
+# 개선 여지도 없었다. 이 실험은 두 조건을 뒤집는다:
+#   ① 환경: aihub-full 20k/50k/110k — dense recall이 0.28~0.48까지 무너지는 headroom 구간
+#   ② 처치: taxonomy를 pull 순위에 직접 개입 (라우팅/부스트)
+#
+# backends (단일 변수 = pull_backend, 증강은 전부 off):
+#   dense            — 대조군 (기준축)
+#   hybrid_rrf       — 상한 참조선 (질의-gold 어휘 중복으로 천장 1.0 예상 — 산물로 해석)
+#   taxonomy_routed  — 하드 라우팅: 질의 L1 카테고리 문서 우선 + 전역 backfill
+#   taxonomy_boosted — 소프트 부스트: 전역 dense + 같은 카테고리 +0.15 가산
+#
+# 실행 절차 (KT Cloud):
+#   python scripts/build_query_routing.py aihub-full --size=20000        # Qwen :8100 필요
+#   python run_experiment.py --part 5 --probe-only --config config/experiment_taxroute.yaml
+#   # 규모 축: --subset 50000 / --subset 110000 오버라이드 (routing도 크기별 재생성)
+#
+# 해석 규칙:
+#   - taxonomy backend는 probe 전용 (agent 루프는 질의별 라우팅을 모름 — 자동 생략됨)
+#   - 핵심 비교는 dense vs taxonomy_routed/boosted. hybrid는 참조선.
+#   - routing_accuracy(data/routing/*_diag)를 반드시 병기 — routed recall 상한이 이 값에 묶임.
+
+seed: 42
+
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+parts:
+  part5_pull_backend:
+    dataset: "aihub-full"
+    subset: 20000          # --subset 50000/110000 으로 오버라이드
+    backends: ["dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted"]
+    # 단일 변수 원칙: 증강 전부 off. taxonomy 아티팩트는 tax backend가
+    # 인덱스 구성에 필요해 러너가 내부적으로만 로드한다(프롬프트 미주입).
+    fixed_augmentations:
+      taxonomy: false
+      tags: false
+      prefix: false
+      metadata: false
+
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"
