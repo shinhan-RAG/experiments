@@ -1,0 +1,21 @@
+# TEMPLATE — chunk/model input compatibility contract.
+#
+# The collection_eval stage freezes the embedding model, its immutable
+# revision, and the input budget, then fills this template and runs
+# scripts/validate_chunk_model_compatibility.py before any retrieval work.
+# max_input_chars must be derived offline from the frozen tokenizer and
+# token budget (no model call is made by the validator). If oversized atomic
+# chunks remain, the owner must either approve a deterministic long-element
+# split policy here or freeze a larger-budget contract; silent truncation is
+# never acceptable.
+
+schema_version: academic.chunk-model-compat-contract.v1
+model_id: replace-with-frozen-model-id
+revision: replace-with-immutable-revision
+max_input_chars: 0  # replace with the frozen per-input character budget
+
+# Optional; only with explicit owner approval:
+# approved_long_element_split_policy:
+#   policy_id: replace-with-policy-id
+#   approved_by: replace-with-owner
+#   sha256: replace-with-policy-config-sha256

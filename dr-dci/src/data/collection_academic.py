@@ -18,12 +18,27 @@ from collections import defaultdict
 import hashlib
 import json
 from pathlib import Path
+import platform
 import re
-from typing import Any, Callable
+import resource
+import subprocess
+import sys
+import time
+from typing import Any, Callable, Iterator
 import zipfile
 
 import yaml
 
+from src.data.collection_publication import (
+    LockConflictError,
+    PublicationError,
+    TargetLock,
+    canonical_json_sha256,
+    discard_staging,
+    prepare_staging,
+    publish_staging,
+    target_state,
+)
 from src.eval.collection_contract import (
     CHUNK_SCHEMA_VERSION,
     COLLECTION_ID_RE,
@@ -40,8 +55,14 @@ from src.eval.collection_contract import (
 
 SOURCE_CONFIG_SCHEMA_VERSION = "academic.collection-source-config.v1"
 CHUNK_POLICY_SCHEMA_VERSION = "academic.chunking-policy-config.v1"
+ACCEPTANCE_CONTRACT_SCHEMA_VERSION = "academic.accepted-full-run-contract.v1"
+COMPAT_CONTRACT_SCHEMA_VERSION = "academic.chunk-model-compat-contract.v1"
+RUN_IDENTITY_SCHEMA_VERSION = "academic.conversion-run-identity.v1"
+RUN_METRICS_SCHEMA_VERSION = "academic.conversion-run-metrics.v1"
 ALIGNMENT_SCHEMA_VERSION = "shinhan.collection-element-alignment.v1"
 CONVERSION_MANIFEST_SCHEMA_VERSION = "shinhan.collection-conversion.v1"
+MANIFEST_FILE_NAME = "conversion_manifest.json"
+METRICS_FILE_NAME = "run_metrics.json"
 CHUNK_POLICY_ID = "academic.element-packed-chunk.v1"
 CONSTRUCTED_TEXT_POLICY_ID = "academic.constructed-document-text.v1"
 IMPLEMENTATION_STAGE = "element_alignment"
@@ -205,6 +226,134 @@ def load_chunking_config(path: Path) -> dict[str, Any]:
         "chunking element_atomic must be true for this policy",
     )
     return config
+
+
+def load_acceptance_contract(path: Path) -> dict[str, Any]:
+    """Load the reviewed accepted-full-run contract (EDA denominators)."""
+    with Path(path).open(encoding="utf-8") as stream:
+        contract = yaml.safe_load(stream)
+    _require(isinstance(contract, dict), "acceptance contract must be a mapping")
+    _require(
+        contract.get("schema_version") == ACCEPTANCE_CONTRACT_SCHEMA_VERSION,
+        f"acceptance contract schema_version must be {ACCEPTANCE_CONTRACT_SCHEMA_VERSION}",
+    )
+    for key in ("collections", "splits"):
+        value = contract.get(key)
+        _require(
+            isinstance(value, list) and value and all(isinstance(v, str) for v in value),
+            f"acceptance contract {key} must be a non-empty string list",
+        )
+    totals = contract.get("totals")
+    _require(isinstance(totals, dict), "acceptance contract totals must be a mapping")
+    cells = contract.get("cells")
+    _require(isinstance(cells, dict) and cells, "acceptance contract cells must be a mapping")
+    expected_cells = {
+        f"{collection}/{split}"
+        for collection in contract["collections"]
+        for split in contract["splits"]
+    }
+    _require(
+        set(cells) == expected_cells,
+        "acceptance contract cells must cover exactly collections x splits",
+    )
+    for cell_name, cell in cells.items():
+        _require(isinstance(cell, dict), f"acceptance cell {cell_name} must be a mapping")
+        for key in ("documents", "elements", "images_excluded"):
+            _require(
+                isinstance(cell.get(key), int) and cell[key] >= 0,
+                f"acceptance cell {cell_name}.{key} must be a non-negative integer",
+            )
+    _require(
+        isinstance(contract.get("archive_count"), int) and contract["archive_count"] > 0,
+        "acceptance contract archive_count must be positive",
+    )
+    return contract
+
+
+# ---------------------------------------------------------------------------
+# Run identity (input identity vs runtime identity)
+# ---------------------------------------------------------------------------
+#
+# The INPUT identity hashes everything that determines output bytes: source
+# and chunking configs (which pin archive bytes/SHA-256), selection, options,
+# and the behavior-affecting code/schema files. It decides whether an existing
+# published target may be reused as-is.
+#
+# The RUNTIME identity records where and how a run happened (git commit,
+# dirty flag, interpreter, dependencies). It never affects output bytes, but
+# acceptance eligibility requires a clean, known runtime identity.
+
+_MODULE_BASE = Path(__file__).resolve().parents[2]
+_CODE_IDENTITY_FILES = {
+    "adapter": Path(__file__).resolve(),
+    "publication": Path(__file__).resolve().parent / "collection_publication.py",
+    "alignment_schema": _MODULE_BASE
+    / "config"
+    / "collection_academic"
+    / "element_alignment.schema.json",
+}
+
+
+def code_identity_hashes() -> dict[str, str]:
+    return {
+        name: sha256_file(path) for name, path in sorted(_CODE_IDENTITY_FILES.items())
+    }
+
+
+def compute_run_identity(
+    *,
+    source_config: dict[str, Any],
+    chunking_config: dict[str, Any],
+    selection: dict[str, Any],
+    options: dict[str, Any],
+    acceptance_contract: dict[str, Any] | None,
+) -> dict[str, Any]:
+    identity = {
+        "schema_version": RUN_IDENTITY_SCHEMA_VERSION,
+        "source_config_sha256": canonical_json_sha256(source_config),
+        "chunking_config_sha256": canonical_json_sha256(chunking_config),
+        "acceptance_contract_sha256": (
+            canonical_json_sha256(acceptance_contract) if acceptance_contract else None
+        ),
+        "code": code_identity_hashes(),
+        "selection": selection,
+        "options": options,
+    }
+    identity["identity_sha256"] = canonical_json_sha256(identity)
+    return identity
+
+
+def collect_runtime_identity(base: Path | None = None) -> dict[str, Any]:
+    """Best-effort runtime identity; unknown/dirty states are recorded, not hidden."""
+    base = Path(base) if base else _MODULE_BASE
+    commit = "unknown"
+    dirty = True
+    try:
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=base,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=base,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        dirty = bool(status.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        commit = "unknown"
+        dirty = True
+    return {
+        "git_commit": commit,
+        "git_dirty": dirty,
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "pyyaml_version": getattr(yaml, "__version__", "unknown"),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -411,19 +560,75 @@ def pack_elements_into_chunks(
     return groups
 
 
-def locate_unique_normalized(document_text: str, element_text: str) -> tuple[int, int]:
-    """Search-based fallback alignment; fails loud unless exactly one match.
+def _percentile(sorted_values: list[int], fraction: float) -> int:
+    """Deterministic nearest-rank percentile over a non-empty sorted list."""
+    index = min(len(sorted_values) - 1, max(0, int(fraction * len(sorted_values))))
+    return sorted_values[index]
 
+
+def chunk_length_distribution(
+    lengths: list[int], *, max_chars: int, oversized_element_ids: list[str]
+) -> dict[str, Any]:
+    """Aggregate chunk-length statistics; element IDs only as SHA-256 samples."""
+    if not lengths:
+        return {"count": 0}
+    ordered = sorted(lengths)
+    oversized = sum(1 for length in ordered if length > max_chars)
+    return {
+        "count": len(ordered),
+        "min": ordered[0],
+        "p50": _percentile(ordered, 0.50),
+        "p95": _percentile(ordered, 0.95),
+        "p99": _percentile(ordered, 0.99),
+        "max": ordered[-1],
+        "max_chars_policy": max_chars,
+        "oversized_count": oversized,
+        "oversized_rate": round(oversized / len(ordered), 6),
+        "oversized_element_id_sha256_samples": [
+            sha256_text(element_id) for element_id in oversized_element_ids[:5]
+        ],
+    }
+
+
+def _normalize_with_index_map(value: str) -> tuple[str, list[int]]:
+    """Collapse whitespace runs to one space, keeping original index per char.
+
+    ``index_map[i]`` is the original index of the character that produced
+    normalized character ``i`` (for a collapsed run, the run's first index).
+    Leading whitespace produces no normalized character.
+    """
+    normalized: list[str] = []
+    index_map: list[int] = []
+    position = 0
+    length = len(value)
+    while position < length:
+        if value[position].isspace():
+            run_start = position
+            while position < length and value[position].isspace():
+                position += 1
+            if normalized:
+                normalized.append(" ")
+                index_map.append(run_start)
+        else:
+            normalized.append(value[position])
+            index_map.append(position)
+            position += 1
+    return "".join(normalized), index_map
+
+
+def locate_unique_normalized(document_text: str, element_text: str) -> tuple[int, int]:
+    """Whitespace-normalized search returning ORIGINAL document offsets.
+
+    Fails loud unless exactly one normalized match exists. The returned
+    ``[start, end)`` range indexes ``document_text`` itself (never the
+    normalized string), so the original slice normalizes back to the needle.
     The builder never uses this (ranges are exact by construction); it exists
     so any search-based alignment path is forced through an ambiguity check.
     """
-
-    def normalize(value: str) -> str:
-        return re.sub(r"\s+", " ", value)
-
-    needle = normalize(element_text).strip()
+    needle, _ = _normalize_with_index_map(element_text)
+    needle = needle.strip()
     _require(bool(needle), "cannot align an empty element text")
-    haystack = normalize(document_text)
+    haystack, index_map = _normalize_with_index_map(document_text)
     matches = [
         match.start() for match in re.finditer(re.escape(needle), haystack)
     ]
@@ -432,7 +637,16 @@ def locate_unique_normalized(document_text: str, element_text: str) -> tuple[int
             f"normalized-text alignment matched {len(matches)} ranges; "
             "exactly one is required"
         )
-    return matches[0], matches[0] + len(needle)
+    normalized_start = matches[0]
+    normalized_last = normalized_start + len(needle) - 1
+    start = index_map[normalized_start]
+    end = index_map[normalized_last] + 1
+    check, _ = _normalize_with_index_map(document_text[start:end])
+    _require(
+        check.strip() == needle,
+        "internal error: normalized offset mapping does not round-trip",
+    )
+    return start, end
 
 
 def build_document_bundle(
@@ -484,6 +698,7 @@ def build_document_bundle(
         max_chars=max_chars,
     )
     chunk_records = []
+    chunk_meta = []
     membership: dict[int, tuple[str, int]] = {}
     for chunk_index, group in enumerate(groups):
         chunk_id = f"{document_id}{_CHUNK_ID_MARKER}{chunk_index:04d}"
@@ -497,6 +712,15 @@ def build_document_bundle(
                 "document_id": document_id,
                 "text": document_text[chunk_start:chunk_end],
                 "source_location": dict(UNAVAILABLE_LOCATION),
+            }
+        )
+        chunk_meta.append(
+            {
+                "chunk_id": chunk_id,
+                "length": chunk_end - chunk_start,
+                "element_ids": [
+                    element_records[index]["element_id"] for index in group
+                ],
             }
         )
         for element_index in group:
@@ -557,6 +781,7 @@ def build_document_bundle(
         "document": document_record,
         "elements": element_records,
         "chunks": chunk_records,
+        "chunk_meta": chunk_meta,
         "alignment": alignment_records,
         "image_records_excluded": label["image_record_count"],
     }
@@ -606,26 +831,12 @@ def _artifact_entry(path: Path, records: int, root: Path) -> dict[str, Any]:
     }
 
 
-def convert_collections(
-    *,
-    data_root: Path,
+def _normalize_selection(
     source_config: dict[str, Any],
-    chunking_config: dict[str, Any],
-    output_dir: Path,
-    collections: list[str] | None = None,
-    splits: list[str] | None = None,
-    limit_documents: int = 0,
-    verify_archive_sha256: bool = True,
-    hash_source_members: bool = True,
-    code_fingerprint: dict[str, str] | None = None,
-    progress: Callable[[str], None] | None = None,
-) -> dict[str, Any]:
-    """Convert selected collections/splits and write artifacts plus a manifest."""
-    data_root = Path(data_root)
-    _require(data_root.is_dir(), f"data root does not exist: {data_root}")
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
+    collections: list[str] | None,
+    splits: list[str] | None,
+    limit_documents: int,
+) -> tuple[list[str], list[str]]:
     selected_collections = sorted(collections or source_config["collections"])
     for collection_id in selected_collections:
         _require(
@@ -636,6 +847,42 @@ def convert_collections(
     for split in selected_splits:
         _require(split in REQUIRED_SPLITS, f"unknown split: {split!r}")
     _require(limit_documents >= 0, "limit_documents must be >= 0")
+    return selected_collections, selected_splits
+
+
+def _build_collections(
+    *,
+    data_root: Path,
+    source_config: dict[str, Any],
+    chunking_config: dict[str, Any],
+    output_dir: Path,
+    collections: list[str] | None = None,
+    splits: list[str] | None = None,
+    limit_documents: int = 0,
+    verify_archive_sha256: bool = True,
+    hash_source_members: bool = True,
+    counters: dict[str, int] | None = None,
+    progress: Callable[[str], None] | None = None,
+) -> dict[str, Any]:
+    """Write all conversion artifacts into ``output_dir`` (a staging directory).
+
+    Complexity: time O(A + T + S log S) where A is archive bytes read
+    (verification and member decompression), T is output text bytes, and
+    S log S is the explicit per-cell sort of JSON stems (S = documents per
+    cell). Peak memory is bounded by one document bundle plus per-cell member
+    listings and chunk-length lists — never by total corpus text.
+    """
+    data_root = Path(data_root)
+    _require(data_root.is_dir(), f"data root does not exist: {data_root}")
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    counters = counters if counters is not None else {}
+    counters.setdefault("bytes_read", 0)
+    counters.setdefault("bytes_written", 0)
+
+    selected_collections, selected_splits = _normalize_selection(
+        source_config, collections, splits, limit_documents
+    )
 
     separator = chunking_config["separator"]
     max_chars = chunking_config["max_chars"]
@@ -671,6 +918,8 @@ def convert_collections(
                     verify_sha256=verify_archive_sha256,
                 )
                 archives_manifest.extend([label_info, source_info])
+                if verify_archive_sha256:
+                    counters["bytes_read"] += label_info["bytes"] + source_info["bytes"]
 
                 label_zip = zipfile.ZipFile(label_path)
                 open_archives.append(label_zip)
@@ -782,6 +1031,12 @@ def convert_collections(
                 }
                 for plan in cell_plans
             }
+            cell_chunk_lengths: dict[str, list[int]] = {
+                plan["split"]: [] for plan in cell_plans
+            }
+            cell_oversized_elements: dict[str, list[str]] = {
+                plan["split"]: [] for plan in cell_plans
+            }
 
             streams = {
                 name: path.open("w", encoding="utf-8")
@@ -793,6 +1048,7 @@ def convert_collections(
                 cell = plan["cell"]
                 label_raw_name = plan["json_stems"][stem]
                 label_bytes = _read_member(plan["label_zip"], label_raw_name)
+                counters["bytes_read"] += len(label_bytes)
                 label = parse_label_document(label_bytes, f"{stem}.json")
 
                 source_members_provenance = []
@@ -800,6 +1056,7 @@ def convert_collections(
                     raw_name = plan["source_by_stem"][stem][extension]
                     if hash_source_members:
                         size, digest = _hash_member(plan["source_zip"], raw_name)
+                        counters["bytes_read"] += size
                     else:
                         size = plan["source_zip"].getinfo(raw_name).file_size
                         digest = None
@@ -851,6 +1108,10 @@ def convert_collections(
                 counts["chunks"] += len(bundle["chunks"])
                 counts["alignment"] += len(bundle["alignment"])
                 counts["image_records_excluded"] += bundle["image_records_excluded"]
+                for meta in bundle["chunk_meta"]:
+                    cell_chunk_lengths[split].append(meta["length"])
+                    if meta["length"] > max_chars:
+                        cell_oversized_elements[split].extend(meta["element_ids"])
                 cell_counts[split]["converted_documents"] += 1
                 cell_counts[split]["elements_retained"] += len(bundle["elements"])
                 cell_counts[split]["chunks"] += len(bundle["chunks"])
@@ -867,11 +1128,25 @@ def convert_collections(
             for archive in open_archives:
                 archive.close()
 
+        artifact_entries = {
+            name: _artifact_entry(path, counts[name], output_dir)
+            for name, path in artifact_paths.items()
+        }
+        counters["bytes_written"] += sum(
+            entry["bytes"] for entry in artifact_entries.values()
+        )
+        all_lengths = [
+            length
+            for lengths in cell_chunk_lengths.values()
+            for length in lengths
+        ]
+        all_oversized = [
+            element_id
+            for elements_over in cell_oversized_elements.values()
+            for element_id in elements_over
+        ]
         collections_manifest[collection_id] = {
-            "artifacts": {
-                name: _artifact_entry(path, counts[name], output_dir)
-                for name, path in artifact_paths.items()
-            },
+            "artifacts": artifact_entries,
             "documents": counts["documents"],
             "chunks": counts["chunks"],
             "elements": counts["elements"],
@@ -881,8 +1156,18 @@ def convert_collections(
                 "verified": 0,
                 "unavailable": counts["elements"] + counts["chunks"],
             },
+            "chunk_length_stats": chunk_length_distribution(
+                all_lengths,
+                max_chars=max_chars,
+                oversized_element_ids=sorted(all_oversized),
+            ),
         }
         for split, values in cell_counts.items():
+            values["chunk_length_stats"] = chunk_length_distribution(
+                cell_chunk_lengths[split],
+                max_chars=max_chars,
+                oversized_element_ids=sorted(cell_oversized_elements[split]),
+            )
             cells_manifest[f"{collection_id}/{split}"] = values
 
     exclusions = {
@@ -927,7 +1212,23 @@ def convert_collections(
             "verify_archive_sha256": verify_archive_sha256,
             "hash_source_members": hash_source_members,
         },
-        "code_fingerprint": code_fingerprint or {},
+        "retrieval_compatibility": {
+            "status": "retrieval_unapproved",
+            "reason": (
+                "embedding tokenizer/revision and input-token budget are not "
+                "frozen; the atomic-element policy keeps oversized elements as "
+                "single oversized chunks"
+            ),
+            "note": (
+                "exact one-to-one element-chunk mapping does not prove "
+                "retrieval compatibility"
+            ),
+            "oversized_chunks_total": sum(
+                collection["chunk_length_stats"].get("oversized_count", 0)
+                for collection in collections_manifest.values()
+            ),
+            "validator": "scripts/validate_chunk_model_compatibility.py",
+        },
         "archives": archives_manifest,
         "cells": cells_manifest,
         "collections": collections_manifest,
@@ -951,18 +1252,45 @@ def convert_collections(
 # Output verification (independent re-read of converted artifacts)
 # ---------------------------------------------------------------------------
 
-def _load_jsonl(path: Path) -> list[dict[str, Any]]:
-    records = []
+def _iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
+    _require(path.is_file(), f"missing artifact: {path}")
     with path.open(encoding="utf-8") as stream:
         for line_number, line in enumerate(stream, start=1):
             if not line.strip():
                 continue
-            value = json.loads(line)
+            try:
+                value = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise ConversionError(
+                    f"{path}:{line_number}: invalid JSON: {error}"
+                ) from error
             _require(
                 isinstance(value, dict), f"{path}:{line_number}: record must be an object"
             )
-            records.append(value)
-    return records
+            yield value
+
+
+class _Peekable:
+    """One-record lookahead over a JSONL stream (bounded-memory merge join)."""
+
+    def __init__(self, iterator: Iterator[dict[str, Any]]):
+        self._iterator = iterator
+        self._buffer: dict[str, Any] | None = None
+        self._exhausted = False
+
+    def peek(self) -> dict[str, Any] | None:
+        if self._buffer is None and not self._exhausted:
+            self._buffer = next(self._iterator, None)
+            if self._buffer is None:
+                self._exhausted = True
+        return self._buffer
+
+    def take(self) -> dict[str, Any]:
+        record = self.peek()
+        if record is None:
+            raise StopIteration
+        self._buffer = None
+        return record
 
 
 def _validate_range(value: Any, name: str) -> tuple[int, int]:
@@ -1030,79 +1358,83 @@ def _validate_alignment_record(record: dict[str, Any], collection_id: str) -> No
         )
 
 
-def verify_collection_outputs(
-    output_dir: Path,
-    collection_id: str,
+def _take_document_rows(
+    stream: _Peekable, document_id: str, kind: str
+) -> list[dict[str, Any]]:
+    """Consume the current document's rows from a doc-sorted stream."""
+    rows: list[dict[str, Any]] = []
+    while True:
+        record = stream.peek()
+        if record is None:
+            break
+        row_document = record.get("document_id")
+        _require(
+            isinstance(row_document, str) and bool(row_document),
+            f"{kind} record lacks document_id",
+        )
+        if row_document == document_id:
+            rows.append(stream.take())
+        elif row_document < document_id:
+            _fail(
+                f"{kind} references an absent document or violates "
+                f"deterministic order: {row_document}"
+            )
+        else:
+            break
+    return rows
+
+
+def _verify_document_group(
     *,
+    collection_id: str,
+    document: dict[str, Any],
+    elements: list[dict[str, Any]],
+    chunks: list[dict[str, Any]],
+    alignment: list[dict[str, Any]],
     separator: str,
-    element_atomic: bool = True,
-) -> dict[str, Any]:
-    """Re-read one collection's artifacts and fail loud on any inconsistency."""
-    collection_dir = Path(output_dir) / collection_id
-    documents = _load_jsonl(collection_dir / "documents.jsonl")
-    elements = _load_jsonl(collection_dir / "elements.jsonl")
-    chunks = _load_jsonl(collection_dir / "chunks.jsonl")
-    alignment = _load_jsonl(collection_dir / "alignment.jsonl")
+    element_atomic: bool,
+) -> None:
+    document_id = document["document_id"]
+    text = document["text"]
 
-    document_ids = [
-        _validate_document(record, collection_id) for record in documents
-    ]
-    chunk_pairs = [_validate_chunk(record, collection_id) for record in chunks]
-    element_pairs = [
-        _validate_element(record, collection_id) for record in elements
-    ]
-
-    _require(len(set(document_ids)) == len(document_ids), "duplicate document_id")
-    doc_text = {record["document_id"]: record["text"] for record in documents}
-    content_hash_owner: dict[str, str] = {}
-    for record in documents:
-        digest = record["content_sha256"]
+    element_by_id: dict[str, dict[str, Any]] = {}
+    for index, record in enumerate(elements):
+        element_id, _ = _validate_element(record, collection_id)
         _require(
-            digest not in content_hash_owner,
-            f"duplicate document content: {record['document_id']} matches "
-            f"{content_hash_owner.get(digest)}",
+            element_id.startswith(f"{document_id}::"),
+            f"element {element_id} is not namespaced under {document_id}",
         )
-        content_hash_owner[digest] = record["document_id"]
-        metadata = record.get("metadata")
-        _require(isinstance(metadata, dict), "document metadata missing")
+        suffix = element_id[len(document_id) + 2 :]
         _require(
-            metadata.get("split") in REQUIRED_SPLITS,
-            f"document split must be one of {list(REQUIRED_SPLITS)}",
+            "::" not in suffix,
+            f"element suffix collides with chunk namespace: {element_id}",
         )
         _require(
-            record["document_id"]
-            == f"{collection_id}::{metadata.get('json_stem')}",
-            "document_id must be collection::json_stem",
+            element_id not in element_by_id,
+            f"duplicate element_id: {element_id}",
         )
-
-    chunk_ids = [pair[0] for pair in chunk_pairs]
-    _require(len(set(chunk_ids)) == len(chunk_ids), "duplicate chunk_id")
-    element_ids = [pair[0] for pair in element_pairs]
-    _require(len(set(element_ids)) == len(element_ids), "duplicate element_id")
-    id_universe = set(document_ids) | set(chunk_ids) | set(element_ids)
-    _require(
-        len(id_universe) == len(document_ids) + len(chunk_ids) + len(element_ids),
-        "document/chunk/element ID namespaces overlap",
-    )
-    for chunk_id, chunk_document in chunk_pairs:
-        _require(chunk_document in doc_text, f"chunk references absent document: {chunk_id}")
-    for element_id, element_document in element_pairs:
         _require(
-            element_document in doc_text,
-            f"element references absent document: {element_id}",
+            record["ordinal"] == index,
+            f"element ordinals are not contiguous for {document_id}",
         )
-
-    for record in elements + chunks:
         _require(
             record.get("source_location") == UNAVAILABLE_LOCATION,
             "source_location must be the explicit unavailable object",
         )
+        element_by_id[element_id] = record
 
-    element_by_id = {record["element_id"]: record for record in elements}
-    chunk_by_id = {record["chunk_id"]: record for record in chunks}
-    elements_by_document: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for record in elements:
-        elements_by_document[record["document_id"]].append(record)
+    chunk_by_id: dict[str, dict[str, Any]] = {}
+    for index, record in enumerate(chunks):
+        chunk_id, _ = _validate_chunk(record, collection_id)
+        _require(
+            chunk_id == f"{document_id}{_CHUNK_ID_MARKER}{index:04d}",
+            f"chunks are not in deterministic order for {document_id}: {chunk_id}",
+        )
+        _require(
+            record.get("source_location") == UNAVAILABLE_LOCATION,
+            "source_location must be the explicit unavailable object",
+        )
+        chunk_by_id[chunk_id] = record
 
     alignment_by_element: dict[str, dict[str, Any]] = {}
     chunk_member_elements: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -1119,10 +1451,6 @@ def verify_collection_outputs(
         )
         element = element_by_id[element_id]
         _require(
-            record["document_id"] == element["document_id"],
-            f"alignment document mismatch for {element_id}",
-        )
-        _require(
             record["ordinal"] == element["ordinal"],
             f"alignment ordinal mismatch for {element_id}",
         )
@@ -1130,7 +1458,6 @@ def verify_collection_outputs(
             len(record["chunk_memberships"]) == 1 or not element_atomic,
             f"element unexpectedly assigned to multiple chunks: {element_id}",
         )
-        text = doc_text[element["document_id"]]
         start, end = _validate_range(
             record["document_range"], f"{element_id}.document_range"
         )
@@ -1145,10 +1472,6 @@ def verify_collection_outputs(
             _require(
                 chunk is not None,
                 f"alignment references absent chunk: {chunk_id}",
-            )
-            _require(
-                chunk["document_id"] == element["document_id"],
-                f"chunk/element document mismatch: {chunk_id}",
             )
             piece = chunk["text"][membership["char_start"] : membership["char_end"]]
             _require(
@@ -1168,76 +1491,551 @@ def verify_collection_outputs(
     missing_alignment = set(element_by_id) - set(alignment_by_element)
     _require(
         not missing_alignment,
-        f"elements without any chunk/document alignment: {sorted(missing_alignment)[:3]}",
+        "elements without any chunk/document alignment: "
+        f"{sorted(missing_alignment)[:3]}",
     )
 
-    for document_id, document_elements in elements_by_document.items():
-        ordered = sorted(document_elements, key=lambda record: record["ordinal"])
+    cursor = 0
+    for index, record in enumerate(elements):
+        aligned = alignment_by_element[record["element_id"]]
+        start = aligned["document_range"]["char_start"]
+        end = aligned["document_range"]["char_end"]
+        expected_start = cursor if index == 0 else cursor + len(separator)
         _require(
-            [record["ordinal"] for record in ordered]
-            == list(range(len(ordered))),
-            f"element ordinals are not contiguous for {document_id}",
+            start == expected_start,
+            f"dropped/duplicated/reordered text before {record['element_id']}",
         )
-        text = doc_text[document_id]
-        cursor = 0
-        for index, element in enumerate(ordered):
-            record = alignment_by_element[element["element_id"]]
-            start = record["document_range"]["char_start"]
-            end = record["document_range"]["char_end"]
-            expected_start = cursor if index == 0 else cursor + len(separator)
-            _require(
-                start == expected_start,
-                f"dropped/duplicated/reordered text before {element['element_id']}",
-            )
-            cursor = end
         _require(
-            cursor == len(text),
-            f"constructed text tail lost for {document_id}",
+            text[start:end] == record["text"],
+            f"document_range slice does not equal element text: {record['element_id']}",
         )
-        reconstructed = separator.join(record["text"] for record in ordered)
-        _require(
-            reconstructed == text,
-            f"element concatenation does not reconstruct {document_id}",
-        )
+        cursor = end
+    _require(cursor == len(text), f"constructed text tail lost for {document_id}")
 
-    _require(set(chunk_member_elements) == set(chunk_by_id), "chunk without any element")
+    _require(
+        set(chunk_member_elements) == set(chunk_by_id),
+        f"chunk without any element in {document_id}",
+    )
     for chunk_id, members in chunk_member_elements.items():
         ordered = sorted(members, key=lambda member: member["ordinal"])
         chunk_text = chunk_by_id[chunk_id]["text"]
-        cursor = 0
+        chunk_cursor = 0
         for index, member in enumerate(ordered):
-            expected_start = cursor if index == 0 else cursor + len(separator)
+            expected_start = chunk_cursor if index == 0 else chunk_cursor + len(separator)
             _require(
                 member["char_start"] == expected_start,
                 f"chunk {chunk_id} has a gap/overlap before {member['element_id']}",
             )
-            cursor = member["char_end"]
+            chunk_cursor = member["char_end"]
         _require(
-            cursor == len(chunk_text),
+            chunk_cursor == len(chunk_text),
             f"chunk {chunk_id} tail is not covered by its elements",
         )
 
-    element_count = len(elements)
+
+def verify_collection_outputs(
+    output_dir: Path,
+    collection_id: str,
+    *,
+    separator: str,
+    element_atomic: bool = True,
+) -> dict[str, Any]:
+    """Streaming re-read of one collection's artifacts; fails loud on any defect.
+
+    Bounded-memory strategy: all four artifacts are written in the same
+    deterministic per-document order, so a four-way merge join verifies every
+    invariant one document at a time. Time is O(T) over output bytes; peak
+    memory is one document's records plus one content-hash entry per document
+    (O(D)), never total corpus text. No disk-backed temporary index is
+    required, so there is nothing to clean up on failure. Invariants checked:
+    missing/duplicate IDs, reference errors, offset errors, dropped/reordered
+    text, uncovered chunks/elements, content duplication, and order drift.
+    """
+    collection_dir = Path(output_dir) / collection_id
+    documents = _Peekable(_iter_jsonl(collection_dir / "documents.jsonl"))
+    elements = _Peekable(_iter_jsonl(collection_dir / "elements.jsonl"))
+    chunks = _Peekable(_iter_jsonl(collection_dir / "chunks.jsonl"))
+    alignment = _Peekable(_iter_jsonl(collection_dir / "alignment.jsonl"))
+
+    content_hash_owner: dict[str, str] = {}
+    previous_document_id: str | None = None
+    counts = {"documents": 0, "elements": 0, "chunks": 0, "alignment": 0}
+
+    while documents.peek() is not None:
+        record = documents.take()
+        document_id = _validate_document(record, collection_id)
+        if previous_document_id is not None:
+            _require(
+                document_id != previous_document_id, "duplicate document_id"
+            )
+            _require(
+                document_id > previous_document_id,
+                f"documents are not in deterministic order: {document_id}",
+            )
+        previous_document_id = document_id
+        digest = record["content_sha256"]
+        _require(
+            digest not in content_hash_owner,
+            f"duplicate document content: {document_id} matches "
+            f"{content_hash_owner.get(digest)}",
+        )
+        content_hash_owner[digest] = document_id
+        metadata = record.get("metadata")
+        _require(isinstance(metadata, dict), "document metadata missing")
+        _require(
+            metadata.get("split") in REQUIRED_SPLITS,
+            f"document split must be one of {list(REQUIRED_SPLITS)}",
+        )
+        _require(
+            document_id == f"{collection_id}::{metadata.get('json_stem')}",
+            "document_id must be collection::json_stem",
+        )
+
+        document_elements = _take_document_rows(elements, document_id, "element")
+        document_chunks = _take_document_rows(chunks, document_id, "chunk")
+        document_alignment = _take_document_rows(alignment, document_id, "alignment")
+        _verify_document_group(
+            collection_id=collection_id,
+            document=record,
+            elements=document_elements,
+            chunks=document_chunks,
+            alignment=document_alignment,
+            separator=separator,
+            element_atomic=element_atomic,
+        )
+        counts["documents"] += 1
+        counts["elements"] += len(document_elements)
+        counts["chunks"] += len(document_chunks)
+        counts["alignment"] += len(document_alignment)
+
+    for stream, kind in ((elements, "element"), (chunks, "chunk"), (alignment, "alignment")):
+        leftover = stream.peek()
+        _require(
+            leftover is None,
+            f"{kind} references an absent document: {leftover.get('document_id') if leftover else ''}",
+        )
+
     return {
         "status": "ok",
         "collection_id": collection_id,
-        "documents": len(documents),
-        "chunks": len(chunks),
-        "elements": element_count,
-        "alignment_records": len(alignment),
-        "element_to_document_coverage": 1.0 if element_count else 0.0,
-        "element_to_chunk_coverage": 1.0 if element_count else 0.0,
+        "documents": counts["documents"],
+        "chunks": counts["chunks"],
+        "elements": counts["elements"],
+        "alignment_records": counts["alignment"],
+        "element_to_document_coverage": 1.0 if counts["elements"] else 0.0,
+        "element_to_chunk_coverage": 1.0 if counts["elements"] else 0.0,
         "source_location": {
             "verified": 0,
-            "unavailable": element_count + len(chunks),
+            "unavailable": counts["elements"] + counts["chunks"],
         },
     }
 
 
 def write_manifest(manifest: dict[str, Any], output_dir: Path) -> Path:
-    path = Path(output_dir) / "conversion_manifest.json"
+    path = Path(output_dir) / MANIFEST_FILE_NAME
+    persisted = {
+        key: value for key, value in manifest.items() if key != "publication_status"
+    }
     path.write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        json.dumps(persisted, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     return path
+
+
+# ---------------------------------------------------------------------------
+# Acceptance gate (machine-enforced; smoke/partial runs stay ineligible)
+# ---------------------------------------------------------------------------
+
+def evaluate_acceptance(
+    manifest: dict[str, Any], acceptance_contract: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Machine-readable acceptance decision against the reviewed EDA contract."""
+    if acceptance_contract is None:
+        return {
+            "eligible": False,
+            "reasons": ["acceptance contract not provided"],
+            "contract_sha256": None,
+        }
+    reasons: list[str] = []
+    selection = manifest["selection"]
+    expected_collections = sorted(acceptance_contract["collections"])
+    expected_splits = sorted(acceptance_contract["splits"])
+    if selection["collections"] != expected_collections:
+        reasons.append(
+            f"collections {selection['collections']} != contract {expected_collections}"
+        )
+    if selection["splits"] != expected_splits:
+        reasons.append(f"splits {selection['splits']} != contract {expected_splits}")
+    if selection["limit_documents_per_cell"] != 0:
+        reasons.append(
+            f"limit_documents_per_cell={selection['limit_documents_per_cell']} (must be 0)"
+        )
+    options = manifest["options"]
+    if not options.get("verify_archive_sha256"):
+        reasons.append("archive SHA-256 verification was disabled")
+    if not options.get("hash_source_members"):
+        reasons.append("source pdf/pptx member hashing was disabled")
+    archives = manifest.get("archives", [])
+    if len(archives) != acceptance_contract["archive_count"]:
+        reasons.append(
+            f"archive count {len(archives)} != {acceptance_contract['archive_count']}"
+        )
+    unverified = sorted(
+        archive["path"] for archive in archives if not archive.get("sha256_verified")
+    )
+    if unverified:
+        reasons.append(f"archives without verified SHA-256: {unverified[:3]}")
+    verification = manifest.get("verification") or {}
+    for collection_id in expected_collections:
+        if verification.get(collection_id, {}).get("status") != "ok":
+            reasons.append(f"verification missing or not ok: {collection_id}")
+    for cell_name in sorted(acceptance_contract["cells"]):
+        expected = acceptance_contract["cells"][cell_name]
+        actual = manifest.get("cells", {}).get(cell_name)
+        if actual is None:
+            reasons.append(f"cell missing: {cell_name}")
+            continue
+        observed = {
+            "documents": actual.get("converted_documents"),
+            "elements": actual.get("elements_retained"),
+            "images_excluded": actual.get("image_records_excluded"),
+        }
+        for key, value in observed.items():
+            if value != expected[key]:
+                reasons.append(f"{cell_name}.{key} {value} != {expected[key]}")
+        if actual.get("failed_documents") or actual.get("excluded_documents"):
+            reasons.append(f"{cell_name} has failed/excluded documents")
+    totals = manifest.get("totals", {})
+    contract_totals = acceptance_contract["totals"]
+    if totals.get("documents") != contract_totals["documents"]:
+        reasons.append(
+            f"total documents {totals.get('documents')} != {contract_totals['documents']}"
+        )
+    if (
+        totals.get("elements") != contract_totals["elements"]
+        or totals.get("alignment_records") != contract_totals["elements"]
+    ):
+        reasons.append(
+            f"total elements/alignment {totals.get('elements')}/"
+            f"{totals.get('alignment_records')} != {contract_totals['elements']}"
+        )
+    if totals.get("image_records_excluded") != contract_totals["images_excluded"]:
+        reasons.append(
+            f"total excluded image records {totals.get('image_records_excluded')} "
+            f"!= {contract_totals['images_excluded']}"
+        )
+    run_identity = manifest.get("run_identity") or {}
+    if not run_identity.get("identity_sha256"):
+        reasons.append("missing reproducible run identity")
+    runtime = run_identity.get("runtime") or {}
+    if runtime.get("git_commit") in (None, "", "unknown"):
+        reasons.append("unknown code identity (git commit unavailable)")
+    if runtime.get("git_dirty") is not False:
+        reasons.append("dirty or unknown git worktree state")
+    return {
+        "eligible": not reasons,
+        "reasons": reasons,
+        "contract_sha256": canonical_json_sha256(acceptance_contract),
+    }
+
+
+def require_accepted_conversion(manifest_path: Path) -> dict[str, Any]:
+    """Gate for the collection_eval stage: reject non-accepted conversions.
+
+    Re-hashes every declared artifact so a tampered or partially copied
+    directory cannot pass on the manifest flag alone.
+    """
+    manifest_path = Path(manifest_path)
+    _require(manifest_path.is_file(), f"conversion manifest missing: {manifest_path}")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    acceptance = manifest.get("acceptance") or {}
+    _require(
+        acceptance.get("eligible") is True,
+        "conversion is not acceptance-eligible: "
+        f"{acceptance.get('reasons', ['no acceptance record'])}",
+    )
+    root = manifest_path.parent
+    for collection_id in sorted(manifest.get("collections", {})):
+        artifacts = manifest["collections"][collection_id]["artifacts"]
+        for name in sorted(artifacts):
+            entry = artifacts[name]
+            path = root / entry["path"]
+            _require(path.is_file(), f"declared artifact missing: {path}")
+            _require(
+                path.stat().st_size == entry["bytes"]
+                and sha256_file(path) == entry["sha256"],
+                f"declared artifact does not match manifest hash: {path}",
+            )
+    return manifest
+
+
+# ---------------------------------------------------------------------------
+# Atomic conversion orchestration (lock -> stage -> verify -> publish)
+# ---------------------------------------------------------------------------
+
+def _reuse_verified_target(
+    target: Path,
+    identity: dict[str, Any],
+    chunking_config: dict[str, Any],
+) -> dict[str, Any]:
+    """Independently re-verify a complete target with the same input identity."""
+    manifest_path = target / MANIFEST_FILE_NAME
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ConversionError(
+            f"target manifest is unreadable or corrupt: {manifest_path}: {error}"
+        ) from error
+    recorded = (manifest.get("run_identity") or {}).get("identity_sha256")
+    if recorded != identity["identity_sha256"]:
+        raise ConversionError(
+            "target holds a different input identity: "
+            f"recorded={recorded} requested={identity['identity_sha256']}; "
+            f"refusing to merge or overwrite {target}"
+        )
+    for collection_id in sorted(manifest.get("collections", {})):
+        collection = manifest["collections"][collection_id]
+        for name in sorted(collection["artifacts"]):
+            entry = collection["artifacts"][name]
+            path = target / entry["path"]
+            _require(path.is_file(), f"published artifact missing: {path}")
+            _require(
+                path.stat().st_size == entry["bytes"]
+                and sha256_file(path) == entry["sha256"],
+                f"published artifact does not match manifest: {path}",
+            )
+        summary = verify_collection_outputs(
+            target,
+            collection_id,
+            separator=chunking_config["separator"],
+            element_atomic=chunking_config["element_atomic"],
+        )
+        _require(
+            summary["documents"] == collection["artifacts"]["documents"]["records"]
+            and summary["elements"] == collection["artifacts"]["elements"]["records"]
+            and summary["chunks"] == collection["artifacts"]["chunks"]["records"]
+            and summary["alignment_records"]
+            == collection["artifacts"]["alignment"]["records"],
+            f"published record counts do not match manifest for {collection_id}",
+        )
+    return manifest
+
+
+def _peak_rss_bytes() -> int:
+    peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    return peak if sys.platform == "darwin" else peak * 1024
+
+
+def convert_collections(
+    *,
+    data_root: Path,
+    source_config: dict[str, Any],
+    chunking_config: dict[str, Any],
+    output_dir: Path,
+    collections: list[str] | None = None,
+    splits: list[str] | None = None,
+    limit_documents: int = 0,
+    verify_archive_sha256: bool = True,
+    hash_source_members: bool = True,
+    runtime_identity: dict[str, Any] | None = None,
+    acceptance_contract: dict[str, Any] | None = None,
+    progress: Callable[[str], None] | None = None,
+) -> dict[str, Any]:
+    """Convert with lock-protected staging and atomic publication.
+
+    Deterministic output vs operational idempotency: the artifacts are
+    byte-deterministic for a given input identity, and this wrapper adds the
+    operational guarantees — an exclusive target lock, staging on the same
+    filesystem, verification before an atomic rename, no partial targets on
+    failure, in-place reuse of an identical published target, and a loud
+    failure for different-identity, partial, or corrupt targets.
+
+    The returned manifest carries a non-persisted ``publication_status`` key
+    (``published`` or ``reused``). ``run_metrics.json`` (timings, peak RSS,
+    byte counters) is operational telemetry and is excluded from the
+    deterministic-output guarantee.
+    """
+    target = Path(output_dir)
+    ensure_output_dir_outside_git(target, code_base=_MODULE_BASE)
+    selected_collections, selected_splits = _normalize_selection(
+        source_config, collections, splits, limit_documents
+    )
+    selection = {
+        "collections": selected_collections,
+        "splits": selected_splits,
+        "limit_documents_per_cell": limit_documents,
+    }
+    options = {
+        "verify_archive_sha256": verify_archive_sha256,
+        "hash_source_members": hash_source_members,
+    }
+    identity = compute_run_identity(
+        source_config=source_config,
+        chunking_config=chunking_config,
+        selection=selection,
+        options=options,
+        acceptance_contract=acceptance_contract,
+    )
+    runtime = runtime_identity if runtime_identity is not None else collect_runtime_identity()
+
+    lock = TargetLock(target).acquire()
+    try:
+        state = target_state(target, MANIFEST_FILE_NAME)
+        if state == "partial":
+            raise ConversionError(
+                f"target is incomplete or corrupt (missing {MANIFEST_FILE_NAME}); "
+                f"refusing to merge, overwrite, or repair: {target}"
+            )
+        if state == "complete":
+            manifest = _reuse_verified_target(target, identity, chunking_config)
+            manifest["publication_status"] = "reused"
+            return manifest
+        if state == "empty":
+            target.rmdir()
+
+        staging = prepare_staging(target)
+        timings: dict[str, float] = {}
+        counters: dict[str, int] = {}
+        try:
+            started = time.monotonic()
+            manifest = _build_collections(
+                data_root=data_root,
+                source_config=source_config,
+                chunking_config=chunking_config,
+                output_dir=staging,
+                collections=selected_collections,
+                splits=selected_splits,
+                limit_documents=limit_documents,
+                verify_archive_sha256=verify_archive_sha256,
+                hash_source_members=hash_source_members,
+                counters=counters,
+                progress=progress,
+            )
+            timings["convert_seconds"] = round(time.monotonic() - started, 3)
+            manifest["run_identity"] = {**identity, "runtime": runtime}
+
+            started = time.monotonic()
+            verification = {}
+            for collection_id in selected_collections:
+                summary = verify_collection_outputs(
+                    staging,
+                    collection_id,
+                    separator=chunking_config["separator"],
+                    element_atomic=chunking_config["element_atomic"],
+                )
+                artifacts = manifest["collections"][collection_id]["artifacts"]
+                _require(
+                    summary["documents"] == artifacts["documents"]["records"]
+                    and summary["elements"] == artifacts["elements"]["records"]
+                    and summary["chunks"] == artifacts["chunks"]["records"]
+                    and summary["alignment_records"]
+                    == artifacts["alignment"]["records"],
+                    f"verification counts do not match artifact records for "
+                    f"{collection_id}",
+                )
+                verification[collection_id] = summary
+            timings["verify_seconds"] = round(time.monotonic() - started, 3)
+
+            manifest["verification"] = verification
+            manifest["acceptance"] = evaluate_acceptance(manifest, acceptance_contract)
+            manifest_path = write_manifest(manifest, staging)
+            counters["bytes_written"] += manifest_path.stat().st_size
+            metrics = {
+                "schema_version": RUN_METRICS_SCHEMA_VERSION,
+                "note": (
+                    "operational telemetry; excluded from the deterministic "
+                    "output guarantee"
+                ),
+                "timings_seconds": timings,
+                "peak_rss_bytes": _peak_rss_bytes(),
+                "bytes_read": counters["bytes_read"],
+                "bytes_written": counters["bytes_written"],
+            }
+            (staging / METRICS_FILE_NAME).write_text(
+                json.dumps(metrics, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            publish_staging(staging, target)
+        except BaseException:
+            discard_staging(target)
+            raise
+        manifest["publication_status"] = "published"
+        return manifest
+    finally:
+        lock.release()
+
+
+# ---------------------------------------------------------------------------
+# Chunk / model-input compatibility gate (no model call; contract-driven)
+# ---------------------------------------------------------------------------
+
+def load_compat_contract(path: Path) -> dict[str, Any]:
+    with Path(path).open(encoding="utf-8") as stream:
+        contract = yaml.safe_load(stream)
+    _require(isinstance(contract, dict), "compat contract must be a mapping")
+    _require(
+        contract.get("schema_version") == COMPAT_CONTRACT_SCHEMA_VERSION,
+        f"compat contract schema_version must be {COMPAT_CONTRACT_SCHEMA_VERSION}",
+    )
+    _nonempty_str(contract.get("model_id"), "compat contract model_id")
+    revision = _nonempty_str(contract.get("revision"), "compat contract revision")
+    _require(
+        revision.lower() not in {"main", "master", "latest", "unknown"},
+        "compat contract revision must be immutable",
+    )
+    _require(
+        isinstance(contract.get("max_input_chars"), int)
+        and contract["max_input_chars"] > 0,
+        "compat contract max_input_chars must be a positive integer",
+    )
+    policy = contract.get("approved_long_element_split_policy")
+    if policy is not None:
+        _require(isinstance(policy, dict), "approved split policy must be a mapping")
+        _nonempty_str(policy.get("policy_id"), "approved split policy policy_id")
+        _nonempty_str(policy.get("approved_by"), "approved split policy approved_by")
+    return contract
+
+
+def validate_chunk_model_compatibility(
+    chunks_path: Path, contract: dict[str, Any]
+) -> dict[str, Any]:
+    """Prove every chunk fits the frozen model input contract, or fail loud.
+
+    A separately approved deterministic long-element split policy may be
+    recorded instead; that outcome is reported explicitly and never silently
+    treated as compatibility.
+    """
+    budget = contract["max_input_chars"]
+    total = 0
+    violations = 0
+    max_length = 0
+    for record in _iter_jsonl(Path(chunks_path)):
+        length = len(str(record.get("text", "")))
+        total += 1
+        max_length = max(max_length, length)
+        if length > budget:
+            violations += 1
+    result = {
+        "chunks": total,
+        "max_chunk_chars": max_length,
+        "max_input_chars": budget,
+        "violations": violations,
+        "model_id": contract["model_id"],
+        "revision": contract["revision"],
+    }
+    if violations == 0:
+        result["status"] = "compatible"
+        return result
+    policy = contract.get("approved_long_element_split_policy")
+    if policy:
+        result["status"] = "approved_split_policy_recorded"
+        result["policy_id"] = policy["policy_id"]
+        result["approved_by"] = policy["approved_by"]
+        return result
+    raise ConversionError(
+        f"{violations} of {total} chunks exceed the frozen model input budget "
+        f"({budget} chars, max observed {max_length}); freeze a compatible "
+        "contract or record a separately approved deterministic long-element "
+        "split policy"
+    )

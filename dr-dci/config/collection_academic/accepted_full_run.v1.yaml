@@ -1,0 +1,47 @@
+# Reviewed acceptance contract for a full accepted academic conversion.
+#
+# These denominators are pinned from the hash-verified accepted EDA handoff
+# (eda_handoff_manifest.json 0c6f98096efc3ec3dcc4e36de069dc30f930d0b171cf85
+# ad5cf346e5483f5438): per-cell document counts from source_pairing_report,
+# per-cell section counts from element_position_capability, and per-cell
+# image-record counts from the same full-scan reports. A conversion is
+# acceptance-eligible only when it matches this contract exactly; smoke,
+# subset, and hash-skipped runs stay acceptance_eligible=false with
+# machine-readable reasons.
+
+schema_version: academic.accepted-full-run-contract.v1
+
+collections: [academic_ha, academic_ss, academic_st]
+splits: [Training, Validation]
+archive_count: 12
+
+totals:
+  documents: 9000
+  elements: 177341
+  images_excluded: 35883
+
+cells:
+  academic_ha/Training:
+    documents: 2648
+    elements: 43530
+    images_excluded: 5355
+  academic_ha/Validation:
+    documents: 331
+    elements: 5433
+    images_excluded: 682
+  academic_ss/Training:
+    documents: 3637
+    elements: 75805
+    images_excluded: 15288
+  academic_ss/Validation:
+    documents: 454
+    elements: 9232
+    images_excluded: 1922
+  academic_st/Training:
+    documents: 1715
+    elements: 38396
+    images_excluded: 11158
+  academic_st/Validation:
+    documents: 215
+    elements: 4945
+    images_excluded: 1478

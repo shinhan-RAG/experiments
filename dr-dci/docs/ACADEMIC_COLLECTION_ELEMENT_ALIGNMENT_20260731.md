@@ -72,14 +72,106 @@ one oversized chunk and every element maps to exactly one chunk.
   <collection_id>/elements.jsonl    # shinhan.collection-element.v1
   <collection_id>/alignment.jsonl   # shinhan.collection-element-alignment.v1
   conversion_manifest.json          # shinhan.collection-conversion.v1
+  run_metrics.json                  # operational telemetry (see below)
 ```
 
 `document.metadata` carries split/domain/stem/raw IDs plus label and source
 member bytes+SHA-256 provenance, clearly separated from `text`. The manifest
-records archive hashes, per-cell counts, per-artifact path/records/bytes/
-SHA-256, policy IDs, code fingerprints, exclusion counts, and the embedded
-verification summary. The manifest intentionally contains no timestamps so a
-deterministic rerun is byte-identical.
+records archive hashes, per-cell counts and chunk-length distributions,
+per-artifact path/records/bytes/SHA-256, policy IDs, the run identity, the
+embedded verification summary, and the machine-readable acceptance decision.
+The manifest intentionally contains no timestamps so a deterministic rerun
+into a fresh target is byte-identical; `run_metrics.json` (stage timings,
+peak RSS, byte counters) is operational telemetry and is explicitly excluded
+from that guarantee.
+
+## Atomic publication and operational idempotency
+
+Deterministic output and operational idempotency are different properties:
+determinism says identical inputs produce identical bytes; idempotency says
+rerunning against an already published target is safe. The converter
+provides both (`src/data/collection_publication.py`):
+
+1. an exclusive advisory lock (`<target>.lock`) is acquired before any
+   write; a concurrent same-target process gets a stable
+   `LockConflictError` (CLI exit code 3) instead of interleaving writes;
+2. all artifacts, the verification result, the acceptance decision, and the
+   manifest are written into a sibling `<target>.staging` directory on the
+   same filesystem;
+3. the staging result is fully verified, then published with one atomic
+   `rename`;
+4. any failure removes the staging directory; an existing published target
+   is never touched, and no partial target is ever exposed;
+5. a rerun whose input identity (source/chunking/acceptance configs,
+   selection, options, and behavior-affecting code/schema hashes) matches
+   the published target re-verifies the target in place and returns
+   `publication_status=reused` without rewriting a byte;
+6. a target with a different identity, or an incomplete/corrupt target, is
+   a loud failure — remove it explicitly if it is really obsolete.
+
+## Acceptance gate
+
+`config/collection_academic/accepted_full_run.v1.yaml` pins the accepted-EDA
+per-cell and total denominators in a reviewed contract. Every manifest embeds
+`acceptance.eligible` with machine-readable `reasons`; smoke, subset,
+hash-skipped, or dirty-worktree runs are always `eligible=false`. A full
+accepted conversion additionally requires all 12 archives SHA-256-verified,
+source member hashing on, all collection verifications `ok`, exact
+denominator matches, and a clean, known git commit. The `collection_eval`
+stage must call `require_accepted_conversion(<manifest path>)`, which also
+re-hashes every declared artifact, before any QA/tag/model work.
+
+## Complexity and resource profile
+
+With archive bytes `A`, documents `D`, elements `E`, chunks `C`, and output
+text bytes `T`:
+
+- conversion runs in O(A + T) time plus the explicit per-cell stem sort
+  O(S log S); peak memory is one document bundle plus per-cell member
+  listings and chunk-length lists, never total corpus text;
+- verification is a streaming four-way merge join over the deterministically
+  ordered artifacts: O(T) time, peak memory bounded by one document's
+  records plus an O(D) content-hash map; no disk-backed temporary index is
+  needed, so there is no index cleanup path; all invariants (missing or
+  duplicate IDs, reference errors, offset errors, dropped/reordered text,
+  uncovered chunks/elements, content duplication, count/hash mismatches)
+  are preserved;
+- `run_metrics.json` records per-stage wall time, peak RSS, and logical
+  bytes read/written without any private text;
+- `tests/test_academic_collection_publication.py` includes a 1x/2x/4x
+  synthetic scale test asserting exact record-count scaling and bounded
+  verifier memory.
+
+## Chunk bound and model compatibility (retrieval-unapproved)
+
+`max_chars=2000` bounds multi-element packing only; elements are atomic, so
+an oversized section becomes one oversized chunk. The accepted EDA reports
+section maxima up to 32,767 chars, so oversized chunks exist and silent
+tokenizer truncation would confound the later chunk/semantic-tag/combined
+comparison. Therefore:
+
+- every manifest reports per-cell and per-collection chunk-length
+  distributions with exact oversized counts/rates and SHA-256-hashed source
+  element ID samples;
+- the chunk corpus is marked `retrieval_compatibility.status =
+  retrieval_unapproved` until the embedding tokenizer/revision and input
+  budget are frozen;
+- `scripts/validate_chunk_model_compatibility.py` (contract template:
+  `config/collection_academic/chunk_model_compat.template.yaml`) later
+  proves every chunk fits the frozen input contract, or records a
+  separately owner-approved deterministic long-element split policy — it
+  never calls a model;
+- exact one-to-one element-chunk mapping does NOT prove retrieval
+  compatibility, and moving from atomic oversized chunks to a multi-chunk
+  element mapping requires owner approval before QA or retrieval execution.
+
+## Normalized-text search offsets
+
+`locate_unique_normalized` returns offsets in the ORIGINAL document text:
+the whitespace-collapsed match is mapped back through an index map, so the
+returned slice re-normalizes to the searched text. Ambiguous (zero or
+multiple) normalized matches fail loud. Normalized-coordinate offsets are
+never labeled as original or constructed-document offsets.
 
 ## CLI
 

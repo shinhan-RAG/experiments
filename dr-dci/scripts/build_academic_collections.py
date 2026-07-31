@@ -2,9 +2,14 @@
 """Convert academic-paper collections into frozen collection_eval artifacts.
 
 Private-data smoke/full-run CLI for the element_alignment stage. Reads the
-source archives strictly read-only, writes document/chunk/element/alignment
-JSONL plus a conversion manifest, then re-verifies every output. Prints only
-aggregate counts and hashes; raw document text never reaches stdout or Git.
+source archives strictly read-only, then converts through the lock-protected
+staging/atomic-publication path: a failure never leaves a partial target, an
+identical rerun re-verifies and reuses the published target, and a
+different-identity target fails loudly. Prints only aggregate counts and
+hashes; raw document text never reaches stdout or Git.
+
+Exit codes: 0 success (published or reused), 2 conversion/contract failure,
+3 stable lock conflict with a concurrent same-target process.
 """
 
 from __future__ import annotations
@@ -12,7 +17,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 
@@ -20,33 +24,17 @@ BASE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE))
 
 from src.data import collection_academic as academic  # noqa: E402
-from src.eval.collection_contract import sha256_file  # noqa: E402
+from src.data.collection_publication import LockConflictError  # noqa: E402
+from src.eval.collection_contract import ContractError, sha256_file  # noqa: E402
 
 
 DEFAULT_SOURCE_CONFIG = BASE / "config" / "collection_academic" / "academic_paper.yaml"
 DEFAULT_CHUNKING_CONFIG = (
     BASE / "config" / "collection_academic" / "chunking.academic_element_packed.v1.yaml"
 )
-ALIGNMENT_SCHEMA = BASE / "config" / "collection_academic" / "element_alignment.schema.json"
-
-
-def code_fingerprint() -> dict[str, str]:
-    try:
-        commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=BASE,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        commit = "unknown"
-    return {
-        "git_commit": commit,
-        "adapter_sha256": sha256_file(BASE / "src" / "data" / "collection_academic.py"),
-        "cli_sha256": sha256_file(Path(__file__).resolve()),
-        "alignment_schema_sha256": sha256_file(ALIGNMENT_SCHEMA),
-    }
+DEFAULT_ACCEPTANCE_CONTRACT = (
+    BASE / "config" / "collection_academic" / "accepted_full_run.v1.yaml"
+)
 
 
 def main() -> None:
@@ -60,10 +48,13 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=DEFAULT_SOURCE_CONFIG)
     parser.add_argument("--chunking-config", type=Path, default=DEFAULT_CHUNKING_CONFIG)
     parser.add_argument(
+        "--acceptance-contract", type=Path, default=DEFAULT_ACCEPTANCE_CONTRACT
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         required=True,
-        help="output directory outside Git (or under the ignored data/ path)",
+        help="publication target outside Git (or under the ignored data/ path)",
     )
     parser.add_argument("--collections", nargs="+", default=None)
     parser.add_argument("--splits", nargs="+", default=None)
@@ -77,56 +68,56 @@ def main() -> None:
         "--skip-archive-sha256",
         action="store_true",
         help="skip full-archive SHA-256 verification (bytes are always verified); "
-        "recorded in the manifest",
+        "recorded in the manifest and makes the run acceptance-ineligible",
     )
     parser.add_argument(
         "--skip-source-member-hash",
         action="store_true",
         help="record source pdf/pptx member bytes without SHA-256 digests; "
-        "recorded in the manifest",
+        "recorded in the manifest and makes the run acceptance-ineligible",
     )
     args = parser.parse_args()
 
     source_config = academic.load_source_config(args.config)
     chunking_config = academic.load_chunking_config(args.chunking_config)
+    acceptance_contract = academic.load_acceptance_contract(args.acceptance_contract)
     academic.ensure_output_dir_outside_git(args.output_dir, code_base=BASE)
 
-    fingerprint = code_fingerprint()
-    fingerprint["source_config_sha256"] = sha256_file(args.config)
-    fingerprint["chunking_config_sha256"] = sha256_file(args.chunking_config)
-
-    manifest = academic.convert_collections(
-        data_root=args.data_root,
-        source_config=source_config,
-        chunking_config=chunking_config,
-        output_dir=args.output_dir,
-        collections=args.collections,
-        splits=args.splits,
-        limit_documents=args.limit_documents,
-        verify_archive_sha256=not args.skip_archive_sha256,
-        hash_source_members=not args.skip_source_member_hash,
-        code_fingerprint=fingerprint,
-        progress=lambda message: print(message, flush=True),
-    )
-
-    verification = {}
-    for collection_id in manifest["selection"]["collections"]:
-        verification[collection_id] = academic.verify_collection_outputs(
-            args.output_dir,
-            collection_id,
-            separator=chunking_config["separator"],
-            element_atomic=chunking_config["element_atomic"],
+    try:
+        manifest = academic.convert_collections(
+            data_root=args.data_root,
+            source_config=source_config,
+            chunking_config=chunking_config,
+            output_dir=args.output_dir,
+            collections=args.collections,
+            splits=args.splits,
+            limit_documents=args.limit_documents,
+            verify_archive_sha256=not args.skip_archive_sha256,
+            hash_source_members=not args.skip_source_member_hash,
+            runtime_identity=academic.collect_runtime_identity(BASE),
+            acceptance_contract=acceptance_contract,
+            progress=lambda message: print(message, flush=True),
         )
-    manifest["verification"] = verification
-    manifest_path = academic.write_manifest(manifest, args.output_dir)
+    except LockConflictError as error:
+        print(f"lock conflict: {error}", file=sys.stderr)
+        raise SystemExit(3) from error
+    except (academic.ConversionError, ContractError) as error:
+        print(f"conversion failed: {error}", file=sys.stderr)
+        raise SystemExit(2) from error
 
+    manifest_path = Path(args.output_dir) / academic.MANIFEST_FILE_NAME
     summary = {
+        "publication_status": manifest.get("publication_status"),
         "manifest": str(manifest_path),
         "manifest_sha256": sha256_file(manifest_path),
+        "run_identity_sha256": manifest["run_identity"]["identity_sha256"],
+        "acceptance": manifest["acceptance"],
+        "retrieval_compatibility": manifest["retrieval_compatibility"]["status"],
         "totals": manifest["totals"],
         "cells": manifest["cells"],
         "verification": {
-            collection_id: value["status"] for collection_id, value in verification.items()
+            collection_id: value["status"]
+            for collection_id, value in manifest["verification"].items()
         },
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
