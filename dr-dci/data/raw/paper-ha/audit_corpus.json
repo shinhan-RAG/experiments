@@ -1,0 +1,44 @@
+{
+  "chunks": 4253,
+  "element_dist": {
+    "text": 2279,
+    "heading": 1292,
+    "table": 285,
+    "figure": 371,
+    "chart": 26
+  },
+  "duplicate_text_groups": 49,
+  "duplicate_text_examples": [
+    [
+      "HA_0032_0014193_para_3",
+      "HA_0032_0014193_para_5"
+    ],
+    [
+      "HA_0047_0035799_img_3",
+      "HA_0047_0035799_img_4"
+    ],
+    [
+      "HA_0047_0036280_img_1",
+      "HA_0047_0036280_img_3"
+    ],
+    [
+      "HA_0047_0036824_img_1",
+      "HA_0047_0036824_img_2"
+    ],
+    [
+      "HA_0047_0037121_img_1",
+      "HA_0047_0037121_img_2",
+      "HA_0047_0037121_img_3"
+    ]
+  ],
+  "over_4096": 546,
+  "caption_chunks": 682,
+  "caption_missing_png": 0,
+  "caption_no_ref": 0,
+  "qrels": 50,
+  "missing_gold": [],
+  "bad_spans": [],
+  "tags_p_elements": 4253,
+  "tags_p_untagged_chunks": 0,
+  "problems": []
+}

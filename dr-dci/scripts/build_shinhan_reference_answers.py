@@ -6,11 +6,13 @@
 이 파일이 없으면 judge가 한 건도 실행되지 않아 accuracy가 통째로 `None`이 된다
 (run_experiment.assign_judgment). 2026-07-28 Part 4 실행이 `judged 0`으로 나온 원인이다.
 
-출력: data/reference_answers/shinhan.json
+출력: data/reference_answers/<dataset>.json
       [{"query_id": "1", "reference_answer": "..."}, ...]
 
-  python scripts/build_shinhan_reference_answers.py
+  python scripts/build_shinhan_reference_answers.py [--dataset paper-ha]
+  (qa_meta.jsonl 에 answer 필드가 있는 데이터셋이면 어디든 동작한다)
 """
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -20,7 +22,9 @@ from utils import dataset_dir, load_jsonl  # noqa: E402
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUT_DIR = DATA_DIR / "reference_answers"
-DATASET = "shinhan"
+_ap = argparse.ArgumentParser()
+_ap.add_argument("--dataset", default="shinhan")
+DATASET = _ap.parse_args().dataset
 
 
 def build() -> None:

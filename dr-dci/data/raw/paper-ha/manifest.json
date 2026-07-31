@@ -1,0 +1,24 @@
+{
+  "dataset": "paper-ha",
+  "source": "AI Hub 32.학술논문 이해 데이터 / Validation / VL_인문학,예술체육학(HA)",
+  "built_from": "C:\\Users\\Atdev-pc\\Desktop\\test\\experiments\\data\\32.학술논문 이해 데이터\\3.개방데이터\\1.데이터\\Validation\\02.라벨링데이터\\VL_인문학,예술체육학(HA)",
+  "docs": 331,
+  "chunks": 4253,
+  "by_element": {
+    "text": 2279,
+    "heading": 1292,
+    "table": 285,
+    "figure": 371,
+    "chart": 26
+  },
+  "granularity": "chunk (parent_id 없음 — parent 단위 데이터셋과 절대점수 비교 금지)",
+  "tag_rules": "docs/PAPER_HA_TAG_RULES.md",
+  "limitations": [
+    "original_text는 어절 간 공백이 소실된 구간이 많다(원문 유지). summary_text만 정상 띄어쓰기.",
+    "image_caption은 인쇄된 실제 캡션이 아니라 본문에서 생성된 설명문이다. 표는 셀 구조 없이 설명문만 검색된다.",
+    "page가 전부 '1'(단일 슬라이드 좌표계)이라 페이지 정보가 없다. location(EMU bbox)은 싣지 않았다.",
+    "4,096자 초과 단락 546건은 임베딩 입력에서 잘릴 수 있다(재청킹하지 않음).",
+    "20자 미만 요소 1862건 제외(목차형 제목 등 — section 필드로 승계됨).",
+    "동일 텍스트 중복 청크 49그룹 존재(전부 같은 문서 내부 — 반복 단락·여러 그림에 재사용된 캡션). audit_corpus.json 참조."
+  ]
+}

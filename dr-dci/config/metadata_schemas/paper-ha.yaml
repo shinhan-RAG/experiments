@@ -1,0 +1,68 @@
+dataset: paper-ha
+domain: korean_academic_papers_humanities_arts
+description: "AI Hub 학술논문 이해 데이터 — 인문학·예술체육학(HA) 331편의 단락·표·차트·그림 캡션 청크"
+
+# scripts/build_metadata.build_json_schema 는 enum / integer / entities 세 형태만 처리한다.
+# 그 외 타입(자유 문자열 등)은 조용히 누락되므로 쓰지 않는다.
+fields:
+  discipline:
+    type: enum
+    description: "논문의 학문 분야"
+    values:
+      - philosophy        # 철학 · 유학 · 미학
+      - history           # 역사 · 미술사 · 고고
+      - literature        # 문학 · 어학 · 번역
+      - religion_culture  # 종교 · 민속 · 문화연구
+      - art_design        # 미술 · 디자인 · 공연 · 음악
+      - sports_pe         # 체육 · 스포츠과학 · 무용
+      - education         # 교육 · 교육과정 · 평가
+      - other
+
+  element_type:
+    type: enum
+    description: "청크의 표현 형태. corpus.jsonl 의 element_type 과 같은 축이며 본문을 보고 재판정한다."
+    values:
+      - heading   # 절 제목 · 저자정보 등 제목류
+      - text      # 본문 단락
+      - table     # 표 캡션(설명문)
+      - chart     # 차트/그래프 캡션(설명문)
+      - figure    # 그림/사진 캡션(설명문)
+
+  section_role:
+    type: enum
+    description: "청크가 논문 구조에서 하는 역할 (판별 불가면 other)"
+    values:
+      - abstract       # 초록 · 국문요약
+      - introduction   # 서론 · 머리말 · 연구목적
+      - background     # 이론적 배경 · 선행연구
+      - method         # 연구방법 · 대상 · 절차
+      - result         # 연구결과 · 분석
+      - discussion     # 논의 · 해석
+      - conclusion     # 결론 · 맺음말 · 제언
+      - other
+
+  pub_year:
+    type: integer
+    description: "논문 발행 연도 (판별 불가면 null)"
+    range: [1990, 2026]
+    nullable: true
+
+  entities:
+    type: list
+    description: "청크의 핵심 개체"
+    max_items: 5
+    item_schema:
+      name:
+        type: string
+        description: "개체명 (원문 표기 그대로)"
+      category:
+        type: enum
+        values:
+          - person          # 인물 (연구자 · 사상가 · 예술가)
+          - work_title      # 작품명 · 문헌명 · 경전명
+          - concept         # 핵심 개념 · 이론 · 용어
+          - period_dynasty  # 시대 · 왕조 · 연대
+          - place           # 지명 · 기관 소재지
+          - organization    # 기관 · 학회 · 단체
+          - amount          # 수치 · 통계값 · 표본크기
+          - other

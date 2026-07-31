@@ -1,0 +1,45 @@
+dataset: paper-ha
+domain: korean_academic_papers_humanities_arts
+
+# AI Hub 학술논문(HA = 인문학 + 예술체육학) Validation 331편.
+# 분류기가 본문 앞 300자만 보므로(scripts/build_taxonomy.py) 학문 분야 수준으로만 나눈다.
+L1:
+  - Philosophy         # 철학 · 유학 · 윤리
+  - History            # 역사 · 고고 · 문화사
+  - Literature         # 문학 · 어학 · 번역
+  - ReligionCulture    # 종교 · 민속 · 문화연구
+  - ArtDesign          # 미술 · 디자인 · 공연 · 음악
+  - SportsPE           # 체육 · 스포츠과학 · 무용
+  - Education          # 교육 · 교육과정 · 평가
+  - Other
+
+L2:
+  Philosophy:
+    - EasternPhilosophy   # 동양철학 · 유학 · 불교사상
+    - WesternPhilosophy   # 서양철학 · 현상학 · 윤리학
+    - Aesthetics          # 미학 · 예술철학
+  History:
+    - KoreanHistory       # 한국사 · 고대사 · 근현대사
+    - WorldHistory        # 동양사 · 서양사
+    - ArtHistory          # 미술사 · 문화재 · 고고
+  Literature:
+    - KoreanLiterature    # 국문학 · 고전문학
+    - ForeignLiterature   # 영문학 · 중문학 · 노문학 등
+    - Linguistics         # 언어학 · 국어학 · 번역학
+  ReligionCulture:
+    - Religion            # 종교학 · 신학 · 불교학
+    - FolkCulture         # 민속 · 전통문화 · 문화연구
+  ArtDesign:
+    - FineArt             # 회화 · 조각 · 설치
+    - Design              # 디자인 · 공예
+    - PerformingArt       # 공연 · 연극 · 무용 · 음악
+  SportsPE:
+    - SportsScience       # 운동생리 · 측정평가 · 트레이닝
+    - SportsSociety       # 스포츠사회학 · 정책 · 산업
+    - PhysicalEducation   # 체육교육 · 태권도 · 생활체육
+  Education:
+    - Curriculum          # 교육과정 · 교과교육
+    - Assessment          # 평가 · 학업성취도
+    - HigherEducation     # 대학교육 · 학습자연구
+  Other:
+    - General
