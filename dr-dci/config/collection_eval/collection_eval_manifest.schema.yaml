@@ -1,0 +1,156 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://shinhan-rag.local/schemas/collection-eval-manifest-v1"
+title: "Shinhan collection retrieval evaluation manifest"
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - experiment_id
+  - collections
+  - semantic_tag_generation
+  - cross_collection_duplicates
+  - evaluation
+properties:
+  schema_version:
+    const: "shinhan.collection-eval-manifest.v1"
+  experiment_id:
+    type: string
+    minLength: 1
+  collections:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [collection_id, source_revision, artifacts]
+      properties:
+        collection_id:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9._-]{1,63}$"
+        source_revision:
+          type: string
+          minLength: 1
+        artifacts:
+          type: object
+          additionalProperties: false
+          required: [documents, chunks, elements, semantic_tags, qa]
+          properties:
+            documents: {$ref: "#/$defs/artifact"}
+            chunks: {$ref: "#/$defs/artifact"}
+            elements: {$ref: "#/$defs/artifact"}
+            semantic_tags: {$ref: "#/$defs/artifact"}
+            qa: {$ref: "#/$defs/artifact"}
+  semantic_tag_generation:
+    type: object
+    additionalProperties: false
+    required: [allowed_input_fields, qa_access, qrel_access, gold_access]
+    properties:
+      allowed_input_fields:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          enum: [element_text, element_type, document_title, document_metadata]
+      qa_access: {const: false}
+      qrel_access: {const: false}
+      gold_access: {const: false}
+  cross_collection_duplicates:
+    type: object
+    additionalProperties: false
+    required: [policy]
+    properties:
+      policy:
+        const: fail_on_duplicate
+  evaluation:
+    type: object
+    additionalProperties: false
+    required:
+      - scopes
+      - retrieval_modes
+      - shared_qa_across_modes
+      - all_collections_qa
+      - candidate_budget
+      - fusion
+      - models
+      - metrics
+      - report_per_collection
+      - report_macro_average
+      - report_micro_average
+    properties:
+      scopes:
+        type: array
+        uniqueItems: true
+        minItems: 2
+        maxItems: 2
+        items: {enum: [per_collection, all_collections]}
+      retrieval_modes:
+        type: array
+        uniqueItems: true
+        minItems: 3
+        maxItems: 3
+        items: {enum: [chunk, semantic_tag, combined]}
+      shared_qa_across_modes: {const: true}
+      all_collections_qa: {const: union_of_per_collection_qa}
+      candidate_budget:
+        type: object
+        additionalProperties: false
+        required:
+          - chunk_pool
+          - semantic_tag_pool
+          - combined_chunk_pool
+          - combined_semantic_tag_pool
+          - final_top_k
+        properties:
+          chunk_pool: {type: integer, minimum: 1}
+          semantic_tag_pool: {type: integer, minimum: 1}
+          combined_chunk_pool: {type: integer, minimum: 1}
+          combined_semantic_tag_pool: {type: integer, minimum: 1}
+          final_top_k: {type: integer, minimum: 1}
+      fusion:
+        type: object
+        additionalProperties: false
+        required: [method, rrf_k]
+        properties:
+          method: {const: rrf}
+          rrf_k: {type: integer, minimum: 1}
+      models:
+        type: object
+        additionalProperties: false
+        required: [embedding, reranker]
+        properties:
+          embedding: {$ref: "#/$defs/model"}
+          reranker: {$ref: "#/$defs/model"}
+      metrics:
+        type: array
+        minItems: 5
+        uniqueItems: true
+        items: {type: string}
+      report_per_collection: {const: true}
+      report_macro_average: {const: true}
+      report_micro_average: {const: true}
+$defs:
+  artifact:
+    type: object
+    additionalProperties: false
+    required: [path, sha256, records]
+    properties:
+      path:
+        type: string
+        minLength: 1
+      sha256:
+        type: string
+        pattern: "^[0-9a-f]{64}$"
+      records:
+        type: integer
+        minimum: 1
+  model:
+    type: object
+    additionalProperties: false
+    required: [model_id, revision]
+    properties:
+      model_id:
+        type: string
+        minLength: 1
+      revision:
+        type: string
+        minLength: 1

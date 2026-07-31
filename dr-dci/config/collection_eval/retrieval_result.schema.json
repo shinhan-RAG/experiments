@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shinhan-rag.local/schemas/collection-retrieval-result-v1",
+  "title": "Per-query collection retrieval result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "qa_id",
+    "source_collection_id",
+    "scope",
+    "retrieval_mode",
+    "candidate_collection_ids",
+    "ranked_document_ids",
+    "ranked_element_ids",
+    "ranked_chunk_ids",
+    "latency_ms",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "shinhan.collection-retrieval-result.v1"
+    },
+    "experiment_id": {"type": "string", "minLength": 1},
+    "qa_id": {"type": "string", "minLength": 1},
+    "source_collection_id": {"type": "string", "minLength": 1},
+    "scope": {"enum": ["per_collection", "all_collections"]},
+    "retrieval_mode": {"enum": ["chunk", "semantic_tag", "combined"]},
+    "candidate_collection_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "ranked_document_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "ranked_element_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "ranked_chunk_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "latency_ms": {"type": "number", "minimum": 0},
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_ndcg@10",
+        "evidence_recall@20",
+        "parent_hit@10",
+        "evidence_coverage@20"
+      ],
+      "properties": {
+        "evidence_ndcg@10": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence_recall@20": {"type": "number", "minimum": 0, "maximum": 1},
+        "parent_hit@10": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence_coverage@20": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  }
+}

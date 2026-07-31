@@ -1,0 +1,71 @@
+schema_version: shinhan.collection-eval-manifest.v1
+experiment_id: replace-after-data-eda
+
+collections:
+  - collection_id: example-collection
+    source_revision: replace-with-immutable-source-revision
+    artifacts:
+      documents:
+        path: artifacts/example-collection/documents.jsonl
+        sha256: replace-with-lowercase-sha256
+        records: 1
+      chunks:
+        path: artifacts/example-collection/chunks.jsonl
+        sha256: replace-with-lowercase-sha256
+        records: 1
+      elements:
+        path: artifacts/example-collection/elements.jsonl
+        sha256: replace-with-lowercase-sha256
+        records: 1
+      semantic_tags:
+        path: artifacts/example-collection/semantic_tags.jsonl
+        sha256: replace-with-lowercase-sha256
+        records: 1
+      qa:
+        path: artifacts/example-collection/qa.jsonl
+        sha256: replace-with-lowercase-sha256
+        records: 1
+
+semantic_tag_generation:
+  allowed_input_fields:
+    - element_text
+    - element_type
+    - document_title
+    - document_metadata
+  qa_access: false
+  qrel_access: false
+  gold_access: false
+
+cross_collection_duplicates:
+  policy: fail_on_duplicate
+
+evaluation:
+  scopes: [per_collection, all_collections]
+  retrieval_modes: [chunk, semantic_tag, combined]
+  shared_qa_across_modes: true
+  all_collections_qa: union_of_per_collection_qa
+  candidate_budget:
+    chunk_pool: 100
+    semantic_tag_pool: 100
+    combined_chunk_pool: 50
+    combined_semantic_tag_pool: 50
+    final_top_k: 20
+  fusion:
+    method: rrf
+    rrf_k: 60
+  models:
+    embedding:
+      model_id: replace-with-model-id
+      revision: replace-with-immutable-revision
+    reranker:
+      model_id: replace-with-model-id
+      revision: replace-with-immutable-revision
+  metrics:
+    - evidence_ndcg@10
+    - evidence_recall@20
+    - parent_hit@10
+    - evidence_coverage@20
+    - latency_p95_ms
+  report_per_collection: true
+  report_macro_average: true
+  report_micro_average: true
