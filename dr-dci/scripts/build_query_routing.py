@@ -59,8 +59,20 @@ Respond in JSON: {{"L1": "..."}}"""
     return routing
 
 
-def diagnose(routing: dict, qrels: list, taxonomy: dict) -> dict:
-    """라우팅 정확도: routed L1 == gold 청크의 taxonomy L1 인 질의 비율."""
+def diagnose(routing: dict, qrels: list, taxonomy: dict,
+             parent_map: dict = None) -> dict:
+    """라우팅 정확도: routed L1 == gold 문서의 taxonomy L1 인 질의 비율.
+
+    aihub 계열은 qrels corpus-id가 parent 문서 ID이고 taxonomy는 청크 키라서,
+    parent→L1 집합(parent_l1)을 경유해 대조한다."""
+    parent_l1: dict[str, set] = {}
+    if parent_map:
+        for chunk_id, tax in taxonomy.items():
+            if isinstance(tax, dict) and tax.get("L1"):
+                pid = parent_map.get(chunk_id)
+                if pid:
+                    parent_l1.setdefault(pid, set()).add(tax["L1"])
+
     gold_by_q = {}
     for e in qrels:
         if e.get("score", 0) >= 1:
@@ -72,6 +84,7 @@ def diagnose(routing: dict, qrels: list, taxonomy: dict) -> dict:
             tax = taxonomy.get(gid)
             if isinstance(tax, dict) and tax.get("L1"):
                 gold_l1s.add(tax["L1"])
+            gold_l1s |= parent_l1.get(gid, set())
         if not gold_l1s:
             missing_tax += 1
             continue
@@ -96,7 +109,13 @@ def build(dataset: str, subset_size: int) -> None:
     l1_list = schema["L1"]
 
     ds_dir = dataset_dir(DATA_DIR, dataset)
-    queries = load_jsonl(ds_dir / "queries.jsonl")
+    # run_experiment.load_queries 와 동일한 우선순위: 층화 표본이 있으면 그것이 질의 집합
+    query_file = ds_dir / "agent_queries_50.jsonl"
+    if query_file.exists():
+        print(f"  질의: 층화 표본 {query_file.name}")
+    else:
+        query_file = ds_dir / "queries.jsonl"
+    queries = load_jsonl(query_file)
     qrels = load_jsonl(ds_dir / "qrels.jsonl")
 
     routing = classify_queries(queries, l1_list, schema.get("L2", {}))
@@ -106,7 +125,17 @@ def build(dataset: str, subset_size: int) -> None:
     if tax_path.exists():
         with open(tax_path, encoding="utf-8") as f:
             taxonomy = json.load(f)
-        diagnostics = diagnose(routing, qrels, taxonomy)
+        # 청크형 corpus면 chunk→parent 맵으로 parent 수준 gold와 대조
+        parent_map = {}
+        corpus_path = ds_dir / "corpus.jsonl"
+        if corpus_path.exists():
+            with open(corpus_path, encoding="utf-8") as f:
+                for line in f:
+                    doc = json.loads(line)
+                    pid = doc.get("parent_id")
+                    if pid and pid != doc["_id"]:
+                        parent_map[str(doc["_id"])] = str(pid)
+        diagnostics = diagnose(routing, qrels, taxonomy, parent_map)
     else:
         print(f"  [!] taxonomy 아티팩트 없음({tax_path}) — 라우팅 정확도 진단 생략")
 
