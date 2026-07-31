@@ -281,11 +281,14 @@ class AcceptanceGateTests(unittest.TestCase):
 
     def test_full_synthetic_run_is_acceptance_eligible(self):
         with TemporaryDirectory() as directory:
-            _, _, target, manifest = self.build_accepted(Path(directory))
+            _, contract, target, manifest = self.build_accepted(Path(directory))
             self.assertTrue(manifest["acceptance"]["eligible"], manifest["acceptance"])
             self.assertEqual(manifest["acceptance"]["reasons"], [])
+            manifest_path = target / academic.MANIFEST_FILE_NAME
             loaded = academic.require_accepted_conversion(
-                target / academic.MANIFEST_FILE_NAME
+                manifest_path,
+                acceptance_contract=contract,
+                expected_manifest_sha256=sha256_file(manifest_path),
             )
             self.assertEqual(
                 loaded["run_identity"]["identity_sha256"],
@@ -358,7 +361,8 @@ class AcceptanceGateTests(unittest.TestCase):
                 academic.ConversionError, "not acceptance-eligible"
             ):
                 academic.require_accepted_conversion(
-                    smoke_target / academic.MANIFEST_FILE_NAME
+                    smoke_target / academic.MANIFEST_FILE_NAME,
+                    acceptance_contract=contract,
                 )
 
             elements_path = target / "academic_zz" / "elements.jsonl"
@@ -369,7 +373,8 @@ class AcceptanceGateTests(unittest.TestCase):
                 academic.ConversionError, "does not match manifest hash"
             ):
                 academic.require_accepted_conversion(
-                    target / academic.MANIFEST_FILE_NAME
+                    target / academic.MANIFEST_FILE_NAME,
+                    acceptance_contract=contract,
                 )
 
     def test_acceptance_contract_loader_validates(self):
@@ -459,16 +464,34 @@ class ChunkCompatibilityTests(unittest.TestCase):
             with self.assertRaisesRegex(academic.ConversionError, "exceed the frozen"):
                 academic.validate_chunk_model_compatibility(chunks, tight)
 
+            policy_path = root / "split_policy.yaml"
+            policy_path.write_text(
+                "policy_id: fixture.split.v1\nmax_chars: 10\n", encoding="utf-8"
+            )
             approved = dict(
                 tight,
                 approved_long_element_split_policy={
                     "policy_id": "fixture.split.v1",
                     "approved_by": "owner",
+                    "path": "split_policy.yaml",
+                    "bytes": policy_path.stat().st_size,
+                    "sha256": sha256_file(policy_path),
                 },
             )
-            result = academic.validate_chunk_model_compatibility(chunks, approved)
-            self.assertEqual(result["status"], "approved_split_policy_recorded")
+            result = academic.validate_chunk_model_compatibility(
+                chunks, approved, contract_dir=root
+            )
+            self.assertEqual(result["status"], "requires_rebuild")
             self.assertEqual(result["policy_id"], "fixture.split.v1")
+
+            corrupted = json.loads(json.dumps(approved))
+            corrupted["approved_long_element_split_policy"]["sha256"] = "f" * 64
+            with self.assertRaisesRegex(
+                academic.ConversionError, "split policy sha256 mismatch"
+            ):
+                academic.validate_chunk_model_compatibility(
+                    chunks, corrupted, contract_dir=root
+                )
 
     def test_compat_contract_loader_rejects_mutable_revision(self):
         with TemporaryDirectory() as directory:

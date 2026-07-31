@@ -284,9 +284,15 @@ def load_acceptance_contract(path: Path) -> dict[str, Any]:
 # acceptance eligibility requires a clean, known runtime identity.
 
 _MODULE_BASE = Path(__file__).resolve().parents[2]
+# Every behavior-affecting local module, schema, and entry point. The
+# import-coverage test in tests/test_academic_collection_gates.py fails if a
+# src import of this module (transitively) is missing from this map.
 _CODE_IDENTITY_FILES = {
     "adapter": Path(__file__).resolve(),
     "publication": Path(__file__).resolve().parent / "collection_publication.py",
+    "collection_contract": _MODULE_BASE / "src" / "eval" / "collection_contract.py",
+    "build_cli": _MODULE_BASE / "scripts" / "build_academic_collections.py",
+    "compat_cli": _MODULE_BASE / "scripts" / "validate_chunk_model_compatibility.py",
     "alignment_schema": _MODULE_BASE
     / "config"
     / "collection_academic"
@@ -1740,33 +1746,162 @@ def evaluate_acceptance(
     }
 
 
-def require_accepted_conversion(manifest_path: Path) -> dict[str, Any]:
-    """Gate for the collection_eval stage: reject non-accepted conversions.
+def _audit_published_manifest(
+    target: Path,
+    *,
+    acceptance_contract: dict[str, Any] | None,
+    expected_identity_sha256: str | None = None,
+    chunking_config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Fully re-audit a published target; never trust persisted flags.
 
-    Re-hashes every declared artifact so a tampered or partially copied
-    directory cannot pass on the manifest flag alone.
+    Recomputes the run-identity self-hash, cross-checks manifest selection/
+    options against the identity, re-binds the provided acceptance contract,
+    re-runs ``evaluate_acceptance`` and requires it to equal the persisted
+    decision exactly, then re-hashes every declared artifact and re-runs the
+    streaming semantic verifier.
     """
-    manifest_path = Path(manifest_path)
+    target = Path(target)
+    manifest_path = target / MANIFEST_FILE_NAME
     _require(manifest_path.is_file(), f"conversion manifest missing: {manifest_path}")
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    acceptance = manifest.get("acceptance") or {}
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ConversionError(
+            f"target manifest is unreadable or corrupt: {manifest_path}: {error}"
+        ) from error
+    _require(isinstance(manifest, dict), f"manifest must be an object: {manifest_path}")
     _require(
-        acceptance.get("eligible") is True,
-        "conversion is not acceptance-eligible: "
-        f"{acceptance.get('reasons', ['no acceptance record'])}",
+        manifest.get("schema_version") == CONVERSION_MANIFEST_SCHEMA_VERSION,
+        f"manifest schema_version must be {CONVERSION_MANIFEST_SCHEMA_VERSION}",
     )
-    root = manifest_path.parent
+
+    run_identity = manifest.get("run_identity")
+    _require(isinstance(run_identity, dict), "manifest run_identity missing")
+    identity_core = {
+        key: value
+        for key, value in run_identity.items()
+        if key not in ("identity_sha256", "runtime")
+    }
+    recomputed_identity = canonical_json_sha256(identity_core)
+    _require(
+        recomputed_identity == run_identity.get("identity_sha256"),
+        "run identity self-hash mismatch: "
+        f"recorded={run_identity.get('identity_sha256')} "
+        f"recomputed={recomputed_identity}",
+    )
+    if expected_identity_sha256 is not None and (
+        run_identity["identity_sha256"] != expected_identity_sha256
+    ):
+        raise ConversionError(
+            "target holds a different input identity: "
+            f"recorded={run_identity['identity_sha256']} "
+            f"requested={expected_identity_sha256}; "
+            f"refusing to merge or overwrite {target}"
+        )
+    _require(
+        manifest.get("selection") == run_identity.get("selection"),
+        "manifest selection does not match run identity",
+    )
+    _require(
+        manifest.get("options") == run_identity.get("options"),
+        "manifest options do not match run identity",
+    )
+    if acceptance_contract is not None:
+        _require(
+            canonical_json_sha256(acceptance_contract)
+            == run_identity.get("acceptance_contract_sha256"),
+            "acceptance contract does not match the contract bound at publication",
+        )
+    recomputed_acceptance = evaluate_acceptance(manifest, acceptance_contract)
+    _require(
+        recomputed_acceptance == manifest.get("acceptance"),
+        "persisted acceptance decision does not match recomputation: "
+        f"persisted={manifest.get('acceptance')} recomputed={recomputed_acceptance}",
+    )
+
+    policy = manifest.get("chunking_policy") or {}
+    if chunking_config is not None:
+        _require(
+            policy.get("separator") == chunking_config["separator"]
+            and policy.get("max_chars") == chunking_config["max_chars"]
+            and policy.get("element_atomic") == chunking_config["element_atomic"],
+            "manifest chunking policy does not match the provided config",
+        )
+    separator = policy.get("separator")
+    element_atomic = policy.get("element_atomic")
+    _require(
+        isinstance(separator, str) and separator != "",
+        "manifest chunking separator missing",
+    )
+    _require(isinstance(element_atomic, bool), "manifest element_atomic missing")
+
     for collection_id in sorted(manifest.get("collections", {})):
-        artifacts = manifest["collections"][collection_id]["artifacts"]
-        for name in sorted(artifacts):
-            entry = artifacts[name]
-            path = root / entry["path"]
+        collection = manifest["collections"][collection_id]
+        for name in sorted(collection["artifacts"]):
+            entry = collection["artifacts"][name]
+            path = target / entry["path"]
             _require(path.is_file(), f"declared artifact missing: {path}")
             _require(
                 path.stat().st_size == entry["bytes"]
                 and sha256_file(path) == entry["sha256"],
                 f"declared artifact does not match manifest hash: {path}",
             )
+        summary = verify_collection_outputs(
+            target,
+            collection_id,
+            separator=separator,
+            element_atomic=element_atomic,
+        )
+        _require(
+            summary["documents"] == collection["artifacts"]["documents"]["records"]
+            and summary["elements"] == collection["artifacts"]["elements"]["records"]
+            and summary["chunks"] == collection["artifacts"]["chunks"]["records"]
+            and summary["alignment_records"]
+            == collection["artifacts"]["alignment"]["records"],
+            f"published record counts do not match manifest for {collection_id}",
+        )
+    return manifest
+
+
+def require_accepted_conversion(
+    manifest_path: Path,
+    *,
+    acceptance_contract: dict[str, Any],
+    expected_manifest_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Gate for the collection_eval stage: reject non-accepted conversions.
+
+    Never trusts the persisted flag: the reviewed acceptance contract is a
+    required input, the run identity self-hash and manifest consistency are
+    recomputed, every declared artifact is re-hashed, the semantic verifier
+    is re-run, and ``evaluate_acceptance`` is recomputed and must equal the
+    persisted decision exactly. Callers should additionally pin
+    ``expected_manifest_sha256`` so a consistently regenerated forgery is
+    also rejected.
+    """
+    _require(
+        isinstance(acceptance_contract, dict) and bool(acceptance_contract),
+        "a reviewed acceptance contract is required",
+    )
+    manifest_path = Path(manifest_path)
+    _require(manifest_path.is_file(), f"conversion manifest missing: {manifest_path}")
+    if expected_manifest_sha256 is not None:
+        actual = sha256_file(manifest_path)
+        _require(
+            actual == expected_manifest_sha256,
+            "conversion manifest does not match the pinned SHA-256: "
+            f"expected={expected_manifest_sha256} actual={actual}",
+        )
+    manifest = _audit_published_manifest(
+        manifest_path.parent, acceptance_contract=acceptance_contract
+    )
+    acceptance = manifest.get("acceptance") or {}
+    _require(
+        acceptance.get("eligible") is True,
+        "conversion is not acceptance-eligible: "
+        f"{acceptance.get('reasons', ['no acceptance record'])}",
+    )
     return manifest
 
 
@@ -1778,48 +1913,22 @@ def _reuse_verified_target(
     target: Path,
     identity: dict[str, Any],
     chunking_config: dict[str, Any],
+    acceptance_contract: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """Independently re-verify a complete target with the same input identity."""
-    manifest_path = target / MANIFEST_FILE_NAME
-    try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
-        raise ConversionError(
-            f"target manifest is unreadable or corrupt: {manifest_path}: {error}"
-        ) from error
-    recorded = (manifest.get("run_identity") or {}).get("identity_sha256")
-    if recorded != identity["identity_sha256"]:
-        raise ConversionError(
-            "target holds a different input identity: "
-            f"recorded={recorded} requested={identity['identity_sha256']}; "
-            f"refusing to merge or overwrite {target}"
-        )
-    for collection_id in sorted(manifest.get("collections", {})):
-        collection = manifest["collections"][collection_id]
-        for name in sorted(collection["artifacts"]):
-            entry = collection["artifacts"][name]
-            path = target / entry["path"]
-            _require(path.is_file(), f"published artifact missing: {path}")
-            _require(
-                path.stat().st_size == entry["bytes"]
-                and sha256_file(path) == entry["sha256"],
-                f"published artifact does not match manifest: {path}",
-            )
-        summary = verify_collection_outputs(
-            target,
-            collection_id,
-            separator=chunking_config["separator"],
-            element_atomic=chunking_config["element_atomic"],
-        )
-        _require(
-            summary["documents"] == collection["artifacts"]["documents"]["records"]
-            and summary["elements"] == collection["artifacts"]["elements"]["records"]
-            and summary["chunks"] == collection["artifacts"]["chunks"]["records"]
-            and summary["alignment_records"]
-            == collection["artifacts"]["alignment"]["records"],
-            f"published record counts do not match manifest for {collection_id}",
-        )
-    return manifest
+    """Re-audit a complete same-identity target with the full gate rigor.
+
+    Applies the same checks as ``require_accepted_conversion`` (identity
+    self-hash, selection/options consistency, contract re-binding,
+    acceptance recomputation vs the persisted decision, artifact re-hash,
+    semantic re-verification) plus the requested-identity equality; only the
+    eligibility requirement is omitted because smoke targets may be reused.
+    """
+    return _audit_published_manifest(
+        target,
+        acceptance_contract=acceptance_contract,
+        expected_identity_sha256=identity["identity_sha256"],
+        chunking_config=chunking_config,
+    )
 
 
 def _peak_rss_bytes() -> int:
@@ -1888,7 +1997,9 @@ def convert_collections(
                 f"refusing to merge, overwrite, or repair: {target}"
             )
         if state == "complete":
-            manifest = _reuse_verified_target(target, identity, chunking_config)
+            manifest = _reuse_verified_target(
+                target, identity, chunking_config, acceptance_contract
+            )
             manifest["publication_status"] = "reused"
             return manifest
         if state == "empty":
@@ -1994,17 +2105,58 @@ def load_compat_contract(path: Path) -> dict[str, Any]:
         _require(isinstance(policy, dict), "approved split policy must be a mapping")
         _nonempty_str(policy.get("policy_id"), "approved split policy policy_id")
         _nonempty_str(policy.get("approved_by"), "approved split policy approved_by")
+        _nonempty_str(policy.get("path"), "approved split policy path")
+        _require(
+            isinstance(policy.get("bytes"), int) and policy["bytes"] > 0,
+            "approved split policy bytes must be a positive integer",
+        )
+        digest = policy.get("sha256")
+        _require(
+            isinstance(digest, str) and bool(SHA256_RE.fullmatch(digest)),
+            "approved split policy sha256 must be lowercase SHA-256",
+        )
     return contract
 
 
+def _verify_split_policy_file(
+    policy: dict[str, Any], contract_dir: Path | None
+) -> Path:
+    policy_path = Path(policy["path"])
+    if not policy_path.is_absolute():
+        _require(
+            contract_dir is not None,
+            "relative split policy path requires the contract directory",
+        )
+        policy_path = Path(contract_dir) / policy_path
+    _require(policy_path.is_file(), f"approved split policy file missing: {policy_path}")
+    actual_bytes = policy_path.stat().st_size
+    _require(
+        actual_bytes == policy["bytes"],
+        f"split policy bytes mismatch: {policy_path} "
+        f"expected={policy['bytes']} actual={actual_bytes}",
+    )
+    actual_sha = sha256_file(policy_path)
+    _require(
+        actual_sha == policy["sha256"],
+        f"split policy sha256 mismatch: {policy_path} "
+        f"expected={policy['sha256']} actual={actual_sha}",
+    )
+    return policy_path
+
+
 def validate_chunk_model_compatibility(
-    chunks_path: Path, contract: dict[str, Any]
+    chunks_path: Path,
+    contract: dict[str, Any],
+    *,
+    contract_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Prove every chunk fits the frozen model input contract, or fail loud.
 
-    A separately approved deterministic long-element split policy may be
-    recorded instead; that outcome is reported explicitly and never silently
-    treated as compatibility.
+    ``compatible`` requires zero violations. An owner-approved deterministic
+    long-element split policy (whose file bytes/SHA-256 are verified) does
+    NOT make an oversized corpus usable: the result is ``requires_rebuild``
+    — the split corpus must be generated, its alignment updated, and this
+    validation re-run before any retrieval use.
     """
     budget = contract["max_input_chars"]
     total = 0
@@ -2029,9 +2181,16 @@ def validate_chunk_model_compatibility(
         return result
     policy = contract.get("approved_long_element_split_policy")
     if policy:
-        result["status"] = "approved_split_policy_recorded"
+        _verify_split_policy_file(policy, contract_dir)
+        result["status"] = "requires_rebuild"
         result["policy_id"] = policy["policy_id"]
         result["approved_by"] = policy["approved_by"]
+        result["policy_sha256"] = policy["sha256"]
+        result["note"] = (
+            "approved split policy recorded; corpus is NOT usable until the "
+            "split corpus is rebuilt, alignment is regenerated, and this "
+            "validation passes with zero violations"
+        )
         return result
     raise ConversionError(
         f"{violations} of {total} chunks exceed the frozen model input budget "
@@ -2039,3 +2198,235 @@ def validate_chunk_model_compatibility(
         "contract or record a separately approved deterministic long-element "
         "split policy"
     )
+
+
+# ---------------------------------------------------------------------------
+# Retrieval approval attestation (frozen tokenizer; never a model/API call)
+# ---------------------------------------------------------------------------
+
+RETRIEVAL_APPROVAL_SCHEMA_VERSION = "academic.retrieval-approval-attestation.v1"
+
+
+def _token_count(tokenizer: Callable[[str], Any], text: str) -> int:
+    """Count tokens with a locally loaded frozen tokenizer callable."""
+    value = tokenizer(text)
+    if isinstance(value, int):
+        count = value
+    else:
+        try:
+            count = len(value)
+        except TypeError as error:
+            raise ConversionError(
+                "tokenizer must return an int or a sized token sequence"
+            ) from error
+    _require(count >= 0, "tokenizer returned a negative count")
+    return count
+
+
+def _render_input_template(template: str, text: str) -> str:
+    _require(
+        isinstance(template, str) and "{text}" in template,
+        "input_template must contain the literal {text} placeholder",
+    )
+    return template.replace("{text}", text)
+
+
+def _scan_chunk_tokens(
+    target: Path,
+    manifest: dict[str, Any],
+    *,
+    tokenizer: Callable[[str], Any],
+    input_template: str,
+    token_budget: int,
+) -> dict[str, Any]:
+    total = 0
+    violations = 0
+    max_tokens = 0
+    for collection_id in sorted(manifest["collections"]):
+        entry = manifest["collections"][collection_id]["artifacts"]["chunks"]
+        for record in _iter_jsonl(target / entry["path"]):
+            rendered = _render_input_template(input_template, str(record.get("text", "")))
+            count = _token_count(tokenizer, rendered)
+            total += 1
+            max_tokens = max(max_tokens, count)
+            if count > token_budget:
+                violations += 1
+    return {
+        "chunks_total": total,
+        "max_tokens_observed": max_tokens,
+        "token_violations": violations,
+    }
+
+
+def build_retrieval_approval_attestation(
+    *,
+    target_dir: Path,
+    acceptance_contract: dict[str, Any],
+    model_id: str,
+    revision: str,
+    token_budget: int,
+    input_template: str,
+    tokenizer: Callable[[str], Any],
+    approved_by: str,
+) -> dict[str, Any]:
+    """Build the attestation binding corpus, contract, tokenizer, and result.
+
+    The corpus must first pass ``require_accepted_conversion``. Token counts
+    come from the caller-supplied frozen tokenizer callable (loaded locally
+    from the immutable revision); no model or API is called. The result is
+    ``approved`` only when every rendered chunk fits the token budget.
+    """
+    target = Path(target_dir)
+    _nonempty_str(model_id, "model_id")
+    revision = _nonempty_str(revision, "revision")
+    _require(
+        revision.lower() not in {"main", "master", "latest", "unknown"},
+        "revision must be immutable",
+    )
+    _require(
+        isinstance(token_budget, int) and token_budget > 0,
+        "token_budget must be a positive integer",
+    )
+    _nonempty_str(approved_by, "approved_by")
+    manifest = require_accepted_conversion(
+        target / MANIFEST_FILE_NAME, acceptance_contract=acceptance_contract
+    )
+    scan = _scan_chunk_tokens(
+        target,
+        manifest,
+        tokenizer=tokenizer,
+        input_template=input_template,
+        token_budget=token_budget,
+    )
+    chunks_entries = {
+        collection_id: dict(manifest["collections"][collection_id]["artifacts"]["chunks"])
+        for collection_id in sorted(manifest["collections"])
+    }
+    attestation = {
+        "schema_version": RETRIEVAL_APPROVAL_SCHEMA_VERSION,
+        "approved_by": approved_by,
+        "conversion_manifest_sha256": sha256_file(target / MANIFEST_FILE_NAME),
+        "run_identity_sha256": manifest["run_identity"]["identity_sha256"],
+        "acceptance_contract_sha256": canonical_json_sha256(acceptance_contract),
+        "chunks": chunks_entries,
+        "model_id": model_id,
+        "revision": revision,
+        "token_budget": token_budget,
+        "input_template": input_template,
+        "input_template_sha256": sha256_text(input_template),
+        "code_identity": code_identity_hashes(),
+        **scan,
+        "result": "approved" if scan["token_violations"] == 0 else "rejected",
+    }
+    return attestation
+
+
+def require_retrieval_approved(
+    attestation: dict[str, Any] | Path,
+    *,
+    target_dir: Path,
+    acceptance_contract: dict[str, Any],
+    tokenizer: Callable[[str], Any],
+) -> dict[str, Any]:
+    """Fail-loud gate before any retrieval use of the chunk corpus.
+
+    Re-verifies the whole attestation binding: manifest SHA-256, run
+    identity, acceptance contract hash, chunk artifact hashes, code identity,
+    and — with the caller-loaded frozen tokenizer — the actual token counts
+    of every rendered chunk. Approval flags are never trusted on their own.
+    """
+    if isinstance(attestation, (str, Path)):
+        attestation = json.loads(Path(attestation).read_text(encoding="utf-8"))
+    _require(isinstance(attestation, dict), "attestation must be an object")
+    _require(
+        attestation.get("schema_version") == RETRIEVAL_APPROVAL_SCHEMA_VERSION,
+        f"attestation schema_version must be {RETRIEVAL_APPROVAL_SCHEMA_VERSION}",
+    )
+    _require(
+        attestation.get("result") == "approved"
+        and attestation.get("token_violations") == 0,
+        "attestation does not record an approved zero-violation result",
+    )
+    revision = _nonempty_str(attestation.get("revision"), "attestation revision")
+    _require(
+        revision.lower() not in {"main", "master", "latest", "unknown"},
+        "attestation revision must be immutable",
+    )
+    token_budget = attestation.get("token_budget")
+    _require(
+        isinstance(token_budget, int) and token_budget > 0,
+        "attestation token_budget must be a positive integer",
+    )
+    input_template = attestation.get("input_template")
+    _require(
+        isinstance(input_template, str) and "{text}" in input_template,
+        "attestation input_template must contain {text}",
+    )
+    _require(
+        attestation.get("input_template_sha256") == sha256_text(input_template),
+        "attestation input_template hash mismatch",
+    )
+    _require(
+        attestation.get("code_identity") == code_identity_hashes(),
+        "attestation code identity does not match the current validator code",
+    )
+
+    target = Path(target_dir)
+    manifest_path = target / MANIFEST_FILE_NAME
+    _require(
+        sha256_file(manifest_path) == attestation.get("conversion_manifest_sha256"),
+        "conversion manifest does not match the attested SHA-256",
+    )
+    manifest = require_accepted_conversion(
+        manifest_path,
+        acceptance_contract=acceptance_contract,
+        expected_manifest_sha256=attestation["conversion_manifest_sha256"],
+    )
+    _require(
+        manifest["run_identity"]["identity_sha256"]
+        == attestation.get("run_identity_sha256"),
+        "attested run identity does not match the manifest",
+    )
+    _require(
+        canonical_json_sha256(acceptance_contract)
+        == attestation.get("acceptance_contract_sha256"),
+        "acceptance contract does not match the attested hash",
+    )
+    attested_chunks = attestation.get("chunks")
+    _require(isinstance(attested_chunks, dict), "attestation chunks missing")
+    _require(
+        sorted(attested_chunks) == sorted(manifest["collections"]),
+        "attested chunk collections do not match the manifest",
+    )
+    for collection_id in sorted(attested_chunks):
+        manifest_entry = manifest["collections"][collection_id]["artifacts"]["chunks"]
+        _require(
+            attested_chunks[collection_id] == manifest_entry,
+            f"attested chunks entry does not match the manifest: {collection_id}",
+        )
+        path = target / manifest_entry["path"]
+        _require(
+            sha256_file(path) == manifest_entry["sha256"],
+            f"chunk artifact does not match the attested hash: {path}",
+        )
+
+    scan = _scan_chunk_tokens(
+        target,
+        manifest,
+        tokenizer=tokenizer,
+        input_template=input_template,
+        token_budget=token_budget,
+    )
+    _require(
+        scan["token_violations"] == 0,
+        f"{scan['token_violations']} chunks exceed the attested token budget "
+        f"({token_budget}) under the frozen tokenizer",
+    )
+    _require(
+        scan["chunks_total"] == attestation.get("chunks_total")
+        and scan["max_tokens_observed"] == attestation.get("max_tokens_observed"),
+        "recomputed token scan does not match the attestation: "
+        f"recomputed={scan} attested_total={attestation.get('chunks_total')} "
+        f"attested_max={attestation.get('max_tokens_observed')}",
+    )
+    return attestation

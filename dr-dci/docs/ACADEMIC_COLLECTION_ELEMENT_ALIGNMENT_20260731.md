@@ -117,9 +117,25 @@ per-cell and total denominators in a reviewed contract. Every manifest embeds
 hash-skipped, or dirty-worktree runs are always `eligible=false`. A full
 accepted conversion additionally requires all 12 archives SHA-256-verified,
 source member hashing on, all collection verifications `ok`, exact
-denominator matches, and a clean, known git commit. The `collection_eval`
-stage must call `require_accepted_conversion(<manifest path>)`, which also
-re-hashes every declared artifact, before any QA/tag/model work.
+denominator matches, and a clean, known git commit.
+
+The `collection_eval` stage must call
+`require_accepted_conversion(<manifest path>, acceptance_contract=<reviewed
+contract>, expected_manifest_sha256=<pinned>)` before any QA/tag/model work.
+The gate never trusts persisted flags: it recomputes the run-identity
+self-hash, requires manifest `selection`/`options` to equal the identity,
+re-binds the caller's reviewed contract against the hash recorded at
+publication, re-hashes every declared artifact, re-runs the streaming
+semantic verifier, recomputes `evaluate_acceptance`, and requires the
+persisted decision to equal the recomputation exactly. A flipped
+`eligible` flag, deleted `reasons`, or tampered selection/totals/runtime/
+options therefore fails; callers should also pin the manifest SHA-256 so a
+consistently regenerated forgery is rejected too. The same audit runs on
+the publication reuse path before any published target is returned as
+`reused`. The code identity covers every behavior-affecting local module —
+adapter, publication, `src/eval/collection_contract.py`, both CLIs, and the
+alignment schema — and an import-coverage test fails if a `src` import of
+the adapter is missing from that list.
 
 ## Complexity and resource profile
 
@@ -158,12 +174,33 @@ comparison. Therefore:
   budget are frozen;
 - `scripts/validate_chunk_model_compatibility.py` (contract template:
   `config/collection_academic/chunk_model_compat.template.yaml`) later
-  proves every chunk fits the frozen input contract, or records a
-  separately owner-approved deterministic long-element split policy — it
-  never calls a model;
+  proves every chunk fits the frozen input contract — it never calls a
+  model. Recording an owner-approved deterministic long-element split
+  policy (whose file bytes/SHA-256 are pinned and verified) does NOT make
+  an oversized corpus usable: the status becomes `requires_rebuild` and the
+  CLI exits non-zero (4) until the split corpus is rebuilt, alignment is
+  regenerated, and the validation passes with zero violations;
 - exact one-to-one element-chunk mapping does NOT prove retrieval
   compatibility, and moving from atomic oversized chunks to a multi-chunk
   element mapping requires owner approval before QA or retrieval execution.
+
+## Retrieval approval attestation
+
+Retrieval use additionally requires an explicit attestation
+(`academic.retrieval-approval-attestation.v1`) built by
+`build_retrieval_approval_attestation` on an acceptance-gated corpus. It
+binds: the conversion manifest SHA-256 and run identity, every collection's
+chunks artifact path/records/SHA-256, the model/tokenizer ID with an
+immutable revision, the input template (and its SHA-256), the token budget,
+the validator code-identity hashes, and the measured result
+(`chunks_total`, `max_tokens_observed`, `token_violations`,
+`approved`/`rejected`). Token counts come from a caller-loaded FROZEN
+tokenizer callable — local tokenization only, never a model or API call.
+`require_retrieval_approved` is the fail-loud gate: it re-verifies every
+hash binding, re-runs `require_accepted_conversion` with the pinned
+manifest SHA-256, re-tokenizes every rendered chunk with the frozen
+tokenizer, and requires zero violations plus exact agreement with the
+attested scan. Approval flags are never trusted on their own.
 
 ## Normalized-text search offsets
 
