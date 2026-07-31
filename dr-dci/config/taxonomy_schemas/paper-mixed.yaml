@@ -1,0 +1,28 @@
+dataset: paper-mixed
+domain: korean_academic_papers_all
+
+# 라벨 doc_category에서 결정론 생성 — build_paper_mixed.py가 자동 작성
+L1:
+  - 공학    # 31960청크
+  - 농수해양학    # 40청크
+  - 복합학    # 6852청크
+  - 사회과학    # 65724청크
+  - 예술체육학    # 11134청크
+  - 의약학    # 50청크
+  - 인문학    # 26993청크
+
+L2:
+  공학:
+    - General
+  농수해양학:
+    - General
+  복합학:
+    - General
+  사회과학:
+    - General
+  예술체육학:
+    - General
+  의약학:
+    - General
+  인문학:
+    - General

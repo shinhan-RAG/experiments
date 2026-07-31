@@ -3,8 +3,12 @@
 # 배경: 법률·신한·paper-ha 3개 도메인에서 taxonomy 증강(프롬프트 주입)은 전부 음(−)이었다.
 # 그러나 그 실험들은 taxonomy가 pull 경로에 없는 설계였고, baseline recall이 천장이라
 # 개선 여지도 없었다. 이 실험은 두 조건을 뒤집는다:
-#   ① 환경: aihub-full 20k/50k/110k — dense recall이 0.28~0.48까지 무너지는 headroom 구간
+#   ① 환경: paper-mixed 20k/50k/110k — paper-ha gold(4,253청크·질의 50) 위에 학술논문
+#      Training HA/SS/ST 8,000편(총 142k청크)을 distractor로 적층한 규모 환경
+#      (KT의 aihub 법률 데이터 삭제로 대체. scripts/build_paper_mixed.py)
 #   ② 처치: taxonomy를 pull 순위에 직접 개입 (라우팅/부스트)
+#      taxonomy는 라벨 doc_category 유래 결정론(ground-truth, 7개 분야) —
+#      "분류가 틀려서"라는 교란이 없고 질의 라우팅 정확도만 변수로 남는다.
 #
 # backends (단일 변수 = pull_backend, 증강은 전부 off):
 #   dense            — 대조군 (기준축)
@@ -13,7 +17,8 @@
 #   taxonomy_boosted — 소프트 부스트: 전역 dense + 같은 카테고리 +0.15 가산
 #
 # 실행 절차 (KT Cloud):
-#   python scripts/build_query_routing.py aihub-full --size=20000        # Qwen :8100 필요
+#   cd data/raw/paper-mixed && cat corpus.jsonl.part* > corpus.jsonl && cd -   # 분할본 결합
+#   python scripts/build_query_routing.py paper-mixed --size=20000       # Qwen :8100 필요
 #   python run_experiment.py --part 5 --probe-only --config config/experiment_taxroute.yaml
 #   # 규모 축: --subset 50000 / --subset 110000 오버라이드 (routing도 크기별 재생성)
 #
@@ -64,7 +69,7 @@ hybrid:
 
 parts:
   part5_pull_backend:
-    dataset: "aihub-full"
+    dataset: "paper-mixed"
     subset: 20000          # --subset 50000/110000 으로 오버라이드
     backends: ["dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted"]
     # 단일 변수 원칙: 증강 전부 off. taxonomy 아티팩트는 tax backend가

@@ -69,8 +69,13 @@ def build_doc(path: Path, stats: dict) -> list[dict]:
             stats["unknown_image_category"] += 1
             et = "figure"
         name = (img.get("image_name") or f"이미지 {img.get('image_id')}").strip()
+        # 드물게 한 문서 안에서 image_id가 중복되는 라벨 오류가 있다(예: SS_0132_0067410)
+        # → 충돌 시 등장 순서 접미사로 유일성 보장 (Validation HA에는 중복 없음)
+        img_id = f"{doc}_img_{img.get('image_id')}"
+        if any(c["_id"] == img_id for c in chunks):
+            img_id = f"{img_id}_dup{sum(1 for c in chunks if c['_id'].startswith(img_id))}"
         chunks.append({
-            "_id": f"{doc}_img_{img.get('image_id')}",
+            "_id": img_id,
             "title": f"{doc_title[:80]} — {name}",
             "text": caption,
             "doc": doc,

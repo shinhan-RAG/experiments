@@ -1,0 +1,24 @@
+{
+  "dataset": "paper-mixed",
+  "purpose": "taxonomy 라우팅 pull backend 실험 (Part 5 taxroute) — distractor 규모 환경",
+  "gold_layer": "paper-ha(Validation HA 331편, 4,253청크) — qrels/질의 50건 재사용",
+  "distractors": "Training TL_HA/TL_SS/TL_ST 8,000편, seed 42 문서 셔플 적층",
+  "tiers": {
+    "20k": 20032,
+    "50k": 50018,
+    "110k": 110006
+  },
+  "total_chunks": 142753,
+  "taxonomy": "라벨 doc_category 유래 결정론 (ground-truth). L1 분포: {\"인문학\": 26993, \"예술체육학\": 11134, \"사회과학\": 65724, \"공학\": 31960, \"복합학\": 6852, \"의약학\": 50, \"농수해양학\": 40}",
+  "corpus_parts": [
+    "corpus.jsonl.part00",
+    "corpus.jsonl.part01",
+    "corpus.jsonl.part02",
+    "corpus.jsonl.part03",
+    "corpus.jsonl.part04"
+  ],
+  "limitations": [
+    "질의 50건이 전부 gold 층(인문·예체능)에서 나옴 — 라우팅은 사실상 해당 분야로 수렴",
+    "paper-ha와 동일한 추출 규칙 한계(공백 소실·생성 캡션·4096자 초과) 상속"
+  ]
+}
