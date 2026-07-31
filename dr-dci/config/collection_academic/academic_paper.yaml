@@ -1,0 +1,99 @@
+# Academic-paper collection source configuration (element_alignment stage).
+#
+# The data root is intentionally NOT recorded here: it must be passed to the
+# conversion CLI as --data-root. Archive paths are data-root relative and are
+# pinned to the byte sizes and SHA-256 digests recorded by the accepted EDA
+# inventory; any change fails the conversion loudly.
+#
+# HA/SS/ST are collections. Training/Validation are splits of each collection,
+# never collections themselves.
+
+schema_version: academic.collection-source-config.v1
+dataset_name: aihub-academic-paper-understanding
+
+namespace_policy:
+  document: "{collection_id}::{json_stem}"
+  element: "{collection_id}::{json_stem}::{paragraph_id}"
+  chunk: "{collection_id}::{json_stem}::chunk::{chunk_index:04d}"
+  image_reserved: "{collection_id}::{json_stem}::image::{image_id}"
+
+content_field: "training_data_info.section_info[].original_text"
+forbidden_content_fields:
+  - summary_text
+  - summary_cnt
+  - original_cnt
+  - procede
+  - image_caption
+  - image_category
+  - location
+  - page
+
+eda:
+  handoff_manifest_sha256: "0c6f98096efc3ec3dcc4e36de069dc30f930d0b171cf85ad5cf346e5483f5438"
+  canonical_source_inventory_sha256: "26b50d73bfebcc394d53644250efd294c5b2d58d76c209cdc41ce6637b04ed50"
+  decision: alignment_layer
+
+collections:
+  academic_ha:
+    domain: HA
+    splits:
+      Training:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_인문학,예술체육학(HA).zip"
+          bytes: 1215480303
+          sha256: "e5a8084c2df6c6078ec87ffab23ea350e38aafc2328cc8f9486798b07dca2146"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Training/01.원천데이터/TS_인문학,예술체육학(HA).zip"
+          bytes: 6683824198
+          sha256: "e33917b505a10d6bde2c1213c844a66e610a7e7ee9b220314564e5a3f1e534b4"
+      Validation:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_인문학,예술체육학(HA).zip"
+          bytes: 162711957
+          sha256: "1f339fb831ce15c3b8f175bdaa56e0f4447f567580c630f3b5ab978a743049bc"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_인문학,예술체육학(HA).zip"
+          bytes: 785483435
+          sha256: "7fd64f43f8ea3a4cf6b5821812e8cb236a064435b4aac09e75ade67ce2f19980"
+  academic_ss:
+    domain: SS
+    splits:
+      Training:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_사회과학(SS).zip"
+          bytes: 1975456376
+          sha256: "6a1ca409515a0fd674d817ca04067afe332a0842dd5f61f643a1aae052d37cb4"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Training/01.원천데이터/TS_사회과학(SS).zip"
+          bytes: 5321812679
+          sha256: "8c326f361ea82c15e612e1eefd44d512969bccb5374d6d00e11ea13f8002a71b"
+      Validation:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_사회과학(SS).zip"
+          bytes: 208480873
+          sha256: "637f0d0f77d5f0d558ba33d6090a1bf91742226ba958b8e93727deab196e9f89"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_사회과학(SS).zip"
+          bytes: 641606149
+          sha256: "9d13f0132a1060dc89923610c1fee25accb6db0f53d67e860e41ffa438114485"
+  academic_st:
+    domain: ST
+    splits:
+      Training:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Training/02.라벨링데이터/TL_과학기술(ST).zip"
+          bytes: 1937194164
+          sha256: "06fe7390977fe4074a286d9230eaeff81261babcc31832f105d8eae19b13e0b6"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Training/01.원천데이터/TS_과학기술(ST).zip"
+          bytes: 5158527687
+          sha256: "f86aa0e5d5fc7801cdf6c8758aec6325bc62a9413d61ca064a5be02476376a31"
+      Validation:
+        label_archive:
+          path: "3.개방데이터/1.데이터/Validation/02.라벨링데이터/VL_과학기술(ST).zip"
+          bytes: 257765135
+          sha256: "e23fe6e2d64991590b9962ee7fda049c08175feba9704ab4177e63a1f81e0118"
+        source_archive:
+          path: "3.개방데이터/1.데이터/Validation/01.원천데이터/VS_과학기술(ST).zip"
+          bytes: 676331043
+          sha256: "854e1495b8c8229002db41d7e3b260a93dae550e5735b996a44cb70192d6a230"

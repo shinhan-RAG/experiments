@@ -1,0 +1,13 @@
+# Frozen deterministic chunking policy for academic collections.
+#
+# Fixed a priori for the element_alignment stage; it is never tuned against
+# retrieval results. Elements are atomic: consecutive whole section elements
+# are packed until adding the next element would exceed max_chars, and an
+# element longer than max_chars becomes a single oversized chunk instead of
+# being split. Every retained element therefore maps to exactly one chunk.
+
+schema_version: academic.chunking-policy-config.v1
+policy_id: academic.element-packed-chunk.v1
+separator: "\n\n"
+max_chars: 2000
+element_atomic: true
