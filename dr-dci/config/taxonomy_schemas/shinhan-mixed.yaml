@@ -1,0 +1,46 @@
+dataset: shinhan-mixed
+domain: korean_insurance_with_legal_distractors
+
+# 결정론 생성 — build_shinhan_mixed_taxroute.py 가 자동 작성.
+# 신한 gold 는 title 접두어 유래, Legal 은 distractor 전용 카테고리.
+L1:
+  - ClaimsReview    # 16청크
+  - CustomerService    # 343청크
+  - Legal    # 107198청크
+  - Product    # 425청크
+  - SalesEducation    # 140청크
+  - Terms    # 1878청크
+
+L2:
+  ClaimsReview:
+    - ReviewGuideline
+    - PaymentCriteria
+    - Dispute_Precedent
+    - Reimbursement
+  CustomerService:
+    - ClaimIntake
+    - Script
+    - ContractChange
+    - WritingGuide
+  Legal:
+    - CourtRuling
+    - Statute
+    - LegalQA (distractor-only: court rulings, not insurer documents)
+  Product:
+    - ProductSpec
+    - Pricing_Actuarial
+    - SalesRule
+    - ProductStrategy
+    - Approval
+  SalesEducation:
+    - TrainingMaterial
+    - Brochure
+    - SalesNews
+    - NeedsAnalysis
+  Terms:
+    - Coverage
+    - Exclusion
+    - PolicyChange
+    - Premium
+    - Surrender
+    - Definition

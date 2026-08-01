@@ -1,0 +1,141 @@
+{
+  "dataset": "shinhan-mixed",
+  "purpose": "Part 2(규모 확장) 전용. 신한 코퍼스 2,802청크로는 최소 조건 20K 를 못 채우므로 같은 보험 도메인의 법률 문서를 distractor 로 섞는다.",
+  "generated_by": "scripts/build_shinhan_mixed.py",
+  "seed": 42,
+  "gold_axis": {
+    "source": "data/raw/shinhan",
+    "chunks": 2802,
+    "queries": 50,
+    "gold_chunks": 50,
+    "evaluation_unit": "chunk (parent_id 없음)"
+  },
+  "distractor": {
+    "role": "노이즈 전용 — 질의·gold 에 절대 포함되지 않는다",
+    "id_prefix": "<source>::<original_id>",
+    "tiers": {
+      "t1_insurance_strict": [
+        "보험",
+        "약관",
+        "피보험자",
+        "보험금",
+        "보험료",
+        "보험계약",
+        "수익자",
+        "보험업법"
+      ],
+      "t2_finance_broad": [
+        "금융",
+        "계약",
+        "손해배상",
+        "채무",
+        "신탁",
+        "투자",
+        "은행",
+        "금리",
+        "상속",
+        "증여",
+        "과세",
+        "세금"
+      ]
+    },
+    "pool_chunks": {
+      "t1": 53178,
+      "t2": 122563
+    },
+    "per_source": {
+      "aihub-full": {
+        "parents_total": 170000,
+        "t1_parents": 18228,
+        "t1_chunks": 38357,
+        "t2_parents": 52234,
+        "t2_chunks": 92721
+      },
+      "ruling-anon": {
+        "parents_total": 18882,
+        "t1_parents": 3566,
+        "t1_chunks": 13326,
+        "t2_parents": 8728,
+        "t2_chunks": 26406
+      },
+      "longdoc": {
+        "parents_total": 2079,
+        "t1_parents": 390,
+        "t1_chunks": 1495,
+        "t2_parents": 1317,
+        "t2_chunks": 3436
+      }
+    }
+  },
+  "subsets": {
+    "20k": {
+      "subset_size": 20000,
+      "actual_size": 19999,
+      "gold_doc_count": 50,
+      "noise_doc_count": 19949,
+      "shinhan_chunks": 2802,
+      "distractor_chunks": 17197,
+      "distractor_parents": {
+        "t1": 7103,
+        "t2": 0
+      },
+      "note": "신한 전체 코퍼스 + 법률 보험 distractor. 질의·gold 는 신한 50건 고정이며 법률 청크는 노이즈 전용이다. 20k ⊂ 50k ⊂ 110k 중첩."
+    },
+    "50k": {
+      "subset_size": 50000,
+      "actual_size": 50000,
+      "gold_doc_count": 50,
+      "noise_doc_count": 49950,
+      "shinhan_chunks": 2802,
+      "distractor_chunks": 47198,
+      "distractor_parents": {
+        "t1": 19640,
+        "t2": 0
+      },
+      "note": "신한 전체 코퍼스 + 법률 보험 distractor. 질의·gold 는 신한 50건 고정이며 법률 청크는 노이즈 전용이다. 20k ⊂ 50k ⊂ 110k 중첩."
+    },
+    "110k": {
+      "subset_size": 110000,
+      "actual_size": 110000,
+      "gold_doc_count": 50,
+      "noise_doc_count": 109950,
+      "shinhan_chunks": 2802,
+      "distractor_chunks": 107198,
+      "distractor_parents": {
+        "t1": 22184,
+        "t2": 27573
+      },
+      "note": "신한 전체 코퍼스 + 법률 보험 distractor. 질의·gold 는 신한 50건 고정이며 법률 청크는 노이즈 전용이다. 20k ⊂ 50k ⊂ 110k 중첩."
+    }
+  },
+  "limitations": [
+    "도메인 불일치로 규모 곡선이 인위적으로 평평해질 수 있다. 법률 판례 문체는 신한 실무문서(약관·표·수식)와 확연히 달라 dense 검색이 쉽게 걸러낼 수 있다. 20k 에서 hybrid recall 이 순정 3k 대비 거의 안 떨어지면 '규모에 강건하다'가 아니라 'distractor 가 너무 쉬웠다'로 먼저 의심할 것.",
+    "키워드 필터의 정밀도는 표본 검토뿐이다(재현율 미측정). 2026-07-30 T1 표본 50건 검토 결과: 36건이 '보험' 직접 매칭, 9건은 '약관' 단독 매칭으로 보험 무관 계약약관 판례일 수 있고, 나머지는 '수익자'(신탁 문맥 가능) 등이다. 즉 명확한 보험 문서 비중은 약 80%이고 나머지도 계약법 인접 도메인이다. distractor 용도로는 충분하나 '보험 전용 코퍼스'라고 서술하지 말 것. 더 원리적인 대안은 신한 코퍼스 centroid 와의 임베딩 유사도 상위 추출이며, 법률 299k 임베딩이 이미 있으면 재사용 가능하다(v2). audit_tier_sample.json 참조.",
+    "신한 원본 한계가 그대로 이어진다 — 중복 청크 610건(21.8%), 색인 시 4096자 절단 326건(11.6%), 단일 문서가 신한 부분의 49.8%(1,394청크) 차지, gold 가 gpt-4o-mini 단일 생성이며 사람 검수 없음.",
+    "법률 Part 2 결과와 절대 점수를 비교하지 말 것. 법률은 parent 단위, 이쪽은 청크 단위 평가다.",
+    "질의 50 · 질의당 gold 1 이라 점수가 2%p 단위로 움직인다. '효과 없음'과 '표본 부족으로 판정 불가'를 구분해 서술할 것."
+  ],
+  "taxroute": {
+    "generated_by": "scripts/build_shinhan_mixed_taxroute.py",
+    "taxonomy": "결정론 ground-truth — 신한 title 접두어 L1 + 법률 distractor Legal",
+    "l1_distribution": {
+      "SalesEducation": 140,
+      "CustomerService": 343,
+      "ClaimsReview": 16,
+      "Product": 425,
+      "Terms": 1878,
+      "Legal": 107198
+    },
+    "corpus_parts": [
+      "corpus.jsonl.part00",
+      "corpus.jsonl.part01",
+      "corpus.jsonl.part02",
+      "corpus.jsonl.part03",
+      "corpus.jsonl.part04",
+      "corpus.jsonl.part05",
+      "corpus.jsonl.part06",
+      "corpus.jsonl.part07"
+    ],
+    "routing_note": "라우팅이 사실상 보험(5분류) vs Legal 이진에 가깝다 — routing_accuracy 높게 나올 것. '라우팅이 정확할 때의 상한 효과'로 해석."
+  }
+}

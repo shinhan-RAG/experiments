@@ -1,0 +1,506 @@
+{
+  "note": "T1(보험 엄격)으로 분류된 parent 50건 표본. 키워드 필터의 정밀도를 사람이 눈으로 확인하고 결과를 이 파일에 기록할 것.",
+  "reviewed": "2026-07-30 기계 검토",
+  "review_finding": "50건 중 '보험' 직접 매칭 36건, '약관' 단독 9건(보험 무관 계약약관 판례일 수 있음), 나머지 '수익자' 등. 명확한 보험 문서 비중 약 80%. distractor 용도로는 충분하지만 '보험 전용 코퍼스'로 서술하지 말 것. 사람 재확인 권장.",
+  "samples": [
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2013두13631",
+      "title": "대법원 2013. 11. 14. 선고 2013두13631 판결",
+      "chunks": 2,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB016771",
+      "title": "LTB016771",
+      "chunks": 1,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "보험료",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB022422",
+      "title": "LTB022422",
+      "chunks": 1,
+      "matched": [
+        "수익자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LJU005320",
+      "title": "LJU005320",
+      "chunks": 5,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:94다55118",
+      "title": "대법원 1995. 6. 30. 선고 94다55118 판결",
+      "chunks": 2,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:99나457",
+      "title": "서울지방법원 1999. 9. 2. 선고 99나457 판결 : 확정",
+      "chunks": 2,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB043828",
+      "title": "LTB043828",
+      "chunks": 1,
+      "matched": [
+        "보험",
+        "보험금",
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "decision:2003-07007",
+      "title": "국민권익위원회 2003-07007, 2003. 11. 24.",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:98가합70264",
+      "title": "서울지방법원 1999. 6. 10. 선고 98가합70264 판결：항소",
+      "chunks": 3,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "보험료",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2012다107600",
+      "title": "대법원 2014. 12. 24. 선고 2012다107600 판결",
+      "chunks": 2,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2008_금융조세_하급심_2008구합37473",
+      "title": "증여세부과처분취소 2009-01-16 2008구합37473",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "보험료"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "decision:중앙행심2012-10708",
+      "title": "국민권익위원회 중앙행심2012-10708, 2013. 1. 29.",
+      "chunks": 4,
+      "matched": [
+        "보험",
+        "보험료"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2007나120328",
+      "title": "서울고등법원 2008. 8. 21. 선고 2007나120328 판결 : 상고",
+      "chunks": 6,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2005_민사_대법원_2005다14595",
+      "title": "배당이의 2005-08-25 2005다14595",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "수익자"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2004_민사_하급심_2004나12880",
+      "title": "구상금 2005-05-27 2004나12880",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2009_가사_대법원_2009므2321",
+      "title": "친생자 관계 존부 확인 2011-09-08 2009므2321",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:95다19195",
+      "title": "대법원 1995. 12. 12. 선고 95다19195 판결",
+      "chunks": 3,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "decision:2004-15759",
+      "title": "국민권익위원회 2004-15759, 2005. 1. 7.",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험료"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2015가단129059",
+      "title": "대구지방법원 2016. 4. 21. 선고 2015가단129059 판결 : 확정",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB064077",
+      "title": "LTB064077",
+      "chunks": 1,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2014다229917",
+      "title": "대법원 2015. 3. 26. 선고 2014다229917 판결",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험금",
+        "보험료",
+        "약관",
+        "피보험자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2015다19117",
+      "title": "대법원 2016. 9. 30. 선고 2015다19117 판결",
+      "chunks": 4,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB027327",
+      "title": "LTB027327",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2007다37837",
+      "title": "대법원 2008. 6. 12. 선고 2007다37837 판결",
+      "chunks": 1,
+      "matched": [
+        "수익자"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2009_민사_하급심_2009나30370",
+      "title": "소유권이전등록절차인수등 2010-09-01 2009나30370",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험료"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2018가합106952",
+      "title": "서울남부지방법원 2019. 4. 19. 선고 2018가합106952 판결 : 확정",
+      "chunks": 4,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LJU001633",
+      "title": "LJU001633",
+      "chunks": 5,
+      "matched": [
+        "수익자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB011327",
+      "title": "LTB011327",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2008_민사_하급심_2008나110373",
+      "title": "구상금및사해행위취소 2010-01-15 2008나110373",
+      "chunks": 5,
+      "matched": [
+        "보험",
+        "보험료",
+        "수익자"
+      ]
+    },
+    {
+      "source": "ruling-anon",
+      "parent_id": "ruling:2019_일반행정_대법원_2016두42289",
+      "title": "구직급여과오급금반환처분취소 2019-07-25 2016두42289",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB028207",
+      "title": "LTB028207",
+      "chunks": 1,
+      "matched": [
+        "수익자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB020287",
+      "title": "LTB020287",
+      "chunks": 2,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB016401",
+      "title": "LTB016401",
+      "chunks": 1,
+      "matched": [
+        "보험",
+        "보험금"
+      ]
+    },
+    {
+      "source": "longdoc",
+      "parent_id": "synthcase:민사_1704:1081",
+      "title": "손해배상 (대법원 1985-04-23 84다카1484)",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2014도7217",
+      "title": "대법원 2014. 9. 25. 선고 2014도7217 판결",
+      "chunks": 3,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2006다62942",
+      "title": "대법원 2007. 8. 23. 선고 2006다62942 판결",
+      "chunks": 3,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB058897",
+      "title": "LTB058897",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB064146",
+      "title": "LTB064146",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "보험계약",
+        "보험료",
+        "보험업법",
+        "수익자",
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB040571",
+      "title": "LTB040571",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2007다21245",
+      "title": "대법원 2010. 7. 15. 선고 2007다21245 판결",
+      "chunks": 2,
+      "matched": [
+        "수익자"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB019228",
+      "title": "LTB019228",
+      "chunks": 1,
+      "matched": [
+        "보험",
+        "보험료"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB010411",
+      "title": "LTB010411",
+      "chunks": 1,
+      "matched": [
+        "보험",
+        "보험계약",
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB037823",
+      "title": "LTB037823",
+      "chunks": 1,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB037599",
+      "title": "LTB037599",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB024574",
+      "title": "LTB024574",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "precedent:2018다226015",
+      "title": "대법원 2019. 6. 27. 선고 2018다226015 판결",
+      "chunks": 4,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB008187",
+      "title": "LTB008187",
+      "chunks": 2,
+      "matched": [
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "decision:2014-02013",
+      "title": "국민권익위원회 2014-02013, 2014. 2. 18.",
+      "chunks": 1,
+      "matched": [
+        "보험"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LTB013290",
+      "title": "LTB013290",
+      "chunks": 2,
+      "matched": [
+        "보험",
+        "약관"
+      ]
+    },
+    {
+      "source": "aihub-full",
+      "parent_id": "book:LJU006515",
+      "title": "LJU006515",
+      "chunks": 7,
+      "matched": [
+        "약관"
+      ]
+    }
+  ]
+}
