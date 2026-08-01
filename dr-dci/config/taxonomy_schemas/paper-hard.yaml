@@ -1,0 +1,13 @@
+dataset: paper-hard
+domain: korean_academic_papers_same_field
+
+# build_paper_hard.py 자동 작성 — gold와 같은 분야만 남긴 변형
+L1:
+  - 예술체육학    # 11134청크
+  - 인문학    # 26993청크
+
+L2:
+  예술체육학:
+    - General
+  인문학:
+    - General

@@ -27,33 +27,55 @@ OUTPUT_DIR = DATA_DIR / "routing"
 
 
 def classify_queries(queries: list, l1_list: list[str], l2_map: dict) -> dict:
+    """질의별 top-2 L1 + confidence 분류.
+
+    paper-mixed 실험(8/2)에서 라우팅 오류 26~28%가 routed recall 손실 전액이었다.
+    주 오류원이 인접 카테고리 혼동(인문학↔예술체육학)이므로 2순위 후보와
+    확신도를 함께 저장해, 소비측이 top-2 필터·신뢰도 폴백을 선택할 수 있게 한다.
+    """
     system = f"""You are a search query router for a document retrieval system.
-Classify each Korean query into exactly one L1 category.
+Classify each Korean query into L1 categories.
 
 L1 categories: {', '.join(l1_list)}
 Category hints (L2 topics per L1): {json.dumps(l2_map, ensure_ascii=False)}
 
-Respond in JSON: {{"L1": "..."}}"""
+Respond in JSON:
+{{"L1": "<most likely category>",
+ "L1_second": "<second most likely category (repeat L1 if none plausible)>",
+ "confidence": <0.0-1.0 probability that L1 is correct>}}"""
     guided = {"type": "object",
-              "properties": {"L1": {"type": "string", "enum": l1_list}},
-              "required": ["L1"]}
+              "properties": {
+                  "L1": {"type": "string", "enum": l1_list},
+                  "L1_second": {"type": "string", "enum": l1_list},
+                  "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              },
+              "required": ["L1", "L1_second", "confidence"]}
     prompts = [{"id": str(q["_id"]), "text": f"Query: {q.get('title') or q['text']}"}
                for q in queries]
-    raw = run_batch_llm(prompts, system, max_tokens=50, guided_json=guided)
+    raw = run_batch_llm(prompts, system, max_tokens=80, guided_json=guided)
 
     routing = {}
     fallback = 0
     for q, r in zip(queries, raw):
-        l1 = None
+        l1, l1_second, conf = None, None, None
         if r:
             try:
-                l1 = json.loads(parse_llm_content(r)).get("L1")
+                parsed = json.loads(parse_llm_content(r))
+                l1 = parsed.get("L1")
+                l1_second = parsed.get("L1_second")
+                conf = parsed.get("confidence")
             except (json.JSONDecodeError, TypeError, AttributeError):
                 pass
         if l1 not in l1_list:
             l1 = "Other" if "Other" in l1_list else l1_list[0]
             fallback += 1
-        routing[str(q["_id"])] = {"L1": l1}
+        if l1_second not in l1_list:
+            l1_second = l1
+        if not isinstance(conf, (int, float)) or not 0 <= conf <= 1:
+            conf = 1.0  # confidence 미출력 시 폴백이 발동하지 않도록 보수적으로
+        top2 = [l1] if l1_second == l1 else [l1, l1_second]
+        routing[str(q["_id"])] = {"L1": l1, "L1_top2": top2,
+                                  "confidence": round(float(conf), 3)}
     if fallback:
         print(f"  [!] 분류 실패 폴백 {fallback}건")
     return routing
@@ -77,7 +99,7 @@ def diagnose(routing: dict, qrels: list, taxonomy: dict,
     for e in qrels:
         if e.get("score", 0) >= 1:
             gold_by_q.setdefault(str(e["query-id"]), set()).add(str(e["corpus-id"]))
-    n_eval, n_correct, missing_tax = 0, 0, 0
+    n_eval, n_correct, n_correct_top2, missing_tax = 0, 0, 0, 0
     for qid, route in routing.items():
         gold_l1s = set()
         for gid in gold_by_q.get(qid, ()):
@@ -91,11 +113,18 @@ def diagnose(routing: dict, qrels: list, taxonomy: dict,
         n_eval += 1
         if route["L1"] in gold_l1s:
             n_correct += 1
+        top2 = route.get("L1_top2") or [route["L1"]]
+        if any(l1 in gold_l1s for l1 in top2):
+            n_correct_top2 += 1
     return {
         "routing_accuracy": round(n_correct / n_eval, 4) if n_eval else None,
+        "routing_accuracy_top2": round(n_correct_top2 / n_eval, 4) if n_eval else None,
         "evaluated_queries": n_eval,
         "queries_without_gold_taxonomy": missing_tax,
         "routed_distribution": dict(Counter(r["L1"] for r in routing.values())),
+        "confidence_mean": round(
+            sum(r.get("confidence", 1.0) for r in routing.values()) / len(routing), 3
+        ) if routing else None,
     }
 
 
@@ -153,7 +182,9 @@ def build(dataset: str, subset_size: int) -> None:
     print(f"  queries: {len(routing)} -> {out_path}")
     if diagnostics:
         print(f"  routing_accuracy: {diagnostics['routing_accuracy']} "
-              f"(n={diagnostics['evaluated_queries']})")
+              f"(top2: {diagnostics['routing_accuracy_top2']}, "
+              f"conf_mean: {diagnostics['confidence_mean']}, "
+              f"n={diagnostics['evaluated_queries']})")
         print(f"  routed 분포: {diagnostics['routed_distribution']}")
         acc = diagnostics["routing_accuracy"]
         if acc is not None and acc < 0.8:

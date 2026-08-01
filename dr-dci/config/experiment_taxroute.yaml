@@ -70,8 +70,14 @@ hybrid:
 parts:
   part5_pull_backend:
     dataset: "paper-mixed"
+    # --- 라우팅 병목 완화 옵션 (8/2 추가, 라우팅 맵에 L1_top2/confidence 필요 —
+    #     build_query_routing.py 재실행으로 생성. 구버전 맵에서는 자동 무시) ---
+    routing_use_top2: true        # top-2 L1 OR 매치 — 인접 카테고리 혼동 흡수
+    routing_min_confidence: 0.6   # 확신도 미만 질의는 필터 없이 dense 폴백. 0.0=off
     subset: 20000          # --subset 50000/110000 으로 오버라이드
-    backends: ["dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted"]
+    backends: ["dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted", "taxonomy_partitioned"]
+    # taxonomy_partitioned: 매치 파티션 임베딩만 슬라이스해 cosine (속도 축).
+    # 오라우팅 시 gold 소실 가능 → top2·min_confidence와 함께 쓰는 전제.
     # 단일 변수 원칙: 증강 전부 off. taxonomy 아티팩트는 tax backend가
     # 인덱스 구성에 필요해 러너가 내부적으로만 로드한다(프롬프트 미주입).
     fixed_augmentations:

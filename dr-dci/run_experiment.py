@@ -1082,13 +1082,21 @@ def run_part4(config: dict):
     save_results("part4_generalization", all_results)
 
 
-TAXONOMY_BACKENDS = {"taxonomy_routed", "taxonomy_boosted"}
+TAXONOMY_BACKENDS = {"taxonomy_routed", "taxonomy_boosted", "taxonomy_partitioned"}
 
 
-def load_query_routing(dataset: str, subset_size: int | None) -> dict:
+def load_query_routing(dataset: str, subset_size: int | None,
+                       use_top2: bool = False,
+                       min_confidence: float = 0.0) -> dict:
     """질의→카테고리 라우팅 맵 로드 (scripts/build_query_routing.py 산출물).
 
-    반환: {qid: {"L1": ...}} — retriever.pull(taxonomy_filter=...)에 그대로 쓴다."""
+    반환: {qid: {"L1": ...}} — retriever.pull(taxonomy_filter=...)에 그대로 쓴다.
+
+    라우팅 정확도 병목 완화 옵션(8/2, paper-mixed 결과의 근본 원인 대응):
+    - use_top2: L1 값으로 top-2 리스트를 쓴다(OR 매치) — 인접 카테고리 혼동 흡수.
+    - min_confidence: 라우터 확신도가 이 값 미만인 질의는 맵에서 제외한다 →
+      해당 질의는 taxonomy_filter=None으로 순수 dense 폴백(오라우팅 손실을 no-op으로).
+    구버전 라우팅 파일(top2/confidence 없음)에서는 두 옵션 모두 자동 무시된다."""
     size_key = f"{(subset_size or 0) // 1000}k" if subset_size else "full"
     path = DATA_DIR / "routing" / f"{dataset}_{size_key}.json"
     if not path.exists():
@@ -1098,7 +1106,20 @@ def load_query_routing(dataset: str, subset_size: int | None) -> dict:
         )
     with open(path, encoding="utf-8") as f:
         raw = json.load(f)
-    return {str(qid): {"L1": entry["L1"]} for qid, entry in raw["routing"].items()}
+    routing = {}
+    skipped = 0
+    for qid, entry in raw["routing"].items():
+        if min_confidence and entry.get("confidence", 1.0) < min_confidence:
+            skipped += 1
+            continue
+        l1 = entry["L1"]
+        if use_top2 and entry.get("L1_top2"):
+            top2 = entry["L1_top2"]
+            l1 = top2 if len(top2) > 1 else top2[0]
+        routing[str(qid)] = {"L1": l1}
+    if skipped:
+        print(f"    routing: 확신도 {min_confidence} 미만 {skipped}건 → dense 폴백")
+    return routing
 
 
 def run_part5(config: dict, probe_only: bool = False):
@@ -1127,8 +1148,14 @@ def run_part5(config: dict, probe_only: bool = False):
     probes = {}
     routing = None
     if any(b in TAXONOMY_BACKENDS for b in part_cfg["backends"]):
-        routing = load_query_routing(dataset, subset_size)
-        print(f"  query routing: {len(routing)}건 로드")
+        routing = load_query_routing(
+            dataset, subset_size,
+            use_top2=part_cfg.get("routing_use_top2", False),
+            min_confidence=part_cfg.get("routing_min_confidence", 0.0),
+        )
+        print(f"  query routing: {len(routing)}건 로드 "
+              f"(top2={part_cfg.get('routing_use_top2', False)}, "
+              f"min_conf={part_cfg.get('routing_min_confidence', 0.0)})")
 
     for backend in part_cfg["backends"]:
         step_config = {**fixed, "pull_backend": backend}
@@ -1211,6 +1238,12 @@ def run_part5(config: dict, probe_only: bool = False):
         "denominator = queries with positive gold only"
     )
     manifest["probe_only"] = probe_only
+    if routing is not None:
+        manifest["routing_options"] = {
+            "use_top2": part_cfg.get("routing_use_top2", False),
+            "min_confidence": part_cfg.get("routing_min_confidence", 0.0),
+            "routed_queries": len(routing),
+        }
     manifest["embedding_endpoint"] = {
         "url": config["models"]["embedding"]["url"],
         "model": config["models"]["embedding"]["name"],

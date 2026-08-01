@@ -1,0 +1,23 @@
+{
+  "dataset": "paper-hard",
+  "purpose": "규모 열화 전제 검증 — gold와 같은 분야 distractor로 dense가 실제로 무너지는 조건을 만든다 (paper-mixed 근본 원인 2 대응)",
+  "source": "data/raw/paper-mixed/corpus.jsonl 필터 (재청킹 없음)",
+  "gold_layer": 4253,
+  "categories": {
+    "인문학": 26993,
+    "예술체육학": 11134
+  },
+  "tiers": {
+    "10k": 9989,
+    "20k": 19994,
+    "38k": 37985
+  },
+  "corpus_parts": [
+    "corpus.jsonl.part00",
+    "corpus.jsonl.part01"
+  ],
+  "limitations": [
+    "라우팅은 이 환경에서 후보를 거의 못 줄인다(전 문서가 같은 분야) — 라우팅 이득 측정용이 아니라 dense 열화 곡선 측정용",
+    "paper-mixed의 추출 규칙 한계 상속"
+  ]
+}

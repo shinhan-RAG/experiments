@@ -13,6 +13,13 @@ Backend 4종:
 - taxonomy_routed: 하드 라우팅. filter에 맞는 카테고리 문서를 (raw cosine 순으로) 먼저,
                    나머지 문서를 그 뒤에 backfill — 오라우팅 시에도 gold가 사라지지 않고
                    순위만 밀린다. filter가 없거나 카테고리에 문서가 없으면 dense로 폴백.
+- taxonomy_partitioned: 파티션 검색(속도 축). filter 매치 문서의 임베딩 행렬만 슬라이스해
+                   cosine을 계산 — 후보 축소가 실제 계산 절감으로 이어진다. 매치 문서가
+                   top_k 미만이면 dense 전역으로 폴백. 오라우팅 시 gold가 결과에서 빠지므로
+                   top-2 라우팅·신뢰도 폴백(load_query_routing)과 함께 쓰는 것을 전제로 한다.
+
+taxonomy_filter 값은 단일 값 또는 값 리스트(top-2 라우팅)를 허용한다:
+  {"L1": "인문학"} 또는 {"L1": ["인문학", "예술체육학"]} — 리스트는 OR 매치.
 
 가이드 반영 사항:
 - P0-2: pull(query, top_k, exclude_ids) — workspace 기존 문서 제외 + 다음 rank 후보 backfill,
@@ -84,7 +91,10 @@ class PullRetriever:
             h.update(text.encode("utf-8", errors="ignore"))
         return h.hexdigest()[:16]
 
-    SUPPORTED_BACKENDS = {"dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted"}
+    SUPPORTED_BACKENDS = {"dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted",
+                          "taxonomy_partitioned"}
+    # 하드 재정렬 계열 — soft bonus를 섞지 않는다
+    HARD_ROUTING_BACKENDS = {"taxonomy_routed", "taxonomy_partitioned"}
 
     def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
         """문서를 인덱싱. 디스크 캐시 활용."""
@@ -170,9 +180,15 @@ class PullRetriever:
 
     def _matches_filter(self, doc_id: str, taxonomy_filter: dict) -> bool:
         tax = self.doc_taxonomy.get(doc_id, {})
-        return isinstance(tax, dict) and all(
-            tax.get(k) == v for k, v in taxonomy_filter.items()
-        )
+        if not isinstance(tax, dict):
+            return False
+        for k, v in taxonomy_filter.items():
+            if isinstance(v, (list, tuple, set)):
+                if tax.get(k) not in v:      # top-2 라우팅: 값 리스트는 OR 매치
+                    return False
+            elif tax.get(k) != v:
+                return False
+        return True
 
     def _order_indices(self, sims: np.ndarray, taxonomy_filter: dict = None) -> np.ndarray:
         """dense 계열 backend의 최종 정렬 인덱스.
@@ -181,7 +197,9 @@ class PullRetriever:
         뒤에 backfill. filter 없음/카테고리 무문서면 순수 dense 폴백(오라우팅 안전장치).
         """
         order = np.argsort(-sims, kind="stable")
-        if (self.config.backend != "taxonomy_routed" or not taxonomy_filter
+        # partitioned도 rank_all(전량 순위 평가) 경로에서는 routed와 같은 하드 재정렬로
+        # 취급한다 — 슬라이스 계산은 pull()의 latency 경로에만 있다.
+        if (self.config.backend not in self.HARD_ROUTING_BACKENDS or not taxonomy_filter
                 or not self.doc_taxonomy):
             return order
         match = np.array(
@@ -194,24 +212,55 @@ class PullRetriever:
         out_cat = order[~match[order]]
         return np.concatenate([in_cat, out_cat])
 
-    def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
-        """질의와 문서 행렬의 cosine score를 계산한다."""
+    def _query_embedding(self, query: str) -> np.ndarray:
         query_text = query
         if self.config.query_instruction:
             query_text = f"{self.config.query_instruction}{query}"
-        query_emb = self._embed_batch([query_text])[0]
+        return self._embed_batch([query_text])[0]
+
+    def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
+        """질의와 문서 행렬의 cosine score를 계산한다."""
+        query_emb = self._query_embedding(query)
 
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
         sims = self.embedding_matrix @ query_emb / (norms * query_norm + 1e-8)
 
-        # taxonomy_routed는 raw cosine 위에서 하드 재정렬하므로 bonus를 섞지 않는다
+        # 하드 라우팅 계열은 raw cosine 위에서 재정렬하므로 bonus를 섞지 않는다
         if (taxonomy_filter and self.doc_taxonomy
-                and self.config.backend != "taxonomy_routed"):
+                and self.config.backend not in self.HARD_ROUTING_BACKENDS):
             for i, did in enumerate(self.doc_ids):
                 if self._matches_filter(did, taxonomy_filter):
                     sims[i] += self.config.taxonomy_bonus
         return sims
+
+    def _partitioned_ranked(self, query: str, taxonomy_filter: dict, min_size: int):
+        """taxonomy_partitioned의 latency 경로: 매치 파티션만 cosine 계산.
+
+        반환: ranked iterable 또는 None(폴백 필요 — filter 없음/매치 부족).
+        rank는 파티션 내부 순위다(전역 순위 아님을 결과 해석 시 유의).
+        """
+        if not taxonomy_filter or not self.doc_taxonomy:
+            return None
+        match_idx = np.array(
+            [i for i, did in enumerate(self.doc_ids)
+             if self._matches_filter(did, taxonomy_filter)],
+            dtype=int,
+        )
+        # 파티션이 요청 top_k도 못 채우면 dense 전역 폴백 (오라우팅 안전장치의 최소선)
+        if len(match_idx) < min_size:
+            return None
+        sub = self.embedding_matrix[match_idx]
+        query_emb = self._query_embedding(query)
+        norms = np.linalg.norm(sub, axis=1)
+        query_norm = np.linalg.norm(query_emb)
+        sims = sub @ query_emb / (norms * query_norm + 1e-8)
+        order = np.argsort(-sims, kind="stable")
+        return (
+            {"doc_id": self.doc_ids[match_idx[i]], "score": float(sims[i]),
+             "rank": rank}
+            for rank, i in enumerate(order, 1)
+        )
 
     def pull(self, query: str, taxonomy_filter: dict = None,
              top_k: int = None, exclude_ids: set = None) -> dict:
@@ -237,7 +286,16 @@ class PullRetriever:
 
         # reranker가 있으면 여유 있게 후보를 모은 뒤 rerank
         gather_k = k * 4 if self.config.reranker_url else k
-        if self.config.backend != "hybrid_rrf":
+        if self.config.backend == "taxonomy_partitioned":
+            ranked = self._partitioned_ranked(query, taxonomy_filter, gather_k)
+            if ranked is None:  # filter 없음/파티션 부족 → dense 전역 폴백
+                sims = self._dense_scores(query, taxonomy_filter=None)
+                order = self._order_indices(sims)
+                ranked = (
+                    {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
+                    for rank, i in enumerate(order, 1)
+                )
+        elif self.config.backend != "hybrid_rrf":
             sims = self._dense_scores(query, taxonomy_filter)
             order = self._order_indices(sims, taxonomy_filter)
             ranked = (
