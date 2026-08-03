@@ -6,36 +6,28 @@ overclaimed as done in the PR.
 
 ## C3 — hash-pinned dependency lock (`pip --require-hashes`)
 
-Status: **owner action pending.** In-PR we pinned GitHub Actions to full
-commit SHAs, pinned Python to a patch version, added `dr-dci/constraints.txt`
-(exact `==` pins for the direct dependencies), a lock-drift check
-(`scripts/check_supply_chain.py`) run in CI, and a workflow-integrity test
-(`tests/test_ci_supply_chain.py`). A full hash-pinned lock of the transitive
-closure was NOT fabricated here because valid artifact hashes are
-platform-specific and cannot be produced from a developer machine offline
-without overclaiming.
-
-Owner steps (run on the CI platform, linux / CPython 3.12.8):
+Status: **done (owner-actions execution, 2026-08-03).**
+`dr-dci/requirements.lock` was generated on the CI resolution target
+(linux/x86_64, CPython 3.12.8; pip 24.3.1, pip-tools 7.4.1) with:
 
 ```bash
-pip install pip-tools
-pip-compile --generate-hashes --output-file dr-dci/requirements.lock \
-  dr-dci/requirements.txt -c dr-dci/constraints.txt
+pip-compile --generate-hashes --allow-unsafe --strip-extras \
+  --output-file requirements.lock requirements.txt -c constraints.txt
 ```
 
-Then switch the workflow install step to:
-
-```yaml
-run: python -m pip install --require-hashes -r requirements.lock
-```
-
-and update `tests/test_ci_supply_chain.py` to require `--require-hashes`.
-Commit `requirements.lock` on a reviewed PR.
+The workflow installs ONLY via
+`python -m pip install --require-hashes -r requirements.lock`, and
+`scripts/check_supply_chain.py --constraints constraints.txt --lock
+requirements.lock --expect-python 3.12.8` plus
+`tests/test_ci_supply_chain.py` fail loud on missing hashes, lock/constraint
+drift, relaxed installs, unpinned actions, or a Python-version mismatch.
+Regenerate the lock only with the command recorded in its header, on the same
+platform, in a reviewed PR; never hand-edit resolved versions or hashes.
 
 ## C4 — branch protection for `feature_ralph`
 
-Status: **owner action pending.** This implementation stage must NOT change
-GitHub settings. The required final protection on `feature_ralph` is:
+Status: **applied (owner-actions execution, 2026-08-03); keep verifying.**
+The required protection on `feature_ralph` is:
 
 - `required_status_checks`: `synthetic-tests` (strict)
 - `required_pull_request_reviews.required_approving_review_count`: 1
