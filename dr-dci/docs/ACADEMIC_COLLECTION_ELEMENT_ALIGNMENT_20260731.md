@@ -1,7 +1,29 @@
 # Academic Collection Element Alignment Stage
 
-Date: 2026-07-31
+Date: 2026-07-31 (retrieval-approval trust boundary updated 2026-08-03)
 Stage: `element_alignment` (accepted EDA decision: `alignment_layer`)
+
+## Retrieval-approval trust boundary (2026-08-03, review C1/C2/C3)
+
+The retrieval gate no longer has any mutable-global or caller-provided
+tokenizer-loader seam. `tokenizer_runtime.load_frozen_tokenizer` builds the
+counter only from the verified snapshot (a `reference_whitespace_v1` snapshot
+or a `huggingface` `AutoTokenizer` with `local_files_only=True`,
+`trust_remote_code=False`, declared class enforced) and runs a bound
+self-test (probe text -> expected `input_ids`) so a substitute counter fails
+loud. Retrieval approval is a signed, fully-bound record
+(`academic.retrieval-approval-attestation.v4`): the approval subject commits
+to the conversion manifest SHA, run identity, acceptance-contract SHA,
+model id + immutable revision, tokenizer-contract SHA, token budget,
+input-template SHA, policy id/version, and approval-request id, and is
+Ed25519-signed by an authority allowlisted in an owner-managed trust root
+that lives outside the repo and is pinned by SHA-256 at the gate (verified
+via the `cryptography` library — no hand-rolled crypto). With no trust root
+the gate fails closed and the corpus stays `retrieval_unapproved`. CI is
+supply-chain hardened (SHA-pinned actions, patch-pinned Python, constrained
+installs, drift + workflow-integrity checks); the full hash-pinned lock and
+branch-protection hardening are owner actions in
+`config/collection_academic/OWNER_ACTIONS.md`.
 
 ## Scope
 

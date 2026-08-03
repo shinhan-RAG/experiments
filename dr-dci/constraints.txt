@@ -1,0 +1,21 @@
+# Version constraints for reproducible CI installs (fifth-review C3).
+#
+# These exact pins tighten the security- and test-critical dependencies this
+# PR's contract/gate code relies on directly. `constraints.txt` only narrows
+# versions; it never adds packages, so `pip install -c constraints.txt -r
+# requirements.txt` stays resolvable while pinning these exactly.
+#
+# The heavy ML dependencies (datasets/numpy/aiohttp/huggingface-hub/requests/
+# python-dotenv) remain governed by requirements.txt floors here. A full
+# hash-pinned lock of the entire transitive closure (pip-compile
+# --generate-hashes on the CI platform, then `pip install --require-hashes`)
+# is an OWNER ACTION recorded in config/collection_academic/OWNER_ACTIONS.md,
+# because valid platform-specific artifact hashes cannot be produced from a
+# developer machine offline without overclaiming.
+#
+# retrieval-approval signature verification requires `cryptography`; without
+# it the retrieval gate fails closed (retrieval stays unapproved).
+
+cryptography==45.0.5
+pyyaml==6.0.2
+pytest==8.3.4

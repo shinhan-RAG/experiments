@@ -1,9 +1,16 @@
-# Synthetic contract/gate tests for the collection experiments (PR #13 P7).
+# Synthetic contract/gate tests for the collection experiments (PR #13 P7/C3).
 #
 # Runs the full dr-dci synthetic test suite — no private data, no model or
-# API calls. The repository owner should mark this check as required for
-# merges into feature_ralph/dev in the branch-protection settings; private
-# full-run evidence remains an out-of-band reviewed artifact.
+# API calls. Supply-chain reproducibility (fifth-review C3):
+#   - Actions are pinned to full commit SHAs (not moving tags).
+#   - Python is pinned to a specific patch version.
+#   - Dependencies install under version constraints; a hash-pinned lock
+#     (pip --require-hashes) is an owner action tracked in
+#     dr-dci/config/collection_academic/OWNER_ACTIONS.md.
+#   - A supply-chain integrity test (tests/test_ci_supply_chain.py) fails the
+#     required check if this workflow is weakened while keeping its job name.
+# The repository owner marks synthetic-tests required in branch protection;
+# private full-run evidence remains an out-of-band reviewed artifact.
 
 name: collection-contract-tests
 
@@ -13,17 +20,26 @@ on:
   push:
     branches: [feature_ralph]
 
+permissions:
+  contents: read
+
 jobs:
   synthetic-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
         with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: python -m pip install -r dr-dci/requirements.txt
+          python-version: "3.12.8"
+      - name: Install dependencies (version-constrained)
+        working-directory: dr-dci
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -c constraints.txt -r requirements.txt
+      - name: Lock drift check
+        working-directory: dr-dci
+        run: python scripts/check_supply_chain.py --constraints constraints.txt
       - name: Run synthetic test suite
         working-directory: dr-dci
         run: python -m pytest tests/ -q
