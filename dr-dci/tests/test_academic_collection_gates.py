@@ -550,6 +550,21 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
         with self.assertRaisesRegex(academic.ConversionError, "self-test failed"):
             self.attest(token_budget=10, tokenizer_contract=contract)
 
+    def test_substituted_self_consistent_tokenizer_is_rejected(self):
+        # The real C1 trust boundary: even a fake snapshot whose OWN self-test
+        # passes cannot be swapped in, because the tokenizer identity is signed
+        # into the approval subject via tokenizer_contract_sha256.
+        fake = build_reference_snapshot(self.root / "fake-tokenizer")
+        approval_for_honest = self._approval()  # signed over the honest tokenizer
+        with self.assertRaisesRegex(
+            academic.ConversionError, "tokenizer_contract_sha256 does not match"
+        ):
+            self.attest(
+                token_budget=10_000,
+                tokenizer_contract=fake,
+                approval=approval_for_honest,
+            )
+
     def test_tokenizer_self_test_binds_real_execution(self):
         contract = dict(self.tokenizer_contract)
         contract["self_test"] = dict(contract["self_test"], expected_input_ids=[9, 9, 9])
