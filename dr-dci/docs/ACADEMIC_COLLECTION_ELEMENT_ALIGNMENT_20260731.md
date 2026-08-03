@@ -122,20 +122,30 @@ denominator matches, and a clean, known git commit.
 The `collection_eval` stage must call
 `require_accepted_conversion(<manifest path>, acceptance_contract=<reviewed
 contract>, expected_manifest_sha256=<pinned>)` before any QA/tag/model work.
-The gate never trusts persisted flags: it recomputes the run-identity
-self-hash, requires manifest `selection`/`options` to equal the identity,
-re-binds the caller's reviewed contract against the hash recorded at
-publication, re-hashes every declared artifact, re-runs the streaming
-semantic verifier, recomputes `evaluate_acceptance`, and requires the
-persisted decision to equal the recomputation exactly. A flipped
-`eligible` flag, deleted `reasons`, or tampered selection/totals/runtime/
-options therefore fails; callers should also pin the manifest SHA-256 so a
-consistently regenerated forgery is rejected too. The same audit runs on
-the publication reuse path before any published target is returned as
-`reused`. The code identity covers every behavior-affecting local module —
-adapter, publication, `src/eval/collection_contract.py`, both CLIs, and the
-alignment schema — and an import-coverage test fails if a `src` import of
-the adapter is missing from that list.
+Both the reviewed contract AND the externally pinned manifest SHA-256 are
+MANDATORY inputs — the pin is the external trust anchor that rejects
+consistently regenerated forgeries, including runtime-identity swaps that
+are outside the identity self-hash. The gate never trusts persisted flags:
+it recomputes the run-identity self-hash, requires manifest
+`selection`/`options` to equal the identity, re-binds the caller's reviewed
+contract against the hash recorded at publication, re-hashes every declared
+artifact, re-runs the streaming semantic verifier, recomputes
+`evaluate_acceptance`, and requires the persisted decision to equal the
+recomputation exactly. Declared artifact paths are confined to the exact
+`<collection_id>/<name>.jsonl` layout inside the resolved target — absolute
+paths, `..`, unexpected names, and symlinked files or directories all fail.
+
+The publication reuse path runs the same audit under an explicitly separate
+trust model: its external anchor is the requested input identity recomputed
+locally from the caller's configs and current code, which (with artifact
+re-hashing and semantic re-verification) makes artifact BYTES trustworthy;
+recorded runtime metadata is not externally anchored there and eligibility
+is not required, so a reused target is never acceptance evidence by itself
+— every handoff must still pass `require_accepted_conversion` with its
+mandatory pin. The code identity covers every behavior-affecting local
+module — adapter, publication, `src/eval/collection_contract.py`, both
+CLIs, and the alignment schema — and an import-coverage test fails if a
+`src` import of the adapter is missing from that list.
 
 ## Complexity and resource profile
 
@@ -187,20 +197,47 @@ comparison. Therefore:
 ## Retrieval approval attestation
 
 Retrieval use additionally requires an explicit attestation
-(`academic.retrieval-approval-attestation.v1`) built by
-`build_retrieval_approval_attestation` on an acceptance-gated corpus. It
-binds: the conversion manifest SHA-256 and run identity, every collection's
-chunks artifact path/records/SHA-256, the model/tokenizer ID with an
-immutable revision, the input template (and its SHA-256), the token budget,
-the validator code-identity hashes, and the measured result
-(`chunks_total`, `max_tokens_observed`, `token_violations`,
-`approved`/`rejected`). Token counts come from a caller-loaded FROZEN
-tokenizer callable — local tokenization only, never a model or API call.
-`require_retrieval_approved` is the fail-loud gate: it re-verifies every
-hash binding, re-runs `require_accepted_conversion` with the pinned
-manifest SHA-256, re-tokenizes every rendered chunk with the frozen
-tokenizer, and requires zero violations plus exact agreement with the
-attested scan. Approval flags are never trusted on their own.
+(`academic.retrieval-approval-attestation.v2`) built by
+`build_retrieval_approval_attestation` on an acceptance-gated corpus (the
+mandatory manifest SHA-256 pin is required at build time too). It binds:
+the conversion manifest SHA-256 and run identity, every collection's chunks
+artifact path/records/SHA-256, the embedding model ID with an immutable
+revision, the frozen TOKENIZER contract — tokenizer ID, immutable revision,
+local snapshot path, per-file bytes/SHA-256 inventory, tokenizer class, a
+`trust_remote_code=false` policy, and the frozen
+normalization/special-token/truncation/padding/max-length options
+(truncation and padding must be false) — the input template (and its
+SHA-256), the token budget, the validator code-identity hashes, an approval
+record referencing a reviewed artifact (`approved_by`, `approval_ref`,
+`approval_artifact_sha256`), and the measured scan.
+
+Token counts are `len(BatchEncoding.input_ids)` for exactly one rendered
+sequence: the counter is constructed by a loader from the VERIFIED
+tokenizer contract (after the snapshot file inventory is re-hashed), and
+outputs that are not BatchEncoding-like, lack `input_ids`, are batched with
+more than one sequence, contain non-integer IDs, have inconsistent
+attention masks, or carry overflow/truncation markers all fail loud. The
+input template and the contract's special-token policy are therefore
+included in the budget. Local tokenization only — never a model/API call.
+
+`write_retrieval_attestation` serializes the attestation deterministically
+and emits a SHA-256 sidecar; the canonical body hash is the value callers
+must pin. `require_retrieval_approved` is the fail-loud gate: the expected
+attestation SHA-256 AND the expected manifest SHA-256 are mandatory inputs,
+every hash binding (including tokenizer identity and snapshot files) is
+re-verified, `require_accepted_conversion` re-runs with the pin, and every
+rendered chunk is re-tokenized with zero violations plus exact agreement
+with the attested scan. Approval flags are never trusted on their own.
+
+## Continuous integration
+
+`.github/workflows/collection-contract-tests.yml` runs the full synthetic
+dr-dci test suite (no private data, no model calls) on pull requests to
+`feature_ralph`/`dev` and on `feat/**` pushes. The repository owner should
+mark this check as required in branch protection; private full-run evidence
+remains an out-of-band reviewed artifact bundle
+(`conversion_manifest.json`, `run_metrics.json`,
+`artifact_hash_inventory.json`, `evidence_manifest.json` + `.sha256`).
 
 ## Normalized-text search offsets
 

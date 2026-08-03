@@ -1746,6 +1746,39 @@ def evaluate_acceptance(
     }
 
 
+def _confined_artifact_path(
+    target: Path, collection_id: str, name: str, entry: dict[str, Any]
+) -> Path:
+    """Resolve one declared artifact strictly inside the publication target.
+
+    Requires the exact per-collection layout ``<collection_id>/<name>.jsonl``
+    (which structurally rejects absolute paths and ``..``), rejects symlinked
+    components, and requires the resolved path to stay under the resolved
+    target.
+    """
+    declared = entry.get("path")
+    expected = f"{collection_id}/{name}.jsonl"
+    _require(
+        declared == expected,
+        f"artifact path must be exactly {expected!r}: {declared!r}",
+    )
+    directory = target / collection_id
+    path = directory / f"{name}.jsonl"
+    _require(
+        not directory.is_symlink() and not path.is_symlink(),
+        f"artifact path contains a symlink: {path}",
+    )
+    resolved_target = target.resolve(strict=True)
+    resolved = path.resolve()
+    try:
+        resolved.relative_to(resolved_target)
+    except ValueError as error:
+        raise ConversionError(
+            f"artifact path escapes the publication target: {path}"
+        ) from error
+    return path
+
+
 def _audit_published_manifest(
     target: Path,
     *,
@@ -1838,9 +1871,13 @@ def _audit_published_manifest(
 
     for collection_id in sorted(manifest.get("collections", {})):
         collection = manifest["collections"][collection_id]
+        _require(
+            set(collection["artifacts"]) == set(ARTIFACT_NAMES),
+            f"collection {collection_id} must declare exactly {list(ARTIFACT_NAMES)}",
+        )
         for name in sorted(collection["artifacts"]):
             entry = collection["artifacts"][name]
-            path = target / entry["path"]
+            path = _confined_artifact_path(target, collection_id, name, entry)
             _require(path.is_file(), f"declared artifact missing: {path}")
             _require(
                 path.stat().st_size == entry["bytes"]
@@ -1868,31 +1905,36 @@ def require_accepted_conversion(
     manifest_path: Path,
     *,
     acceptance_contract: dict[str, Any],
-    expected_manifest_sha256: str | None = None,
+    expected_manifest_sha256: str,
 ) -> dict[str, Any]:
     """Gate for the collection_eval stage: reject non-accepted conversions.
 
-    Never trusts the persisted flag: the reviewed acceptance contract is a
-    required input, the run identity self-hash and manifest consistency are
-    recomputed, every declared artifact is re-hashed, the semantic verifier
-    is re-run, and ``evaluate_acceptance`` is recomputed and must equal the
-    persisted decision exactly. Callers should additionally pin
-    ``expected_manifest_sha256`` so a consistently regenerated forgery is
-    also rejected.
+    Never trusts the persisted flag: the reviewed acceptance contract AND the
+    externally pinned manifest SHA-256 are required inputs. The run identity
+    self-hash and manifest consistency are recomputed, every declared
+    artifact is re-hashed inside the confined target layout, the semantic
+    verifier is re-run, and ``evaluate_acceptance`` is recomputed and must
+    equal the persisted decision exactly. The mandatory pin is the external
+    trust anchor that rejects consistently regenerated forgeries (including
+    runtime-identity swaps, which are outside the identity self-hash).
     """
     _require(
         isinstance(acceptance_contract, dict) and bool(acceptance_contract),
         "a reviewed acceptance contract is required",
     )
+    _require(
+        isinstance(expected_manifest_sha256, str)
+        and bool(SHA256_RE.fullmatch(expected_manifest_sha256)),
+        "expected_manifest_sha256 must be lowercase SHA-256",
+    )
     manifest_path = Path(manifest_path)
     _require(manifest_path.is_file(), f"conversion manifest missing: {manifest_path}")
-    if expected_manifest_sha256 is not None:
-        actual = sha256_file(manifest_path)
-        _require(
-            actual == expected_manifest_sha256,
-            "conversion manifest does not match the pinned SHA-256: "
-            f"expected={expected_manifest_sha256} actual={actual}",
-        )
+    actual = sha256_file(manifest_path)
+    _require(
+        actual == expected_manifest_sha256,
+        "conversion manifest does not match the pinned SHA-256: "
+        f"expected={expected_manifest_sha256} actual={actual}",
+    )
     manifest = _audit_published_manifest(
         manifest_path.parent, acceptance_contract=acceptance_contract
     )
@@ -1915,13 +1957,18 @@ def _reuse_verified_target(
     chunking_config: dict[str, Any],
     acceptance_contract: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """Re-audit a complete same-identity target with the full gate rigor.
+    """Re-audit a complete same-identity target before returning it as reused.
 
-    Applies the same checks as ``require_accepted_conversion`` (identity
-    self-hash, selection/options consistency, contract re-binding,
-    acceptance recomputation vs the persisted decision, artifact re-hash,
-    semantic re-verification) plus the requested-identity equality; only the
-    eligibility requirement is omitted because smoke targets may be reused.
+    Reuse has an explicitly different trust model from the handoff gate: its
+    external anchor is the requested input identity, recomputed locally from
+    the caller's actual configs and the current code, so artifact BYTES are
+    fully trustworthy (identity equality + artifact re-hash + semantic
+    re-verification + acceptance recomputation vs the persisted decision).
+    Manifest metadata such as the recorded runtime is NOT externally
+    anchored here, and eligibility is not required (smoke targets may be
+    reused). A reused target is therefore never acceptance evidence by
+    itself: every downstream handoff must go through
+    ``require_accepted_conversion`` with its mandatory manifest SHA-256 pin.
     """
     return _audit_published_manifest(
         target,
@@ -2200,27 +2247,185 @@ def validate_chunk_model_compatibility(
     )
 
 
+
 # ---------------------------------------------------------------------------
 # Retrieval approval attestation (frozen tokenizer; never a model/API call)
 # ---------------------------------------------------------------------------
 
-RETRIEVAL_APPROVAL_SCHEMA_VERSION = "academic.retrieval-approval-attestation.v1"
+RETRIEVAL_APPROVAL_SCHEMA_VERSION = "academic.retrieval-approval-attestation.v2"
+ATTESTATION_FILE_SUFFIX = ".sha256"
+
+
+def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
+    """Validate the frozen tokenizer identity and tokenization options.
+
+    The gate constructs the token counter from this contract; an unrelated
+    caller-provided callable is never an adequate production contract.
+    """
+    _require(isinstance(value, dict), "tokenizer contract must be a mapping")
+    _nonempty_str(value.get("tokenizer_id"), "tokenizer_contract.tokenizer_id")
+    revision = _nonempty_str(value.get("revision"), "tokenizer_contract.revision")
+    _require(
+        revision.lower() not in {"main", "master", "latest", "unknown"},
+        "tokenizer_contract.revision must be immutable",
+    )
+    _nonempty_str(value.get("tokenizer_class"), "tokenizer_contract.tokenizer_class")
+    _require(
+        value.get("trust_remote_code") is False,
+        "tokenizer_contract.trust_remote_code must be false",
+    )
+    _nonempty_str(
+        value.get("local_snapshot_path"), "tokenizer_contract.local_snapshot_path"
+    )
+    options = value.get("options")
+    _require(isinstance(options, dict), "tokenizer_contract.options must be a mapping")
+    _require(
+        isinstance(options.get("add_special_tokens"), bool),
+        "tokenizer_contract.options.add_special_tokens must be a boolean",
+    )
+    _require(
+        options.get("truncation") is False,
+        "tokenizer_contract.options.truncation must be false "
+        "(silent truncation is never acceptable)",
+    )
+    _require(
+        options.get("padding") is False,
+        "tokenizer_contract.options.padding must be false",
+    )
+    _require(
+        options.get("max_length") is None,
+        "tokenizer_contract.options.max_length must be null",
+    )
+    files = value.get("files")
+    _require(
+        isinstance(files, list) and bool(files),
+        "tokenizer_contract.files must be a non-empty inventory",
+    )
+    for index, entry in enumerate(files):
+        _require(
+            isinstance(entry, dict), f"tokenizer_contract.files[{index}] must be a mapping"
+        )
+        path = _nonempty_str(entry.get("path"), f"tokenizer_contract.files[{index}].path")
+        parts = Path(path).parts
+        _require(
+            not Path(path).is_absolute()
+            and all(part not in ("", ".", "..") for part in parts),
+            f"tokenizer_contract.files[{index}].path must be a safe relative path",
+        )
+        _require(
+            isinstance(entry.get("bytes"), int) and entry["bytes"] > 0,
+            f"tokenizer_contract.files[{index}].bytes must be positive",
+        )
+        digest = entry.get("sha256")
+        _require(
+            isinstance(digest, str) and bool(SHA256_RE.fullmatch(digest)),
+            f"tokenizer_contract.files[{index}].sha256 must be lowercase SHA-256",
+        )
+    return value
+
+
+def _verify_tokenizer_snapshot(
+    contract: dict[str, Any], *, snapshot_dir: Path | None = None
+) -> Path:
+    """Verify the local tokenizer snapshot against the frozen file inventory."""
+    snapshot = Path(snapshot_dir) if snapshot_dir else Path(contract["local_snapshot_path"])
+    _require(snapshot.is_dir(), f"tokenizer snapshot directory missing: {snapshot}")
+    for entry in contract["files"]:
+        path = snapshot / entry["path"]
+        _require(path.is_file(), f"tokenizer file missing: {path}")
+        _require(not path.is_symlink(), f"tokenizer file is a symlink: {path}")
+        actual_bytes = path.stat().st_size
+        _require(
+            actual_bytes == entry["bytes"],
+            f"tokenizer file bytes mismatch: {path} "
+            f"expected={entry['bytes']} actual={actual_bytes}",
+        )
+        actual_sha = sha256_file(path)
+        _require(
+            actual_sha == entry["sha256"],
+            f"tokenizer file sha256 mismatch: {path} "
+            f"expected={entry['sha256']} actual={actual_sha}",
+        )
+    return snapshot
+
+
+def _validate_approval(value: Any) -> dict[str, Any]:
+    """The approval must reference a reviewed artifact, not a free-form string."""
+    _require(isinstance(value, dict), "approval must be a mapping")
+    _nonempty_str(value.get("approved_by"), "approval.approved_by")
+    _nonempty_str(value.get("approval_ref"), "approval.approval_ref")
+    digest = value.get("approval_artifact_sha256")
+    _require(
+        isinstance(digest, str) and bool(SHA256_RE.fullmatch(digest)),
+        "approval.approval_artifact_sha256 must be lowercase SHA-256",
+    )
+    return value
+
+
+def _extract_input_ids(encoding: Any) -> list[int]:
+    """Extract the single-sequence ``input_ids`` from a BatchEncoding-like value.
+
+    Rejects non-mapping outputs, missing ``input_ids``, batched outputs with
+    more than one sequence, non-integer IDs, inconsistent attention masks,
+    and any overflow/truncation markers.
+    """
+    _require(
+        hasattr(encoding, "keys") and hasattr(encoding, "__getitem__"),
+        "tokenizer must return a BatchEncoding-like mapping with input_ids",
+    )
+    try:
+        input_ids = encoding["input_ids"]
+    except KeyError as error:
+        raise ConversionError("tokenizer output lacks input_ids") from error
+
+    def is_sequence(value: Any) -> bool:
+        return isinstance(value, (list, tuple))
+
+    _require(is_sequence(input_ids), "input_ids must be a sequence")
+    if input_ids and is_sequence(input_ids[0]):
+        _require(
+            len(input_ids) == 1,
+            f"batched tokenizer output ({len(input_ids)} sequences) is not "
+            "allowed; encode exactly one rendered input",
+        )
+        input_ids = input_ids[0]
+    _require(bool(input_ids), "input_ids must be non-empty")
+    _require(
+        all(isinstance(item, int) and not isinstance(item, bool) for item in input_ids),
+        "input_ids must contain integers only",
+    )
+
+    keys = set(encoding.keys())
+    if "attention_mask" in keys:
+        attention_mask = encoding["attention_mask"]
+        if attention_mask and is_sequence(attention_mask[0]):
+            _require(
+                len(attention_mask) == 1,
+                "batched attention_mask is not allowed",
+            )
+            attention_mask = attention_mask[0]
+        _require(
+            is_sequence(attention_mask) and len(attention_mask) == len(input_ids),
+            "attention_mask length does not match input_ids",
+        )
+    if "overflowing_tokens" in keys:
+        overflow = encoding["overflowing_tokens"]
+        _require(
+            not overflow,
+            "tokenizer output contains overflowing tokens (truncation occurred)",
+        )
+    if "num_truncated_tokens" in keys:
+        truncated = encoding["num_truncated_tokens"]
+        _require(
+            truncated in (0, [0], (0,)),
+            "tokenizer output reports truncated tokens",
+        )
+    return list(input_ids)
 
 
 def _token_count(tokenizer: Callable[[str], Any], text: str) -> int:
-    """Count tokens with a locally loaded frozen tokenizer callable."""
-    value = tokenizer(text)
-    if isinstance(value, int):
-        count = value
-    else:
-        try:
-            count = len(value)
-        except TypeError as error:
-            raise ConversionError(
-                "tokenizer must return an int or a sized token sequence"
-            ) from error
-    _require(count >= 0, "tokenizer returned a negative count")
-    return count
+    """Count tokens as ``len(BatchEncoding.input_ids)`` for one rendered input."""
+    return len(_extract_input_ids(tokenizer(text)))
 
 
 def _render_input_template(template: str, text: str) -> str:
@@ -2244,7 +2449,8 @@ def _scan_chunk_tokens(
     max_tokens = 0
     for collection_id in sorted(manifest["collections"]):
         entry = manifest["collections"][collection_id]["artifacts"]["chunks"]
-        for record in _iter_jsonl(target / entry["path"]):
+        path = _confined_artifact_path(target, collection_id, "chunks", entry)
+        for record in _iter_jsonl(path):
             rendered = _render_input_template(input_template, str(record.get("text", "")))
             count = _token_count(tokenizer, rendered)
             total += 1
@@ -2258,23 +2464,71 @@ def _scan_chunk_tokens(
     }
 
 
+def attestation_sha256(attestation: dict[str, Any]) -> str:
+    """Canonical SHA-256 of the attestation body (the external pin value)."""
+    return canonical_json_sha256(attestation)
+
+
+def write_retrieval_attestation(attestation: dict[str, Any], path: Path) -> Path:
+    """Serialize the attestation deterministically and emit a SHA-256 sidecar.
+
+    The sidecar records the canonical body hash (`attestation_sha256`), which
+    is also the value callers must pin at the gate.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    serialized = (
+        json.dumps(attestation, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    )
+    path.write_text(serialized, encoding="utf-8")
+    digest = attestation_sha256(attestation)
+    Path(str(path) + ATTESTATION_FILE_SUFFIX).write_text(
+        f"{digest}  {path.name}\n", encoding="utf-8"
+    )
+    return path
+
+
+def _load_attestation(value: dict[str, Any] | Path) -> dict[str, Any]:
+    if isinstance(value, (str, Path)):
+        path = Path(value)
+        _require(path.is_file(), f"attestation file missing: {path}")
+        attestation = json.loads(path.read_text(encoding="utf-8"))
+        sidecar = Path(str(path) + ATTESTATION_FILE_SUFFIX)
+        if sidecar.is_file():
+            recorded = sidecar.read_text(encoding="utf-8").split()[0]
+            actual = attestation_sha256(attestation)
+            _require(
+                recorded == actual,
+                f"attestation sidecar mismatch: recorded={recorded} actual={actual}",
+            )
+        return attestation
+    _require(isinstance(value, dict), "attestation must be an object or a path")
+    return value
+
+
 def build_retrieval_approval_attestation(
     *,
     target_dir: Path,
     acceptance_contract: dict[str, Any],
+    expected_manifest_sha256: str,
     model_id: str,
     revision: str,
     token_budget: int,
     input_template: str,
-    tokenizer: Callable[[str], Any],
-    approved_by: str,
+    tokenizer_contract: dict[str, Any],
+    tokenizer_loader: Callable[[dict[str, Any]], Callable[[str], Any]],
+    approval: dict[str, Any],
+    snapshot_dir: Path | None = None,
 ) -> dict[str, Any]:
-    """Build the attestation binding corpus, contract, tokenizer, and result.
+    """Build the attestation binding corpus, tokenizer identity, and result.
 
-    The corpus must first pass ``require_accepted_conversion``. Token counts
-    come from the caller-supplied frozen tokenizer callable (loaded locally
-    from the immutable revision); no model or API is called. The result is
-    ``approved`` only when every rendered chunk fits the token budget.
+    The corpus must first pass ``require_accepted_conversion`` with the
+    pinned manifest SHA-256. The token counter is constructed by
+    ``tokenizer_loader`` from the validated tokenizer contract only after
+    the local snapshot file inventory is verified; token counts are
+    ``len(BatchEncoding.input_ids)`` for each rendered input, so the input
+    template and the contract's special-token policy are included in the
+    budget. Local tokenization only — never a model or API call.
     """
     target = Path(target_dir)
     _nonempty_str(model_id, "model_id")
@@ -2287,10 +2541,15 @@ def build_retrieval_approval_attestation(
         isinstance(token_budget, int) and token_budget > 0,
         "token_budget must be a positive integer",
     )
-    _nonempty_str(approved_by, "approved_by")
+    tokenizer_contract = _validate_tokenizer_contract(tokenizer_contract)
+    _verify_tokenizer_snapshot(tokenizer_contract, snapshot_dir=snapshot_dir)
+    approval = _validate_approval(approval)
     manifest = require_accepted_conversion(
-        target / MANIFEST_FILE_NAME, acceptance_contract=acceptance_contract
+        target / MANIFEST_FILE_NAME,
+        acceptance_contract=acceptance_contract,
+        expected_manifest_sha256=expected_manifest_sha256,
     )
+    tokenizer = tokenizer_loader(tokenizer_contract)
     scan = _scan_chunk_tokens(
         target,
         manifest,
@@ -2304,8 +2563,8 @@ def build_retrieval_approval_attestation(
     }
     attestation = {
         "schema_version": RETRIEVAL_APPROVAL_SCHEMA_VERSION,
-        "approved_by": approved_by,
-        "conversion_manifest_sha256": sha256_file(target / MANIFEST_FILE_NAME),
+        "approval": approval,
+        "conversion_manifest_sha256": expected_manifest_sha256,
         "run_identity_sha256": manifest["run_identity"]["identity_sha256"],
         "acceptance_contract_sha256": canonical_json_sha256(acceptance_contract),
         "chunks": chunks_entries,
@@ -2314,6 +2573,7 @@ def build_retrieval_approval_attestation(
         "token_budget": token_budget,
         "input_template": input_template,
         "input_template_sha256": sha256_text(input_template),
+        "tokenizer": tokenizer_contract,
         "code_identity": code_identity_hashes(),
         **scan,
         "result": "approved" if scan["token_violations"] == 0 else "rejected",
@@ -2326,18 +2586,33 @@ def require_retrieval_approved(
     *,
     target_dir: Path,
     acceptance_contract: dict[str, Any],
-    tokenizer: Callable[[str], Any],
+    expected_manifest_sha256: str,
+    expected_attestation_sha256: str,
+    tokenizer_loader: Callable[[dict[str, Any]], Callable[[str], Any]],
+    snapshot_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Fail-loud gate before any retrieval use of the chunk corpus.
 
-    Re-verifies the whole attestation binding: manifest SHA-256, run
-    identity, acceptance contract hash, chunk artifact hashes, code identity,
-    and — with the caller-loaded frozen tokenizer — the actual token counts
-    of every rendered chunk. Approval flags are never trusted on their own.
+    Requires an externally pinned attestation SHA-256 (canonical body hash)
+    and manifest SHA-256; recomputes both. Verifies the frozen tokenizer
+    identity (ID, immutable revision, snapshot file inventory, class,
+    remote-code policy, and normalization/special-token/truncation/padding
+    options), constructs the token counter from that verified contract via
+    ``tokenizer_loader``, and re-counts every rendered chunk as
+    ``len(BatchEncoding.input_ids)``. Approval flags are never trusted.
     """
-    if isinstance(attestation, (str, Path)):
-        attestation = json.loads(Path(attestation).read_text(encoding="utf-8"))
-    _require(isinstance(attestation, dict), "attestation must be an object")
+    attestation = _load_attestation(attestation)
+    _require(
+        isinstance(expected_attestation_sha256, str)
+        and bool(SHA256_RE.fullmatch(expected_attestation_sha256)),
+        "expected_attestation_sha256 must be lowercase SHA-256",
+    )
+    actual_attestation_sha = attestation_sha256(attestation)
+    _require(
+        actual_attestation_sha == expected_attestation_sha256,
+        "attestation does not match the pinned SHA-256: "
+        f"expected={expected_attestation_sha256} actual={actual_attestation_sha}",
+    )
     _require(
         attestation.get("schema_version") == RETRIEVAL_APPROVAL_SCHEMA_VERSION,
         f"attestation schema_version must be {RETRIEVAL_APPROVAL_SCHEMA_VERSION}",
@@ -2347,6 +2622,8 @@ def require_retrieval_approved(
         and attestation.get("token_violations") == 0,
         "attestation does not record an approved zero-violation result",
     )
+    _validate_approval(attestation.get("approval"))
+    _nonempty_str(attestation.get("model_id"), "attestation model_id")
     revision = _nonempty_str(attestation.get("revision"), "attestation revision")
     _require(
         revision.lower() not in {"main", "master", "latest", "unknown"},
@@ -2370,17 +2647,19 @@ def require_retrieval_approved(
         attestation.get("code_identity") == code_identity_hashes(),
         "attestation code identity does not match the current validator code",
     )
+    tokenizer_contract = _validate_tokenizer_contract(attestation.get("tokenizer"))
+    _verify_tokenizer_snapshot(tokenizer_contract, snapshot_dir=snapshot_dir)
 
     target = Path(target_dir)
     manifest_path = target / MANIFEST_FILE_NAME
     _require(
-        sha256_file(manifest_path) == attestation.get("conversion_manifest_sha256"),
-        "conversion manifest does not match the attested SHA-256",
+        attestation.get("conversion_manifest_sha256") == expected_manifest_sha256,
+        "attested conversion manifest SHA-256 does not match the pinned value",
     )
     manifest = require_accepted_conversion(
         manifest_path,
         acceptance_contract=acceptance_contract,
-        expected_manifest_sha256=attestation["conversion_manifest_sha256"],
+        expected_manifest_sha256=expected_manifest_sha256,
     )
     _require(
         manifest["run_identity"]["identity_sha256"]
@@ -2404,12 +2683,13 @@ def require_retrieval_approved(
             attested_chunks[collection_id] == manifest_entry,
             f"attested chunks entry does not match the manifest: {collection_id}",
         )
-        path = target / manifest_entry["path"]
+        path = _confined_artifact_path(target, collection_id, "chunks", manifest_entry)
         _require(
             sha256_file(path) == manifest_entry["sha256"],
             f"chunk artifact does not match the attested hash: {path}",
         )
 
+    tokenizer = tokenizer_loader(tokenizer_contract)
     scan = _scan_chunk_tokens(
         target,
         manifest,

@@ -1,0 +1,33 @@
+# Synthetic contract/gate tests for the collection experiments (PR #13 P7).
+#
+# Runs the full dr-dci synthetic test suite — no private data, no model or
+# API calls. The repository owner should mark this check as required for
+# merges into feature_ralph/dev in the branch-protection settings; private
+# full-run evidence remains an out-of-band reviewed artifact.
+
+name: collection-contract-tests
+
+on:
+  pull_request:
+    branches: [feature_ralph, dev]
+  push:
+    branches:
+      - "feat/**"
+      - feature_ralph
+
+jobs:
+  synthetic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install -r dr-dci/requirements.txt
+      - name: Run synthetic test suite
+        working-directory: dr-dci
+        run: python -m pytest tests/ -q
+      - name: Whitespace check
+        run: git diff --check

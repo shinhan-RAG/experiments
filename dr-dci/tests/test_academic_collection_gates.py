@@ -1,8 +1,9 @@
 """RED-to-GREEN tests for the recomputing acceptance/retrieval gates.
 
-Forged manifests (flag flips, deleted reasons, tampered selection/totals/
-runtime/options/contract hashes) must never pass; the gates recompute every
-decision instead of trusting persisted flags. All fixtures are synthetic.
+Covers the independent-review counterexamples: BatchEncoding field-count
+false passes, optional manifest pins, artifact path escapes, unproven
+tokenizer identity, and mutable attestation metadata. All fixtures are
+synthetic; no private data and no model/API calls.
 """
 
 import json
@@ -29,8 +30,54 @@ from tests.test_academic_collection_publication import (
 )
 
 
-def word_tokenizer(text: str) -> list[str]:
-    return text.split()
+IMMUTABLE_REV = "0123456789abcdef0123456789abcdef01234567"
+
+
+class FakeBatchEncoding(dict):
+    """Mapping like Hugging Face BatchEncoding: len() is the field count."""
+
+
+def make_tokenizer_contract(root: Path, *, add_special_tokens: bool = True) -> dict:
+    snapshot = root / "tokenizer-snapshot"
+    snapshot.mkdir(parents=True, exist_ok=True)
+    names = ("tokenizer.json", "tokenizer_config.json")
+    for name in names:
+        (snapshot / name).write_bytes(f"synthetic-{name}".encode())
+    return {
+        "tokenizer_id": "fixture/tokenizer",
+        "revision": IMMUTABLE_REV,
+        "tokenizer_class": "SyntheticTokenizerFast",
+        "trust_remote_code": False,
+        "local_snapshot_path": str(snapshot),
+        "options": {
+            "add_special_tokens": add_special_tokens,
+            "truncation": False,
+            "padding": False,
+            "max_length": None,
+        },
+        "files": [
+            {
+                "path": name,
+                "bytes": (snapshot / name).stat().st_size,
+                "sha256": sha256_file(snapshot / name),
+            }
+            for name in names
+        ],
+    }
+
+
+def synthetic_loader(contract: dict):
+    add_special = contract["options"]["add_special_tokens"]
+
+    def encode(text: str) -> FakeBatchEncoding:
+        ids = [1000 + index for index, _ in enumerate(text.split())]
+        if add_special:
+            ids = [101, *ids, 102]
+        return FakeBatchEncoding(
+            {"input_ids": ids, "attention_mask": [1] * len(ids)}
+        )
+
+    return encode
 
 
 def rewrite_manifest(target: Path, mutate) -> Path:
@@ -42,6 +89,64 @@ def rewrite_manifest(target: Path, mutate) -> Path:
         encoding="utf-8",
     )
     return path
+
+
+class TokenCountingTests(unittest.TestCase):
+    def test_batchencoding_field_count_false_pass_is_closed(self):
+        encoding = FakeBatchEncoding(
+            {"input_ids": [7] * 1000, "attention_mask": [1] * 1000}
+        )
+        self.assertEqual(len(encoding), 2)
+        self.assertEqual(academic._token_count(lambda _: encoding, "x"), 1000)
+
+    def test_missing_input_ids_fails(self):
+        with self.assertRaisesRegex(academic.ConversionError, "lacks input_ids"):
+            academic._token_count(
+                lambda _: FakeBatchEncoding({"attention_mask": [1]}), "x"
+            )
+
+    def test_non_mapping_outputs_fail(self):
+        for bad in ([1, 2, 3], 7, "tokens", None):
+            with self.subTest(bad=bad):
+                with self.assertRaisesRegex(
+                    academic.ConversionError, "BatchEncoding-like"
+                ):
+                    academic._token_count(lambda _: bad, "x")
+
+    def test_batched_output_with_multiple_sequences_fails(self):
+        encoding = FakeBatchEncoding({"input_ids": [[1, 2], [3, 4]]})
+        with self.assertRaisesRegex(academic.ConversionError, "batched"):
+            academic._token_count(lambda _: encoding, "x")
+
+    def test_single_sequence_batch_is_unwrapped(self):
+        encoding = FakeBatchEncoding(
+            {"input_ids": [[1, 2, 3]], "attention_mask": [[1, 1, 1]]}
+        )
+        self.assertEqual(academic._token_count(lambda _: encoding, "x"), 3)
+
+    def test_attention_mask_length_mismatch_fails(self):
+        encoding = FakeBatchEncoding(
+            {"input_ids": [1, 2, 3], "attention_mask": [1, 1]}
+        )
+        with self.assertRaisesRegex(academic.ConversionError, "attention_mask"):
+            academic._token_count(lambda _: encoding, "x")
+
+    def test_truncation_markers_fail(self):
+        overflowing = FakeBatchEncoding(
+            {"input_ids": [1, 2], "overflowing_tokens": [9, 9]}
+        )
+        with self.assertRaisesRegex(academic.ConversionError, "overflowing"):
+            academic._token_count(lambda _: overflowing, "x")
+        truncated = FakeBatchEncoding(
+            {"input_ids": [1, 2], "num_truncated_tokens": 3}
+        )
+        with self.assertRaisesRegex(academic.ConversionError, "truncated"):
+            academic._token_count(lambda _: truncated, "x")
+
+    def test_non_integer_ids_fail(self):
+        encoding = FakeBatchEncoding({"input_ids": [1, "2", 3]})
+        with self.assertRaisesRegex(academic.ConversionError, "integers only"):
+            academic._token_count(lambda _: encoding, "x")
 
 
 class AcceptedTargetHarness(unittest.TestCase):
@@ -60,22 +165,50 @@ class AcceptedTargetHarness(unittest.TestCase):
             acceptance_contract=self.contract,
         )
         self.manifest_path = self.target / academic.MANIFEST_FILE_NAME
+        self.pin = sha256_file(self.manifest_path)
         assert self.manifest["acceptance"]["eligible"] is True
 
     def tearDown(self):
         self._directory.cleanup()
 
-    def gate(self, **kwargs):
+    def gate(self, *, pin: str | None = None, contract: dict | None = None):
         return academic.require_accepted_conversion(
-            self.manifest_path, acceptance_contract=self.contract, **kwargs
+            self.manifest_path,
+            acceptance_contract=contract if contract is not None else self.contract,
+            expected_manifest_sha256=(
+                pin if pin is not None else sha256_file(self.manifest_path)
+            ),
         )
 
 
 class GateForgeryTests(AcceptedTargetHarness):
     def test_untampered_gate_passes_with_pin(self):
-        pinned = sha256_file(self.manifest_path)
-        manifest = self.gate(expected_manifest_sha256=pinned)
+        manifest = self.gate(pin=self.pin)
         self.assertTrue(manifest["acceptance"]["eligible"])
+
+    def test_pin_is_mandatory_and_validated(self):
+        with self.assertRaises(TypeError):
+            academic.require_accepted_conversion(
+                self.manifest_path, acceptance_contract=self.contract
+            )
+        for malformed in (None, "", "not-a-sha", "F" * 64):
+            with self.subTest(malformed=malformed):
+                with self.assertRaisesRegex(
+                    academic.ConversionError, "lowercase SHA-256"
+                ):
+                    academic.require_accepted_conversion(
+                        self.manifest_path,
+                        acceptance_contract=self.contract,
+                        expected_manifest_sha256=malformed,
+                    )
+
+    def test_runtime_commit_swap_fails_against_pin(self):
+        def forge(manifest):
+            manifest["run_identity"]["runtime"]["git_commit"] = "b" * 40
+
+        rewrite_manifest(self.target, forge)
+        with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
+            self.gate(pin=self.pin)
 
     def test_smoke_flag_flip_fails(self):
         smoke_target = self.root / "smoke"
@@ -89,37 +222,16 @@ class GateForgeryTests(AcceptedTargetHarness):
 
         def flip(manifest):
             manifest["acceptance"]["eligible"] = True
-
-        rewrite_manifest(smoke_target, flip)
-        with self.assertRaisesRegex(
-            academic.ConversionError, "does not match recomputation"
-        ):
-            academic.require_accepted_conversion(
-                smoke_target / academic.MANIFEST_FILE_NAME,
-                acceptance_contract=self.contract,
-            )
-
-    def test_smoke_flag_flip_with_cleared_reasons_fails(self):
-        smoke_target = self.root / "smoke2"
-        run_convert(
-            self.fixture,
-            smoke_target,
-            limit_documents=1,
-            runtime_identity=CLEAN_RUNTIME,
-            acceptance_contract=self.contract,
-        )
-
-        def forge(manifest):
-            manifest["acceptance"]["eligible"] = True
             manifest["acceptance"]["reasons"] = []
 
-        rewrite_manifest(smoke_target, forge)
+        path = rewrite_manifest(smoke_target, flip)
         with self.assertRaisesRegex(
             academic.ConversionError, "does not match recomputation"
         ):
             academic.require_accepted_conversion(
-                smoke_target / academic.MANIFEST_FILE_NAME,
+                path,
                 acceptance_contract=self.contract,
+                expected_manifest_sha256=sha256_file(path),
             )
 
     def test_deleted_reasons_key_fails(self):
@@ -152,7 +264,7 @@ class GateForgeryTests(AcceptedTargetHarness):
         ):
             self.gate()
 
-    def test_runtime_tamper_fails(self):
+    def test_runtime_dirty_tamper_fails(self):
         def forge(manifest):
             manifest["run_identity"]["runtime"]["git_dirty"] = True
 
@@ -178,29 +290,15 @@ class GateForgeryTests(AcceptedTargetHarness):
         with self.assertRaisesRegex(
             academic.ConversionError, "contract bound at publication"
         ):
-            academic.require_accepted_conversion(
-                self.manifest_path, acceptance_contract=other
-            )
+            self.gate(contract=other)
 
     def test_identity_self_hash_tamper_fails(self):
         def forge(manifest):
             manifest["run_identity"]["identity_sha256"] = "f" * 64
 
         rewrite_manifest(self.target, forge)
-        with self.assertRaisesRegex(
-            academic.ConversionError, "self-hash mismatch"
-        ):
+        with self.assertRaisesRegex(academic.ConversionError, "self-hash mismatch"):
             self.gate()
-
-    def test_manifest_pin_mismatch_fails(self):
-        with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
-            self.gate(expected_manifest_sha256="f" * 64)
-
-    def test_contract_is_required(self):
-        with self.assertRaisesRegex(academic.ConversionError, "contract is required"):
-            academic.require_accepted_conversion(
-                self.manifest_path, acceptance_contract=None
-            )
 
     def test_reuse_path_rejects_tampered_acceptance(self):
         def forge(manifest):
@@ -234,6 +332,62 @@ class GateForgeryTests(AcceptedTargetHarness):
             )
 
 
+class ArtifactPathConfinementTests(AcceptedTargetHarness):
+    def test_absolute_artifact_path_fails(self):
+        outside = self.root / "outside-elements.jsonl"
+        outside.write_bytes(
+            (self.target / "academic_zz" / "elements.jsonl").read_bytes()
+        )
+
+        def forge(manifest):
+            entry = manifest["collections"]["academic_zz"]["artifacts"]["elements"]
+            entry["path"] = str(outside)
+
+        rewrite_manifest(self.target, forge)
+        with self.assertRaisesRegex(academic.ConversionError, "must be exactly"):
+            self.gate()
+
+    def test_parent_traversal_artifact_path_fails(self):
+        outside = self.target.parent / "outside-elements.jsonl"
+        outside.write_bytes(
+            (self.target / "academic_zz" / "elements.jsonl").read_bytes()
+        )
+
+        def forge(manifest):
+            entry = manifest["collections"]["academic_zz"]["artifacts"]["elements"]
+            entry["path"] = "../outside-elements.jsonl"
+
+        rewrite_manifest(self.target, forge)
+        with self.assertRaisesRegex(academic.ConversionError, "must be exactly"):
+            self.gate()
+
+    def test_symlinked_artifact_file_fails(self):
+        real = self.target / "academic_zz" / "elements.jsonl"
+        moved = self.root / "moved-elements.jsonl"
+        moved.write_bytes(real.read_bytes())
+        real.unlink()
+        real.symlink_to(moved)
+        with self.assertRaisesRegex(academic.ConversionError, "symlink"):
+            self.gate()
+
+    def test_symlinked_collection_directory_fails(self):
+        real_dir = self.target / "academic_zz"
+        moved_dir = self.root / "moved-academic_zz"
+        real_dir.rename(moved_dir)
+        real_dir.symlink_to(moved_dir, target_is_directory=True)
+        with self.assertRaisesRegex(academic.ConversionError, "symlink"):
+            self.gate()
+
+    def test_extra_declared_artifact_fails(self):
+        def forge(manifest):
+            artifacts = manifest["collections"]["academic_zz"]["artifacts"]
+            artifacts["extra"] = dict(artifacts["elements"])
+
+        rewrite_manifest(self.target, forge)
+        with self.assertRaisesRegex(academic.ConversionError, "declare exactly"):
+            self.gate()
+
+
 class CodeIdentityCoverageTests(unittest.TestCase):
     @staticmethod
     def local_imports(module_path: Path, seen: set[str]) -> set[str]:
@@ -261,7 +415,9 @@ class CodeIdentityCoverageTests(unittest.TestCase):
         adapter_path = ROOT / "src" / "data" / "collection_academic.py"
         dotted_modules = self.local_imports(adapter_path, seen)
         dotted_modules.add("src.data.collection_academic")
-        identity_files = {path.resolve() for path in academic._CODE_IDENTITY_FILES.values()}
+        identity_files = {
+            path.resolve() for path in academic._CODE_IDENTITY_FILES.values()
+        }
         for dotted in sorted(dotted_modules):
             path = (ROOT / (dotted.replace(".", "/") + ".py")).resolve()
             self.assertTrue(path.is_file(), f"cannot resolve import {dotted}")
@@ -287,49 +443,166 @@ class CodeIdentityCoverageTests(unittest.TestCase):
 
 
 class RetrievalApprovalTests(AcceptedTargetHarness):
-    def attest(self, *, token_budget: int, tokenizer=word_tokenizer):
+    def setUp(self):
+        super().setUp()
+        self.tokenizer_contract = make_tokenizer_contract(self.root)
+        self.approval = {
+            "approved_by": "owner",
+            "approval_ref": "reviews/PETER_PR13_APPROVAL_PLACEHOLDER.md",
+            "approval_artifact_sha256": "a" * 64,
+        }
+
+    def attest(self, *, token_budget: int, tokenizer_contract: dict | None = None):
         return academic.build_retrieval_approval_attestation(
             target_dir=self.target,
             acceptance_contract=self.contract,
+            expected_manifest_sha256=self.pin,
             model_id="fixture/embedding",
-            revision="0123456789abcdef",
+            revision=IMMUTABLE_REV,
             token_budget=token_budget,
             input_template="passage: {text}",
-            tokenizer=tokenizer,
-            approved_by="owner",
+            tokenizer_contract=tokenizer_contract or self.tokenizer_contract,
+            tokenizer_loader=synthetic_loader,
+            approval=self.approval,
         )
 
-    def test_approved_attestation_passes_gate(self):
-        attestation = self.attest(token_budget=10_000)
-        self.assertEqual(attestation["result"], "approved")
-        self.assertEqual(attestation["token_violations"], 0)
-        verified = academic.require_retrieval_approved(
+    def require(self, attestation, *, attestation_pin: str | None = None):
+        return academic.require_retrieval_approved(
             attestation,
             target_dir=self.target,
             acceptance_contract=self.contract,
-            tokenizer=word_tokenizer,
+            expected_manifest_sha256=self.pin,
+            expected_attestation_sha256=(
+                attestation_pin
+                if attestation_pin is not None
+                else academic.attestation_sha256(
+                    attestation
+                    if isinstance(attestation, dict)
+                    else json.loads(Path(attestation).read_text(encoding="utf-8"))
+                )
+            ),
+            tokenizer_loader=synthetic_loader,
         )
+
+    def test_approved_attestation_passes_gate_from_file_with_sidecar(self):
+        attestation = self.attest(token_budget=10_000)
+        self.assertEqual(attestation["result"], "approved")
+        path = academic.write_retrieval_attestation(
+            attestation, self.root / "attestation.json"
+        )
+        sidecar = Path(str(path) + academic.ATTESTATION_FILE_SUFFIX)
+        self.assertTrue(sidecar.is_file())
+        pin = sidecar.read_text(encoding="utf-8").split()[0]
+        verified = self.require(path, attestation_pin=pin)
         self.assertEqual(verified["result"], "approved")
 
-    def test_rejected_attestation_fails_gate(self):
-        attestation = self.attest(token_budget=3)
-        self.assertEqual(attestation["result"], "rejected")
-        self.assertGreater(attestation["token_violations"], 0)
-        with self.assertRaisesRegex(
-            academic.ConversionError, "approved zero-violation"
-        ):
+    def test_attestation_pin_is_mandatory_and_validated(self):
+        attestation = self.attest(token_budget=10_000)
+        with self.assertRaises(TypeError):
             academic.require_retrieval_approved(
                 attestation,
                 target_dir=self.target,
                 acceptance_contract=self.contract,
-                tokenizer=word_tokenizer,
+                expected_manifest_sha256=self.pin,
+                tokenizer_loader=synthetic_loader,
             )
+        with self.assertRaisesRegex(academic.ConversionError, "lowercase SHA-256"):
+            self.require(attestation, attestation_pin="not-a-sha")
 
-    def test_gate_reverifies_token_counts_with_frozen_tokenizer(self):
+    def test_rejected_attestation_fails_gate(self):
+        attestation = self.attest(token_budget=3)
+        self.assertEqual(attestation["result"], "rejected")
+        with self.assertRaisesRegex(academic.ConversionError, "approved zero-violation"):
+            self.require(attestation)
+
+    def test_model_id_tamper_fails_against_pin(self):
+        attestation = self.attest(token_budget=10_000)
+        pin = academic.attestation_sha256(attestation)
+        attestation["model_id"] = "swapped/model"
+        with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
+            self.require(attestation, attestation_pin=pin)
+
+    def test_approved_by_tamper_fails_against_pin(self):
+        attestation = self.attest(token_budget=10_000)
+        pin = academic.attestation_sha256(attestation)
+        attestation["approval"] = dict(attestation["approval"], approved_by="intruder")
+        with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
+            self.require(attestation, attestation_pin=pin)
+
+    def test_sidecar_tamper_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        path = academic.write_retrieval_attestation(
+            attestation, self.root / "attestation.json"
+        )
+        sidecar = Path(str(path) + academic.ATTESTATION_FILE_SUFFIX)
+        sidecar.write_text("f" * 64 + "  attestation.json\n", encoding="utf-8")
+        with self.assertRaisesRegex(academic.ConversionError, "sidecar mismatch"):
+            self.require(path, attestation_pin=academic.attestation_sha256(attestation))
+
+    def test_template_tamper_with_recomputed_pin_still_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        attestation["input_template"] = "passage: {text} extra"
+        with self.assertRaisesRegex(academic.ConversionError, "template hash"):
+            self.require(attestation)
+
+    def test_tokenizer_snapshot_tamper_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        snapshot = Path(self.tokenizer_contract["local_snapshot_path"])
+        (snapshot / "tokenizer.json").write_bytes(b"mutated-tokenizer")
+        with self.assertRaisesRegex(
+            academic.ConversionError, "tokenizer file (sha256|bytes) mismatch"
+        ):
+            self.require(attestation)
+
+    def test_tokenizer_identity_and_options_mismatch_fail(self):
+        mutable = json.loads(json.dumps(self.tokenizer_contract))
+        mutable["revision"] = "main"
+        with self.assertRaisesRegex(academic.ConversionError, "immutable"):
+            self.attest(token_budget=10_000, tokenizer_contract=mutable)
+
+        truncating = json.loads(json.dumps(self.tokenizer_contract))
+        truncating["options"]["truncation"] = True
+        with self.assertRaisesRegex(academic.ConversionError, "truncation must be false"):
+            self.attest(token_budget=10_000, tokenizer_contract=truncating)
+
+        remote = json.loads(json.dumps(self.tokenizer_contract))
+        remote["trust_remote_code"] = True
+        with self.assertRaisesRegex(academic.ConversionError, "trust_remote_code"):
+            self.attest(token_budget=10_000, tokenizer_contract=remote)
+
+        attestation = self.attest(token_budget=10_000)
+        attestation["tokenizer"] = json.loads(json.dumps(attestation["tokenizer"]))
+        attestation["tokenizer"]["files"][0]["sha256"] = "f" * 64
+        with self.assertRaisesRegex(
+            academic.ConversionError, "tokenizer file sha256 mismatch"
+        ):
+            self.require(attestation)
+
+    def test_special_token_overhead_is_included_in_budget(self):
+        with_special = self.attest(token_budget=100_000)
+        without_special_contract = make_tokenizer_contract(
+            self.root / "nospecial", add_special_tokens=False
+        )
+        without_special = self.attest(
+            token_budget=100_000, tokenizer_contract=without_special_contract
+        )
+        self.assertEqual(
+            with_special["max_tokens_observed"],
+            without_special["max_tokens_observed"] + 2,
+        )
+        exact = self.attest(token_budget=with_special["max_tokens_observed"])
+        self.assertEqual(exact["result"], "approved")
+        under = self.attest(token_budget=with_special["max_tokens_observed"] - 1)
+        self.assertEqual(under["result"], "rejected")
+
+    def test_wrong_loader_scan_mismatch_fails(self):
         attestation = self.attest(token_budget=100_000)
 
-        def char_tokenizer(text: str) -> int:
-            return len(text)
+        def char_loader(contract):
+            def encode(text: str) -> FakeBatchEncoding:
+                return FakeBatchEncoding({"input_ids": list(range(len(text)))})
+
+            return encode
 
         with self.assertRaisesRegex(
             academic.ConversionError, "recomputed token scan does not match"
@@ -338,7 +611,9 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
                 attestation,
                 target_dir=self.target,
                 acceptance_contract=self.contract,
-                tokenizer=char_tokenizer,
+                expected_manifest_sha256=self.pin,
+                expected_attestation_sha256=academic.attestation_sha256(attestation),
+                tokenizer_loader=char_loader,
             )
 
     def test_tampered_chunks_fail_gate(self):
@@ -348,12 +623,7 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
             chunk_path.read_text(encoding="utf-8") + "\n", encoding="utf-8"
         )
         with self.assertRaisesRegex(academic.ConversionError, "does not match"):
-            academic.require_retrieval_approved(
-                attestation,
-                target_dir=self.target,
-                acceptance_contract=self.contract,
-                tokenizer=word_tokenizer,
-            )
+            self.require(attestation)
 
     def test_code_identity_mismatch_fails_gate(self):
         attestation = self.attest(token_budget=10_000)
@@ -361,36 +631,7 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
             attestation["code_identity"], adapter="f" * 64
         )
         with self.assertRaisesRegex(academic.ConversionError, "code identity"):
-            academic.require_retrieval_approved(
-                attestation,
-                target_dir=self.target,
-                acceptance_contract=self.contract,
-                tokenizer=word_tokenizer,
-            )
-
-    def test_template_tamper_fails_gate(self):
-        attestation = self.attest(token_budget=10_000)
-        attestation["input_template"] = "passage: {text} extra"
-        with self.assertRaisesRegex(academic.ConversionError, "template hash"):
-            academic.require_retrieval_approved(
-                attestation,
-                target_dir=self.target,
-                acceptance_contract=self.contract,
-                tokenizer=word_tokenizer,
-            )
-
-    def test_mutable_revision_rejected(self):
-        with self.assertRaisesRegex(academic.ConversionError, "immutable"):
-            academic.build_retrieval_approval_attestation(
-                target_dir=self.target,
-                acceptance_contract=self.contract,
-                model_id="fixture/embedding",
-                revision="main",
-                token_budget=10,
-                input_template="{text}",
-                tokenizer=word_tokenizer,
-                approved_by="owner",
-            )
+            self.require(attestation)
 
     def test_smoke_corpus_cannot_be_attested(self):
         smoke_target = self.root / "smoke"
@@ -401,19 +642,41 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
             runtime_identity=CLEAN_RUNTIME,
             acceptance_contract=self.contract,
         )
-        with self.assertRaisesRegex(
-            academic.ConversionError, "not acceptance-eligible"
-        ):
+        smoke_manifest = smoke_target / academic.MANIFEST_FILE_NAME
+        with self.assertRaisesRegex(academic.ConversionError, "not acceptance-eligible"):
             academic.build_retrieval_approval_attestation(
                 target_dir=smoke_target,
                 acceptance_contract=self.contract,
+                expected_manifest_sha256=sha256_file(smoke_manifest),
                 model_id="fixture/embedding",
-                revision="0123456789abcdef",
+                revision=IMMUTABLE_REV,
                 token_budget=10_000,
                 input_template="{text}",
-                tokenizer=word_tokenizer,
-                approved_by="owner",
+                tokenizer_contract=self.tokenizer_contract,
+                tokenizer_loader=synthetic_loader,
+                approval=self.approval,
             )
+
+    def test_approval_must_reference_reviewed_artifact(self):
+        for broken in (
+            {"approved_by": "owner"},
+            {"approved_by": "owner", "approval_ref": "x", "approval_artifact_sha256": "zz"},
+            "owner",
+        ):
+            with self.subTest(broken=broken):
+                with self.assertRaisesRegex(academic.ConversionError, "approval"):
+                    academic.build_retrieval_approval_attestation(
+                        target_dir=self.target,
+                        acceptance_contract=self.contract,
+                        expected_manifest_sha256=self.pin,
+                        model_id="fixture/embedding",
+                        revision=IMMUTABLE_REV,
+                        token_budget=10_000,
+                        input_template="{text}",
+                        tokenizer_contract=self.tokenizer_contract,
+                        tokenizer_loader=synthetic_loader,
+                        approval=broken,
+                    )
 
 
 class CompatCliExitCodeTests(unittest.TestCase):

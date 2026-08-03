@@ -357,14 +357,18 @@ class AcceptanceGateTests(unittest.TestCase):
                 runtime_identity=CLEAN_RUNTIME,
                 acceptance_contract=contract,
             )
+            smoke_manifest = smoke_target / academic.MANIFEST_FILE_NAME
             with self.assertRaisesRegex(
                 academic.ConversionError, "not acceptance-eligible"
             ):
                 academic.require_accepted_conversion(
-                    smoke_target / academic.MANIFEST_FILE_NAME,
+                    smoke_manifest,
                     acceptance_contract=contract,
+                    expected_manifest_sha256=sha256_file(smoke_manifest),
                 )
 
+            manifest_path = target / academic.MANIFEST_FILE_NAME
+            pinned = sha256_file(manifest_path)
             elements_path = target / "academic_zz" / "elements.jsonl"
             elements_path.write_text(
                 elements_path.read_text(encoding="utf-8") + "\n", encoding="utf-8"
@@ -373,8 +377,9 @@ class AcceptanceGateTests(unittest.TestCase):
                 academic.ConversionError, "does not match manifest hash"
             ):
                 academic.require_accepted_conversion(
-                    target / academic.MANIFEST_FILE_NAME,
+                    manifest_path,
                     acceptance_contract=contract,
+                    expected_manifest_sha256=pinned,
                 )
 
     def test_acceptance_contract_loader_validates(self):
