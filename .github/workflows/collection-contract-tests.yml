@@ -11,9 +11,7 @@ on:
   pull_request:
     branches: [feature_ralph, dev]
   push:
-    branches:
-      - "feat/**"
-      - feature_ralph
+    branches: [feature_ralph]
 
 jobs:
   synthetic-tests:

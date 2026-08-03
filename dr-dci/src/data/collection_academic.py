@@ -29,6 +29,7 @@ import zipfile
 
 import yaml
 
+from src.data import tokenizer_runtime
 from src.data.collection_publication import (
     LockConflictError,
     PublicationError,
@@ -290,9 +291,11 @@ _MODULE_BASE = Path(__file__).resolve().parents[2]
 _CODE_IDENTITY_FILES = {
     "adapter": Path(__file__).resolve(),
     "publication": Path(__file__).resolve().parent / "collection_publication.py",
+    "tokenizer_runtime": Path(__file__).resolve().parent / "tokenizer_runtime.py",
     "collection_contract": _MODULE_BASE / "src" / "eval" / "collection_contract.py",
     "build_cli": _MODULE_BASE / "scripts" / "build_academic_collections.py",
     "compat_cli": _MODULE_BASE / "scripts" / "validate_chunk_model_compatibility.py",
+    "verify_cli": _MODULE_BASE / "scripts" / "verify_accepted_conversion.py",
     "alignment_schema": _MODULE_BASE
     / "config"
     / "collection_academic"
@@ -2252,23 +2255,45 @@ def validate_chunk_model_compatibility(
 # Retrieval approval attestation (frozen tokenizer; never a model/API call)
 # ---------------------------------------------------------------------------
 
-RETRIEVAL_APPROVAL_SCHEMA_VERSION = "academic.retrieval-approval-attestation.v2"
+
+RETRIEVAL_APPROVAL_SCHEMA_VERSION = "academic.retrieval-approval-attestation.v3"
 ATTESTATION_FILE_SUFFIX = ".sha256"
+IMMUTABLE_CONTENT_ID_RE = re.compile(r"^([0-9a-f]{40}|[0-9a-f]{64})$")
+TOKENIZER_OPTION_KEYS = {
+    "add_special_tokens",
+    "truncation",
+    "padding",
+    "max_length",
+    "normalization",
+}
+
+
+def _immutable_content_id(value: Any, name: str) -> str:
+    """A movable tag string is never an immutable identity.
+
+    Only a full lowercase git commit SHA (40 hex) or a content digest
+    (64 hex) is accepted.
+    """
+    identifier = _nonempty_str(value, name)
+    _require(
+        bool(IMMUTABLE_CONTENT_ID_RE.fullmatch(identifier)),
+        f"{name} must be an immutable content identifier "
+        "(full 40-hex commit SHA or 64-hex content digest), "
+        f"got {identifier!r}",
+    )
+    return identifier
 
 
 def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
     """Validate the frozen tokenizer identity and tokenization options.
 
-    The gate constructs the token counter from this contract; an unrelated
-    caller-provided callable is never an adequate production contract.
+    The gates construct the token counter from this contract via
+    ``src.data.tokenizer_runtime`` — an arbitrary caller-provided loader is
+    never accepted in production.
     """
     _require(isinstance(value, dict), "tokenizer contract must be a mapping")
     _nonempty_str(value.get("tokenizer_id"), "tokenizer_contract.tokenizer_id")
-    revision = _nonempty_str(value.get("revision"), "tokenizer_contract.revision")
-    _require(
-        revision.lower() not in {"main", "master", "latest", "unknown"},
-        "tokenizer_contract.revision must be immutable",
-    )
+    _immutable_content_id(value.get("revision"), "tokenizer_contract.revision")
     _nonempty_str(value.get("tokenizer_class"), "tokenizer_contract.tokenizer_class")
     _require(
         value.get("trust_remote_code") is False,
@@ -2279,6 +2304,11 @@ def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
     )
     options = value.get("options")
     _require(isinstance(options, dict), "tokenizer_contract.options must be a mapping")
+    _require(
+        set(options) == TOKENIZER_OPTION_KEYS,
+        "tokenizer_contract.options must define exactly "
+        f"{sorted(TOKENIZER_OPTION_KEYS)}; got {sorted(options)}",
+    )
     _require(
         isinstance(options.get("add_special_tokens"), bool),
         "tokenizer_contract.options.add_special_tokens must be a boolean",
@@ -2296,11 +2326,19 @@ def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
         options.get("max_length") is None,
         "tokenizer_contract.options.max_length must be null",
     )
+    _require(
+        options.get("normalization") == tokenizer_runtime.NORMALIZATION_TOKENIZER_BUILTIN,
+        "tokenizer_contract.options.normalization must be "
+        f"{tokenizer_runtime.NORMALIZATION_TOKENIZER_BUILTIN!r} (only the "
+        "normalizer frozen inside the snapshot files; external "
+        "pre-normalization is not allowed)",
+    )
     files = value.get("files")
     _require(
         isinstance(files, list) and bool(files),
         "tokenizer_contract.files must be a non-empty inventory",
     )
+    seen_paths: set[str] = set()
     for index, entry in enumerate(files):
         _require(
             isinstance(entry, dict), f"tokenizer_contract.files[{index}] must be a mapping"
@@ -2309,9 +2347,15 @@ def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
         parts = Path(path).parts
         _require(
             not Path(path).is_absolute()
+            and "\\" not in path
             and all(part not in ("", ".", "..") for part in parts),
             f"tokenizer_contract.files[{index}].path must be a safe relative path",
         )
+        _require(
+            path not in seen_paths,
+            f"tokenizer_contract.files[{index}].path is duplicated: {path!r}",
+        )
+        seen_paths.add(path)
         _require(
             isinstance(entry.get("bytes"), int) and entry["bytes"] > 0,
             f"tokenizer_contract.files[{index}].bytes must be positive",
@@ -2327,13 +2371,40 @@ def _validate_tokenizer_contract(value: Any) -> dict[str, Any]:
 def _verify_tokenizer_snapshot(
     contract: dict[str, Any], *, snapshot_dir: Path | None = None
 ) -> Path:
-    """Verify the local tokenizer snapshot against the frozen file inventory."""
+    """Verify the snapshot tree exactly matches the frozen file inventory.
+
+    Every inventoried file must exist with matching bytes/SHA-256, no
+    symlinked components are allowed, every resolved file must stay under
+    the resolved snapshot root, and any file NOT in the inventory is
+    rejected — an unlisted behavior-affecting file (for example an extra
+    ``special_tokens_map.json``) fails loud. Returns the resolved snapshot
+    root, which is the ONLY path the production loader receives.
+    """
     snapshot = Path(snapshot_dir) if snapshot_dir else Path(contract["local_snapshot_path"])
     _require(snapshot.is_dir(), f"tokenizer snapshot directory missing: {snapshot}")
-    for entry in contract["files"]:
-        path = snapshot / entry["path"]
+    _require(
+        not snapshot.is_symlink(),
+        f"tokenizer snapshot root is a symlink: {snapshot}",
+    )
+    resolved_root = snapshot.resolve(strict=True)
+    inventory = {entry["path"]: entry for entry in contract["files"]}
+    for relative, entry in sorted(inventory.items()):
+        current = snapshot
+        for part in Path(relative).parts:
+            current = current / part
+            _require(
+                not current.is_symlink(),
+                f"tokenizer file path contains a symlink component: {current}",
+            )
+        path = snapshot / relative
         _require(path.is_file(), f"tokenizer file missing: {path}")
-        _require(not path.is_symlink(), f"tokenizer file is a symlink: {path}")
+        resolved = path.resolve()
+        try:
+            resolved.relative_to(resolved_root)
+        except ValueError as error:
+            raise ConversionError(
+                f"tokenizer file escapes the snapshot root: {path}"
+            ) from error
         actual_bytes = path.stat().st_size
         _require(
             actual_bytes == entry["bytes"],
@@ -2346,20 +2417,83 @@ def _verify_tokenizer_snapshot(
             f"tokenizer file sha256 mismatch: {path} "
             f"expected={entry['sha256']} actual={actual_sha}",
         )
-    return snapshot
+    actual_files = sorted(
+        str(path.relative_to(snapshot))
+        for path in snapshot.rglob("*")
+        if path.is_file() or path.is_symlink()
+    )
+    extras = sorted(set(actual_files) - set(inventory))
+    _require(
+        not extras,
+        "tokenizer snapshot contains files that are not in the frozen "
+        f"inventory: {extras[:5]}",
+    )
+    return resolved_root
 
 
 def _validate_approval(value: Any) -> dict[str, Any]:
-    """The approval must reference a reviewed artifact, not a free-form string."""
+    """Structural validation of the reviewed-approval reference."""
     _require(isinstance(value, dict), "approval must be a mapping")
     _nonempty_str(value.get("approved_by"), "approval.approved_by")
-    _nonempty_str(value.get("approval_ref"), "approval.approval_ref")
+    ref = _nonempty_str(value.get("approval_ref"), "approval.approval_ref")
+    parts = Path(ref).parts
+    _require(
+        not Path(ref).is_absolute()
+        and "\\" not in ref
+        and all(part not in ("", ".", "..") for part in parts),
+        "approval.approval_ref must be a safe path relative to the approval root",
+    )
+    _require(
+        isinstance(value.get("bytes"), int) and value["bytes"] > 0,
+        "approval.bytes must be a positive integer",
+    )
     digest = value.get("approval_artifact_sha256")
     _require(
         isinstance(digest, str) and bool(SHA256_RE.fullmatch(digest)),
         "approval.approval_artifact_sha256 must be lowercase SHA-256",
     )
     return value
+
+
+def _verify_approval_artifact(
+    approval: dict[str, Any], approval_root: Path
+) -> Path:
+    """The reviewed approval artifact must actually exist and match its hash."""
+    approval_root = Path(approval_root)
+    _require(
+        approval_root.is_dir(),
+        f"approval root directory missing: {approval_root}",
+    )
+    resolved_root = approval_root.resolve(strict=True)
+    current = approval_root
+    for part in Path(approval["approval_ref"]).parts:
+        current = current / part
+        _require(
+            not current.is_symlink(),
+            f"approval artifact path contains a symlink component: {current}",
+        )
+    path = approval_root / approval["approval_ref"]
+    _require(path.is_file(), f"approval artifact missing: {path}")
+    resolved = path.resolve()
+    try:
+        resolved.relative_to(resolved_root)
+    except ValueError as error:
+        raise ConversionError(
+            f"approval artifact escapes the approval root: {path}"
+        ) from error
+    actual_bytes = path.stat().st_size
+    _require(
+        actual_bytes == approval["bytes"],
+        f"approval artifact bytes mismatch: {path} "
+        f"expected={approval['bytes']} actual={actual_bytes}",
+    )
+    actual_sha = sha256_file(path)
+    _require(
+        actual_sha == approval["approval_artifact_sha256"],
+        f"approval artifact sha256 mismatch: {path} "
+        f"expected={approval['approval_artifact_sha256']} actual={actual_sha}",
+    )
+    return path
 
 
 def _extract_input_ids(encoding: Any) -> list[int]:
@@ -2444,15 +2578,24 @@ def _scan_chunk_tokens(
     input_template: str,
     token_budget: int,
 ) -> dict[str, Any]:
+    """Scan every rendered chunk and bind a per-chunk token-count digest.
+
+    The digest hashes ``<chunk_id>:<count>`` lines in the deterministic
+    artifact order, so a substitute counter that merely reproduces the
+    attested total and maximum (for example one emitting a constant length)
+    still fails the gate.
+    """
     total = 0
     violations = 0
     max_tokens = 0
+    digest = hashlib.sha256()
     for collection_id in sorted(manifest["collections"]):
         entry = manifest["collections"][collection_id]["artifacts"]["chunks"]
         path = _confined_artifact_path(target, collection_id, "chunks", entry)
         for record in _iter_jsonl(path):
             rendered = _render_input_template(input_template, str(record.get("text", "")))
             count = _token_count(tokenizer, rendered)
+            digest.update(f"{record.get('chunk_id')}:{count}\n".encode("utf-8"))
             total += 1
             max_tokens = max(max_tokens, count)
             if count > token_budget:
@@ -2461,6 +2604,7 @@ def _scan_chunk_tokens(
         "chunks_total": total,
         "max_tokens_observed": max_tokens,
         "token_violations": violations,
+        "token_count_digest_sha256": digest.hexdigest(),
     }
 
 
@@ -2470,11 +2614,7 @@ def attestation_sha256(attestation: dict[str, Any]) -> str:
 
 
 def write_retrieval_attestation(attestation: dict[str, Any], path: Path) -> Path:
-    """Serialize the attestation deterministically and emit a SHA-256 sidecar.
-
-    The sidecar records the canonical body hash (`attestation_sha256`), which
-    is also the value callers must pin at the gate.
-    """
+    """Serialize the attestation deterministically and emit a SHA-256 sidecar."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     serialized = (
@@ -2516,40 +2656,42 @@ def build_retrieval_approval_attestation(
     token_budget: int,
     input_template: str,
     tokenizer_contract: dict[str, Any],
-    tokenizer_loader: Callable[[dict[str, Any]], Callable[[str], Any]],
     approval: dict[str, Any],
+    approval_root: Path,
     snapshot_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Build the attestation binding corpus, tokenizer identity, and result.
 
     The corpus must first pass ``require_accepted_conversion`` with the
-    pinned manifest SHA-256. The token counter is constructed by
-    ``tokenizer_loader`` from the validated tokenizer contract only after
-    the local snapshot file inventory is verified; token counts are
-    ``len(BatchEncoding.input_ids)`` for each rendered input, so the input
-    template and the contract's special-token policy are included in the
-    budget. Local tokenization only — never a model or API call.
+    pinned manifest SHA-256. The token counter is constructed INTERNALLY by
+    ``tokenizer_runtime.load_frozen_tokenizer`` from the verified resolved
+    snapshot root — never from a caller-provided callable. The reviewed
+    approval artifact is located under ``approval_root`` and its bytes and
+    SHA-256 are verified. Token counts are ``len(BatchEncoding.input_ids)``
+    per rendered input and a per-chunk count digest is recorded. Local
+    tokenization only — never a model or API call.
     """
     target = Path(target_dir)
     _nonempty_str(model_id, "model_id")
-    revision = _nonempty_str(revision, "revision")
-    _require(
-        revision.lower() not in {"main", "master", "latest", "unknown"},
-        "revision must be immutable",
-    )
+    revision = _immutable_content_id(revision, "revision")
     _require(
         isinstance(token_budget, int) and token_budget > 0,
         "token_budget must be a positive integer",
     )
     tokenizer_contract = _validate_tokenizer_contract(tokenizer_contract)
-    _verify_tokenizer_snapshot(tokenizer_contract, snapshot_dir=snapshot_dir)
+    snapshot_root = _verify_tokenizer_snapshot(
+        tokenizer_contract, snapshot_dir=snapshot_dir
+    )
     approval = _validate_approval(approval)
+    _verify_approval_artifact(approval, approval_root)
     manifest = require_accepted_conversion(
         target / MANIFEST_FILE_NAME,
         acceptance_contract=acceptance_contract,
         expected_manifest_sha256=expected_manifest_sha256,
     )
-    tokenizer = tokenizer_loader(tokenizer_contract)
+    tokenizer = tokenizer_runtime.load_frozen_tokenizer(
+        tokenizer_contract, snapshot_root
+    )
     scan = _scan_chunk_tokens(
         target,
         manifest,
@@ -2588,18 +2730,21 @@ def require_retrieval_approved(
     acceptance_contract: dict[str, Any],
     expected_manifest_sha256: str,
     expected_attestation_sha256: str,
-    tokenizer_loader: Callable[[dict[str, Any]], Callable[[str], Any]],
+    approval_root: Path,
     snapshot_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Fail-loud gate before any retrieval use of the chunk corpus.
 
-    Requires an externally pinned attestation SHA-256 (canonical body hash)
-    and manifest SHA-256; recomputes both. Verifies the frozen tokenizer
-    identity (ID, immutable revision, snapshot file inventory, class,
-    remote-code policy, and normalization/special-token/truncation/padding
-    options), constructs the token counter from that verified contract via
-    ``tokenizer_loader``, and re-counts every rendered chunk as
-    ``len(BatchEncoding.input_ids)``. Approval flags are never trusted.
+    Requires externally pinned attestation and manifest SHA-256 values and
+    recomputes both. Verifies the frozen tokenizer identity (immutable
+    content-id revision, exact snapshot file inventory with no extras or
+    symlinks, class, remote-code policy, and the exact frozen option keys
+    including normalization), verifies the reviewed approval artifact under
+    ``approval_root``, constructs the token counter INTERNALLY from the
+    verified resolved snapshot root, and re-counts every rendered chunk —
+    requiring zero violations and exact agreement with the attested totals,
+    maximum, AND per-chunk token-count digest. Approval flags are never
+    trusted; arbitrary caller-provided token counters are never accepted.
     """
     attestation = _load_attestation(attestation)
     _require(
@@ -2622,13 +2767,10 @@ def require_retrieval_approved(
         and attestation.get("token_violations") == 0,
         "attestation does not record an approved zero-violation result",
     )
-    _validate_approval(attestation.get("approval"))
+    approval = _validate_approval(attestation.get("approval"))
+    _verify_approval_artifact(approval, approval_root)
     _nonempty_str(attestation.get("model_id"), "attestation model_id")
-    revision = _nonempty_str(attestation.get("revision"), "attestation revision")
-    _require(
-        revision.lower() not in {"main", "master", "latest", "unknown"},
-        "attestation revision must be immutable",
-    )
+    _immutable_content_id(attestation.get("revision"), "attestation revision")
     token_budget = attestation.get("token_budget")
     _require(
         isinstance(token_budget, int) and token_budget > 0,
@@ -2647,8 +2789,15 @@ def require_retrieval_approved(
         attestation.get("code_identity") == code_identity_hashes(),
         "attestation code identity does not match the current validator code",
     )
+    recorded_digest = attestation.get("token_count_digest_sha256")
+    _require(
+        isinstance(recorded_digest, str) and bool(SHA256_RE.fullmatch(recorded_digest)),
+        "attestation token_count_digest_sha256 must be lowercase SHA-256",
+    )
     tokenizer_contract = _validate_tokenizer_contract(attestation.get("tokenizer"))
-    _verify_tokenizer_snapshot(tokenizer_contract, snapshot_dir=snapshot_dir)
+    snapshot_root = _verify_tokenizer_snapshot(
+        tokenizer_contract, snapshot_dir=snapshot_dir
+    )
 
     target = Path(target_dir)
     manifest_path = target / MANIFEST_FILE_NAME
@@ -2689,7 +2838,9 @@ def require_retrieval_approved(
             f"chunk artifact does not match the attested hash: {path}",
         )
 
-    tokenizer = tokenizer_loader(tokenizer_contract)
+    tokenizer = tokenizer_runtime.load_frozen_tokenizer(
+        tokenizer_contract, snapshot_root
+    )
     scan = _scan_chunk_tokens(
         target,
         manifest,
@@ -2708,5 +2859,11 @@ def require_retrieval_approved(
         "recomputed token scan does not match the attestation: "
         f"recomputed={scan} attested_total={attestation.get('chunks_total')} "
         f"attested_max={attestation.get('max_tokens_observed')}",
+    )
+    _require(
+        scan["token_count_digest_sha256"] == recorded_digest,
+        "recomputed per-chunk token-count digest does not match the "
+        "attestation: a substitute token counter cannot reproduce the "
+        "frozen tokenizer's per-chunk counts",
     )
     return attestation

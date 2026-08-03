@@ -1,9 +1,10 @@
 """RED-to-GREEN tests for the recomputing acceptance/retrieval gates.
 
-Covers the independent-review counterexamples: BatchEncoding field-count
-false passes, optional manifest pins, artifact path escapes, unproven
-tokenizer identity, and mutable attestation metadata. All fixtures are
-synthetic; no private data and no model/API calls.
+Covers the independent-review counterexamples across rounds: BatchEncoding
+field-count false passes, optional manifest pins, artifact path escapes,
+arbitrary tokenizer-loader bypasses (constant-length counters), floating
+revisions, unlisted snapshot files, and unverified approval artifacts. All
+fixtures are synthetic; no private data and no model/API calls.
 """
 
 import json
@@ -13,6 +14,7 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest import mock
 
 import yaml
 
@@ -21,6 +23,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.data import collection_academic as academic
+from src.data import tokenizer_runtime
 from src.eval.collection_contract import sha256_file
 
 from tests.test_academic_collection_alignment import build_fixture, run_convert
@@ -54,6 +57,7 @@ def make_tokenizer_contract(root: Path, *, add_special_tokens: bool = True) -> d
             "truncation": False,
             "padding": False,
             "max_length": None,
+            "normalization": tokenizer_runtime.NORMALIZATION_TOKENIZER_BUILTIN,
         },
         "files": [
             {
@@ -66,7 +70,8 @@ def make_tokenizer_contract(root: Path, *, add_special_tokens: bool = True) -> d
     }
 
 
-def synthetic_loader(contract: dict):
+def synthetic_loader_factory(contract: dict, snapshot_root: Path):
+    """Test-only stand-in for tokenizer_runtime.load_frozen_tokenizer."""
     add_special = contract["options"]["add_special_tokens"]
 
     def encode(text: str) -> FakeBatchEncoding:
@@ -78,6 +83,20 @@ def synthetic_loader(contract: dict):
         )
 
     return encode
+
+
+def constant_count_loader_factory(count: int):
+    """The review's bypass reproduction: a constant-length token counter."""
+
+    def factory(contract: dict, snapshot_root: Path):
+        def encode(text: str) -> FakeBatchEncoding:
+            return FakeBatchEncoding(
+                {"input_ids": [1] * count, "attention_mask": [1] * count}
+            )
+
+        return encode
+
+    return factory
 
 
 def rewrite_manifest(target: Path, mutate) -> Path:
@@ -393,21 +412,29 @@ class CodeIdentityCoverageTests(unittest.TestCase):
     def local_imports(module_path: Path, seen: set[str]) -> set[str]:
         source = module_path.read_text(encoding="utf-8")
         found = set()
-        for match in re.finditer(
-            r"^(?:from\s+(src(?:\.\w+)+)\s+import|import\s+(src(?:\.\w+)+))",
-            source,
-            re.MULTILINE,
-        ):
-            found.add(match.group(1) or match.group(2))
+        for match in re.finditer(r"^import\s+(src[\w.]+)", source, re.MULTILINE):
+            found.add(match.group(1))
+        from_imports = re.findall(
+            r"^from\s+(src[\w.]*)\s+import\s+\(([^)]*)\)", source, re.MULTILINE
+        ) + re.findall(
+            r"^from\s+(src[\w.]*)\s+import\s+([^(\n]+)$", source, re.MULTILINE
+        )
+        for module, names in from_imports:
+            found.add(module)
+            for name in names.split(","):
+                name = name.strip().split(" as ")[0].strip()
+                if name:
+                    found.add(f"{module}.{name}")
         modules = set()
         for dotted in found:
+            path = ROOT / (dotted.replace(".", "/") + ".py")
+            if not path.is_file():
+                continue
             if dotted in seen:
                 continue
             seen.add(dotted)
-            path = ROOT / (dotted.replace(".", "/") + ".py")
             modules.add(dotted)
-            if path.is_file():
-                modules |= CodeIdentityCoverageTests.local_imports(path, seen)
+            modules |= CodeIdentityCoverageTests.local_imports(path, seen)
         return modules
 
     def test_every_local_src_import_is_in_code_identity(self):
@@ -427,11 +454,20 @@ class CodeIdentityCoverageTests(unittest.TestCase):
                 f"behavior-affecting module {dotted} is missing from "
                 "_CODE_IDENTITY_FILES",
             )
+        self.assertIn("src.data.tokenizer_runtime", dotted_modules)
 
     def test_contract_module_and_clis_are_covered(self):
         keys = set(academic._CODE_IDENTITY_FILES)
         self.assertLessEqual(
-            {"adapter", "publication", "collection_contract", "build_cli", "compat_cli"},
+            {
+                "adapter",
+                "publication",
+                "tokenizer_runtime",
+                "collection_contract",
+                "build_cli",
+                "compat_cli",
+                "verify_cli",
+            },
             keys,
         )
         for name, path in academic._CODE_IDENTITY_FILES.items():
@@ -446,13 +482,26 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
     def setUp(self):
         super().setUp()
         self.tokenizer_contract = make_tokenizer_contract(self.root)
+        self.approval_root = self.root / "approvals"
+        approval_file = self.approval_root / "reviews" / "PR13_APPROVAL.md"
+        approval_file.parent.mkdir(parents=True, exist_ok=True)
+        approval_file.write_text(
+            "# Synthetic reviewed approval record\n", encoding="utf-8"
+        )
         self.approval = {
             "approved_by": "owner",
-            "approval_ref": "reviews/PETER_PR13_APPROVAL_PLACEHOLDER.md",
-            "approval_artifact_sha256": "a" * 64,
+            "approval_ref": "reviews/PR13_APPROVAL.md",
+            "bytes": approval_file.stat().st_size,
+            "approval_artifact_sha256": sha256_file(approval_file),
         }
+        patcher = mock.patch.object(
+            tokenizer_runtime, "TEST_ONLY_LOADER_OVERRIDE", synthetic_loader_factory
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
-    def attest(self, *, token_budget: int, tokenizer_contract: dict | None = None):
+    def attest(self, *, token_budget: int, tokenizer_contract: dict | None = None,
+               approval: dict | None = None):
         return academic.build_retrieval_approval_attestation(
             target_dir=self.target,
             acceptance_contract=self.contract,
@@ -462,8 +511,8 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
             token_budget=token_budget,
             input_template="passage: {text}",
             tokenizer_contract=tokenizer_contract or self.tokenizer_contract,
-            tokenizer_loader=synthetic_loader,
-            approval=self.approval,
+            approval=approval or self.approval,
+            approval_root=self.approval_root,
         )
 
     def require(self, attestation, *, attestation_pin: str | None = None):
@@ -481,12 +530,15 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
                     else json.loads(Path(attestation).read_text(encoding="utf-8"))
                 )
             ),
-            tokenizer_loader=synthetic_loader,
+            approval_root=self.approval_root,
         )
 
     def test_approved_attestation_passes_gate_from_file_with_sidecar(self):
         attestation = self.attest(token_budget=10_000)
         self.assertEqual(attestation["result"], "approved")
+        self.assertRegex(
+            attestation["token_count_digest_sha256"], r"^[0-9a-f]{64}$"
+        )
         path = academic.write_retrieval_attestation(
             attestation, self.root / "attestation.json"
         )
@@ -496,6 +548,138 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
         verified = self.require(path, attestation_pin=pin)
         self.assertEqual(verified["result"], "approved")
 
+    def test_constant_length_bypass_loader_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        bypass = constant_count_loader_factory(attestation["max_tokens_observed"])
+        with mock.patch.object(
+            tokenizer_runtime, "TEST_ONLY_LOADER_OVERRIDE", bypass
+        ):
+            with self.assertRaisesRegex(
+                academic.ConversionError, "token-count digest does not match"
+            ):
+                self.require(attestation)
+
+    def test_production_path_refuses_arbitrary_loader(self):
+        import inspect
+
+        for gate in (
+            academic.build_retrieval_approval_attestation,
+            academic.require_retrieval_approved,
+        ):
+            parameters = inspect.signature(gate).parameters
+            self.assertFalse(
+                [name for name in parameters if "loader" in name or "tokenizer_fn" in name],
+                f"{gate.__name__} must not accept a caller-provided loader",
+            )
+        with mock.patch.object(tokenizer_runtime, "TEST_ONLY_LOADER_OVERRIDE", None):
+            with self.assertRaises(
+                (tokenizer_runtime.TokenizerRuntimeError, ValueError)
+            ):
+                self.attest(token_budget=10_000)
+
+    def test_floating_revision_rejected(self):
+        floating = json.loads(json.dumps(self.tokenizer_contract))
+        floating["revision"] = "floating-release-tag"
+        with self.assertRaisesRegex(
+            academic.ConversionError, "immutable content identifier"
+        ):
+            self.attest(token_budget=10_000, tokenizer_contract=floating)
+        with self.assertRaisesRegex(
+            academic.ConversionError, "immutable content identifier"
+        ):
+            academic.build_retrieval_approval_attestation(
+                target_dir=self.target,
+                acceptance_contract=self.contract,
+                expected_manifest_sha256=self.pin,
+                model_id="fixture/embedding",
+                revision="v1.2.3",
+                token_budget=10_000,
+                input_template="{text}",
+                tokenizer_contract=self.tokenizer_contract,
+                approval=self.approval,
+                approval_root=self.approval_root,
+            )
+
+    def test_unlisted_extra_tokenizer_file_rejected(self):
+        attestation = self.attest(token_budget=10_000)
+        snapshot = Path(self.tokenizer_contract["local_snapshot_path"])
+        (snapshot / "special_tokens_map.json").write_bytes(b"{}")
+        with self.assertRaisesRegex(
+            academic.ConversionError, "not in the frozen inventory"
+        ):
+            self.require(attestation)
+        with self.assertRaisesRegex(
+            academic.ConversionError, "not in the frozen inventory"
+        ):
+            self.attest(token_budget=10_000)
+
+    def test_symlinked_tokenizer_file_rejected(self):
+        attestation = self.attest(token_budget=10_000)
+        snapshot = Path(self.tokenizer_contract["local_snapshot_path"])
+        moved = self.root / "moved-tokenizer.json"
+        original = snapshot / "tokenizer.json"
+        moved.write_bytes(original.read_bytes())
+        original.unlink()
+        original.symlink_to(moved)
+        with self.assertRaisesRegex(academic.ConversionError, "symlink"):
+            self.require(attestation)
+
+    def test_option_keys_must_be_exact(self):
+        missing = json.loads(json.dumps(self.tokenizer_contract))
+        del missing["options"]["normalization"]
+        with self.assertRaisesRegex(academic.ConversionError, "exactly"):
+            self.attest(token_budget=10_000, tokenizer_contract=missing)
+
+        extra = json.loads(json.dumps(self.tokenizer_contract))
+        extra["options"]["lowercase"] = True
+        with self.assertRaisesRegex(academic.ConversionError, "exactly"):
+            self.attest(token_budget=10_000, tokenizer_contract=extra)
+
+        wrong = json.loads(json.dumps(self.tokenizer_contract))
+        wrong["options"]["normalization"] = "external"
+        with self.assertRaisesRegex(academic.ConversionError, "normalization"):
+            self.attest(token_budget=10_000, tokenizer_contract=wrong)
+
+    def test_tokenizer_snapshot_tamper_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        snapshot = Path(self.tokenizer_contract["local_snapshot_path"])
+        (snapshot / "tokenizer.json").write_bytes(b"mutated-tokenizer")
+        with self.assertRaisesRegex(
+            academic.ConversionError, "tokenizer file (sha256|bytes) mismatch"
+        ):
+            self.require(attestation)
+
+    def test_approval_artifact_is_actually_verified(self):
+        missing = dict(self.approval, approval_ref="reviews/DOES_NOT_EXIST.md")
+        with self.assertRaisesRegex(academic.ConversionError, "approval artifact missing"):
+            self.attest(token_budget=10_000, approval=missing)
+
+        wrong_hash = dict(self.approval, approval_artifact_sha256="f" * 64)
+        with self.assertRaisesRegex(academic.ConversionError, "sha256 mismatch"):
+            self.attest(token_budget=10_000, approval=wrong_hash)
+
+        for bad_ref in ("../escape.md", "/etc/passwd"):
+            with self.subTest(bad_ref=bad_ref):
+                broken = dict(self.approval, approval_ref=bad_ref)
+                with self.assertRaisesRegex(academic.ConversionError, "safe path"):
+                    self.attest(token_budget=10_000, approval=broken)
+
+    def test_symlinked_approval_artifact_rejected(self):
+        approval_file = self.approval_root / "reviews" / "PR13_APPROVAL.md"
+        moved = self.root / "moved-approval.md"
+        moved.write_bytes(approval_file.read_bytes())
+        approval_file.unlink()
+        approval_file.symlink_to(moved)
+        with self.assertRaisesRegex(academic.ConversionError, "symlink"):
+            self.attest(token_budget=10_000)
+
+    def test_approval_tamper_after_attestation_fails_gate(self):
+        attestation = self.attest(token_budget=10_000)
+        approval_file = self.approval_root / "reviews" / "PR13_APPROVAL.md"
+        approval_file.write_text("tampered approval\n", encoding="utf-8")
+        with self.assertRaisesRegex(academic.ConversionError, "mismatch"):
+            self.require(attestation)
+
     def test_attestation_pin_is_mandatory_and_validated(self):
         attestation = self.attest(token_budget=10_000)
         with self.assertRaises(TypeError):
@@ -504,7 +688,7 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
                 target_dir=self.target,
                 acceptance_contract=self.contract,
                 expected_manifest_sha256=self.pin,
-                tokenizer_loader=synthetic_loader,
+                approval_root=self.approval_root,
             )
         with self.assertRaisesRegex(academic.ConversionError, "lowercase SHA-256"):
             self.require(attestation, attestation_pin="not-a-sha")
@@ -515,19 +699,17 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
         with self.assertRaisesRegex(academic.ConversionError, "approved zero-violation"):
             self.require(attestation)
 
-    def test_model_id_tamper_fails_against_pin(self):
+    def test_model_id_and_approved_by_tamper_fail_against_pin(self):
         attestation = self.attest(token_budget=10_000)
         pin = academic.attestation_sha256(attestation)
-        attestation["model_id"] = "swapped/model"
+        forged = json.loads(json.dumps(attestation))
+        forged["model_id"] = "swapped/model"
         with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
-            self.require(attestation, attestation_pin=pin)
-
-    def test_approved_by_tamper_fails_against_pin(self):
-        attestation = self.attest(token_budget=10_000)
-        pin = academic.attestation_sha256(attestation)
-        attestation["approval"] = dict(attestation["approval"], approved_by="intruder")
+            self.require(forged, attestation_pin=pin)
+        forged = json.loads(json.dumps(attestation))
+        forged["approval"]["approved_by"] = "intruder"
         with self.assertRaisesRegex(academic.ConversionError, "pinned SHA-256"):
-            self.require(attestation, attestation_pin=pin)
+            self.require(forged, attestation_pin=pin)
 
     def test_sidecar_tamper_fails(self):
         attestation = self.attest(token_budget=10_000)
@@ -539,43 +721,18 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
         with self.assertRaisesRegex(academic.ConversionError, "sidecar mismatch"):
             self.require(path, attestation_pin=academic.attestation_sha256(attestation))
 
+    def test_digest_tamper_with_recomputed_pin_still_fails(self):
+        attestation = self.attest(token_budget=10_000)
+        attestation["token_count_digest_sha256"] = "f" * 64
+        with self.assertRaisesRegex(
+            academic.ConversionError, "token-count digest does not match"
+        ):
+            self.require(attestation)
+
     def test_template_tamper_with_recomputed_pin_still_fails(self):
         attestation = self.attest(token_budget=10_000)
         attestation["input_template"] = "passage: {text} extra"
         with self.assertRaisesRegex(academic.ConversionError, "template hash"):
-            self.require(attestation)
-
-    def test_tokenizer_snapshot_tamper_fails(self):
-        attestation = self.attest(token_budget=10_000)
-        snapshot = Path(self.tokenizer_contract["local_snapshot_path"])
-        (snapshot / "tokenizer.json").write_bytes(b"mutated-tokenizer")
-        with self.assertRaisesRegex(
-            academic.ConversionError, "tokenizer file (sha256|bytes) mismatch"
-        ):
-            self.require(attestation)
-
-    def test_tokenizer_identity_and_options_mismatch_fail(self):
-        mutable = json.loads(json.dumps(self.tokenizer_contract))
-        mutable["revision"] = "main"
-        with self.assertRaisesRegex(academic.ConversionError, "immutable"):
-            self.attest(token_budget=10_000, tokenizer_contract=mutable)
-
-        truncating = json.loads(json.dumps(self.tokenizer_contract))
-        truncating["options"]["truncation"] = True
-        with self.assertRaisesRegex(academic.ConversionError, "truncation must be false"):
-            self.attest(token_budget=10_000, tokenizer_contract=truncating)
-
-        remote = json.loads(json.dumps(self.tokenizer_contract))
-        remote["trust_remote_code"] = True
-        with self.assertRaisesRegex(academic.ConversionError, "trust_remote_code"):
-            self.attest(token_budget=10_000, tokenizer_contract=remote)
-
-        attestation = self.attest(token_budget=10_000)
-        attestation["tokenizer"] = json.loads(json.dumps(attestation["tokenizer"]))
-        attestation["tokenizer"]["files"][0]["sha256"] = "f" * 64
-        with self.assertRaisesRegex(
-            academic.ConversionError, "tokenizer file sha256 mismatch"
-        ):
             self.require(attestation)
 
     def test_special_token_overhead_is_included_in_budget(self):
@@ -595,27 +752,6 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
         under = self.attest(token_budget=with_special["max_tokens_observed"] - 1)
         self.assertEqual(under["result"], "rejected")
 
-    def test_wrong_loader_scan_mismatch_fails(self):
-        attestation = self.attest(token_budget=100_000)
-
-        def char_loader(contract):
-            def encode(text: str) -> FakeBatchEncoding:
-                return FakeBatchEncoding({"input_ids": list(range(len(text)))})
-
-            return encode
-
-        with self.assertRaisesRegex(
-            academic.ConversionError, "recomputed token scan does not match"
-        ):
-            academic.require_retrieval_approved(
-                attestation,
-                target_dir=self.target,
-                acceptance_contract=self.contract,
-                expected_manifest_sha256=self.pin,
-                expected_attestation_sha256=academic.attestation_sha256(attestation),
-                tokenizer_loader=char_loader,
-            )
-
     def test_tampered_chunks_fail_gate(self):
         attestation = self.attest(token_budget=10_000)
         chunk_path = self.target / "academic_zz" / "chunks.jsonl"
@@ -628,7 +764,7 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
     def test_code_identity_mismatch_fails_gate(self):
         attestation = self.attest(token_budget=10_000)
         attestation["code_identity"] = dict(
-            attestation["code_identity"], adapter="f" * 64
+            attestation["code_identity"], tokenizer_runtime="f" * 64
         )
         with self.assertRaisesRegex(academic.ConversionError, "code identity"):
             self.require(attestation)
@@ -653,30 +789,9 @@ class RetrievalApprovalTests(AcceptedTargetHarness):
                 token_budget=10_000,
                 input_template="{text}",
                 tokenizer_contract=self.tokenizer_contract,
-                tokenizer_loader=synthetic_loader,
                 approval=self.approval,
+                approval_root=self.approval_root,
             )
-
-    def test_approval_must_reference_reviewed_artifact(self):
-        for broken in (
-            {"approved_by": "owner"},
-            {"approved_by": "owner", "approval_ref": "x", "approval_artifact_sha256": "zz"},
-            "owner",
-        ):
-            with self.subTest(broken=broken):
-                with self.assertRaisesRegex(academic.ConversionError, "approval"):
-                    academic.build_retrieval_approval_attestation(
-                        target_dir=self.target,
-                        acceptance_contract=self.contract,
-                        expected_manifest_sha256=self.pin,
-                        model_id="fixture/embedding",
-                        revision=IMMUTABLE_REV,
-                        token_budget=10_000,
-                        input_template="{text}",
-                        tokenizer_contract=self.tokenizer_contract,
-                        tokenizer_loader=synthetic_loader,
-                        approval=broken,
-                    )
 
 
 class CompatCliExitCodeTests(unittest.TestCase):
@@ -743,6 +858,34 @@ class CompatCliExitCodeTests(unittest.TestCase):
             result = self.run_cli(chunks, approved_path)
             self.assertEqual(result.returncode, 4, result.stderr)
             self.assertIn("requires_rebuild", result.stdout)
+
+
+class VerifyCliTests(AcceptedTargetHarness):
+    def test_replay_cli_accepts_and_rejects(self):
+        contract_path = self.root / "contract.yaml"
+        contract_path.write_text(
+            yaml.safe_dump(self.contract, allow_unicode=True), encoding="utf-8"
+        )
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "verify_accepted_conversion.py"),
+            "--target",
+            str(self.target),
+            "--acceptance-contract",
+            str(contract_path),
+            "--expected-manifest-sha256",
+        ]
+        result = subprocess.run(
+            [*command, self.pin], capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('"status": "accepted"', result.stdout)
+
+        result = subprocess.run(
+            [*command, "f" * 64], capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("pinned SHA-256", result.stderr)
 
 
 if __name__ == "__main__":

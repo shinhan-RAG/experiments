@@ -197,37 +197,62 @@ comparison. Therefore:
 ## Retrieval approval attestation
 
 Retrieval use additionally requires an explicit attestation
-(`academic.retrieval-approval-attestation.v2`) built by
+(`academic.retrieval-approval-attestation.v3`) built by
 `build_retrieval_approval_attestation` on an acceptance-gated corpus (the
 mandatory manifest SHA-256 pin is required at build time too). It binds:
 the conversion manifest SHA-256 and run identity, every collection's chunks
 artifact path/records/SHA-256, the embedding model ID with an immutable
-revision, the frozen TOKENIZER contract — tokenizer ID, immutable revision,
-local snapshot path, per-file bytes/SHA-256 inventory, tokenizer class, a
-`trust_remote_code=false` policy, and the frozen
-normalization/special-token/truncation/padding/max-length options
-(truncation and padding must be false) — the input template (and its
-SHA-256), the token budget, the validator code-identity hashes, an approval
-record referencing a reviewed artifact (`approved_by`, `approval_ref`,
-`approval_artifact_sha256`), and the measured scan.
+content identifier, the frozen TOKENIZER contract, the input template (and
+its SHA-256), the token budget, the validator code-identity hashes, a
+verified approval record, and the measured scan including a deterministic
+PER-CHUNK token-count digest.
 
-Token counts are `len(BatchEncoding.input_ids)` for exactly one rendered
-sequence: the counter is constructed by a loader from the VERIFIED
-tokenizer contract (after the snapshot file inventory is re-hashed), and
-outputs that are not BatchEncoding-like, lack `input_ids`, are batched with
-more than one sequence, contain non-integer IDs, have inconsistent
-attention masks, or carry overflow/truncation markers all fail loud. The
-input template and the contract's special-token policy are therefore
-included in the budget. Local tokenization only — never a model/API call.
+Tokenizer identity is strict: tokenizer ID; a revision that must be a full
+immutable content identifier (40-hex commit SHA or 64-hex digest — movable
+tag strings are rejected); the local snapshot path with a complete per-file
+bytes/SHA-256 inventory where any UNLISTED file in the snapshot tree is
+rejected, symlinked components are rejected, and every resolved file must
+stay under the resolved snapshot root; the tokenizer class; a
+`trust_remote_code=false` policy; and the exact option-key set
+`add_special_tokens`/`truncation`/`padding`/`max_length`/`normalization`
+(truncation and padding must be false; normalization must be
+`tokenizer_builtin` — only the normalizer frozen inside the snapshot).
+
+The token counter is constructed INTERNALLY by
+`src/data/tokenizer_runtime.load_frozen_tokenizer` from the verified
+resolved snapshot root (`local_files_only=True`, `trust_remote_code=False`,
+declared class enforced) — the gates accept no caller-provided loader; the
+only injection seam is the committed-as-`None`, code-identity-bound
+`TEST_ONLY_LOADER_OVERRIDE` used by the synthetic tests. Token counts are
+`len(BatchEncoding.input_ids)` for exactly one rendered sequence; malformed,
+batched, truncated, or mask-inconsistent outputs fail loud, so the input
+template and special-token policy are included in the budget. The per-chunk
+digest hashes `<chunk_id>:<count>` lines in artifact order, so a substitute
+counter reproducing only the attested totals/maximum still fails. Local
+tokenization only — never a model/API call.
+
+The approval is verified, not merely referenced: `approval_ref` must be a
+safe relative path under the caller-supplied approval root (no `..`,
+absolute paths, or symlinked components), and the artifact's existence,
+bytes, and SHA-256 are recomputed at build AND at the gate.
 
 `write_retrieval_attestation` serializes the attestation deterministically
 and emits a SHA-256 sidecar; the canonical body hash is the value callers
 must pin. `require_retrieval_approved` is the fail-loud gate: the expected
 attestation SHA-256 AND the expected manifest SHA-256 are mandatory inputs,
-every hash binding (including tokenizer identity and snapshot files) is
-re-verified, `require_accepted_conversion` re-runs with the pin, and every
-rendered chunk is re-tokenized with zero violations plus exact agreement
-with the attested scan. Approval flags are never trusted on their own.
+every hash binding is re-verified, `require_accepted_conversion` re-runs
+with the pin, and every rendered chunk is re-tokenized requiring zero
+violations plus exact agreement with the attested totals, maximum, and
+per-chunk digest. Approval flags are never trusted on their own.
+
+## Full-run evidence replay
+
+`scripts/verify_accepted_conversion.py --target <preserved target>
+--expected-manifest-sha256 <pin>` is the controlled internal procedure that
+independently recomputes all artifact hashes and re-runs the semantic gate
+against the preserved private target (aggregates only on stdout). The
+preserved target location and retention owner are recorded in the evidence
+bundle's `evidence_manifest.json`.
 
 ## Continuous integration
 
