@@ -1,0 +1,98 @@
+# Part 5 확장 — 무추론(LLM-free) 라우팅 2종: self_routed / doc_first (종합보고서 §7 후속)
+#
+# 배경: 지금까지의 확정 사실 두 가지 사이의 빈칸을 메우는 실험이다.
+#   - 확정(oracle) 문서축 라우팅: R@20 1.00 만점 — 단, 실서비스에선 oracle이 없다.
+#   - LLM 추론 라우팅: 정확도 0.38(28지선다)~0.86이 그대로 품질 상한 — 6개 조건 전패.
+# 질문: oracle도 LLM도 없이, 라우팅 신호를 검색 신호 자체에서 얻으면 어디까지 가는가?
+#   self_routed — 1차 전역 dense top-k 청크들의 소속 문서(L1) 투표로 라우팅 결정,
+#                 같은 sims 위에서 매치 우선+전역 backfill 재정렬 (2차 임베딩 비용 0)
+#   doc_first   — 문서 파티션별 임베딩 centroid 28개와 질의 cosine으로 stage-1 문서 선택,
+#                 그 파티션 우선 재정렬 (doc_first_backfill=true → gold 미소실)
+#
+# 판정 기준 (shinhan-mixed 110k):
+#   라우팅 정확도 top1(top2): 격파 대상 = LLM 28지선다 0.38(0.42), 상한 = oracle 1.0
+#   R@20: dense 0.72 · hybrid 0.86 · LLM routed 0.52 · oracle routed 1.00
+#   → manifest.self_routing_accuracy에 자동 채점된다 (docaxis.oracle 맵 대조)
+#
+# 실행 절차 (KT Cloud, :8101 임베딩만 필요 — LLM 불필요):
+#   python run_experiment.py --part 5 --probe-only --config config/experiment_selfroute.yaml
+#   # 규모 축: --subset 50000 / --subset 110000
+#
+# 해석 규칙:
+#   - 핵심 비교는 dense vs self_routed/doc_first. taxonomy_routed(oracle 맵)는 상한 참조선.
+#   - 준중복 잠식이 투표를 오염시키는지: probe row의 self_route.votes와
+#     manifest의 legal_top1_share로 진단한다.
+#   - 순환성 유의: 1차 dense가 이미 정답이면 이득 0 — 개선 여지는 dense 실패분(~28%)에 국한.
+
+seed: 42
+
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "http://localhost:8101/v1/embeddings"
+    name: "Alibaba-NLP/gte-Qwen2-1.5B-instruct"
+    dimension: 1536
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 20
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  dci_tools: ["grep", "find", "read", "filter"]
+
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+parts:
+  part5_pull_backend:
+    dataset: "shinhan-mixed"
+    subset: 20000          # --subset 50000/110000 으로 오버라이드
+    # 축 = 문서(파일) 28개 단위 (build_shinhan_doc_axis.py 산출물, cp swap 불필요)
+    taxonomy_variant: "docaxis"
+    # taxonomy_routed는 oracle 맵으로 돌려 상한 참조선으로 쓴다
+    routing_variant: "docaxis.oracle"
+    routing_use_top2: false
+    routing_min_confidence: 0.0
+    backends: ["dense", "hybrid_rrf", "taxonomy_routed", "self_routed", "doc_first"]
+    # --- self_routed 파라미터 ---
+    self_route_probe_k: 20     # 투표에 참여하는 1차 dense 상위 청크 수 (arm: 10/50)
+    self_route_top_n: 2        # 득표 상위 2개 문서 OR 매치
+    self_route_weight: "rank"  # 준중복 잠식 완화 — 상위 rank 가중 (arm: uniform/score)
+    self_route_min_share: 0.0  # 1위 득표율 폴백 off (arm: 0.4)
+    self_route_doc_top: false  # true면 파티션당 최고 가중치 1건만 인정 (잠식 방어 변형)
+    # --- doc_first 파라미터 ---
+    doc_first_top_n: 2         # stage-1에서 고르는 문서 수
+    doc_first_backfill: true   # routed 의미론(gold 미소실). partitioned는 latency 전용 arm
+    doc_first_exclude_l1: []   # 기본은 Legal centroid 포함(정직한 조건). arm: ["Legal"]
+    # 단일 변수 원칙: 증강 전부 off. taxonomy 아티팩트는 라우팅 계열 backend가
+    # 인덱스 구성에 필요해 러너가 내부적으로만 로드한다(프롬프트 미주입).
+    fixed_augmentations:
+      taxonomy: false
+      tags: false
+      prefix: false
+      metadata: false
+
+evaluation:
+  metrics: ["accuracy", "gold_recall_at_workspace", "efficiency", "degradation_rate"]
+  judge_prompt_path: "config/judge_prompt.txt"

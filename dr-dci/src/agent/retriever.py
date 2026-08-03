@@ -17,6 +17,15 @@ Backend 4종:
                    cosine을 계산 — 후보 축소가 실제 계산 절감으로 이어진다. 매치 문서가
                    top_k 미만이면 dense 전역으로 폴백. 오라우팅 시 gold가 결과에서 빠지므로
                    top-2 라우팅·신뢰도 폴백(load_query_routing)과 함께 쓰는 것을 전제로 한다.
+- self_routed    : 무추론 자기 라우팅(retrieve-then-route). 라우팅 맵·LLM 없이,
+                   1차 전역 dense top-k(self_route_probe_k) 청크들의 소속 L1 투표로
+                   질의 시점에 filter를 만들고 routed와 같은 재정렬(매치 우선+backfill)을
+                   수행한다. 전역 sims를 재사용하므로 2차 임베딩 비용 0.
+- doc_first      : 무추론 계층 검색. L1 파티션별 임베딩 centroid(행별 정규화 후 평균,
+                   재정규화)와 질의의 cosine으로 상위 doc_first_top_n개 파티션을 고른 뒤
+                   그 안에서 검색한다. doc_first_backfill=True(기본)면 routed 의미론
+                   (매치 우선+전역 backfill — stage-1 오판시에도 gold 미소실),
+                   False면 partitioned 의미론(파티션 슬라이스 계산 — latency 축).
 
 taxonomy_filter 값은 단일 값 또는 값 리스트(top-2 라우팅)를 허용한다:
   {"L1": "인문학"} 또는 {"L1": ["인문학", "예술체육학"]} — 리스트는 OR 매치.
@@ -66,6 +75,19 @@ class RetrieverConfig:
     bm25_top_k: int = 20
     rrf_k: int = 60
     max_top_k: int = 200
+    # --- self_routed (무추론 자기 라우팅) ---
+    self_route_probe_k: int = 20      # 1차 dense에서 투표에 참여하는 청크 수
+    self_route_top_n: int = 2         # 득표 상위 몇 개 L1을 filter로 쓸지 (OR 매치)
+    self_route_weight: str = "uniform"  # uniform | rank(1/rank) | score(cosine)
+    self_route_min_share: float = 0.0   # 1위 득표율 미만이면 dense 폴백. 0.0=off
+    # 준중복 잠식 방어 변형: 파티션당 '청크 수 합산' 대신 '최고 가중치 1건'만 인정
+    self_route_doc_top: bool = False
+    # --- doc_first (무추론 계층 검색) ---
+    doc_first_top_n: int = 2          # stage-1 centroid 검색에서 고르는 파티션 수
+    doc_first_backfill: bool = True   # True=routed 의미론 / False=partitioned 의미론
+    # centroid를 만들지 않을 L1 라벨(예: 거대 distractor 파티션 "Legal").
+    # 제외는 "상위 도메인 라우터가 따로 있다" 가정이므로 기본은 빈 튜플(정직한 조건).
+    doc_first_exclude_l1: tuple = ()
 
 
 class PullRetriever:
@@ -79,6 +101,10 @@ class PullRetriever:
         self.doc_raw_texts: dict[str, str] = {}  # for reranker
         self.bm25 = BM25()
         self.last_rerank_error: str = None
+        # 무추론 라우팅 진단 — pull/rank_all 1회마다 갱신 (probe row에 기록됨)
+        self.last_self_route: dict = None
+        self.last_doc_first: dict = None
+        self._doc_centroids: tuple = None  # (labels, matrix) lazy 캐시
 
     def _cache_key(self, doc_ids: list[str], texts: list[str]) -> str:
         """모델/전처리/본문이 바뀌면 무효화되는 cache key (P2-3)."""
@@ -92,9 +118,10 @@ class PullRetriever:
         return h.hexdigest()[:16]
 
     SUPPORTED_BACKENDS = {"dense", "hybrid_rrf", "taxonomy_routed", "taxonomy_boosted",
-                          "taxonomy_partitioned"}
+                          "taxonomy_partitioned", "self_routed", "doc_first"}
     # 하드 재정렬 계열 — soft bonus를 섞지 않는다
-    HARD_ROUTING_BACKENDS = {"taxonomy_routed", "taxonomy_partitioned"}
+    HARD_ROUTING_BACKENDS = {"taxonomy_routed", "taxonomy_partitioned",
+                             "self_routed", "doc_first"}
 
     def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
         """문서를 인덱싱. 디스크 캐시 활용."""
@@ -104,6 +131,7 @@ class PullRetriever:
         self.doc_taxonomy.clear()
         self.doc_titles.clear()
         self.doc_raw_texts.clear()
+        self._doc_centroids = None
         doc_ids = []
         texts = []
         for doc in documents:
@@ -155,13 +183,21 @@ class PullRetriever:
     def set_taxonomy(self, taxonomy: dict | None):
         """condition별 taxonomy state를 명시적으로 설정/해제 (P1-5 state 격리)."""
         self.doc_taxonomy = dict(taxonomy) if taxonomy else {}
+        self._doc_centroids = None
 
     def rank_all(self, query: str, taxonomy_filter: dict = None) -> list[dict]:
         """전체 corpus에 대한 ranked list 반환 (retrieval-only 평가용).
 
         결과: [{doc_id, score, rank}] — rank는 1부터.
+        self_routed/doc_first는 외부 filter가 없으면 질의 시점에 filter를 만든다.
         """
-        sims = self._dense_scores(query, taxonomy_filter)
+        query_emb = self._query_embedding(query)
+        sims = self._dense_scores(query, taxonomy_filter, query_emb=query_emb)
+        if taxonomy_filter is None:
+            if self.config.backend == "self_routed":
+                taxonomy_filter = self._self_route_filter(sims)
+            elif self.config.backend == "doc_first":
+                taxonomy_filter = self._doc_first_filter(query_emb)
         order = self._order_indices(sims, taxonomy_filter)
         dense = [
             {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": r + 1}
@@ -218,9 +254,14 @@ class PullRetriever:
             query_text = f"{self.config.query_instruction}{query}"
         return self._embed_batch([query_text])[0]
 
-    def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
-        """질의와 문서 행렬의 cosine score를 계산한다."""
-        query_emb = self._query_embedding(query)
+    def _dense_scores(self, query: str, taxonomy_filter: dict = None,
+                      query_emb: np.ndarray = None) -> np.ndarray:
+        """질의와 문서 행렬의 cosine score를 계산한다.
+
+        query_emb를 넘기면 임베딩 호출을 생략한다 — doc_first처럼 같은 질의
+        임베딩을 stage-1(centroid)과 stage-2(청크)에 재사용하는 경로용."""
+        if query_emb is None:
+            query_emb = self._query_embedding(query)
 
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
@@ -234,7 +275,100 @@ class PullRetriever:
                     sims[i] += self.config.taxonomy_bonus
         return sims
 
-    def _partitioned_ranked(self, query: str, taxonomy_filter: dict, min_size: int):
+    def _self_route_filter(self, sims: np.ndarray) -> dict | None:
+        """무추론 자기 라우팅: 전역 dense 상위 probe_k 청크의 L1 투표로 filter 생성.
+
+        진단은 self.last_self_route에 남긴다(votes/picked/top_share/fallback).
+        투표 불가(무 taxonomy)·min_share 미달이면 None → 순수 dense와 동일."""
+        self.last_self_route = None
+        if not self.doc_taxonomy or sims is None:
+            return None
+        k = min(self.config.self_route_probe_k, len(self.doc_ids))
+        top = np.argsort(-sims, kind="stable")[:k]
+        votes: dict[str, float] = {}
+        for rank, i in enumerate(top, 1):
+            tax = self.doc_taxonomy.get(self.doc_ids[i])
+            l1 = tax.get("L1") if isinstance(tax, dict) else None
+            if l1 is None:
+                continue
+            if self.config.self_route_weight == "rank":
+                w = 1.0 / rank
+            elif self.config.self_route_weight == "score":
+                w = max(float(sims[i]), 0.0)  # 음수 cosine이 감표로 작용하지 않게
+            else:
+                w = 1.0
+            if self.config.self_route_doc_top:
+                votes[l1] = max(votes.get(l1, 0.0), w)
+            else:
+                votes[l1] = votes.get(l1, 0.0) + w
+        if not votes:
+            return None
+        ordered = sorted(votes.items(), key=lambda x: (-x[1], x[0]))
+        total = sum(votes.values())
+        top_share = ordered[0][1] / total if total > 0 else 0.0
+        picked = [l1 for l1, _ in ordered[:max(1, self.config.self_route_top_n)]]
+        self.last_self_route = {
+            "picked": picked,
+            "top_share": round(top_share, 4),
+            "votes": {l1: round(v, 4) for l1, v in ordered},
+        }
+        if self.config.self_route_min_share and top_share < self.config.self_route_min_share:
+            self.last_self_route["fallback"] = True
+            return None
+        return {"L1": picked if len(picked) > 1 else picked[0]}
+
+    def _build_doc_centroids(self):
+        """L1 파티션별 centroid — 행별 L2 정규화 후 평균, 재정규화.
+
+        정규화 없이 평균하면 norm 큰 청크가 centroid를 지배해 방향이 왜곡된다."""
+        groups: dict[str, list[int]] = {}
+        exclude = set(self.config.doc_first_exclude_l1 or ())
+        for i, did in enumerate(self.doc_ids):
+            tax = self.doc_taxonomy.get(did)
+            l1 = tax.get("L1") if isinstance(tax, dict) else None
+            if l1 is None or l1 in exclude:
+                continue
+            groups.setdefault(l1, []).append(i)
+        labels = sorted(groups)
+        if not labels:
+            self._doc_centroids = ([], None)
+            return
+        rows = []
+        for l1 in labels:
+            sub = self.embedding_matrix[groups[l1]]
+            normed = sub / (np.linalg.norm(sub, axis=1, keepdims=True) + 1e-8)
+            centroid = normed.mean(axis=0)
+            rows.append(centroid / (np.linalg.norm(centroid) + 1e-8))
+        self._doc_centroids = (labels, np.array(rows))
+
+    def _doc_first_filter(self, query_emb: np.ndarray) -> dict | None:
+        """무추론 계층 검색 stage-1: 질의 vs 파티션 centroid cosine으로 filter 생성.
+
+        진단은 self.last_doc_first에 남긴다(picked + 상위 centroid 점수)."""
+        self.last_doc_first = None
+        if not self.doc_taxonomy:
+            return None
+        if self._doc_centroids is None:
+            self._build_doc_centroids()
+        labels, matrix = self._doc_centroids
+        if not labels:
+            return None
+        query_norm = np.linalg.norm(query_emb) + 1e-8
+        sims = matrix @ query_emb / query_norm  # centroid는 이미 단위 벡터
+        order = np.argsort(-sims, kind="stable")
+        top_n = max(1, self.config.doc_first_top_n)
+        picked = [labels[i] for i in order[:top_n]]
+        self.last_doc_first = {
+            "picked": picked,
+            "stage1_top": [
+                {"L1": labels[i], "score": round(float(sims[i]), 4)}
+                for i in order[:min(len(labels), max(top_n, 5))]
+            ],
+        }
+        return {"L1": picked if len(picked) > 1 else picked[0]}
+
+    def _partitioned_ranked(self, query: str, taxonomy_filter: dict, min_size: int,
+                            query_emb: np.ndarray = None):
         """taxonomy_partitioned의 latency 경로: 매치 파티션만 cosine 계산.
 
         반환: ranked iterable 또는 None(폴백 필요 — filter 없음/매치 부족).
@@ -251,7 +385,8 @@ class PullRetriever:
         if len(match_idx) < min_size:
             return None
         sub = self.embedding_matrix[match_idx]
-        query_emb = self._query_embedding(query)
+        if query_emb is None:
+            query_emb = self._query_embedding(query)
         norms = np.linalg.norm(sub, axis=1)
         query_norm = np.linalg.norm(query_emb)
         sims = sub @ query_emb / (norms * query_norm + 1e-8)
@@ -291,6 +426,36 @@ class PullRetriever:
             if ranked is None:  # filter 없음/파티션 부족 → dense 전역 폴백
                 sims = self._dense_scores(query, taxonomy_filter=None)
                 order = self._order_indices(sims)
+                ranked = (
+                    {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
+                    for rank, i in enumerate(order, 1)
+                )
+        elif self.config.backend == "self_routed":
+            # 1차 전역 dense → L1 투표 → 같은 sims 위에서 매치 우선 재정렬
+            sims = self._dense_scores(query, taxonomy_filter=None)
+            routed_filter = taxonomy_filter or self._self_route_filter(sims)
+            order = self._order_indices(sims, routed_filter)
+            ranked = (
+                {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
+                for rank, i in enumerate(order, 1)
+            )
+        elif self.config.backend == "doc_first":
+            # stage-1: centroid로 파티션 선택 (질의 임베딩은 stage-2와 공유)
+            query_emb = self._query_embedding(query)
+            routed_filter = taxonomy_filter or self._doc_first_filter(query_emb)
+            ranked = None
+            if not self.config.doc_first_backfill:
+                # partitioned 의미론 — 파티션 슬라이스만 계산, 부족하면 dense 폴백
+                ranked = self._partitioned_ranked(
+                    query, routed_filter, gather_k, query_emb=query_emb
+                )
+                if ranked is None and self.last_doc_first is not None:
+                    self.last_doc_first["fallback"] = True
+            if ranked is None:
+                sims = self._dense_scores(query, None, query_emb=query_emb)
+                order = self._order_indices(
+                    sims, routed_filter if self.config.doc_first_backfill else None
+                )
                 ranked = (
                     {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": rank}
                     for rank, i in enumerate(order, 1)

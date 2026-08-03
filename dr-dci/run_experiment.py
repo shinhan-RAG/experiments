@@ -203,7 +203,11 @@ def load_augmentations(dataset: str, subset_size: int | None, step_config: dict)
         return path
 
     if step_config.get("taxonomy"):
-        path = DATA_DIR / "taxonomy" / f"{dataset}_{size_key}.json"
+        # taxonomy_variant(예: "docaxis")가 있으면 변형 축 파일을 읽는다 —
+        # KT에서 원본을 cp로 덮어쓰던 관행을 대체하는 명시적 스위치.
+        variant = step_config.get("taxonomy_variant")
+        stem = f"{dataset}_{size_key}.{variant}" if variant else f"{dataset}_{size_key}"
+        path = DATA_DIR / "taxonomy" / f"{stem}.json"
         required(path, "taxonomy")
         with open(path, encoding="utf-8") as f:
             taxonomy = json.load(f)
@@ -254,6 +258,15 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
         api_key=os.getenv("OPENAI_API_KEY", ""),
         query_instruction=models["embedding"].get("query_instruction"),
         max_top_k=agent_cfg.get("max_pull_top_k", 200),
+        # 무추론 라우팅 파라미터 — part config에서 step_config로 흘러온다
+        self_route_probe_k=step_config.get("self_route_probe_k", 20),
+        self_route_top_n=step_config.get("self_route_top_n", 2),
+        self_route_weight=step_config.get("self_route_weight", "uniform"),
+        self_route_min_share=step_config.get("self_route_min_share", 0.0),
+        self_route_doc_top=step_config.get("self_route_doc_top", False),
+        doc_first_top_n=step_config.get("doc_first_top_n", 2),
+        doc_first_backfill=step_config.get("doc_first_backfill", True),
+        doc_first_exclude_l1=tuple(step_config.get("doc_first_exclude_l1") or ()),
     )
     retriever = PullRetriever(retriever_config)
     print("    Indexing corpus...")
@@ -315,6 +328,12 @@ def run_pull_probe(retriever: PullRetriever, queries: list,
         }
         if tax_filter is not None:
             row["routed_filter"] = tax_filter
+        # 무추론 라우팅 진단 — 질의별 투표/stage-1 선택을 결과 JSON에 남겨
+        # 라우팅 정확도를 결과 파일만으로 채점할 수 있게 한다
+        if getattr(retriever, "last_self_route", None):
+            row["self_route"] = retriever.last_self_route
+        if getattr(retriever, "last_doc_first", None):
+            row["doc_first"] = retriever.last_doc_first
         rows.append(row)
     return rows
 
@@ -1083,11 +1102,14 @@ def run_part4(config: dict):
 
 
 TAXONOMY_BACKENDS = {"taxonomy_routed", "taxonomy_boosted", "taxonomy_partitioned"}
+# 무추론 라우팅 — taxonomy 아티팩트는 필요하지만 질의 라우팅 맵은 쓰지 않는다
+SELF_ROUTING_BACKENDS = {"self_routed", "doc_first"}
 
 
 def load_query_routing(dataset: str, subset_size: int | None,
                        use_top2: bool = False,
-                       min_confidence: float = 0.0) -> dict:
+                       min_confidence: float = 0.0,
+                       variant: str = None) -> dict:
     """질의→카테고리 라우팅 맵 로드 (scripts/build_query_routing.py 산출물).
 
     반환: {qid: {"L1": ...}} — retriever.pull(taxonomy_filter=...)에 그대로 쓴다.
@@ -1096,9 +1118,13 @@ def load_query_routing(dataset: str, subset_size: int | None,
     - use_top2: L1 값으로 top-2 리스트를 쓴다(OR 매치) — 인접 카테고리 혼동 흡수.
     - min_confidence: 라우터 확신도가 이 값 미만인 질의는 맵에서 제외한다 →
       해당 질의는 taxonomy_filter=None으로 순수 dense 폴백(오라우팅 손실을 no-op으로).
-    구버전 라우팅 파일(top2/confidence 없음)에서는 두 옵션 모두 자동 무시된다."""
+    구버전 라우팅 파일(top2/confidence 없음)에서는 두 옵션 모두 자동 무시된다.
+
+    variant: 라우팅 맵 변형 접미사(예: "docaxis.oracle") — 파일명
+    {dataset}_{size}.{variant}.json을 읽는다. KT의 cp swap 관행 대체."""
     size_key = f"{(subset_size or 0) // 1000}k" if subset_size else "full"
-    path = DATA_DIR / "routing" / f"{dataset}_{size_key}.json"
+    stem = f"{dataset}_{size_key}.{variant}" if variant else f"{dataset}_{size_key}"
+    path = DATA_DIR / "routing" / f"{stem}.json"
     if not path.exists():
         raise FileNotFoundError(
             f"query routing missing: {path} — "
@@ -1120,6 +1146,56 @@ def load_query_routing(dataset: str, subset_size: int | None,
     if skipped:
         print(f"    routing: 확신도 {min_confidence} 미만 {skipped}건 → dense 폴백")
     return routing
+
+
+def load_oracle_routing_answers(dataset: str, subset_size: int | None,
+                                taxonomy_variant: str = None) -> dict:
+    """무추론 라우팅 정확도 채점용 정답 맵 {qid: gold L1}.
+
+    oracle 라우팅 산출물({variant}.oracle.json 우선, 없으면 oracle.json)이
+    있을 때만 반환 — 없으면 빈 dict(채점 생략, 실험 실행은 계속)."""
+    size_key = f"{(subset_size or 0) // 1000}k" if subset_size else "full"
+    stems = []
+    if taxonomy_variant:
+        stems.append(f"{dataset}_{size_key}.{taxonomy_variant}.oracle")
+    stems.append(f"{dataset}_{size_key}.oracle")
+    for stem in stems:
+        path = DATA_DIR / "routing" / f"{stem}.json"
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                raw = json.load(f)
+            return {str(qid): entry["L1"]
+                    for qid, entry in raw.get("routing", {}).items()}
+    return {}
+
+
+def self_routing_accuracy(probe_rows: list, oracle_answers: dict) -> dict | None:
+    """probe row에 기록된 무추론 라우팅 선택(picked)을 oracle 정답과 대조.
+
+    top1/top2 정확도 + 폴백률 + Legal(distractor) 1위 비율(투표 오염 진단)."""
+    evaluated = hit1 = hit2 = fallback = legal_top1 = 0
+    for row in probe_rows:
+        info = row.get("self_route") or row.get("doc_first")
+        if not info or not info.get("picked"):
+            continue
+        gold = oracle_answers.get(str(row["query_id"]))
+        if gold is None:
+            continue
+        evaluated += 1
+        picked = info["picked"]
+        hit1 += picked[0] == gold
+        hit2 += gold in picked[:2]
+        fallback += bool(info.get("fallback"))
+        legal_top1 += picked[0] == "Legal"
+    if not evaluated:
+        return None
+    return {
+        "evaluated_queries": evaluated,
+        "accuracy_top1": round(hit1 / evaluated, 4),
+        "accuracy_top2": round(hit2 / evaluated, 4),
+        "fallback_rate": round(fallback / evaluated, 4),
+        "legal_top1_share": round(legal_top1 / evaluated, 4),
+    }
 
 
 def run_part5(config: dict, probe_only: bool = False):
@@ -1152,15 +1228,32 @@ def run_part5(config: dict, probe_only: bool = False):
             dataset, subset_size,
             use_top2=part_cfg.get("routing_use_top2", False),
             min_confidence=part_cfg.get("routing_min_confidence", 0.0),
+            variant=part_cfg.get("routing_variant"),
         )
         print(f"  query routing: {len(routing)}건 로드 "
-              f"(top2={part_cfg.get('routing_use_top2', False)}, "
+              f"(variant={part_cfg.get('routing_variant')}, "
+              f"top2={part_cfg.get('routing_use_top2', False)}, "
               f"min_conf={part_cfg.get('routing_min_confidence', 0.0)})")
 
+    # 무추론 라우팅 정확도 채점용 정답(oracle) 맵 — 있으면 manifest에 병기
+    oracle_answers = load_oracle_routing_answers(
+        dataset, subset_size, part_cfg.get("taxonomy_variant")
+    )
+
+    # step_config로 흘려보낼 part 수준 파라미터 (retriever 구성에 쓰인다)
+    passthrough_keys = (
+        "taxonomy_variant",
+        "self_route_probe_k", "self_route_top_n", "self_route_weight",
+        "self_route_min_share", "self_route_doc_top",
+        "doc_first_top_n", "doc_first_backfill", "doc_first_exclude_l1",
+    )
+    passthrough = {k: part_cfg[k] for k in passthrough_keys if k in part_cfg}
+
     for backend in part_cfg["backends"]:
-        step_config = {**fixed, "pull_backend": backend}
-        if backend in TAXONOMY_BACKENDS:
-            # 라우팅/부스트는 taxonomy 아티팩트가 인덱스에 실려 있어야 작동한다
+        step_config = {**fixed, **passthrough, "pull_backend": backend}
+        if backend in TAXONOMY_BACKENDS | SELF_ROUTING_BACKENDS:
+            # 라우팅/부스트/무추론 라우팅은 taxonomy 아티팩트가 인덱스에 실려
+            # 있어야 작동한다 (self_routed/doc_first는 라우팅 맵은 불필요)
             step_config["taxonomy"] = True
         print(f"\n  --- pull backend: {backend} ---")
         taxonomy, tags, prefix, metadata = load_augmentations(
@@ -1177,7 +1270,7 @@ def run_part5(config: dict, probe_only: bool = False):
             parent_map=parent_map_from_corpus(corpus),
             routing=routing if backend in TAXONOMY_BACKENDS else None,
         )
-        if probe_only or backend in TAXONOMY_BACKENDS:
+        if probe_only or backend in TAXONOMY_BACKENDS | SELF_ROUTING_BACKENDS:
             if not probe_only:
                 # agent 루프는 질의별 라우팅을 모른다 — taxonomy backend는
                 # 검색 축(probe)만 비교하고 agent 실행은 명시적으로 생략한다.
@@ -1238,8 +1331,24 @@ def run_part5(config: dict, probe_only: bool = False):
         "denominator = queries with positive gold only"
     )
     manifest["probe_only"] = probe_only
+    if passthrough:
+        manifest["self_routing_params"] = dict(passthrough)
+    # 무추론 라우팅 정확도 — oracle 정답 맵이 있을 때만 채점된다
+    routing_acc = {}
+    for backend in part_cfg["backends"]:
+        if backend not in SELF_ROUTING_BACKENDS or not oracle_answers:
+            continue
+        acc = self_routing_accuracy(probes.get(backend, []), oracle_answers)
+        if acc:
+            routing_acc[backend] = acc
+            print(f"  {backend} 라우팅 정확도: top1={acc['accuracy_top1']} "
+                  f"top2={acc['accuracy_top2']} "
+                  f"legal_top1={acc['legal_top1_share']}")
+    if routing_acc:
+        manifest["self_routing_accuracy"] = routing_acc
     if routing is not None:
         manifest["routing_options"] = {
+            "variant": part_cfg.get("routing_variant"),
             "use_top2": part_cfg.get("routing_use_top2", False),
             "min_confidence": part_cfg.get("routing_min_confidence", 0.0),
             "routed_queries": len(routing),

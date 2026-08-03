@@ -116,6 +116,124 @@ def test_cache_key_changes_with_text():
     assert k1 != k2  # 같은 doc_id라도 본문이 바뀌면 무효화
 
 
+# ---------------------------------------------------------------- 무추론 라우팅 (self_routed / doc_first)
+
+# 2D 합성 코퍼스 — 문서 A(3청크, x축), 문서 B(2청크, y축), Legal(2청크, 대각)
+_ROUTE_DOCS = {
+    "a0": [1.0, 0.0], "a1": [0.95, 0.1], "a2": [0.9, 0.2],
+    "b0": [0.0, 1.0], "b1": [0.1, 0.95],
+    "l0": [-0.6, 0.6], "l1": [-0.55, 0.65],   # 이질 도메인 distractor — 별도 방향
+}
+_ROUTE_TAX = {
+    "a0": {"L1": "A"}, "a1": {"L1": "A"}, "a2": {"L1": "A"},
+    "b0": {"L1": "B"}, "b1": {"L1": "B"},
+    "l0": {"L1": "Legal"}, "l1": {"L1": "Legal"},
+}
+# 질의 텍스트 → 임베딩 (mock)
+_ROUTE_QUERIES = {
+    "qa": [1.0, 0.0],        # 문서 A 방향
+    "q_mixed": [0.6, 0.8],   # top1은 B지만 다수(3/5)는 A — 투표 복구 검증용
+    "q_diag": [-0.5, 0.5],   # Legal centroid 방향
+}
+
+
+def _routing_retriever(backend, **overrides):
+    cfg = RetrieverConfig(embedding_url="mock", embedding_model="mock", top_k=5,
+                          backend=backend, query_instruction=None, **overrides)
+    r = PullRetriever(cfg)
+    r.doc_ids = list(_ROUTE_DOCS)
+    r.embedding_matrix = np.array(list(_ROUTE_DOCS.values()))
+    r.doc_taxonomy = dict(_ROUTE_TAX)
+    r._embed_batch = lambda texts, batch_size=256: [
+        np.array(_ROUTE_QUERIES[t]) for t in texts
+    ]
+    return r
+
+
+def test_self_route_votes_majority_and_reorders():
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=1)
+    out = r.pull("qa", top_k=7)
+    # top5 = a0,a1,a2,b1,b0 → A 3표 > B 2표 → A 파티션 우선
+    assert r.last_self_route["picked"] == ["A"]
+    assert [x["doc_id"] for x in out["results"][:3]] == ["a0", "a1", "a2"]
+    # backfill: 비매치 문서도 소실되지 않는다
+    assert {x["doc_id"] for x in out["results"]} == set(_ROUTE_DOCS)
+
+
+def test_self_route_vote_recovers_from_wrong_top1():
+    # dense rank-1(b1)이 오답 문서여도 다수 득표 문서(A)로 복구되는 핵심 시나리오
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=1,
+                           self_route_weight="uniform")
+    out = r.pull("q_mixed", top_k=3)
+    assert r.last_self_route["picked"] == ["A"]
+    assert all(x["doc_id"].startswith("a") for x in out["results"])
+
+
+def test_self_route_rank_weight_follows_top_ranks():
+    # rank 가중(1/rank)은 상위 rank를 우대 — 같은 질의에서 B가 이긴다
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=1,
+                           self_route_weight="rank")
+    r.pull("q_mixed", top_k=3)
+    assert r.last_self_route["picked"] == ["B"]
+
+
+def test_self_route_min_share_falls_back_to_dense():
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=1,
+                           self_route_weight="uniform", self_route_min_share=0.7)
+    out = r.pull("q_mixed", top_k=3)   # top_share = 3/5 = 0.6 < 0.7 → 폴백
+    assert r.last_self_route["fallback"] is True
+    assert out["results"][0]["doc_id"] == "b1"  # 순수 dense 순서 유지
+
+
+def test_self_route_top2_or_match():
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=2)
+    out = r.pull("qa", top_k=5)
+    assert r.last_self_route["picked"] == ["A", "B"]
+    # A∪B(5청크)가 앞, Legal이 backfill
+    assert {x["doc_id"] for x in out["results"][:5]} == {"a0", "a1", "a2", "b0", "b1"}
+
+
+def test_doc_first_centroid_picks_right_partition():
+    r = _routing_retriever("doc_first", doc_first_top_n=1)
+    out = r.pull("qa", top_k=7)
+    assert r.last_doc_first["picked"][0] == "A"
+    assert [x["doc_id"] for x in out["results"][:3]] == ["a0", "a1", "a2"]
+    assert {x["doc_id"] for x in out["results"]} == set(_ROUTE_DOCS)  # gold 미소실
+
+
+def test_doc_first_exclude_l1_skips_legal_centroid():
+    r = _routing_retriever("doc_first", doc_first_top_n=1,
+                           doc_first_exclude_l1=("Legal",))
+    r.pull("q_diag", top_k=3)
+    assert r.last_doc_first["picked"][0] != "Legal"
+    # 제외 없이 돌리면 Legal centroid가 1위인 질의임을 교차 확인
+    r2 = _routing_retriever("doc_first", doc_first_top_n=1)
+    r2.pull("q_diag", top_k=3)
+    assert r2.last_doc_first["picked"][0] == "Legal"
+
+
+def test_doc_first_partitioned_falls_back_when_partition_small():
+    # partitioned 의미론: 파티션(A=3) < gather_k(5) → dense 전역 폴백 + 진단 기록
+    r = _routing_retriever("doc_first", doc_first_top_n=1, doc_first_backfill=False)
+    out = r.pull("qa", top_k=5)
+    assert r.last_doc_first.get("fallback") is True
+    assert len(out["results"]) == 5
+
+
+def test_doc_first_partitioned_slices_partition_only():
+    r = _routing_retriever("doc_first", doc_first_top_n=1, doc_first_backfill=False)
+    out = r.pull("qa", top_k=2)   # 파티션(3) >= gather_k(2) → 슬라이스 경로
+    assert all(x["doc_id"].startswith("a") for x in out["results"])
+
+
+def test_rank_all_applies_self_routing():
+    r = _routing_retriever("self_routed", self_route_probe_k=5, self_route_top_n=1)
+    ranked = r.rank_all("q_mixed")
+    assert r.last_self_route["picked"] == ["A"]
+    assert all(row["doc_id"].startswith("a") for row in ranked[:3])
+    assert len(ranked) == len(_ROUTE_DOCS)
+
+
 # ---------------------------------------------------------------- reranker 실패 가시화
 
 def _reranking_retriever(allow_fallback=False, n=5):
