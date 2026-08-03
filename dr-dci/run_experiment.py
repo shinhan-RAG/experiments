@@ -7,6 +7,7 @@ DR-DCI Augmentation Experiment Runner
 - Part 5: pull backend 비교 (dense vs hybrid_rrf)
 """
 
+import copy
 import json
 import os
 import random
@@ -104,18 +105,38 @@ def load_corpus(dataset: str, subset_size: int = None):
     return corpus
 
 
-def load_queries(dataset: str):
+def load_queries(dataset: str, variant: str = None):
     """쿼리 + qrels 로드.
 
     층화 표본(agent_queries_50.jsonl)이 있으면 그것을 질의 집합으로 쓴다 —
     법률 데이터셋의 6천+ 전체 질의 대신 기존 50질의 실험 설계와 맞춘다.
+
+    variant(예: "paraphrase"): queries_{variant}.jsonl 등 변형 질의 파일을
+    명시적으로 선택한다. 원 질의 파일을 덮어쓰는 방식 대신 별도 파일을 두어
+    원질의/변형 두 세트를 같은 코퍼스·qrels 위에서 병행 비교할 수 있게 한다.
+    변형 파일이 없으면 조용히 원본으로 폴백하지 않고 즉시 실패한다 —
+    폴백하면 결과 라벨(query_variant)이 실제 질의와 어긋난다.
     """
     raw_dir = dataset_dir(dataset)
-    query_file = raw_dir / "agent_queries_50.jsonl"
-    if query_file.exists():
-        print(f"    Using stratified query sample: {query_file.name}")
+    if variant:
+        candidates = [
+            raw_dir / f"agent_queries_50_{variant}.jsonl",
+            raw_dir / f"queries_{variant}.jsonl",
+        ]
+        query_file = next((p for p in candidates if p.exists()), None)
+        if query_file is None:
+            raise FileNotFoundError(
+                f"query variant '{variant}' missing for {dataset}: "
+                f"{' or '.join(p.name for p in candidates)} — "
+                f"python scripts/paraphrase_queries.py {dataset} 로 먼저 생성할 것"
+            )
+        print(f"    Using query variant: {query_file.name}")
     else:
-        query_file = raw_dir / "queries.jsonl"
+        query_file = raw_dir / "agent_queries_50.jsonl"
+        if query_file.exists():
+            print(f"    Using stratified query sample: {query_file.name}")
+        else:
+            query_file = raw_dir / "queries.jsonl"
 
     queries = []
     with open(query_file, encoding="utf-8") as f:
@@ -243,6 +264,11 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
     pull_backend = step_config.get(
         "pull_backend", agent_cfg.get("pull_backend", "dense")
     )
+    # 리랭커 패리티(F): 기본 off = 기존 동작. on이면 hybrid와 같은 리랭커를
+    # pull 경로에도 붙여 "리랭커가 hybrid에만 부착된" 구성요소 불일치를 제거한다.
+    pull_reranker = step_config.get(
+        "pull_reranker", agent_cfg.get("pull_reranker", False)
+    )
     retriever_config = RetrieverConfig(
         embedding_url=models["embedding"]["url"],
         embedding_model=models["embedding"]["name"],
@@ -254,6 +280,14 @@ def build_pull_retriever(config: dict, step_config: dict, corpus: list,
         api_key=os.getenv("OPENAI_API_KEY", ""),
         query_instruction=models["embedding"].get("query_instruction"),
         max_top_k=agent_cfg.get("max_pull_top_k", 200),
+        # boost 강도(E): 임의 고정값 +0.15를 config/CLI로 노출해 민감도
+        # 스윕이 가능하게 한다. 기본값은 기존 실험과 동일한 0.15.
+        taxonomy_bonus=float(
+            step_config.get("taxonomy_bonus",
+                            agent_cfg.get("taxonomy_bonus", 0.15))
+        ),
+        reranker_url=models["reranker"]["url"] if pull_reranker else None,
+        reranker_model=models["reranker"]["name"] if pull_reranker else None,
     )
     retriever = PullRetriever(retriever_config)
     print("    Indexing corpus...")
@@ -666,8 +700,13 @@ def _part12_preflight(config: dict, *, step_names: set[str], sizes: list[int]):
     return report
 
 
-def run_part1(config: dict, *, focused: bool = False):
-    """Part 1: 기법 적층"""
+def run_part1(config: dict, *, focused: bool = False, probe_only: bool = False):
+    """Part 1: 기법 적층.
+
+    단계 분리 측정(A): 각 arm의 retriever로 retrieval-only probe를 먼저 실행해
+    "증강이 pull 단계 검색 품질을 바꿨는가"를 agent 루프의 비결정성과 분리해
+    잰다. 최종 Gold R@W와 probe recall이 반대로 움직이면 원인은 agent 단이다.
+    """
     part_cfg = config["parts"]["part1_stacking"]
     dataset = part_cfg["dataset"]
     subset_size = part_cfg["subset"]
@@ -688,7 +727,7 @@ def run_part1(config: dict, *, focused: bool = False):
     )
 
     corpus = load_corpus(dataset, subset_size)
-    queries, qrels = load_queries(dataset)
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
 
     # reference answers
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
@@ -698,26 +737,13 @@ def run_part1(config: dict, *, focused: bool = False):
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
-    # 임베딩 캐싱: prefix off / prefix on 두 가지만 빌드
-    models = config["models"]
-    agent_cfg = config["agent"]
-
+    # 임베딩 캐싱: prefix off / prefix on 두 가지만 빌드.
+    # 구성 단일화를 위해 인라인 RetrieverConfig 대신 build_pull_retriever를 쓴다
+    # — taxonomy_bonus/pull_reranker 배선이 probe·agent 양쪽에 일관 적용된다.
     retriever_no_prefix = None
     if any(not step.get("prefix") for step in steps):
         print("\n  Building cached embeddings (prefix=off)...")
-        retriever_no_prefix = PullRetriever(RetrieverConfig(
-            embedding_url=models["embedding"]["url"],
-            embedding_model=models["embedding"]["name"],
-            top_k=agent_cfg["pull_top_k"],
-            use_prefix=False,
-            backend=agent_cfg.get("pull_backend", "dense"),
-            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
-            rrf_k=agent_cfg.get("rrf_k", 60),
-            api_key=os.getenv("OPENAI_API_KEY", ""),
-            query_instruction=models["embedding"].get("query_instruction"),
-            max_top_k=agent_cfg.get("max_pull_top_k", 200),
-        ))
-        retriever_no_prefix.index(corpus)
+        retriever_no_prefix = build_pull_retriever(config, {"prefix": False}, corpus)
 
     retriever_with_prefix = None
     if any(step.get("prefix") for step in steps):
@@ -725,39 +751,64 @@ def run_part1(config: dict, *, focused: bool = False):
             dataset, subset_size, {"prefix": True}
         )
         print("  Building cached embeddings (prefix=on)...")
-        retriever_with_prefix = PullRetriever(RetrieverConfig(
-            embedding_url=models["embedding"]["url"],
-            embedding_model=models["embedding"]["name"],
-            top_k=agent_cfg["pull_top_k"],
-            use_prefix=True,
-            backend=agent_cfg.get("pull_backend", "dense"),
-            bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
-            rrf_k=agent_cfg.get("rrf_k", 60),
-            api_key=os.getenv("OPENAI_API_KEY", ""),
-            query_instruction=models["embedding"].get("query_instruction"),
-            max_top_k=agent_cfg.get("max_pull_top_k", 200),
-        ))
-        retriever_with_prefix.index(corpus, prefixes=prefix_data)
+        retriever_with_prefix = build_pull_retriever(
+            config, {"prefix": True}, corpus, prefix=prefix_data
+        )
+
+    query_gold = positive_gold_by_query(qrels)
+    query_gains = positive_gold_gains_by_query(qrels)
+    parent_map = parent_map_from_corpus(corpus)
 
     all_results = {}
+    probes = {}
     for step in steps:
         step_name = step["name"]
         print(f"\n  --- {step_name}: {step['description']} ---")
 
         cached = retriever_with_prefix if step.get("prefix") else retriever_no_prefix
+        # probe는 agent와 같은 retriever 인스턴스·taxonomy state를 공유한다.
+        # (원 질의를 filter 없이 1회 pull — Part 1 taxonomy는 agent가 스스로
+        # filter를 골라야 발동하므로, probe에서 taxonomy arm과 baseline의 probe가
+        # 같게 나오는 것 자체가 "차이는 agent 행동"이라는 분리 증거다)
+        taxonomy_data, _, _, _ = load_augmentations(dataset, subset_size, step)
+        cached.set_taxonomy(taxonomy_data)
+        probes[step_name] = run_pull_probe(
+            cached, queries, query_gold,
+            query_gains=query_gains, parent_map=parent_map,
+        )
+        if probe_only:
+            all_results[step_name] = {"probe_rows": probes[step_name]}
+            continue
+
         results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step, subset_size, dataset, cached_retriever=cached)
         metrics = compute_metrics(results)
-        all_results[step_name] = {"results": results, "metrics": metrics}
+        all_results[step_name] = {
+            "results": results,
+            "metrics": metrics,
+            "probe_rows": probes[step_name],
+        }
 
         print(f"    Metrics: {metrics}")
 
+    # baseline을 기준축으로 전 arm paired 비교 — probe(검색단)와 최종 결과
+    # (agent 포함)를 각각 잰다. 기존 키 이름(taxonomy_only_minus_baseline)은
+    # 일반화된 루프가 그대로 생성하므로 하위 호환이다.
     analysis = {}
-    if "baseline" in all_results and "taxonomy_only" in all_results:
-        analysis["taxonomy_only_minus_baseline"] = compare_result_rows(
-            all_results["baseline"]["results"],
-            all_results["taxonomy_only"]["results"],
-            seed=config["seed"],
+    baseline_name = "baseline"
+    for step in steps:
+        step_name = step["name"]
+        if step_name == baseline_name or baseline_name not in probes:
+            continue
+        analysis[f"probe_{step_name}_minus_baseline"] = compare_probe_rows(
+            probes[baseline_name], probes[step_name], seed=config["seed"]
         )
+        if (not probe_only and baseline_name in all_results
+                and "results" in all_results.get(step_name, {})):
+            analysis[f"{step_name}_minus_baseline"] = compare_result_rows(
+                all_results[baseline_name]["results"],
+                all_results[step_name]["results"],
+                seed=config["seed"],
+            )
     save_results(
         "part1_taxonomy_focused" if focused else "part1_stacking",
         all_results,
@@ -766,8 +817,23 @@ def run_part1(config: dict, *, focused: bool = False):
             "dataset": dataset,
             "subset_size": subset_size,
             "focused": focused,
+            "probe_only": probe_only,
             "arms": [str(step["name"]) for step in steps],
             "preflight": preflight,
+            "seed": config["seed"],
+            "replicate_index": config.get("replicate_index", 0),
+            "query_count": len(queries),
+            "query_variant": config.get("query_variant"),
+            "taxonomy_bonus": config["agent"].get("taxonomy_bonus", 0.15),
+            "pull_reranker": config["agent"].get("pull_reranker", False),
+            "probe": (
+                "retrieval-only rank metrics on the original query text; "
+                "denominator = queries with positive gold only"
+            ),
+            "embedding_endpoint": {
+                "url": config["models"]["embedding"]["url"],
+                "model": config["models"]["embedding"]["name"],
+            },
         },
         analysis=analysis,
     )
@@ -782,7 +848,7 @@ def run_part2(config: dict, *, focused: bool = False):
     part_cfg = config["parts"]["part2_scaling"]
     dataset = part_cfg["dataset"]
 
-    queries, qrels = load_queries(dataset)
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     ref_answers = {}
     if ref_path.exists():
@@ -885,6 +951,11 @@ def run_part2(config: dict, *, focused: bool = False):
             "arms": [str(step["name"]) for step in selected_steps],
             "include_single_pull": part_cfg.get("include_single_pull", True),
             "preflight": preflight,
+            "seed": config["seed"],
+            "replicate_index": config.get("replicate_index", 0),
+            "query_variant": config.get("query_variant"),
+            "taxonomy_bonus": config["agent"].get("taxonomy_bonus", 0.15),
+            "pull_reranker": config["agent"].get("pull_reranker", False),
         },
         analysis=analysis,
     )
@@ -910,7 +981,7 @@ def run_part2_scale_probe(config: dict):
     # 필요 없으므로 augmentation 부재로 차단되지 않는다.
     preflight = _part12_preflight(config, step_names={"baseline"}, sizes=sizes)
 
-    queries, qrels = load_queries(dataset)
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
     query_gold = positive_gold_by_query(qrels)
     query_gains = positive_gold_gains_by_query(qrels)
 
@@ -963,8 +1034,12 @@ def run_part2_scale_probe(config: dict):
                  analysis=analysis)
 
 
-def run_part3(config: dict):
-    """Part 3: @el: 태그 방식 비교"""
+def run_part3(config: dict, *, probe_only: bool = False):
+    """Part 3: @el: 태그 방식 비교.
+
+    tags는 워크스페이스 grep 전용이라 pull에 관여하지 않는다 — probe가 arm 간
+    동일하게 나오는 것 자체가 "approach 간 차이는 전부 agent 단"이라는 구조적
+    분리 증거다(같은 인덱스·같은 prefix·같은 taxonomy 공유)."""
     print("\n" + "=" * 60)
     print("Part 3: Tag Approach Comparison (A vs B vs C)")
     print("=" * 60)
@@ -974,7 +1049,7 @@ def run_part3(config: dict):
     subset_size = part_cfg["subset"]
 
     corpus = load_corpus(dataset, subset_size)
-    queries, qrels = load_queries(dataset)
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
 
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
     ref_answers = {}
@@ -983,17 +1058,81 @@ def run_part3(config: dict):
             for item in json.load(f):
                 ref_answers[item["query_id"]] = item["reference_answer"]
 
+    query_gold = positive_gold_by_query(qrels)
+    query_gains = positive_gold_gains_by_query(qrels)
+    parent_map = parent_map_from_corpus(corpus)
+
     all_results = {}
+    probes = {}
     for approach in part_cfg["approaches"]:
         step_config = {"taxonomy": True, "tags": approach, "prefix": True, "metadata": True}
         print(f"\n  --- Approach {approach} ---")
 
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, subset_size, dataset)
+        # retriever를 러너에서 만들어 probe와 agent가 같은 인스턴스를 공유한다
+        taxonomy, tags, prefix, metadata = load_augmentations(
+            dataset, subset_size, step_config
+        )
+        retriever = build_pull_retriever(
+            config, step_config, corpus, prefix=prefix, taxonomy=taxonomy
+        )
+        probes[approach] = run_pull_probe(
+            retriever, queries, query_gold,
+            query_gains=query_gains, parent_map=parent_map,
+        )
+        if probe_only:
+            all_results[f"approach_{approach}"] = {"probe_rows": probes[approach]}
+            continue
+
+        results = run_dr_dci(config, corpus, queries, qrels, ref_answers,
+                             step_config, subset_size, dataset,
+                             cached_retriever=retriever)
         metrics = compute_metrics(results)
-        all_results[f"approach_{approach}"] = {"results": results, "metrics": metrics}
+        all_results[f"approach_{approach}"] = {
+            "results": results,
+            "metrics": metrics,
+            "probe_rows": probes[approach],
+        }
         print(f"    Metrics: {metrics}")
 
-    save_results("part3_tags", all_results)
+    # approach 간 pairwise 비교 (첫 approach를 기준축으로)
+    analysis = {}
+    approaches = list(part_cfg["approaches"])
+    base = approaches[0] if approaches else None
+    for other in approaches[1:]:
+        analysis[f"probe_{base}_vs_{other}"] = compare_probe_rows(
+            probes[base], probes[other], seed=config["seed"]
+        )
+        if not probe_only:
+            analysis[f"approach_{other}_minus_{base}"] = compare_result_rows(
+                all_results[f"approach_{base}"]["results"],
+                all_results[f"approach_{other}"]["results"],
+                seed=config["seed"],
+            )
+
+    save_results(
+        "part3_tags",
+        all_results,
+        manifest={
+            "git_commit": current_git_commit(),
+            "dataset": dataset,
+            "subset_size": subset_size,
+            "probe_only": probe_only,
+            "arms": [f"approach_{a}" for a in approaches],
+            "fixed_augmentations": {"taxonomy": True, "prefix": True, "metadata": True},
+            "single_variable": "tags_approach",
+            "seed": config["seed"],
+            "replicate_index": config.get("replicate_index", 0),
+            "query_count": len(queries),
+            "query_variant": config.get("query_variant"),
+            "taxonomy_bonus": config["agent"].get("taxonomy_bonus", 0.15),
+            "pull_reranker": config["agent"].get("pull_reranker", False),
+            "embedding_endpoint": {
+                "url": config["models"]["embedding"]["url"],
+                "model": config["models"]["embedding"]["name"],
+            },
+        },
+        analysis=analysis,
+    )
 
 
 def _sample_generalization_queries(queries: list, qrels: list, corpus: list,
@@ -1017,11 +1156,16 @@ def _sample_generalization_queries(queries: list, qrels: list, corpus: list,
     return eligible[:n]
 
 
-def run_part4(config: dict):
+def run_part4(config: dict, *, probe_only: bool = False):
     """Part 4: 일반화 검증.
 
     datasets 항목은 문자열(fiqa 등, 20K·full-stack 기본) 또는
-    {name, subset, augment, queries} dict(법률 데이터셋)를 모두 허용한다."""
+    {name, subset, augment, queries} dict(법률 데이터셋)를 모두 허용한다.
+
+    단계 분리(A): DR-DCI arm은 retrieval-only probe를 병행하고, hybrid arm은
+    파이프라인 출력(retrieved_docs)에 같은 rank 지표를 사후 계산해 검색단끼리
+    비교 가능하게 한다(hybrid의 probe_latency는 파이프라인 경유라 비교 불가 —
+    latency delta는 무시할 것)."""
     part_cfg = config["parts"]["part4_generalization"]
     seed = config.get("seed", 42)
     names = [e if isinstance(e, str) else e["name"] for e in part_cfg["datasets"]]
@@ -1030,6 +1174,7 @@ def run_part4(config: dict):
     print("=" * 60)
 
     all_results = {}
+    analysis = {}
     for entry in part_cfg["datasets"]:
         if isinstance(entry, str):
             dataset, subset_size, augment, n_q = entry, 20_000, True, 50
@@ -1040,7 +1185,7 @@ def run_part4(config: dict):
             n_q = entry.get("queries", 50)
 
         corpus = load_corpus(dataset, subset_size)
-        queries, qrels = load_queries(dataset)
+        queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
 
         # 질의 표본: sampled_queries.json 있으면 사용, 없으면 gold 보유 질의에서 결정적 샘플
         sampled_path = DATA_DIR / "subsets" / dataset / "sampled_queries.json"
@@ -1067,19 +1212,97 @@ def run_part4(config: dict):
         else:
             step_config = {"taxonomy": False, "tags": False, "prefix": False, "metadata": False}
 
+        query_gold = positive_gold_by_query(qrels)
+        query_gains = positive_gold_gains_by_query(qrels)
+        parent_map = parent_map_from_corpus(corpus)
+
         print(f"\n  --- DR-DCI @ {dataset} ---")
-        results = run_dr_dci(config, corpus, queries, qrels, ref_answers, step_config, subset_size, dataset)
+        taxonomy, tags, prefix, metadata = load_augmentations(
+            dataset, subset_size, step_config
+        )
+        retriever = build_pull_retriever(
+            config, step_config, corpus, prefix=prefix, taxonomy=taxonomy
+        )
+        probe_rows = run_pull_probe(
+            retriever, queries, query_gold,
+            query_gains=query_gains, parent_map=parent_map,
+        )
+        if probe_only:
+            # hybrid는 LLM 파이프라인 경유라 probe-only 배선 검증에서 제외
+            all_results[f"dr-dci_{dataset}"] = {"probe_rows": probe_rows}
+            continue
+
+        results = run_dr_dci(config, corpus, queries, qrels, ref_answers,
+                             step_config, subset_size, dataset,
+                             cached_retriever=retriever)
         metrics = compute_metrics(results)
-        all_results[f"dr-dci_{dataset}"] = {"results": results, "metrics": metrics}
+        all_results[f"dr-dci_{dataset}"] = {
+            "results": results, "metrics": metrics, "probe_rows": probe_rows,
+        }
         print(f"    Metrics: {metrics}")
 
         print(f"\n  --- Hybrid RAG @ {dataset} ---")
-        results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
-        metrics = compute_metrics(results)
-        all_results[f"hybrid_{dataset}"] = {"results": results, "metrics": metrics}
-        print(f"    Metrics: {metrics}")
+        hybrid_results = run_hybrid(config, corpus, queries, qrels, ref_answers, dataset=dataset)
+        hybrid_metrics = compute_metrics(hybrid_results)
+        # hybrid 검색단 rank 지표: 파이프라인이 반환한 retrieved_docs를
+        # probe와 같은 지표로 사후 채점 — DR-DCI probe와 검색단끼리 비교 가능
+        hybrid_rank_rows = []
+        for r in hybrid_results:
+            if r.get("failed"):
+                continue
+            gold = query_gold.get(str(r["query_id"]))
+            if not gold:
+                continue
+            ranked = to_parent_ids(r.get("retrieved_docs", []), parent_map)
+            hybrid_rank_rows.append({
+                "query_id": str(r["query_id"]),
+                **rank_metrics(ranked, gold,
+                               gains=query_gains.get(str(r["query_id"]))),
+                "probe_latency_seconds": 0.0,   # 파이프라인 경유 — 비교 무효
+                "ranked_top20": ranked[:20],
+            })
+        all_results[f"hybrid_{dataset}"] = {
+            "results": hybrid_results, "metrics": hybrid_metrics,
+            "probe_rows": hybrid_rank_rows,
+        }
+        print(f"    Metrics: {hybrid_metrics}")
 
-    save_results("part4_generalization", all_results)
+        # paired 비교: 최종 결과(agent 포함)와 검색단(rank 지표) 각각
+        analysis[f"hybrid_minus_drdci_{dataset}"] = compare_result_rows(
+            all_results[f"dr-dci_{dataset}"]["results"],
+            hybrid_results,
+            seed=seed,
+        )
+        if probe_rows and hybrid_rank_rows:
+            analysis[f"probe_drdci_vs_hybrid_{dataset}"] = compare_probe_rows(
+                probe_rows, hybrid_rank_rows, seed=seed,
+            )
+
+    save_results(
+        "part4_generalization",
+        all_results,
+        manifest={
+            "git_commit": current_git_commit(),
+            "datasets": names,
+            "probe_only": probe_only,
+            "seed": seed,
+            "replicate_index": config.get("replicate_index", 0),
+            "query_variant": config.get("query_variant"),
+            "taxonomy_bonus": config["agent"].get("taxonomy_bonus", 0.15),
+            "pull_reranker": config["agent"].get("pull_reranker", False),
+            "hybrid_reranker": True,   # hybrid 파이프라인은 리랭커 상시 부착
+            "probe": (
+                "dr-dci: retrieval-only pull probe on original query text; "
+                "hybrid: rank metrics re-scored from pipeline retrieved_docs "
+                "(latency delta is not comparable)"
+            ),
+            "embedding_endpoint": {
+                "url": config["models"]["embedding"]["url"],
+                "model": config["models"]["embedding"]["name"],
+            },
+        },
+        analysis=analysis,
+    )
 
 
 TAXONOMY_BACKENDS = {"taxonomy_routed", "taxonomy_boosted", "taxonomy_partitioned"}
@@ -1122,8 +1345,14 @@ def load_query_routing(dataset: str, subset_size: int | None,
     return routing
 
 
-def run_part5(config: dict, probe_only: bool = False):
-    """Part 5: compare pull backends while holding the agent loop fixed."""
+def run_part5(config: dict, probe_only: bool = False,
+              sweep_bonus: list[float] = None):
+    """Part 5: compare pull backends while holding the agent loop fixed.
+
+    sweep_bonus(E): taxonomy_boosted backend에서 soft bonus 가중치를 스윕해
+    "+0.15가 과했나 vs taxonomy 신호 자체가 해로운가"를 분리한다. bonus는
+    쿼리 시점 덧셈이라 재인덱싱 없이 같은 retriever로 값만 바꿔 probe한다.
+    bonus=0.0은 (filter가 있어도 가산 0이므로) 순수 dense와 동치인 기준축."""
     print("\n" + "=" * 60)
     print("Part 5: Pull Backend Comparison")
     print("=" * 60)
@@ -1131,8 +1360,18 @@ def run_part5(config: dict, probe_only: bool = False):
     part_cfg = config["parts"]["part5_pull_backend"]
     dataset = part_cfg["dataset"]
     subset_size = part_cfg["subset"]
+
+    if sweep_bonus:
+        # 데이터 로드 전에 검증 — 잘못된 조합이면 즉시 실패
+        if not probe_only:
+            raise ValueError("--sweep-bonus는 --probe-only와 함께만 지원한다 "
+                             "(agent 루프는 bonus 스윕 대상이 아님)")
+        if "taxonomy_boosted" not in part_cfg["backends"]:
+            raise ValueError("--sweep-bonus는 backends에 taxonomy_boosted가 "
+                             "있어야 한다 (bonus는 soft boost 경로에만 작용)")
+
     corpus = load_corpus(dataset, subset_size)
-    queries, qrels = load_queries(dataset)
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
 
     ref_answers = {}
     ref_path = DATA_DIR / "reference_answers" / f"{dataset}.json"
@@ -1177,6 +1416,21 @@ def run_part5(config: dict, probe_only: bool = False):
             parent_map=parent_map_from_corpus(corpus),
             routing=routing if backend in TAXONOMY_BACKENDS else None,
         )
+        if sweep_bonus and backend == "taxonomy_boosted":
+            # 같은 인덱스에서 bonus만 바꿔 재측정 (재임베딩 없음)
+            default_bonus = retriever.config.taxonomy_bonus
+            for b in sweep_bonus:
+                retriever.config.taxonomy_bonus = float(b)
+                key = f"taxonomy_boosted_b{b:g}"
+                print(f"    --- sweep: {key} ---")
+                probes[key] = run_pull_probe(
+                    retriever, queries, query_gold,
+                    query_gains=query_gains,
+                    parent_map=parent_map_from_corpus(corpus),
+                    routing=routing,
+                )
+                all_results[key] = {"probe_rows": probes[key]}
+            retriever.config.taxonomy_bonus = default_bonus
         if probe_only or backend in TAXONOMY_BACKENDS:
             if not probe_only:
                 # agent 루프는 질의별 라우팅을 모른다 — taxonomy backend는
@@ -1212,11 +1466,22 @@ def run_part5(config: dict, probe_only: bool = False):
         "subset_size": subset_size,
         "query_count": len(queries),
         "seed": config["seed"],
+        "replicate_index": config.get("replicate_index", 0),
+        "query_variant": config.get("query_variant"),
+        "taxonomy_bonus": config["agent"].get("taxonomy_bonus", 0.15),
+        "pull_reranker": config["agent"].get("pull_reranker", False),
+        "sweep_bonus": sweep_bonus,
         "git_commit": current_git_commit(),
     }
     # 비교는 dense를 기준축으로 나머지 backend 전부와 paired로 잰다
     analysis = {}
     baseline_backend = "dense"
+    # bonus 스윕 arm: dense 기준 paired 비교 (b0은 dense와 동치인지 자가검증)
+    for key in sorted(probes):
+        if key.startswith("taxonomy_boosted_b") and baseline_backend in probes:
+            analysis[f"probe_{baseline_backend}_vs_{key}"] = compare_probe_rows(
+                probes[baseline_backend], probes[key], seed=config["seed"]
+            )
     for backend in part_cfg["backends"]:
         if backend == baseline_backend or baseline_backend not in probes:
             continue
@@ -1276,6 +1541,11 @@ def save_results(
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_path = out_dir / f"{timestamp}.json"
+    # multi-seed 연속 실행 등으로 같은 초에 두 번 저장돼도 덮어쓰지 않는다
+    dedup = 1
+    while out_path.exists():
+        dedup += 1
+        out_path = out_dir / f"{timestamp}-{dedup}.json"
 
     # results에서 큰 리스트 제거 (요약만 저장)
     summary = {}
@@ -1302,7 +1572,23 @@ def main():
     parser = argparse.ArgumentParser(description="DR-DCI Experiment Runner")
     parser.add_argument("--part", type=int, choices=[1, 2, 3, 4, 5], help="Run specific part")
     parser.add_argument("--probe-only", action="store_true",
-                        help="part5: retrieval-only probe만 실행(agent/judge 생략)")
+                        help="part1/3/4/5: retrieval-only probe만 실행(agent/judge 생략)")
+    parser.add_argument("--seeds", default="",
+                        help="쉼표 구분 seed 목록(예: 42,43,44) - 각 seed로 전체를 "
+                             "반복 실행(replicate)해 run 간 분산을 잰다. "
+                             "agent 경로의 분산원은 seed가 아니라 API 비결정성이므로 "
+                             "seed는 bootstrap/샘플링 재현성용이다")
+    parser.add_argument("--taxonomy-bonus", type=float, default=None,
+                        help="taxonomy soft boost 가중치 오버라이드(기본 0.15)")
+    parser.add_argument("--sweep-bonus", default="",
+                        help="part5 --probe-only 전용: 쉼표 구분 bonus 값 목록"
+                             "(예: 0.0,0.05,0.15,0.3) - taxonomy_boosted 스윕")
+    parser.add_argument("--pull-reranker", action="store_true",
+                        help="DR-DCI pull 경로에 리랭커 부착(hybrid와 패리티). "
+                             "기본 off = 기존 동작")
+    parser.add_argument("--query-variant", default="",
+                        help="질의 변형 세트 선택(예: paraphrase -> "
+                             "queries_paraphrase.jsonl). 미지정 시 원 질의")
     parser.add_argument("--embedding-url", default="",
                         help="임베딩 endpoint 오버라이드(결과 manifest에 기록)")
     parser.add_argument("--embedding-model", default="",
@@ -1322,53 +1608,69 @@ def main():
                              "(agent/judge 생략, 임베딩 endpoint만 필요)")
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    base_config = load_config(args.config)
 
-    if args.all:
-        run_part1(config, focused=args.focused)
-        run_part2(config, focused=args.focused)
-        run_part3(config)
-        run_part4(config)
-        if args.embedding_url:
-            config["models"]["embedding"]["url"] = args.embedding_url
-        if args.embedding_model:
-            config["models"]["embedding"]["name"] = args.embedding_model
-        if args.dataset:
-            config["parts"]["part5_pull_backend"]["dataset"] = args.dataset
-        if args.subset >= 0:
-            config["parts"]["part5_pull_backend"]["subset"] = (
-                args.subset if args.subset > 0 else None
-            )
-        run_part5(config, probe_only=args.probe_only)
-    elif args.part == 1:
-        run_part1(config, focused=args.focused)
-    elif args.part == 2:
-        if args.scale_probe:
-            if args.embedding_url:
-                config["models"]["embedding"]["url"] = args.embedding_url
-            if args.embedding_model:
-                config["models"]["embedding"]["name"] = args.embedding_model
-            run_part2_scale_probe(config)
-        else:
+    # CLI 오버라이드는 config에 실어 러너·manifest가 같은 값을 보게 한다
+    if args.embedding_url:
+        base_config["models"]["embedding"]["url"] = args.embedding_url
+    if args.embedding_model:
+        base_config["models"]["embedding"]["name"] = args.embedding_model
+    if args.dataset:
+        base_config["parts"]["part5_pull_backend"]["dataset"] = args.dataset
+    if args.subset >= 0:
+        base_config["parts"]["part5_pull_backend"]["subset"] = (
+            args.subset if args.subset > 0 else None
+        )
+    if args.taxonomy_bonus is not None:
+        base_config["agent"]["taxonomy_bonus"] = args.taxonomy_bonus
+    if args.pull_reranker:
+        base_config["agent"]["pull_reranker"] = True
+    if args.query_variant:
+        base_config["query_variant"] = args.query_variant
+
+    sweep_bonus = (
+        [float(v) for v in args.sweep_bonus.split(",") if v.strip()]
+        if args.sweep_bonus else None
+    )
+    if sweep_bonus and args.part != 5:
+        raise SystemExit("--sweep-bonus는 --part 5에서만 지원한다")
+
+    seeds = (
+        [int(s) for s in args.seeds.split(",") if s.strip()]
+        if args.seeds else [base_config.get("seed", 42)]
+    )
+
+    def dispatch(config):
+        if args.all:
+            run_part1(config, focused=args.focused, probe_only=args.probe_only)
             run_part2(config, focused=args.focused)
-    elif args.part == 3:
-        run_part3(config)
-    elif args.part == 4:
-        run_part4(config)
-    elif args.part == 5:
-        if args.embedding_url:
-            config["models"]["embedding"]["url"] = args.embedding_url
-        if args.embedding_model:
-            config["models"]["embedding"]["name"] = args.embedding_model
-        if args.dataset:
-            config["parts"]["part5_pull_backend"]["dataset"] = args.dataset
-        if args.subset >= 0:
-            config["parts"]["part5_pull_backend"]["subset"] = (
-                args.subset if args.subset > 0 else None
-            )
-        run_part5(config, probe_only=args.probe_only)
-    else:
-        print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
+            run_part3(config, probe_only=args.probe_only)
+            run_part4(config, probe_only=args.probe_only)
+            run_part5(config, probe_only=args.probe_only, sweep_bonus=sweep_bonus)
+        elif args.part == 1:
+            run_part1(config, focused=args.focused, probe_only=args.probe_only)
+        elif args.part == 2:
+            if args.scale_probe:
+                run_part2_scale_probe(config)
+            else:
+                run_part2(config, focused=args.focused)
+        elif args.part == 3:
+            run_part3(config, probe_only=args.probe_only)
+        elif args.part == 4:
+            run_part4(config, probe_only=args.probe_only)
+        elif args.part == 5:
+            run_part5(config, probe_only=args.probe_only, sweep_bonus=sweep_bonus)
+        else:
+            print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
+
+    for replicate_index, seed in enumerate(seeds):
+        if len(seeds) > 1:
+            print(f"\n{'#' * 60}\n# replicate {replicate_index + 1}/{len(seeds)} "
+                  f"(seed={seed})\n{'#' * 60}")
+        config = copy.deepcopy(base_config)
+        config["seed"] = seed
+        config["replicate_index"] = replicate_index
+        dispatch(config)
 
 
 if __name__ == "__main__":

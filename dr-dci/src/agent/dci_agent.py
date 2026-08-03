@@ -414,6 +414,10 @@ class DCIAgent:
                 "retrieved": len(pulled["results"]),
                 "newly_added": added,
                 "duplicate_count": pulled["duplicates_excluded"],
+                # 단계 분리 지표(funnel)용: pull이 무엇을 가져왔는지 doc_id로
+                # 기록한다. 이게 없으면 "pull이 gold를 가져왔는가"를 최종
+                # 워크스페이스 상태와 분리해 사후 복원할 수 없다.
+                "result_doc_ids": [r["doc_id"] for r in pulled["results"]],
             }
             state["pull_stats"].append(stats)
             state["retrieved_candidates"] += stats["retrieved"]
@@ -467,10 +471,16 @@ class DCIAgent:
         if name == "pull":
             return {k: result.get(k) for k in ("newly_added", "duplicate_count", "total_in_workspace")}
         if name == "grep":
+            # match_doc_ids: 필터 결과에 gold가 노출됐는지 사후 판별용
+            # (grep은 제거가 아니라 조회 — "agent의 주의에서 gold가 빠졌는가" 축)
             return {"matches": len(result.get("matches", [])),
+                    "match_doc_ids": sorted({m.get("doc_id")
+                                             for m in result.get("matches", [])
+                                             if m.get("doc_id")}),
                     "tag_data_missing": result.get("tag_data_missing")}
         if name == "find":
-            return {"matched": result.get("matched")}
+            return {"matched": result.get("matched"),
+                    "doc_ids": list(result.get("doc_ids", []))}
         if name == "read":
             return {"found": "content" in result and result["content"] != "Document not found in workspace"}
         if name == "answer":

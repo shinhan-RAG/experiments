@@ -15,16 +15,40 @@ def paired_bootstrap_delta(
     if not control:
         raise ValueError("paired samples must not be empty")
 
-    deltas = np.asarray(treatment, dtype=float) - np.asarray(control, dtype=float)
+    control_arr = np.asarray(control, dtype=float)
+    treatment_arr = np.asarray(treatment, dtype=float)
+    deltas = treatment_arr - control_arr
     rng = np.random.default_rng(seed)
     sample_indices = rng.integers(0, len(deltas), size=(iterations, len(deltas)))
     bootstrap_means = deltas[sample_indices].mean(axis=1)
     low, high = np.percentile(bootstrap_means, [2.5, 97.5])
+
+    # p-value: 질의 단위 sign-flip randomization (귀무가설: 처치 효과 없음).
+    # bootstrap CI를 p-value로 재해석하지 않는다 — metrics.paired_bootstrap_test와
+    # 같은 정의((extreme+1)/(n+1))를 numpy로 벡터화한 것.
+    observed = abs(float(deltas.mean()))
+    signs = rng.choice(np.array([-1.0, 1.0]), size=(iterations, len(deltas)))
+    randomized_means = np.abs((signs * deltas).mean(axis=1))
+    extreme = int(np.sum(randomized_means >= observed - 1e-15))
+    p_value = min((extreme + 1) / (iterations + 1), 1.0)
+
+    control_mean = float(control_arr.mean())
+    mean_delta = float(deltas.mean())
+    # 상대 %는 baseline 절대값과 항상 병기한다 — 바닥(0.039) 위의 +29% 같은
+    # 착시를 절대 델타 없이 단독 보고하지 않기 위한 구조적 장치.
+    relative_pct = (
+        round(mean_delta / control_mean * 100, 2)
+        if abs(control_mean) > 1e-12 else None
+    )
     return {
         "n": len(deltas),
-        "mean_delta": round(float(deltas.mean()), 6),
+        "control_mean": round(control_mean, 6),
+        "treatment_mean": round(float(treatment_arr.mean()), 6),
+        "mean_delta": round(mean_delta, 6),
+        "relative_pct": relative_pct,
         "ci95_low": round(float(low), 6),
         "ci95_high": round(float(high), 6),
+        "p_value": round(p_value, 6),
         "iterations": iterations,
         "seed": seed,
     }

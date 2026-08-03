@@ -44,6 +44,8 @@ agent:
   rrf_k: 60
   workspace_max_docs: 100
   min_pulls: 2
+  taxonomy_bonus: 0.15  # taxonomy soft boost 가산치 (CLI --taxonomy-bonus로 오버라이드)
+  pull_reranker: false  # true면 DR-DCI pull 경로에도 리랭커 부착(hybrid와 패리티)
   dci_tools: ["grep", "find", "read", "filter"]
 
 hybrid:
