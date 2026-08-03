@@ -1,0 +1,46 @@
+# Synthetic contract/gate tests for the collection experiments (PR #13 P7/C3).
+#
+# Runs the full dr-dci synthetic test suite — no private data, no model or
+# API calls. Supply-chain reproducibility (fifth-review C3, owner action 1):
+#   - Actions are pinned to full commit SHAs (not moving tags).
+#   - Python is pinned to a specific patch version.
+#   - Dependencies install ONLY from the hash-pinned transitive lock
+#     (pip install --require-hashes -r requirements.lock, resolved on
+#     linux/CPython 3.12.8; regenerate with the pip-compile command in the
+#     lock header and never hand-edit it).
+#   - A supply-chain integrity test (tests/test_ci_supply_chain.py) fails the
+#     required check if this workflow is weakened while keeping its job name.
+# The repository owner marks synthetic-tests required in branch protection;
+# private full-run evidence remains an out-of-band reviewed artifact.
+
+name: collection-contract-tests
+
+on:
+  pull_request:
+    branches: [feature_ralph, dev]
+  push:
+    branches: [feature_ralph]
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: "3.12.8"
+      - name: Install dependencies (hash-pinned lock)
+        working-directory: dr-dci
+        run: python -m pip install --require-hashes -r requirements.lock
+      - name: Lock drift check
+        working-directory: dr-dci
+        run: python scripts/check_supply_chain.py --constraints constraints.txt --lock requirements.lock --expect-python 3.12.8
+      - name: Run synthetic test suite
+        working-directory: dr-dci
+        run: python -m pytest tests/ -q
+      - name: Whitespace check
+        run: git diff --check
