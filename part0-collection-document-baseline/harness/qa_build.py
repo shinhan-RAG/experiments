@@ -91,23 +91,43 @@ def _candidate_runs(lines: list[str], allow_tables: bool, rng: Random,
     n = len(lines)
     lo, hi = int(n * 0.3), int(n * 0.9)
     runs = []
+
+    # prose boilerplate needs >=3 tokens to be specific; table cells (C docs)
+    # are short but content-specific, so 2 suffices there
+    min_len = 2 if allow_tables else 3
+
+    def close(cur):
+        if len(cur) >= min_len:
+            runs.append(cur)
+        return []
+
     for line in lines[lo:hi]:
         if line.lstrip().startswith("#"):
             continue
         if ("|" in line) != allow_tables and "|" in line:
             continue
         cur = []
-        for t in line.split():
-            t = t.strip(_TOKEN_STRIP)
-            if 4 <= len(t) <= 14 and _HANGUL.search(t) and t not in product_dir:
-                cur.append(t)
-            else:
-                if len(cur) >= 2:
-                    runs.append(cur)
-                cur = []
-        if len(cur) >= 2:
-            runs.append(cur)
+        for raw in line.split():
+            t = raw.strip(_TOKEN_STRIP)
+            valid = (4 <= len(t) <= 14 and _HANGUL.search(t)
+                     and t not in product_dir)
+            if not valid:
+                cur = close(cur)
+                continue
+            # keep pattern adjacency honest: punctuation at a token edge
+            # breaks the [\s]*-join, so end/split the run there
+            if not raw.startswith(t):
+                cur = close(cur)
+            cur.append(t)
+            if not raw.endswith(t):
+                cur = close(cur)
+        close(cur)
     rng.shuffle(runs)
+    # local (zero-scan) rarity heuristic: long tokens and digits are far more
+    # document-specific than short legal boilerplate pairs
+    runs.sort(key=lambda r: -(max(len(t) for t in r)
+                              + 3 * any(ch.isdigit() for t in r for ch in t)
+                              + sum(len(t) for t in r) / 10))
     return runs[:8]
 
 
@@ -248,7 +268,7 @@ class QABuilder:
         cap = self.cfg.quotas.gold_max_content
         for run in _candidate_runs(lines, allow_tables, self.rng,
                                    target.product_dir):
-            width = min(3, len(run))
+            width = min(4, len(run))
             while width <= min(len(run), 7):
                 tokens = run[:width]
                 try:
