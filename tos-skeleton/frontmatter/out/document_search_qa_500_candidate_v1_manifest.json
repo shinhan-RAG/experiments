@@ -1,0 +1,27 @@
+{
+  "dataset_version": "document-search-qa-candidate-v1",
+  "n_questions": 500,
+  "intent_counts": {
+    "identity": 150,
+    "content": 200,
+    "mixed": 150
+  },
+  "split_counts": {
+    "test": 400,
+    "dev": 100
+  },
+  "unique_gold_documents": 500,
+  "unique_products": 394,
+  "sha256": "b1161a2362ec26019159f23db2a735a449847af2fc6b49666ee0f233a51ddc7e",
+  "independence": {
+    "reads_generated_index": false,
+    "reads_generated_frontmatter": false,
+    "source": "raw Markdown paths and contents only"
+  },
+  "status": "candidate",
+  "limitations": [
+    "Content questions were created by deterministic templates because no LLM endpoint was available.",
+    "A source document and evidence are verified, but alternative relevant documents were not pooled/reviewed.",
+    "Use the review CSV before promoting content/mixed records to approved gold."
+  ]
+}
