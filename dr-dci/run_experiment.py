@@ -15,9 +15,11 @@ import yaml
 import argparse
 import subprocess
 import time
+from collections import defaultdict
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+import numpy as np
 from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent / ".env")
@@ -34,6 +36,7 @@ from src.eval.judge import Judge, compute_metrics
 from src.eval import span_metrics
 from src.eval.part12_contracts import audit_part12
 from src.eval.retrieval_metrics import rank_metrics
+from src.retrieval.qa_metadata import serialize_metadata_fields
 
 
 BASE_DIR = Path(__file__).parent
@@ -1521,6 +1524,491 @@ def run_part5(config: dict, probe_only: bool = False,
     )
 
 
+PART6_METRIC_KEYS = (
+    "recall_at_1", "recall_at_3", "recall_at_5", "recall_at_10",
+    "recall_at_20", "hit_at_1", "hit_at_3", "hit_at_5", "hit_at_10",
+    "mrr", "ndcg_at_10", "gold_rank", "probe_latency_seconds",
+)
+
+
+def part6_rank_metrics(ranked_ids: list[str], gold_ids: set[str],
+                       gains: dict[str, float] = None) -> dict:
+    """Part 6의 단일/소수 gold에 맞춘 순위 지표와 gold rank."""
+    base = rank_metrics(ranked_ids, gold_ids, gains=gains)
+    first_rank = next(
+        (rank for rank, doc_id in enumerate(ranked_ids, 1) if doc_id in gold_ids),
+        None,
+    )
+    for k in (1, 3, 10):
+        base[f"recall_at_{k}"] = len(set(ranked_ids[:k]) & gold_ids) / len(gold_ids)
+    for k in (1, 3):
+        base[f"hit_at_{k}"] = 1.0 if set(ranked_ids[:k]) & gold_ids else 0.0
+    base["mrr"] = 1.0 / first_rank if first_rank else 0.0
+    base["gold_rank"] = first_rank
+    return base
+
+
+def summarize_part6_rows(rows: list[dict]) -> dict:
+    """품질 평균과 온라인 검색 latency 분포를 arm 단위로 집계한다."""
+    if not rows:
+        return {}
+    quality_keys = (
+        "recall_at_1", "recall_at_3", "recall_at_5", "recall_at_10",
+        "recall_at_20", "hit_at_1", "hit_at_3", "hit_at_5", "hit_at_10",
+        "mrr", "ndcg_at_10",
+    )
+    out = {
+        key: round(sum(float(row[key]) for row in rows) / len(rows), 6)
+        for key in quality_keys
+    }
+    ranks = [row["gold_rank"] for row in rows if row.get("gold_rank") is not None]
+    if ranks:
+        out["mean_gold_rank"] = round(sum(ranks) / len(ranks), 6)
+    for field, prefix in (
+        ("query_embedding_seconds", "query_embedding"),
+        ("ranking_seconds", "ranking"),
+        ("probe_latency_seconds", "retrieval"),
+    ):
+        values = np.asarray([float(row[field]) for row in rows], dtype=float)
+        out[f"avg_{prefix}_seconds"] = round(float(values.mean()), 6)
+        out[f"p50_{prefix}_seconds"] = round(float(np.percentile(values, 50)), 6)
+        out[f"p95_{prefix}_seconds"] = round(float(np.percentile(values, 95)), 6)
+        out[f"max_{prefix}_seconds"] = round(float(values.max()), 6)
+    return out
+
+
+def part6_breakdowns(rows: list[dict]) -> dict:
+    """QA 출처·유형·엘리먼트·문서 크기별로 동일한 지표를 집계한다."""
+    result = {}
+    for field in ("source", "qa_type", "element_type", "candidate_count_bucket"):
+        grouped = defaultdict(list)
+        for row in rows:
+            grouped[str(row.get(field) or "unknown")].append(row)
+        result[field] = {
+            value: {"n": len(group), **summarize_part6_rows(group)}
+            for value, group in sorted(grouped.items())
+        }
+    return result
+
+
+def part6_build_aug_texts(corpus: list[dict], condition: dict,
+                          augmentation_maps: dict[str, dict]) -> dict | None:
+    """Part 6 조건에 지정된 증강 소스를 검색용 문자열로 직렬화한다.
+
+    ``metadata_source``/``tags_source``를 생략하면 기존 ``metadata``/``tags``
+    경로를 사용한다. 덕분에 한 실행 안에서 문서 공통 메타데이터와 LLM이 만든
+    청크별 메타데이터를 서로 다른 arm으로 비교할 수 있다.
+    """
+    requested = []
+    if condition.get("index_metadata"):
+        requested.append(condition.get("metadata_source", "metadata"))
+    if condition.get("index_tags"):
+        requested.append(condition.get("tags_source", "tags"))
+    if not requested:
+        return None
+
+    def serialize(value) -> str:
+        if isinstance(value, dict):
+            return " ".join(
+                f"{key}:{serialize(item)}"
+                for key, item in value.items() if serialize(item)
+            )
+        if isinstance(value, list):
+            return " ".join(str(item).strip() for item in value if str(item).strip())
+        return str(value).strip() if value is not None else ""
+
+    aug_texts = {}
+    for chunk in corpus:
+        chunk_id = chunk["_id"]
+        parts = []
+        for source in requested:
+            value = augmentation_maps[source].get(chunk_id)
+            fields = condition.get("metadata_fields")
+            if fields is not None and isinstance(value, dict):
+                rendered = serialize_metadata_fields(
+                    value,
+                    fields,
+                    max_chars=int(condition.get("metadata_max_chars", 240)),
+                )
+            else:
+                rendered = serialize(value)
+                max_chars = condition.get("metadata_max_chars")
+                if max_chars is not None:
+                    rendered = rendered[:int(max_chars)].rstrip()
+            if rendered:
+                parts.append(rendered)
+        if parts:
+            aug_texts[chunk_id] = " | ".join(parts)
+    return aug_texts
+
+
+def run_part6(config: dict):
+    """Part 6: 이미 선택된 정답 문서 안에서 4개 색인 조건을 비교한다.
+
+    baseline / metadata_only / tags_only / meta_tags를 Dense와 Hybrid RRF로
+    평가한다. LLM 답변·judge는 호출하지 않으며, 정답은 gold 청크의 Top-k
+    포함 여부로 판정한다. 질의 임베딩은 모든 arm에서 동일 벡터를 공유한다.
+    """
+    part_cfg = config["parts"]["part6_chunk_conditions"]
+    dataset = part_cfg["dataset"]
+    conditions = part_cfg["conditions"]
+    backends = part_cfg.get("backends", ["dense"])
+
+    print("\n" + "=" * 60)
+    print(f"Part 6: Chunk Index Augmentation ({dataset})")
+    print("=" * 60)
+
+    corpus = load_corpus(dataset, part_cfg.get("subset"))
+    queries, qrels = load_queries(dataset, variant=config.get("query_variant"))
+    query_gold = positive_gold_by_query(qrels)
+    query_gains = positive_gold_gains_by_query(qrels)
+    chunk_doc = {c["_id"]: c["doc"] for c in corpus}
+    doc_chunks = defaultdict(list)
+    for chunk in corpus:
+        doc_chunks[chunk["doc"]].append(chunk["_id"])
+
+    qa_meta = {}
+    qa_meta_path = dataset_dir(dataset) / "qa_meta.jsonl"
+    if qa_meta_path.exists():
+        with open(qa_meta_path, encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    item = json.loads(line)
+                    qa_meta[str(item["qid"])] = item
+
+    query_doc = {}
+    for q in queries:
+        qid = str(q["_id"])
+        gold = query_gold.get(qid)
+        if not gold:
+            continue
+        missing = sorted(gold - set(chunk_doc))
+        if missing:
+            raise RuntimeError(f"query {qid}: gold chunks missing from corpus: {missing}")
+        gold_docs = {chunk_doc[chunk_id] for chunk_id in gold}
+        if len(gold_docs) != 1:
+            raise RuntimeError(
+                f"query {qid}: within-doc experiment requires exactly one "
+                f"gold document, got {sorted(gold_docs)}"
+            )
+        query_doc[qid] = next(iter(gold_docs))
+
+    # 증강 산출물 로드 — 조건별 source를 허용해 서로 다른 메타데이터를 같은
+    # 실행에서 비교한다. 요청된 파일이 없으면 즉시 실패한다(arm 라벨 보호).
+    required_sources = set()
+    for condition in conditions:
+        if condition.get("index_metadata"):
+            required_sources.add(condition.get("metadata_source", "metadata"))
+        if condition.get("index_tags"):
+            required_sources.add(condition.get("tags_source", "tags"))
+
+    def load_aug_file(key: str) -> dict:
+        path = BASE_DIR / part_cfg["aug_paths"][key]
+        if not path.exists():
+            raise FileNotFoundError(
+                f"requested index augmentation '{key}' is missing: {path}")
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+
+    augmentation_maps = {
+        source: load_aug_file(source) for source in sorted(required_sources)
+    }
+    min_cov = float(part_cfg.get("min_aug_coverage", 0.95))
+    for name, aug in augmentation_maps.items():
+        cov = sum(1 for c in corpus if c["_id"] in aug) / len(corpus)
+        print(f"  {name} coverage: {cov:.1%}")
+        if cov < min_cov:
+            raise RuntimeError(
+                f"{name} 커버리지 {cov:.1%} < {min_cov:.0%} — 증강 생성을 먼저 "
+                f"완료할 것 (arm 라벨과 실제 처치의 괴리 방지)")
+
+    models = config["models"]
+    agent_cfg = config["agent"]
+    retrievers = {}
+    index_timings = {}
+    for cond in conditions:
+        cond_name = cond["name"]
+        aug_texts = part6_build_aug_texts(corpus, cond, augmentation_maps)
+        for backend in backends:
+            arm = f"{cond_name}__{backend}"
+            print(f"\n  --- {arm} ---")
+            retriever = PullRetriever(RetrieverConfig(
+                embedding_url=models["embedding"]["url"],
+                embedding_model=models["embedding"]["name"],
+                top_k=agent_cfg["pull_top_k"],
+                backend=backend,
+                bm25_top_k=agent_cfg.get("bm25_top_k", agent_cfg["pull_top_k"]),
+                rrf_k=agent_cfg.get("rrf_k", 60),
+                api_key=os.getenv("OPENAI_API_KEY", ""),
+                query_instruction=models["embedding"].get("query_instruction"),
+                embed_batch_size=models["embedding"].get("batch_size", 64),
+            ))
+            print("    Indexing corpus...")
+            index_started = time.perf_counter()
+            retriever.index(corpus, aug_texts=aug_texts)
+            index_timings[arm] = time.perf_counter() - index_started
+            retrievers[arm] = retriever
+
+    eligible_queries = [q for q in queries if str(q["_id"]) in query_gold]
+    if not eligible_queries:
+        raise RuntimeError("Part 6 has no queries with positive gold chunks")
+
+    # 모델·instruction·질의가 모든 arm에서 같으므로 한 번만 임베딩한다.
+    # 조건별 latency에는 이 공통 온라인 비용을 동일하게 더한다.
+    shared_embedder = next(iter(retrievers.values()))
+    query_vectors = {}
+    query_embedding_times = {}
+    print(f"\n  Embedding {len(eligible_queries)} queries once for all arms...")
+    for i, q in enumerate(eligible_queries, 1):
+        qid = str(q["_id"])
+        query_text = q.get("title") or q.get("text", "")
+        started = time.perf_counter()
+        query_vectors[qid] = shared_embedder.embed_query(query_text)
+        query_embedding_times[qid] = time.perf_counter() - started
+        if i % 50 == 0 or i == len(eligible_queries):
+            print(f"    query embeddings: {i}/{len(eligible_queries)}")
+
+    all_results = {}
+    probes = {}
+    for cond in conditions:
+        cond_name = cond["name"]
+        for backend in backends:
+            arm = f"{cond_name}__{backend}"
+            retriever = retrievers[arm]
+            print(f"\n  --- Ranking {arm} within selected documents ---")
+            rows = []
+            for q in eligible_queries:
+                qid = str(q["_id"])
+                gold = query_gold.get(qid)
+                gains = query_gains.get(qid)
+                query_text = q.get("title") or q.get("text", "")
+                selected_doc = query_doc[qid]
+                started = time.perf_counter()
+                ranked = [
+                    row["doc_id"] for row in retriever.rank_candidates(
+                        query_text,
+                        doc_chunks[selected_doc],
+                        query_embedding=query_vectors[qid],
+                    )
+                ]
+                ranking_seconds = time.perf_counter() - started
+                embedding_seconds = query_embedding_times[qid]
+                meta = qa_meta.get(qid, {})
+                candidate_count = len(doc_chunks[selected_doc])
+                if candidate_count <= 50:
+                    candidate_bucket = "001-050"
+                elif candidate_count <= 100:
+                    candidate_bucket = "051-100"
+                elif candidate_count <= 200:
+                    candidate_bucket = "101-200"
+                else:
+                    candidate_bucket = "201+"
+                rows.append({
+                    "query_id": qid,
+                    "selected_doc": selected_doc,
+                    "candidate_chunk_count": candidate_count,
+                    "candidate_count_bucket": candidate_bucket,
+                    "source": meta.get("source"),
+                    "qa_type": meta.get("qa_type"),
+                    "doc": meta.get("doc", selected_doc),
+                    "element_type": meta.get("element_type"),
+                    **part6_rank_metrics(ranked, gold, gains=gains),
+                    "query_embedding_seconds": embedding_seconds,
+                    "ranking_seconds": ranking_seconds,
+                    "probe_latency_seconds": embedding_seconds + ranking_seconds,
+                    "ranked_top20": ranked[:20],
+                })
+
+            probes[arm] = rows
+            metrics = summarize_part6_rows(rows)
+            metrics["indexing_seconds"] = round(index_timings[arm], 6)
+            all_results[arm] = {
+                "metrics": metrics,
+                "breakdowns": part6_breakdowns(rows),
+                "probe_rows": rows,
+            }
+            print("    " + "  ".join(
+                f"{metric}={metrics[metric]:.3f}"
+                for metric in ("recall_at_1", "recall_at_5", "mrr", "ndcg_at_10")
+            ) + f"  p50={metrics['p50_retrieval_seconds']:.3f}s")
+
+    # 같은 backend 안에서 baseline 대비 paired 비교
+    analysis = {}
+    baseline_name = conditions[0]["name"]
+    for cond in conditions[1:]:
+        for backend in backends:
+            base_key = f"{baseline_name}__{backend}"
+            key = f"{cond['name']}__{backend}"
+            if base_key in probes and key in probes:
+                analysis[f"probe_{key}_minus_baseline"] = compare_probe_rows(
+                    probes[base_key], probes[key], seed=config["seed"],
+                    metric_keys=PART6_METRIC_KEYS,
+                )
+
+    result_path = save_results(
+        "part6_chunk_conditions",
+        all_results,
+        manifest={
+            "git_commit": current_git_commit(),
+            "dataset": dataset,
+            "hypothesis": part_cfg.get(
+                "hypothesis",
+                "메타데이터/시맨틱 태그를 인덱스 텍스트에 직렬화하면 "
+                "문서 내 청크 검색 recall이 오른다 (회의 0804 실험 2)",
+            ),
+            "single_variable": "index augmentation serialization",
+            "conditions": [c["name"] for c in conditions],
+            "backends": list(backends),
+            "scope": "oracle selected gold document; chunks from that document only",
+            "seed": config["seed"],
+            "query_count": len(eligible_queries),
+            "query_variant": config.get("query_variant"),
+            "aug_coverage_note": "metadata/tags는 인덱스 직렬화로만 사용 "
+                                 "(agent tool 컨텍스트 아님)",
+            "augmentation_provenance": part_cfg.get("augmentation_provenance"),
+            "latency_note": "온라인 검색 시간 = 공유 질의 임베딩 + 선택 문서 내 "
+                            "순위 계산; 색인 시간은 arm별 indexing_seconds로 분리",
+            "query_embedding_reuse": "각 질의를 한 번 임베딩하고 모든 조건/backend가 "
+                                     "같은 벡터와 측정 시간을 공유",
+            "answer_generation": False,
+            "judging": "gold chunk rank metrics; no LLM judge",
+            "embedding_endpoint": {
+                "url": models["embedding"]["url"],
+                "model": models["embedding"]["name"],
+            },
+        },
+        analysis=analysis,
+    )
+    report_path = part_cfg.get("comparison_report_path")
+    if report_path:
+        write_part6_comparison_report(
+            BASE_DIR / report_path,
+            all_results,
+            analysis,
+            baseline_name=baseline_name,
+            target_recall_at_5=float(part_cfg.get("baseline_hybrid_recall_at_5", 0.465)),
+        )
+        print(f"  Comparison report saved: {BASE_DIR / report_path}")
+    return result_path
+
+
+def write_part6_comparison_report(path: Path, results: dict, analysis: dict, *,
+                                  baseline_name: str,
+                                  target_recall_at_5: float) -> None:
+    """Write the decision-oriented Markdown report beside raw result JSON."""
+    hybrid = {
+        key.removesuffix("__hybrid_rrf"): value["metrics"]
+        for key, value in results.items() if key.endswith("__hybrid_rrf")
+    }
+    if not hybrid or baseline_name not in hybrid:
+        return
+    baseline = hybrid[baseline_name]
+    best_name = max(hybrid, key=lambda name: hybrid[name].get("recall_at_5", 0.0))
+    combined = hybrid.get("qa_combined")
+    # The combined arm remains the preregistered primary treatment, but the
+    # final operational recommendation should follow the best observed Hybrid
+    # R@5 when the ablation identifies dilution by one field family.
+    recommended = best_name
+    lines = [
+        "# QA 정렬형 청크 메타데이터 비교 보고서",
+        "",
+        f"주 지표는 Hybrid RRF R@5이며 기존 기준값은 {target_recall_at_5:.3f}이다.",
+        "",
+        "| 조건 | R@1 | R@5 | R@10 | R@20 | MRR | nDCG@10 | 평균 gold 순위 |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for name, metrics in hybrid.items():
+        lines.append(
+            f"| {name} | {metrics.get('recall_at_1', 0):.3f} | "
+            f"{metrics.get('recall_at_5', 0):.3f} | {metrics.get('recall_at_10', 0):.3f} | "
+            f"{metrics.get('recall_at_20', 0):.3f} | {metrics.get('mrr', 0):.3f} | "
+            f"{metrics.get('ndcg_at_10', 0):.3f} | {metrics.get('mean_gold_rank', 0):.3f} |"
+        )
+    chosen = hybrid[recommended]
+    not_worse = (
+        chosen.get("recall_at_20", 0) >= baseline.get("recall_at_20", 0)
+        and chosen.get("mean_gold_rank", float("inf")) <= baseline.get("mean_gold_rank", float("inf"))
+    )
+    comparison_key = f"probe_{recommended}__hybrid_rrf_minus_baseline"
+    paired = analysis.get(comparison_key, {})
+    significant = [
+        metric for metric, stats in paired.items()
+        if isinstance(stats, dict) and stats.get("p_value", 1.0) < 0.05
+        and metric != "probe_latency_seconds"
+    ]
+    lines.extend([
+        "",
+        "## 판정",
+        "",
+        f"- 최종 권장 조건: `{recommended}`",
+        f"- 주 실험 `qa_combined` Hybrid R@5: "
+        f"{combined.get('recall_at_5', 0):.3f}" if combined else "- `qa_combined` 결과 없음",
+        f"- 권장 조건 Hybrid R@5: {chosen.get('recall_at_5', 0):.3f} "
+        f"({'기준 초과' if chosen.get('recall_at_5', 0) > target_recall_at_5 else '기준 미달'})",
+        f"- 평균순위·R@20 비악화: {'통과' if not_worse else '실패'}",
+        f"- paired p<0.05 핵심 지표: {', '.join(significant) if significant else '없음'}",
+        "",
+        "최종 권장안은 주 실험 성공 여부와 별개로 모든 ablation 중 Hybrid R@5가 가장 "
+        "높은 조건을 선택한다.",
+    ])
+    if paired:
+        lines.extend([
+            "",
+            "## 권장 조건의 baseline 대비 paired 비교",
+            "",
+            "| 지표 | Δ | 95% CI | p-value |",
+            "|---|---:|---:|---:|",
+        ])
+        for metric in (
+            "recall_at_1", "recall_at_5", "recall_at_10", "recall_at_20",
+            "mrr", "ndcg_at_10", "gold_rank",
+        ):
+            stats = paired.get(metric)
+            if not stats:
+                continue
+            lines.append(
+                f"| {metric} | {stats['mean_delta']:+.4f} | "
+                f"[{stats['ci95_low']:+.4f}, {stats['ci95_high']:+.4f}] | "
+                f"{stats['p_value']:.4f} |"
+            )
+
+    dimension_labels = {
+        "source": "source",
+        "qa_type": "qa_type",
+        "element_type": "element_type",
+        "candidate_count_bucket": "후보 청크 수 구간",
+    }
+    baseline_breakdowns = results[f"{baseline_name}__hybrid_rrf"].get("breakdowns", {})
+    recommended_breakdowns = results[f"{recommended}__hybrid_rrf"].get("breakdowns", {})
+    lines.extend(["", "## 구간별 분석", ""])
+    for dimension, label in dimension_labels.items():
+        control_groups = baseline_breakdowns.get(dimension, {})
+        treatment_groups = recommended_breakdowns.get(dimension, {})
+        values = sorted(set(control_groups) | set(treatment_groups))
+        if not values:
+            continue
+        lines.extend([
+            f"### {label}",
+            "",
+            "| 구간 | n | baseline R@5 | 권장 R@5 | ΔR@5 | baseline 평균순위 | 권장 평균순위 |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ])
+        for value in values:
+            control = control_groups.get(value, {})
+            treatment = treatment_groups.get(value, {})
+            base_r5 = float(control.get("recall_at_5", 0.0))
+            treatment_r5 = float(treatment.get("recall_at_5", 0.0))
+            lines.append(
+                f"| {value} | {treatment.get('n', control.get('n', 0))} | "
+                f"{base_r5:.3f} | {treatment_r5:.3f} | {treatment_r5 - base_r5:+.3f} | "
+                f"{float(control.get('mean_gold_rank', 0.0)):.3f} | "
+                f"{float(treatment.get('mean_gold_rank', 0.0)):.3f} |"
+            )
+        lines.append("")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def current_git_commit() -> str:
     try:
         return subprocess.check_output(
@@ -1566,11 +2054,12 @@ def save_results(
         )
 
     print(f"\n  Results saved: {out_path}")
+    return out_path
 
 
 def main():
     parser = argparse.ArgumentParser(description="DR-DCI Experiment Runner")
-    parser.add_argument("--part", type=int, choices=[1, 2, 3, 4, 5], help="Run specific part")
+    parser.add_argument("--part", type=int, choices=[1, 2, 3, 4, 5, 6], help="Run specific part")
     parser.add_argument("--probe-only", action="store_true",
                         help="part1/3/4/5: retrieval-only probe만 실행(agent/judge 생략)")
     parser.add_argument("--seeds", default="",
@@ -1660,8 +2149,10 @@ def main():
             run_part4(config, probe_only=args.probe_only)
         elif args.part == 5:
             run_part5(config, probe_only=args.probe_only, sweep_bonus=sweep_bonus)
+        elif args.part == 6:
+            run_part6(config)
         else:
-            print("Usage: python run_experiment.py --part {1,2,3,4,5} or --all")
+            print("Usage: python run_experiment.py --part {1,2,3,4,5,6} or --all")
 
     for replicate_index, seed in enumerate(seeds):
         if len(seeds) > 1:

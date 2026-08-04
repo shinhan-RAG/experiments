@@ -29,6 +29,8 @@ taxonomy_filter 값은 단일 값 또는 값 리스트(top-2 라우팅)를 허�
 """
 
 import hashlib
+import time
+
 import numpy as np
 import requests
 from dataclasses import dataclass
@@ -66,6 +68,9 @@ class RetrieverConfig:
     bm25_top_k: int = 20
     rrf_k: int = 60
     max_top_k: int = 200
+    # 임베딩 요청당 입력 수. OpenAI /v1/embeddings는 요청당 300k 토큰 상한이
+    # 있어 긴 한국어 청크(청크당 최대 4096자 ≈ 4k 토큰)에서는 낮춰야 한다.
+    embed_batch_size: int = 64
 
 
 class PullRetriever:
@@ -96,8 +101,15 @@ class PullRetriever:
     # 하드 재정렬 계열 — soft bonus를 섞지 않는다
     HARD_ROUTING_BACKENDS = {"taxonomy_routed", "taxonomy_partitioned"}
 
-    def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None):
-        """문서를 인덱싱. 디스크 캐시 활용."""
+    def index(self, documents: list[dict], prefixes: dict = None, taxonomy: dict = None,
+              aug_texts: dict = None):
+        """문서를 인덱싱. 디스크 캐시 활용.
+
+        aug_texts: {doc_id: 직렬화된 증강 텍스트}. 주어지면 임베딩 텍스트와
+        BM25 색인 텍스트 앞에 함께 붙는다 — 검색 단독(probe) 실험에서
+        메타데이터/시맨틱 태그를 인덱스에 반영하는 경로 (agent tool 컨텍스트로만
+        쓰이는 기존 metadata/tags 배선과 독립).
+        """
         if self.config.backend not in self.SUPPORTED_BACKENDS:
             raise ValueError(f"unsupported retrieval backend: {self.config.backend}")
         self.doc_embeddings.clear()
@@ -106,23 +118,30 @@ class PullRetriever:
         self.doc_raw_texts.clear()
         doc_ids = []
         texts = []
+        bm25_docs = []
         for doc in documents:
             doc_id = doc["_id"]
             title = doc.get("title", "")
             text = doc.get("text", "")
             embed_text = f"{title} {text}"
+            if aug_texts and doc_id in aug_texts:
+                embed_text = f"{aug_texts[doc_id]} {embed_text}"
             if self.config.use_prefix and prefixes and doc_id in prefixes:
                 embed_text = f"{prefixes[doc_id]} {embed_text}"
             doc_ids.append(doc_id)
             texts.append(embed_text[:4096])
             self.doc_titles[doc_id] = title
             self.doc_raw_texts[doc_id] = f"{title} {text}"[:4096]
-            self.doc_titles[doc_id] = title
+            if aug_texts and doc_id in aug_texts:
+                bm25_docs.append({"_id": doc_id, "title": f"{aug_texts[doc_id]} {title}",
+                                  "text": text})
+            else:
+                bm25_docs.append(doc)
             if taxonomy and doc_id in taxonomy:
                 self.doc_taxonomy[doc_id] = taxonomy[doc_id]
 
         if self.config.backend == "hybrid_rrf":
-            self.bm25.fit(documents)
+            self.bm25.fit(bm25_docs)
 
         cache_key = self._cache_key(doc_ids, texts)
         cache_path = CACHE_DIR / f"{cache_key}.npz"
@@ -156,12 +175,71 @@ class PullRetriever:
         """condition별 taxonomy state를 명시적으로 설정/해제 (P1-5 state 격리)."""
         self.doc_taxonomy = dict(taxonomy) if taxonomy else {}
 
-    def rank_all(self, query: str, taxonomy_filter: dict = None) -> list[dict]:
+    def embed_query(self, query: str) -> np.ndarray:
+        """Embed a query once so controlled arms can reuse the same vector."""
+        return self._query_embedding(query)
+
+    def rank_candidates(self, query: str, candidate_ids: list[str] | set[str],
+                        query_embedding: np.ndarray = None) -> list[dict]:
+        """Rank only an explicit candidate set.
+
+        This is the document-within-chunk evaluation path: candidates are the
+        chunks of the document selected before this retriever is invoked.
+        When ``query_embedding`` is supplied no embedding endpoint call is
+        made, allowing identical query vectors to be shared across controlled
+        augmentation and backend arms.
+        """
+        allowed = set(candidate_ids)
+        indices = np.array(
+            [i for i, doc_id in enumerate(self.doc_ids) if doc_id in allowed],
+            dtype=int,
+        )
+        if len(indices) == 0:
+            return []
+
+        query_emb = (
+            np.asarray(query_embedding)
+            if query_embedding is not None else self._query_embedding(query)
+        )
+        sub = self.embedding_matrix[indices]
+        norms = np.linalg.norm(sub, axis=1)
+        query_norm = np.linalg.norm(query_emb)
+        sims = sub @ query_emb / (norms * query_norm + 1e-8)
+        order = np.argsort(-sims, kind="stable")
+        dense = [
+            {
+                "doc_id": self.doc_ids[indices[i]],
+                "score": float(sims[i]),
+                "rank": rank,
+            }
+            for rank, i in enumerate(order, 1)
+        ]
+        if self.config.backend != "hybrid_rrf":
+            return dense
+
+        lexical = self.bm25.search(
+            query,
+            top_k=len(indices),
+            allowed_ids=allowed,
+            subset_statistics=True,
+        )
+        fused = reciprocal_rank_fusion(
+            [dense, lexical], k=self.config.rrf_k, top_k=len(dense)
+        )
+        for rank, row in enumerate(fused, 1):
+            row["rank"] = rank
+        return fused
+
+    def rank_all(self, query: str, taxonomy_filter: dict = None,
+                 query_embedding: np.ndarray = None) -> list[dict]:
         """전체 corpus에 대한 ranked list 반환 (retrieval-only 평가용).
 
         결과: [{doc_id, score, rank}] — rank는 1부터.
+        query_embedding을 주면 endpoint 호출 없이 그 벡터를 쓴다
+        (rank_candidates와 같은 계약 — arm 간 동일 질의 벡터 공유).
         """
-        sims = self._dense_scores(query, taxonomy_filter)
+        sims = self._dense_scores(query, taxonomy_filter,
+                                  query_embedding=query_embedding)
         order = self._order_indices(sims, taxonomy_filter)
         dense = [
             {"doc_id": self.doc_ids[i], "score": float(sims[i]), "rank": r + 1}
@@ -218,9 +296,11 @@ class PullRetriever:
             query_text = f"{self.config.query_instruction}{query}"
         return self._embed_batch([query_text])[0]
 
-    def _dense_scores(self, query: str, taxonomy_filter: dict = None) -> np.ndarray:
+    def _dense_scores(self, query: str, taxonomy_filter: dict = None,
+                      query_embedding: np.ndarray = None) -> np.ndarray:
         """질의와 문서 행렬의 cosine score를 계산한다."""
-        query_emb = self._query_embedding(query)
+        query_emb = (np.asarray(query_embedding) if query_embedding is not None
+                     else self._query_embedding(query))
 
         norms = np.linalg.norm(self.embedding_matrix, axis=1)
         query_norm = np.linalg.norm(query_emb)
@@ -376,8 +456,13 @@ class PullRetriever:
                 return candidates
             raise RerankerError(f"reranker call failed: {error}") from exc
 
-    def _embed_batch(self, texts: list[str], batch_size: int = 256) -> list[np.ndarray]:
-        """vLLM embedding endpoint 호출 (batch=256)"""
+    def _embed_batch(self, texts: list[str], batch_size: int = None) -> list[np.ndarray]:
+        """embedding endpoint 호출 (vLLM·OpenAI 공통 — OpenAI 호환 스키마).
+
+        429/5xx/transport 오류는 지수 백오프로 4회 재시도한다. 인덱싱은 수천 건
+        연속 호출이라 일시적 오류 1건에 전체가 무너지면 안 된다. 4xx(429 제외)는
+        재시도가 무의미하므로 즉시 올린다."""
+        batch_size = batch_size or self.config.embed_batch_size
         all_embeddings = []
         headers = {"Content-Type": "application/json"}
         api_key = self.config.api_key or self.config.embedding_api_key
@@ -386,8 +471,23 @@ class PullRetriever:
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             payload = {"model": self.config.embedding_model, "input": batch}
-            resp = requests.post(self.config.embedding_url, json=payload, headers=headers, timeout=120)
-            resp.raise_for_status()
+            for attempt in range(4):
+                try:
+                    resp = requests.post(self.config.embedding_url, json=payload,
+                                         headers=headers, timeout=600)
+                    status_code = getattr(resp, "status_code", 200)
+                    if status_code == 429 or status_code >= 500:
+                        raise requests.HTTPError(
+                            f"retryable status {status_code}: "
+                            f"{getattr(resp, 'text', '')[:200]}")
+                    resp.raise_for_status()
+                    break
+                except (requests.RequestException, ValueError) as exc:
+                    if attempt == 3:
+                        raise
+                    delay = 2 ** attempt * 5
+                    print(f"      [retry {attempt + 1}/3 in {delay}s] {exc}")
+                    time.sleep(delay)
             data = resp.json()["data"]
             for item in sorted(data, key=lambda x: x["index"]):
                 all_embeddings.append(np.array(item["embedding"]))

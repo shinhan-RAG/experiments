@@ -1,0 +1,82 @@
+# DR-DCI Part 6 — 문서 공통 메타데이터 vs OpenAI 생성 청크별 메타데이터
+#   python scripts/build_tos_chunk_metadata_openai.py --workers 12
+#   python run_experiment.py --part 6 --config config/experiment_tos_chunk_metadata.yaml
+
+seed: 42
+
+models:
+  agent_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 2048
+
+  embedding:
+    url: "https://api.openai.com/v1/embeddings"
+    name: "text-embedding-3-large"
+    dimension: 3072
+    batch_size: 32
+
+  reranker:
+    url: "http://localhost:8002/v1/rerank"
+    name: "BAAI/bge-reranker-v2-m3"
+
+  judge_llm:
+    url: "https://api.openai.com/v1/chat/completions"
+    name: "gpt-4o-mini"
+    temperature: 0
+    max_tokens: 512
+
+agent:
+  max_turns: 10
+  pull_top_k: 20
+  max_pull_top_k: 200
+  bm25_top_k: 1000
+  rrf_k: 60
+  workspace_max_docs: 100
+  min_pulls: 2
+  taxonomy_bonus: 0.15
+  pull_reranker: false
+  dci_tools: ["grep", "find", "read", "filter"]
+
+hybrid:
+  dense_top_k: 20
+  bm25_top_k: 20
+  fusion: "rrf"
+  rerank_top_k: 20
+
+datasets:
+  shinhan-tos:
+    queries: 490
+
+parts:
+  part6_chunk_conditions:
+    dataset: "shinhan-tos"
+    hypothesis: "문서 공통 필드 대신 청크별 검색 지향 메타데이터를 직렬화하면 문서 내 청크 검색 성능이 오른다"
+    augmentation_provenance:
+      chunk_metadata:
+        generator: "scripts/build_tos_chunk_metadata_openai.py"
+        api: "OpenAI Responses API"
+        model: "gpt-4o-mini-2024-07-18"
+        fields: ["핵심주제", "적용대상", "조건", "효과", "검색키워드"]
+    subset: null
+    backends: ["dense", "hybrid_rrf"]
+    min_aug_coverage: 0.95
+    aug_paths:
+      metadata: "data/metadata/shinhan-tos_chunk.json"
+      chunk_metadata: "data/metadata/shinhan-tos_chunk_llm.json"
+    conditions:
+      - name: "baseline"
+        description: "기본 검색 — 인덱스 = title+text"
+      - name: "document_metadata"
+        description: "기존 문서 공통 필드 + 구조 필드"
+        index_metadata: true
+        metadata_source: "metadata"
+      - name: "chunk_metadata"
+        description: "OpenAI가 청크별로 생성한 검색 지향 메타데이터"
+        index_metadata: true
+        metadata_source: "chunk_metadata"
+
+evaluation:
+  metrics: ["recall_at_1", "recall_at_3", "recall_at_5", "recall_at_10", "recall_at_20", "mrr", "ndcg_at_10"]
+  judge_prompt_path: "config/judge_prompt.txt"

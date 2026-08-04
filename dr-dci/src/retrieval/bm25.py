@@ -38,17 +38,50 @@ class BM25:
 
         self.avg_dl = total_len / self.corpus_size if self.corpus_size else 1.0
 
-    def search(self, query: str, top_k: int = 20) -> list[dict]:
+    def search(self, query: str, top_k: int = 20,
+               allowed_ids: set[str] | None = None,
+               subset_statistics: bool = False) -> list[dict]:
+        """Search the index, optionally within an explicit document subset.
+
+        ``subset_statistics=True`` recomputes BM25's collection size, average
+        document length, and query-term document frequencies over
+        ``allowed_ids``. This is equivalent to fitting a small BM25 index for
+        the selected document's chunks, without rebuilding postings for every
+        query.
+        """
+        allowed = set(allowed_ids) if allowed_ids is not None else None
+        if allowed is not None and not allowed:
+            return []
+
+        corpus_size = self.corpus_size
+        avg_dl = self.avg_dl
+        if allowed is not None and subset_statistics:
+            known = allowed & set(self.doc_lens)
+            if not known:
+                return []
+            corpus_size = len(known)
+            avg_dl = sum(self.doc_lens[doc_id] for doc_id in known) / corpus_size
+            allowed = known
+
         scores = defaultdict(float)
         for term in self._tokenize(query):
-            df = self.doc_freqs.get(term, 0)
+            postings = self.postings.get(term, {})
+            if allowed is None:
+                matching = postings.items()
+                df = self.doc_freqs.get(term, 0)
+            else:
+                matching = [
+                    (doc_id, tf) for doc_id, tf in postings.items()
+                    if doc_id in allowed
+                ]
+                df = len(matching) if subset_statistics else self.doc_freqs.get(term, 0)
             if not df:
                 continue
-            idf = math.log((self.corpus_size - df + 0.5) / (df + 0.5) + 1)
-            for doc_id, tf in self.postings[term].items():
+            idf = math.log((corpus_size - df + 0.5) / (df + 0.5) + 1)
+            for doc_id, tf in matching:
                 dl = self.doc_lens[doc_id]
                 denominator = tf + self.k1 * (
-                    1 - self.b + self.b * dl / self.avg_dl
+                    1 - self.b + self.b * dl / avg_dl
                 )
                 scores[doc_id] += idf * (tf * (self.k1 + 1)) / denominator
 

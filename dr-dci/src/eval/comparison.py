@@ -99,6 +99,7 @@ def compare_probe_rows(
     treatment: list[dict],
     *,
     seed: int,
+    metric_keys: tuple[str, ...] = PROBE_METRIC_KEYS,
 ) -> dict:
     """retrieval-only probe의 질의별 paired 비교 — rank 지표 각각에 대해
     bootstrap 95% CI를 병기한다(집계 평균만으로 비교 금지 원칙)."""
@@ -109,7 +110,7 @@ def compare_probe_rows(
         raise ValueError("no shared query IDs for probe comparison")
 
     out = {"paired_query_count": len(shared_ids)}
-    for key in PROBE_METRIC_KEYS:
+    for key in metric_keys:
         out[key] = paired_bootstrap_delta(
             [float(control_by_id[qid].get(key, 0.0)) for qid in shared_ids],
             [float(treatment_by_id[qid].get(key, 0.0)) for qid in shared_ids],
