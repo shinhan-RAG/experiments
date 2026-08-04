@@ -63,6 +63,10 @@ class Config:
     # execution mode only — never part of identity_payload(): reuse an existing
     # deterministic qa_500.jsonl (queries/gold), re-derive evidence, revalidate
     resume_qa: bool = False
+    # dev-split protocol: doc_ids excluded from TARGET selection (test-set
+    # targets+golds); part of input identity. qa_only stops after validation.
+    exclude_doc_ids: tuple = ()
+    qa_only: bool = False
 
     def identity_payload(self) -> dict:
         """Input identity for reuse/conflict decisions (not machine-local paths)."""
@@ -74,6 +78,10 @@ class Config:
             "quotas": dataclasses.asdict(self.quotas),
             "composition_rule": COMPOSITION_RULE,
             "b11_primary_meaning": B11_PRIMARY_MEANING,
+            "exclude_doc_ids_sha": hashlib.sha256(
+                "\n".join(sorted(self.exclude_doc_ids)).encode()).hexdigest()
+            if self.exclude_doc_ids else "",
+            "qa_only": self.qa_only,
         }
 
     def identity_sha(self) -> str:

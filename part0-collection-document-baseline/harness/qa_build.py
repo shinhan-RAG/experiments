@@ -188,7 +188,9 @@ class QABuilder:
         }
 
     def _typed_targets(self, letter: str, docs: list[DocFacts]) -> list[DocFacts]:
-        pool = [d for d in docs if self.ftype.get(d.doc_id) == letter]
+        excl = set(self.cfg.exclude_doc_ids)
+        pool = [d for d in docs
+                if self.ftype.get(d.doc_id) == letter and d.doc_id not in excl]
         self.rng.shuffle(pool)
         return pool
 
