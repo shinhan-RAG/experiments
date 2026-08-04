@@ -80,30 +80,35 @@ def _body_lines(source_root: Path, rel: str) -> list[str]:
     return (source_root / rel).read_text(encoding="utf-8", errors="ignore").splitlines()
 
 
-def _candidate_phrases(lines: list[str], allow_tables: bool, rng: Random,
-                       product_dir: str) -> list[list[str]]:
+def _candidate_runs(lines: list[str], allow_tables: bool, rng: Random,
+                    product_dir: str) -> list[list[str]]:
+    """Maximal runs of consecutive valid tokens (len>=2) from mid-document lines.
+
+    A run is the unit for phrase search: start from a short prefix and extend
+    token-by-token while the corpus match count exceeds the gold cap (match
+    count is monotonically non-increasing under extension).
+    """
     n = len(lines)
     lo, hi = int(n * 0.3), int(n * 0.9)
-    cands = []
+    runs = []
     for line in lines[lo:hi]:
         if line.lstrip().startswith("#"):
             continue
         if ("|" in line) != allow_tables and "|" in line:
             continue
-        toks = []
+        cur = []
         for t in line.split():
             t = t.strip(_TOKEN_STRIP)
             if 4 <= len(t) <= 14 and _HANGUL.search(t) and t not in product_dir:
-                toks.append(t)
+                cur.append(t)
             else:
-                toks.append(None)
-        for width in (3, 2):
-            for i in range(len(toks) - width + 1):
-                seg = toks[i:i + width]
-                if all(seg):
-                    cands.append(list(seg))
-    rng.shuffle(cands)
-    return cands[:12]
+                if len(cur) >= 2:
+                    runs.append(cur)
+                cur = []
+        if len(cur) >= 2:
+            runs.append(cur)
+    rng.shuffle(runs)
+    return runs[:8]
 
 
 class QABuilder:
@@ -143,6 +148,10 @@ class QABuilder:
         self.seen_q.add(norm_q(item["query"]))
         item["qa_id"] = f"tos-doc-{len(self.items) + 1:04d}"
         self.items.append(item)
+        if len(self.items) % 10 == 0:
+            print(f"[qa] {len(self.items)} accepted "
+                  f"(last: {item['suite']}/{item['document_structure_type']})",
+                  flush=True)
 
     def _record(self, suite, query, target, gold, evidence, constraints) -> dict:
         gold = sorted(gold, key=lambda d: d.rel_path)
@@ -225,6 +234,7 @@ class QABuilder:
                 self._push(target, self._record(
                     "identity", query, target, gold, evidence, constraints))
                 made += 1
+            print(f"[qa] identity:{letter} done {made}/{quota}", flush=True)
             if made < quota:
                 self.shortages.append({"suite": "identity", "type": letter,
                                        "quota": quota, "made": made})
@@ -235,20 +245,26 @@ class QABuilder:
         lines = _body_lines(self.cfg.source_root, target.rel_path)
         if len(lines) < 30:
             return None
-        for tokens in _candidate_phrases(lines, allow_tables, self.rng,
-                                         target.product_dir):
-            try:
-                files = self.rg.files_with(tokens)
-            except subprocess.TimeoutExpired:
-                continue
-            if target.rel_path not in files:
-                continue
-            if not 1 <= len(files) <= self.cfg.quotas.gold_max_content:
-                continue
-            gold = [self.by_rel[f] for f in files if f in self.by_rel]
-            if len(gold) != len(files):
-                continue
-            return tokens, gold
+        cap = self.cfg.quotas.gold_max_content
+        for run in _candidate_runs(lines, allow_tables, self.rng,
+                                   target.product_dir):
+            width = min(3, len(run))
+            while width <= min(len(run), 7):
+                tokens = run[:width]
+                try:
+                    files = self.rg.files_with(tokens)
+                except subprocess.TimeoutExpired:
+                    break
+                if target.rel_path not in files:
+                    break                      # regex/wrap mismatch → next run
+                if len(files) <= cap:
+                    gold = [self.by_rel[f] for f in files if f in self.by_rel]
+                    if len(gold) != len(files):
+                        break
+                    return tokens, gold
+                if width == min(len(run), 7):  # cannot narrow further
+                    break
+                width += 1                     # extend phrase to narrow matches
         return None
 
     def _evidence_for(self, tokens, gold):
@@ -288,6 +304,7 @@ class QABuilder:
                     "content", query, target, gold, evidence,
                     {"evidence_tokens": tokens}))
                 made += 1
+            print(f"[qa] content:{letter} done {made}/{quota}", flush=True)
             if made < quota:
                 self.shortages.append({"suite": "content", "type": letter,
                                        "quota": quota, "made": made})
@@ -351,6 +368,7 @@ class QABuilder:
                 self._push(target, self._record(
                     "mixed", query, target, gold, evidence, constraints))
                 made += 1
+            print(f"[qa] mixed:{letter} done {made}/{quota}", flush=True)
             if made < quota:
                 self.shortages.append({"suite": "mixed", "type": letter,
                                        "quota": quota, "made": made})
