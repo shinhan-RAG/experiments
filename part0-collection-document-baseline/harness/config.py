@@ -60,6 +60,9 @@ class Config:
     expected_docs: int = 9417
     source_zip_sha256: str = ""
     quotas: Quotas = dataclasses.field(default_factory=Quotas)
+    # execution mode only — never part of identity_payload(): reuse an existing
+    # deterministic qa_500.jsonl (queries/gold), re-derive evidence, revalidate
+    resume_qa: bool = False
 
     def identity_payload(self) -> dict:
         """Input identity for reuse/conflict decisions (not machine-local paths)."""

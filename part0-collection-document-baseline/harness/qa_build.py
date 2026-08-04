@@ -67,13 +67,11 @@ class RgGold:
         return sorted(out)
 
     def span_in(self, tokens: list[str], rel: str) -> str | None:
-        pat = self.pattern(tokens)
-        r = subprocess.run(
-            ["rg", "-o", "--multiline", "-m", "1", "-e", pat, "--",
-             str(self.root / rel)],
-            capture_output=True, text=True, timeout=60)
-        s = r.stdout.strip()
-        return s or None
+        # Python re, first match only. (rg -o --multiline -m 1 can emit multiple
+        # matches when the phrase repeats in a file, corrupting the stored span.)
+        body = (self.root / rel).read_text(encoding="utf-8", errors="ignore")
+        m = re.search(self.pattern(tokens), body)
+        return m.group(0) if m else None
 
 
 def _body_lines(source_root: Path, rel: str) -> list[str]:
@@ -402,6 +400,45 @@ class QABuilder:
         counts = Counter(i["suite"] for i in self.items)
         return {"items": self.items, "suite_counts": dict(counts),
                 "shortages": self.shortages}
+
+
+def rebuild_evidence(cfg: Config, universe: list, qa_path: Path) -> None:
+    """Recompute every evidence span from source (resume path).
+
+    Queries/gold are reused (deterministic outputs of the same code+seed);
+    evidence is re-derived here and the whole file is then independently
+    re-validated by validate_qa (which re-derives gold from source too).
+    """
+    by_id = {d.doc_id: d for d in universe}
+    rg = RgGold(cfg.source_root)
+    items = [json.loads(l) for l in open(qa_path, encoding="utf-8")]
+    for item in items:
+        if item["suite"] == "identity":
+            evidence = []
+            for gid, gpath in zip(item["gold_document_ids"],
+                                  item["gold_source_paths"]):
+                fn = by_id[gid].filename
+                evidence.append({"document_id": gid, "source_path": gpath,
+                                 "verbatim_span": fn,
+                                 "span_sha256": sha256_text(fn),
+                                 "evidence_kind": "filename_identity"})
+        else:
+            tokens = item["identity_constraints"]["evidence_tokens"]
+            evidence = []
+            for gid, gpath in zip(item["gold_document_ids"],
+                                  item["gold_source_paths"]):
+                span = rg.span_in(tokens, gpath)
+                if span is None:
+                    raise SystemExit(
+                        f"resume: span re-extraction failed for {item['qa_id']}")
+                evidence.append({"document_id": gid, "source_path": gpath,
+                                 "verbatim_span": span,
+                                 "span_sha256": sha256_text(span),
+                                 "evidence_kind": "body_span"})
+        item["evidence"] = evidence
+    with open(qa_path, "w", encoding="utf-8") as f:
+        for item in items:
+            f.write(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n")
 
 
 def write_qa(cfg: Config, result: dict) -> dict:

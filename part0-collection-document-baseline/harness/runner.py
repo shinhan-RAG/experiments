@@ -119,14 +119,23 @@ def run(cfg: Config) -> dict:
             ftype[rel_to_id[row["file"]]] = row["ftype"]
 
         # 3. QA 500 (source-only)
-        builder = qa_build.QABuilder(cfg, universe, ftype)
-        qa_result = builder.build()
-        qa_out = qa_build.write_qa(cfg, qa_result)
-        n = qa_out["report"]["n"]
+        qa_path = cfg.work_dir / "qa" / "qa_500.jsonl"
         want = (cfg.quotas.identity + cfg.quotas.content + cfg.quotas.mixed)
-        if n != want:
-            raise SystemExit(
-                f"QA count {n} != {want}; shortages={qa_out['report']['shortages']}")
+        if cfg.resume_qa and qa_path.exists():
+            print("[resume] reusing existing QA queries/gold; "
+                  "re-deriving all evidence from source", flush=True)
+            qa_build.rebuild_evidence(cfg, universe, qa_path)
+            n = sum(1 for _ in open(qa_path, encoding="utf-8"))
+            if n != want:
+                raise SystemExit(f"resume: QA count {n} != {want}")
+        else:
+            builder = qa_build.QABuilder(cfg, universe, ftype)
+            qa_result = builder.build()
+            qa_out = qa_build.write_qa(cfg, qa_result)
+            n = qa_out["report"]["n"]
+            if n != want:
+                raise SystemExit(
+                    f"QA count {n} != {want}; shortages={qa_out['report']['shortages']}")
 
         # 4. mechanical validation + review ledger (500/500)
         val = validate_qa.validate(cfg, universe,
@@ -242,6 +251,7 @@ def make_config(args) -> Config:
         expected_docs=args.expected_docs,
         source_zip_sha256=args.source_zip_sha256,
         quotas=quotas,
+        resume_qa=getattr(args, "resume_qa", False),
     )
 
 
@@ -255,6 +265,9 @@ def main(argv=None):
     ap.add_argument("--expected-docs", type=int, default=9417)
     ap.add_argument("--source-zip-sha256", default="")
     ap.add_argument("--quotas", default="", help="JSON override for Quotas")
+    ap.add_argument("--resume-qa", action="store_true",
+                    help="reuse existing qa_500.jsonl queries/gold; re-derive "
+                         "evidence and revalidate everything")
     args = ap.parse_args(argv)
     cfg = make_config(args)
     out = run(cfg)
