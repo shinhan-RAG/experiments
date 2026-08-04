@@ -86,6 +86,25 @@ def test_guard_red():
     check("guard accepts source text", True)
 
 
+# ---------- RED→GREEN: NFD filesystem names (macOS zip extraction) ----------
+
+def test_nfd_paths():
+    import unicodedata
+    from harness.qa_build import RgGold
+    tmp = Path(tempfile.mkdtemp(prefix="part0_nfd_"))
+    try:
+        d = tmp / unicodedata.normalize("NFD", "한글폴더")
+        d.mkdir()
+        f = d / unicodedata.normalize("NFD", "한글문서_20240101.md")
+        f.write_text("고유한판별문구가 여기있습니다\n" * 3, encoding="utf-8")
+        files = RgGold(tmp).files_with(["고유한판별문구가"])
+        check("NFD rg paths returned as NFC",
+              len(files) == 1 and files[0] ==
+              unicodedata.normalize("NFC", files[0]))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 # ---------- synthetic corpus ----------
 
 B_BODY = [f"제{i}항 일반 조건에 대한 서술 내용입니다 항목{i}" for i in range(1, 15)]
@@ -210,6 +229,7 @@ def main():
     test_metrics()
     test_mcnemar()
     test_guard_red()
+    test_nfd_paths()
     test_synthetic(Path(args.repo_root).resolve())
     print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
     if FAIL:

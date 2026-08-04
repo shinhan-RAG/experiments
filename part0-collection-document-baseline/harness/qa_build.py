@@ -15,7 +15,7 @@ from pathlib import Path
 from random import Random
 
 from .config import Config, SCHEMA_VERSION, sha256_text
-from .source_facts import DocFacts, guard
+from .source_facts import DocFacts, guard, nfc
 
 _HANGUL = re.compile(r"[가-힣]")
 _TOKEN_STRIP = "()[]{}.,;:!?\"'※□○·"
@@ -62,7 +62,8 @@ class RgGold:
         out = []
         for line in r.stdout.splitlines():
             p = Path(line)
-            out.append(str(p.relative_to(self.root)))
+            # macOS extracts zip names as NFD; universe keys are NFC
+            out.append(nfc(str(p.relative_to(self.root))))
         return sorted(out)
 
     def span_in(self, tokens: list[str], rel: str) -> str | None:
