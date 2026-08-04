@@ -128,6 +128,9 @@ def run(cfg: Config) -> dict:
             n = sum(1 for _ in open(qa_path, encoding="utf-8"))
             if n != want:
                 raise SystemExit(f"resume: QA count {n} != {want}")
+            qa_out = {"report": json.loads(
+                (cfg.work_dir / "qa" / "qa_build_report.json")
+                .read_text(encoding="utf-8"))}
         else:
             builder = qa_build.QABuilder(cfg, universe, ftype)
             qa_result = builder.build()
