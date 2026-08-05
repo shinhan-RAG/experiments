@@ -145,6 +145,20 @@ def run(cfg: Config) -> dict:
                                    cfg.work_dir / "qa" / "qa_500.jsonl")
         validate_qa.write_validation(cfg, val)
 
+        if cfg.qa_only:
+            for rel in ("qa/qa_500.jsonl", "qa/review_ledger.jsonl",
+                        "qa/validation_summary.json", "qa/qa_build_report.json"):
+                shutil.copy2(cfg.work_dir / rel, staging / Path(rel).name)
+            files = ["qa_500.jsonl", "review_ledger.jsonl",
+                     "validation_summary.json", "qa_build_report.json"]
+            with TargetLock(cfg.results_dir):
+                if check_existing(cfg, target) == "reuse":
+                    shutil.rmtree(staging)
+                    return {"status": "reused", "target": str(target)}
+                publish(cfg, staging, target, files)
+            print(f"published (qa-only): {target}")
+            return {"status": "published", "target": str(target)}
+
         # 5. representations + freeze BEFORE scoring
         ci = json.loads(Path(art["collection_index_json"]).read_text(
             encoding="utf-8"))
@@ -245,6 +259,14 @@ def run(cfg: Config) -> dict:
 
 def make_config(args) -> Config:
     quotas = Quotas(**json.loads(args.quotas)) if args.quotas else Quotas()
+    exclude = ()
+    if getattr(args, "exclude_qa", ""):
+        ids = set()
+        for line in open(args.exclude_qa, encoding="utf-8"):
+            d = json.loads(line)
+            ids.add(d["target_document_id"])
+            ids.update(d["gold_document_ids"])
+        exclude = tuple(sorted(ids))
     return Config(
         source_root=Path(args.source_root).resolve(),
         repo_root=Path(args.repo_root).resolve(),
@@ -255,6 +277,8 @@ def make_config(args) -> Config:
         source_zip_sha256=args.source_zip_sha256,
         quotas=quotas,
         resume_qa=getattr(args, "resume_qa", False),
+        exclude_doc_ids=exclude,
+        qa_only=getattr(args, "qa_only", False),
     )
 
 
@@ -271,6 +295,11 @@ def main(argv=None):
     ap.add_argument("--resume-qa", action="store_true",
                     help="reuse existing qa_500.jsonl queries/gold; re-derive "
                          "evidence and revalidate everything")
+    ap.add_argument("--exclude-qa", default="",
+                    help="path to a frozen qa jsonl; its target+gold doc_ids are "
+                         "excluded from target selection (dev-split protocol)")
+    ap.add_argument("--qa-only", action="store_true",
+                    help="stop after QA validation; publish QA-only target")
     args = ap.parse_args(argv)
     cfg = make_config(args)
     out = run(cfg)
