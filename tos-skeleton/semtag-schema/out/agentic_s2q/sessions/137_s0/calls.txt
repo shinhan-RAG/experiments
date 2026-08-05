@@ -1,0 +1,10 @@
+grep	해약|실효
+grep	보장만료|무효|지급하지
+grep	효력|실효|보장기간|보장종료
+grep	제5조|지급하지 않는|보장제외
+read	e00153
+read	e00126
+grep	제5조
+read	e00190
+read	e01947
+read	e05300

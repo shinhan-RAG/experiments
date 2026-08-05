@@ -1,0 +1,5 @@
+grep	뇌혈관질환
+read	e03430
+read	e00985
+grep	부표2-2
+grep	외상성 두개내 출혈

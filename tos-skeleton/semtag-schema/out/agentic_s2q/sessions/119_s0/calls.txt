@@ -1,0 +1,10 @@
+grep	당뇨
+read	e06519
+read	e05876
+read	e05859
+grep	분류코드|질병분류
+grep	E1[0-4]|당뇨병.*분류|분류코드.*E
+grep	제1형|제2형|임신성|기타당뇨
+grep	E10|E11|E13|E14
+read	e06520
+read	e06316

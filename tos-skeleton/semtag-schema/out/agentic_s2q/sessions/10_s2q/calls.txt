@@ -1,0 +1,5 @@
+grep	소액암진단
+read	e01029
+read	e00604
+grep	기타피부암.*중증이외갑상선암
+read	e00609

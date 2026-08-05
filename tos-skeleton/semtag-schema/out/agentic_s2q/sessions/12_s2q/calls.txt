@@ -1,0 +1,10 @@
+grep	대상포진진단특약
+grep	대상포진
+read	e02414
+grep	부표2-2\|대상포진 분류표\|ICD
+read	e02419
+read	e02432
+grep	B02
+grep	대상포진.*정의\|대상포진.*포함\|제2-1조의1
+read	e02445
+read	e02450

@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02818", "e04312"], "reason": "각 치료행위별로 연간 1회 제한이 명시되어 있어 특정 치료마다 독립적으로 연간 1회씩 보장되는 구조임", "turns": 6, "cost_usd": 0.0710861, "qid": "211", "arm": "s0", "model": "haiku", "duration_ms": 36049}

@@ -1,0 +1,10 @@
+grep	통풍
+grep	지급한도
+read	e02432
+grep	통풍진단급여금
+grep	통풍.*지급금액
+read	e00122
+grep	대상포진.*통풍진단특약.*한도
+read	e02390
+grep	부표2-1
+read	e02414

@@ -1,0 +1,5 @@
+grep	뇌경색
+grep	통합건강보험
+read	e01498
+read	e02240
+read	e03406

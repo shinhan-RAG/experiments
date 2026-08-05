@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e06520", "e06316"], "reason": "e06520에서 당뇨병 분류코드 5가지(E10~E14)와 병명을 제시하며, e06316에서 당뇨병의 합병증 관련 주석을 제공", "turns": 9, "cost_usd": 0.08935379999999998, "qid": "119", "arm": "s2q", "model": "haiku", "duration_ms": 49479}

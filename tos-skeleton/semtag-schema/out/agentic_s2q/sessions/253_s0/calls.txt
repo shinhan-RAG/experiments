@@ -1,0 +1,9 @@
+grep	간병인
+read	e01599
+grep	선택|필수|의무|안하|사용하지
+grep	지급기준표|부표2-1
+read	e01591
+grep	입원|보장|지급
+read	e01518
+grep	입원급여|보장\|지급
+read	e01571

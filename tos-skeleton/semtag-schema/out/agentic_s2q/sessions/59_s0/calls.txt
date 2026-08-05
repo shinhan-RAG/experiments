@@ -1,0 +1,9 @@
+grep	약관 변경
+grep	변경.*가입자
+grep	기존.*계약
+read	e01930
+grep	기존 계약.*법령
+grep	계약내용.*변경.*기준
+read	e00224
+grep	주계약.*법령.*개정
+grep	제20조.*법령

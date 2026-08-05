@@ -1,0 +1,10 @@
+grep	통합건강보험원|보험가입연령
+grep	가입연령
+grep	보험가입
+grep	연령
+read	e00053
+grep	가입나이|최대가입|나이제한
+grep	통합|ONE
+grep	제1조|제2조|가입연령|가입나이|가입대상
+grep	80Plus|만세|세 이상
+read	e00624

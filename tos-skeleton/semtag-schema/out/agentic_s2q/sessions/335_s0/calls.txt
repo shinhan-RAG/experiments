@@ -1,0 +1,10 @@
+grep	납입면제
+read	e00015
+grep	주계약.*납입면제 조건
+grep	주계약.*제1-3
+grep	납입면제.*조건
+grep	납입면제되는
+read	e00794
+grep	보험료납입면제 대상
+grep	보험료납입면제.*제2-2
+read	e00843

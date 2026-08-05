@@ -1,0 +1,6 @@
+grep	간질
+grep	뇌질환|신경|epilepsy|경련
+read	e01803
+grep	뇌질환|뇌전증
+read	e02048
+read	e02069

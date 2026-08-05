@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01599", "e01591"], "reason": "간병인 사용이 보험금 지급 조건이며, 간호·간병통합서비스를 대신 사용할 수 있음을 명시", "turns": 7, "cost_usd": 0.0717396, "qid": "253", "arm": "s2q", "model": "haiku", "duration_ms": 43215}

@@ -1,0 +1,8 @@
+grep	보장개시일
+read	e05736
+grep	암보장개시일
+grep	치아|치과
+read	e03754
+grep	치매|보장개시일.*2년
+read	e05759
+grep	치아치료|치과치료
