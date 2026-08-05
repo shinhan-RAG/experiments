@@ -139,3 +139,49 @@ class TokBM25:
                 s += idf * f * (self.k1 + 1) / (f + self.k1 * B)
             return s
         return sorted(candidates, key=lambda i: -score(i))
+
+
+# ---------- Part 0.6 R1: verify-style combination (T2) ----------
+# Grounding: the agentic cascade (verify) succeeded where lexical rerank (C3)
+# failed; ES query/filter context separates constraint from scoring — filters
+# never alter scores. Here: stage-1 order is preserved; fm acts as a pure
+# membership filter that stably partitions the head of the ranking.
+
+_TEMPLATE_STOP = {"내용이", "내용을", "내용이포함된", "있는", "포함된", "담고",
+                  "문서를", "문서는", "문서", "찾아줘", "알려줘", "관한",
+                  "설명한", "최신", "보여줘", "무엇인가요",
+                  "판매약관", "사업방법서", "공시약관", "상품요약서"}
+_YEARTOK = re.compile(r"^(?:19|20)\d{2}년?$")
+
+
+def content_tokens(query: str) -> list:
+    """Content-bearing tokens of a query: Hangul 4..14 chars, minus template
+    vocabulary, doc-type keywords and year tokens. Surface features only."""
+    out = []
+    for t in query.split():
+        t = t.strip("()[]{}.,;:!?\"'?")
+        if not (4 <= len(t) <= 14):
+            continue
+        if not re.search(r"[가-힣]", t):
+            continue
+        if t in _TEMPLATE_STOP or _YEARTOK.match(t):
+            continue
+        if any(k in t for k in _TYPE_KW):
+            continue
+        out.append(t)
+    return out
+
+
+def verify_partition(ranking: list, fm_texts: list, tokens: list,
+                     depth: int) -> list:
+    """Stable partition of ranking[:depth]: candidates whose fm text contains
+    ANY content token come first (original relative order preserved), the rest
+    follow, tail unchanged. Empty pass-set or no tokens -> original ranking."""
+    if not tokens:
+        return ranking
+    head = ranking[:depth]
+    passed = [i for i in head if any(t in fm_texts[i] for t in tokens)]
+    if not passed:
+        return ranking
+    failed = [i for i in head if not any(t in fm_texts[i] for t in tokens)]
+    return passed + failed + ranking[depth:]

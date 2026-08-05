@@ -93,9 +93,33 @@ def main():
     test_rrf()
     test_cascade()
     test_router()
+    test_verify_partition()
+    test_content_tokens()
     print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
     if FAIL:
         sys.exit(1)
+
+
+
+
+def test_verify_partition():
+    fm = ["", "가나 해약환급금은 조항", "", "해약환급금은 내용"]
+    r = [0, 1, 2, 3]
+    out = improve.verify_partition(r, fm, ["해약환급금은"], depth=3)
+    check("verify stable partition", out == [1, 0, 2, 3])
+    out2 = improve.verify_partition(r, fm, ["없는토큰같은것"], depth=3)
+    check("verify empty-pass fallback", out2 == r)
+    out3 = improve.verify_partition(r, fm, [], depth=3)
+    check("verify no-tokens fallback", out3 == r)
+    out4 = improve.verify_partition(r, fm, ["해약환급금은"], depth=4)
+    check("verify depth covers tail", out4 == [1, 3, 0, 2])
+
+
+def test_content_tokens():
+    t = improve.content_tokens("특별약정해지환급금은 계약해지시점의 내용이 있는 최신 판매약관")
+    check("content tokens keep phrase", t == ["특별약정해지환급금은", "계약해지시점의"])
+    t2 = improve.content_tokens("참좋은치아보험 2024년 사업방법서 보여줘")
+    check("content tokens drop identity words", "사업방법서" not in t2 and "2024년" not in t2)
 
 
 if __name__ == "__main__":
