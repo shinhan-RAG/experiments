@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00024", "e06460", "e01183", "e02470", "e00690"], "reason": "통합건강보험 원 약관에서 여성 암 관련 특약과 분류표가 포함된 주요 element들", "turns": 10, "cost_usd": 0.10706129999999998, "qid": "293", "arm": "s1k2", "model": "haiku", "duration_ms": 42253}

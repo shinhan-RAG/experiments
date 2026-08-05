@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e06762", "e06739"], "reason": "신한통합건강보험 약관의 치료비선지급서비스특약에서 정의한 뇌혈관질환 및 허혈심장질환의 표준 KCD 분류코드 범위", "turns": 10, "cost_usd": 0.12238460000000002, "qid": "337", "arm": "s1k2", "model": "haiku", "duration_ms": 53997}

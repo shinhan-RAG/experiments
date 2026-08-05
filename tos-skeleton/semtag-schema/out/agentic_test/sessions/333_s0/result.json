@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00053", "e00008", "e00000"], "reason": "상품명의 각 구성요소(간편가입, 건강보험, 원(ONE), 무배당, 해약환급금 미지급형)가 명시적으로 설명된 요소", "turns": 5, "cost_usd": 0.0429579, "qid": "333", "arm": "s0", "model": "haiku", "duration_ms": 23120}

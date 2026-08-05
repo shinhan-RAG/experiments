@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01391", "e01423"], "reason": "e01391에서 허혈심장질환 정의 및 부표2-2 분류표 참조명시, e01423에서 부표2-2 허혈심장질환 분류표 확인", "turns": 12, "cost_usd": 0.1125477, "qid": "3", "arm": "s1k2", "model": "haiku", "duration_ms": 52228}

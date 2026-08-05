@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e06313", "e06825"], "reason": "자궁근종(D25)은 특정 다빈도 7대질병에 미포함되며, 치료비선지급서비스특약의 별도 보장 질병으로 관리됨", "turns": 9, "cost_usd": 0.07064050000000001, "qid": "147", "arm": "s0", "model": "haiku", "duration_ms": 42236}

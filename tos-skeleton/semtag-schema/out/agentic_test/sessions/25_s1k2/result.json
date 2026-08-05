@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00124", "e02577", "e02680", "e02804"], "reason": "암주요치료비특약의 암주요치료는 최초 진단확정일로부터 최대 10년간 연간 1회에 한해 보장됨", "turns": 7, "cost_usd": 0.0889443, "qid": "25", "arm": "s1k2", "model": "haiku", "duration_ms": 35736}

@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01864", "e03626", "e02806"], "reason": "납입면제 이후 갱신 시 갱신계약의 보험료를 새로 납입해야 하며, 납면 조건이 유지되지 않음", "turns": 8, "cost_usd": 0.07873280000000002, "qid": "229", "arm": "s1k2", "model": "haiku", "duration_ms": 34032}

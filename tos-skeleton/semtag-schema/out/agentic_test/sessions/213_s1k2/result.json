@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e04318", "e01926"], "reason": "암주요치료비 보험금 지급사유의 '연간'은 계약일부터 매 1년 단위로 도래하는 계약해당일 전일까지의 기간으로 명확히 정의됨", "turns": 9, "cost_usd": 0.0815777, "qid": "213", "arm": "s1k2", "model": "haiku", "duration_ms": 38402}

@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01830"], "reason": "진료수가코드는 건강보험심사평가원의 진료수가코드(EDI)로, 보험금 청구 시 제출되는 진료비세부내역서에 필수 기재 항목임", "turns": 3, "cost_usd": 0.0348649, "qid": "184", "arm": "s0", "model": "haiku", "duration_ms": 17414}

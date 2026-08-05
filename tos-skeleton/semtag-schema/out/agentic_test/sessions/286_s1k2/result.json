@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00015"], "reason": "통합건강 원의 특약약관 전체 목록을 포함한 목차. e00015는 주계약 마크로 분류되었지만 특약 목록을 담고 있습니다", "turns": 12, "cost_usd": 0.15614920000000002, "qid": "286", "arm": "s1k2", "model": "haiku", "duration_ms": 54644}

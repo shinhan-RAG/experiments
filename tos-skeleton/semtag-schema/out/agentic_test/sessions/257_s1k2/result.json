@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e05354", "e05356", "e05340", "e05339"], "reason": "표적항암제는 (간편)표적항암약물허가치료특약에서 식품의약품안전처 허가 범위 내 사용 시 보장된다", "turns": 6, "cost_usd": 0.050779, "qid": "257", "arm": "s1k2", "model": "haiku", "duration_ms": 31913}

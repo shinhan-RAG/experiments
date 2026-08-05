@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00024", "e01520", "e01587"], "reason": "요양병원 입원은 암 특약, 6대질병 간병인 사용 특약, 장기 입원 간병인 사용 시 조건부로 보장됨", "turns": 10, "cost_usd": 0.09329420000000001, "qid": "252", "arm": "s1k2", "model": "haiku", "duration_ms": 49199}

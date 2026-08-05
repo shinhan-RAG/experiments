@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e04137", "e04138", "e00343"], "reason": "재해골절치료특약에서 치아파절(S02.5)을 명시적으로 제외하고 있어 치아파절은 보장되지 않음", "turns": 8, "cost_usd": 0.083644, "qid": "148", "arm": "s0", "model": "haiku", "duration_ms": 34752}

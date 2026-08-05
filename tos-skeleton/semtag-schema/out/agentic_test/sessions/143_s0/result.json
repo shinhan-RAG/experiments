@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00336"], "reason": "이미 지급받은 장해보험금을 차감하여 최종 장해등급에 해당하는 보험금을 추가 지급하는 조항", "turns": 12, "cost_usd": 0.1281337, "qid": "143", "arm": "s0", "model": "haiku", "duration_ms": 71124}

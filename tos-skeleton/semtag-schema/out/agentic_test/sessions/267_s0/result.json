@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02055", "e02069"], "reason": "뇌전증진단특약은 의사의 공식 진단확정을 지급 요건으로 하며, 1회발작만으로는 뇌전증으로 진단되지 않음", "turns": 8, "cost_usd": 0.106998, "qid": "267", "arm": "s0", "model": "haiku", "duration_ms": 46134}

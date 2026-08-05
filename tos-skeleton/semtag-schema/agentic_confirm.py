@@ -163,6 +163,8 @@ def main():
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--use-test", action="store_true",
+                    help="dev 제외 = 동결 test 문항으로 실행")
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     arm_schema = {"s0": "tag.s0", "s1k2": "tag.s1k2"}
@@ -183,7 +185,7 @@ def main():
 
     gold = [json.loads(l) for l in open(args.gold, encoding="utf-8")]
     dev_qids = {json.loads(l)["qid"] for l in open(args.dev_qids)}
-    items = [g for g in gold if g["qid"] in dev_qids]
+    items = [g for g in gold if (g["qid"] not in dev_qids) == args.use_test]
     if args.limit:
         items = items[:args.limit]
     gold_by_qid = {g["qid"]: g for g in items}

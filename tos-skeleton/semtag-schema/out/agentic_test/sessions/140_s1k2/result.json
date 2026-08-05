@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00353", "e00371", "e00373"], "reason": "질병장해급여금의 지급사유와 장해지급률 결정 기준(진단 후 180일 이내 확정)을 규정하는 핵심 조항", "turns": 9, "cost_usd": 0.12035230000000002, "qid": "140", "arm": "s1k2", "model": "haiku", "duration_ms": 40873}

@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01830"], "reason": "제2-5조 사고증명서에서 진료수가코드를 '건강보험심사평가원 진료수가코드(EDI)'로 명시하며 필수 기재 항목으로 규정", "turns": 7, "cost_usd": 0.0811022, "qid": "184", "arm": "s1k2", "model": "haiku", "duration_ms": 35342}
