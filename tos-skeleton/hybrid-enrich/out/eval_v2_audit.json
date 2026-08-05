@@ -1,0 +1,418 @@
+{
+  "source": "out/retrieval_v2_final.jsonl",
+  "rows": 400,
+  "unique_qid_arm_pairs": 400,
+  "duplicate_qid_arm_pairs": 0,
+  "arms": {
+    "BASE": {
+      "n": 100,
+      "status": {
+        "ranked": 96,
+        "not_found": 1,
+        "error": 3
+      },
+      "recall@1": 0.22,
+      "recall@5": 0.36,
+      "recall@10": 0.44,
+      "mrr@10": 0.2851190476190476,
+      "avg_tool_calls": 6.3,
+      "tool_calls": {
+        "grep_search": 377,
+        "read_chunk": 155,
+        "vector_search": 98
+      },
+      "sessions_using_vector": 84,
+      "sessions_using_keyword": 100,
+      "first_tool": {
+        "grep_search": 49,
+        "vector_search": 50,
+        "read_chunk": 1
+      },
+      "ranked_id_prefixes": {
+        "e": 860
+      }
+    },
+    "META": {
+      "n": 100,
+      "status": {
+        "ranked": 92,
+        "not_found": 3,
+        "error": 5
+      },
+      "recall@1": 0.34,
+      "recall@5": 0.44,
+      "recall@10": 0.47,
+      "mrr@10": 0.3789444444444445,
+      "avg_tool_calls": 6.22,
+      "tool_calls": {
+        "grep_search": 372,
+        "read_chunk": 158,
+        "vector_search": 92
+      },
+      "sessions_using_vector": 75,
+      "sessions_using_keyword": 97,
+      "first_tool": {
+        "grep_search": 59,
+        "vector_search": 40,
+        "read_chunk": 1
+      },
+      "ranked_id_prefixes": {
+        "e": 810
+      }
+    },
+    "TAG": {
+      "n": 100,
+      "status": {
+        "ranked": 90,
+        "not_found": 4,
+        "error": 6
+      },
+      "recall@1": 0.28,
+      "recall@5": 0.42,
+      "recall@10": 0.49,
+      "mrr@10": 0.34325000000000006,
+      "avg_tool_calls": 6.19,
+      "tool_calls": {
+        "grep_search": 366,
+        "read_chunk": 165,
+        "vector_search": 88
+      },
+      "sessions_using_vector": 75,
+      "sessions_using_keyword": 99,
+      "first_tool": {
+        "grep_search": 60,
+        "vector_search": 40
+      },
+      "ranked_id_prefixes": {
+        "e": 827
+      }
+    },
+    "BOTH": {
+      "n": 100,
+      "status": {
+        "ranked": 93,
+        "not_found": 4,
+        "error": 3
+      },
+      "recall@1": 0.32,
+      "recall@5": 0.39,
+      "recall@10": 0.42,
+      "mrr@10": 0.35451190476190475,
+      "avg_tool_calls": 6.55,
+      "tool_calls": {
+        "grep_search": 388,
+        "read_chunk": 172,
+        "vector_search": 95
+      },
+      "sessions_using_vector": 81,
+      "sessions_using_keyword": 99,
+      "first_tool": {
+        "grep_search": 56,
+        "vector_search": 44
+      },
+      "ranked_id_prefixes": {
+        "e": 846
+      }
+    }
+  },
+  "paired_differences": {
+    "META-BASE": {
+      "recall@5_difference": 0.08000000000000002,
+      "recall@5_ci95": [
+        0.0,
+        0.16
+      ],
+      "mrr@10_difference": 0.09382539682539687,
+      "mrr@10_ci95": [
+        0.0272,
+        0.1637
+      ],
+      "transitions": {
+        "base_miss__arm_hit": 13,
+        "base_miss__arm_miss": 51,
+        "base_hit__arm_hit": 31,
+        "base_hit__arm_miss": 5
+      }
+    },
+    "TAG-BASE": {
+      "recall@5_difference": 0.06,
+      "recall@5_ci95": [
+        -0.04,
+        0.16
+      ],
+      "mrr@10_difference": 0.05813095238095245,
+      "mrr@10_ci95": [
+        -0.0233,
+        0.1371
+      ],
+      "transitions": {
+        "base_miss__arm_hit": 17,
+        "base_hit__arm_hit": 25,
+        "base_miss__arm_miss": 47,
+        "base_hit__arm_miss": 11
+      }
+    },
+    "BOTH-BASE": {
+      "recall@5_difference": 0.030000000000000027,
+      "recall@5_ci95": [
+        -0.06,
+        0.12
+      ],
+      "mrr@10_difference": 0.06939285714285715,
+      "mrr@10_ci95": [
+        -0.0034,
+        0.1443
+      ],
+      "transitions": {
+        "base_miss__arm_hit": 12,
+        "base_miss__arm_miss": 52,
+        "base_hit__arm_hit": 27,
+        "base_hit__arm_miss": 9
+      }
+    },
+    "BOTH-META": {
+      "recall@5_difference": -0.04999999999999999,
+      "recall@5_ci95": [
+        -0.14,
+        0.04
+      ],
+      "mrr@10_difference": -0.024432539682539722,
+      "mrr@10_ci95": [
+        -0.11,
+        0.0629
+      ],
+      "transitions": {
+        "base_hit__arm_hit": 30,
+        "base_miss__arm_miss": 47,
+        "base_hit__arm_miss": 14,
+        "base_miss__arm_hit": 9
+      }
+    },
+    "BOTH-TAG": {
+      "recall@5_difference": -0.02999999999999997,
+      "recall@5_ci95": [
+        -0.13,
+        0.07
+      ],
+      "mrr@10_difference": 0.011261904761904695,
+      "mrr@10_ci95": [
+        -0.0704,
+        0.0955
+      ],
+      "transitions": {
+        "base_hit__arm_hit": 28,
+        "base_hit__arm_miss": 14,
+        "base_miss__arm_miss": 47,
+        "base_miss__arm_hit": 11
+      }
+    }
+  },
+  "recall@5_by_element_type": {
+    "BASE": {
+      "formula": {
+        "hits": 5,
+        "n": 14,
+        "recall@5": 0.35714285714285715
+      },
+      "table": {
+        "hits": 22,
+        "n": 57,
+        "recall@5": 0.38596491228070173
+      },
+      "text": {
+        "hits": 9,
+        "n": 29,
+        "recall@5": 0.3103448275862069
+      }
+    },
+    "META": {
+      "formula": {
+        "hits": 9,
+        "n": 14,
+        "recall@5": 0.6428571428571429
+      },
+      "table": {
+        "hits": 25,
+        "n": 57,
+        "recall@5": 0.43859649122807015
+      },
+      "text": {
+        "hits": 10,
+        "n": 29,
+        "recall@5": 0.3448275862068966
+      }
+    },
+    "TAG": {
+      "formula": {
+        "hits": 5,
+        "n": 14,
+        "recall@5": 0.35714285714285715
+      },
+      "table": {
+        "hits": 25,
+        "n": 57,
+        "recall@5": 0.43859649122807015
+      },
+      "text": {
+        "hits": 12,
+        "n": 29,
+        "recall@5": 0.41379310344827586
+      }
+    },
+    "BOTH": {
+      "formula": {
+        "hits": 4,
+        "n": 14,
+        "recall@5": 0.2857142857142857
+      },
+      "table": {
+        "hits": 25,
+        "n": 57,
+        "recall@5": 0.43859649122807015
+      },
+      "text": {
+        "hits": 10,
+        "n": 29,
+        "recall@5": 0.3448275862068966
+      }
+    }
+  },
+  "recall@5_by_business_type": {
+    "BASE": {
+      "Claim": {
+        "hits": 5,
+        "n": 15,
+        "recall@5": 0.3333333333333333
+      },
+      "LICO": {
+        "hits": 6,
+        "n": 16,
+        "recall@5": 0.375
+      },
+      "고객상담": {
+        "hits": 8,
+        "n": 29,
+        "recall@5": 0.27586206896551724
+      },
+      "상품": {
+        "hits": 7,
+        "n": 16,
+        "recall@5": 0.4375
+      },
+      "챗봇": {
+        "hits": 10,
+        "n": 24,
+        "recall@5": 0.4166666666666667
+      }
+    },
+    "META": {
+      "Claim": {
+        "hits": 9,
+        "n": 15,
+        "recall@5": 0.6
+      },
+      "LICO": {
+        "hits": 7,
+        "n": 16,
+        "recall@5": 0.4375
+      },
+      "고객상담": {
+        "hits": 10,
+        "n": 29,
+        "recall@5": 0.3448275862068966
+      },
+      "상품": {
+        "hits": 6,
+        "n": 16,
+        "recall@5": 0.375
+      },
+      "챗봇": {
+        "hits": 12,
+        "n": 24,
+        "recall@5": 0.5
+      }
+    },
+    "TAG": {
+      "Claim": {
+        "hits": 9,
+        "n": 15,
+        "recall@5": 0.6
+      },
+      "LICO": {
+        "hits": 7,
+        "n": 16,
+        "recall@5": 0.4375
+      },
+      "고객상담": {
+        "hits": 10,
+        "n": 29,
+        "recall@5": 0.3448275862068966
+      },
+      "상품": {
+        "hits": 8,
+        "n": 16,
+        "recall@5": 0.5
+      },
+      "챗봇": {
+        "hits": 8,
+        "n": 24,
+        "recall@5": 0.3333333333333333
+      }
+    },
+    "BOTH": {
+      "Claim": {
+        "hits": 7,
+        "n": 15,
+        "recall@5": 0.4666666666666667
+      },
+      "LICO": {
+        "hits": 6,
+        "n": 16,
+        "recall@5": 0.375
+      },
+      "고객상담": {
+        "hits": 11,
+        "n": 29,
+        "recall@5": 0.3793103448275862
+      },
+      "상품": {
+        "hits": 5,
+        "n": 16,
+        "recall@5": 0.3125
+      },
+      "챗봇": {
+        "hits": 10,
+        "n": 24,
+        "recall@5": 0.4166666666666667
+      }
+    }
+  },
+  "complete_case_sensitivity": {
+    "n": 81,
+    "recall@5": {
+      "BASE": 0.35802469135802467,
+      "META": 0.4691358024691358,
+      "TAG": 0.4567901234567901,
+      "BOTH": 0.43209876543209874
+    }
+  },
+  "gates": {
+    "G1_META_plus_10pt": false,
+    "G2_TAG_plus_10pt": false,
+    "G3_BOTH_above_best_single": false
+  },
+  "repeatability_warning": {
+    "previous_BASE_recall@5": 0.53,
+    "v2_BASE_recall@5": 0.36,
+    "difference": -0.17000000000000004,
+    "note": "Same 100-question sample, but independent agent sessions; this run-to-run shift is larger than the observed enrichment gains."
+  },
+  "audit_flags": {
+    "smoke_entries": 12,
+    "smoke_unique_qids": 10,
+    "all_final_ranked_ids_are_elements": true,
+    "authoritative_tool_outputs_logged": false,
+    "sampling_settings_recorded": false,
+    "main_100_was_reused_for_v2_iteration": true
+  }
+}

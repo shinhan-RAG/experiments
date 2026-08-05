@@ -1,0 +1,11 @@
+{
+  "n_elements": 32369,
+  "by_type": {
+    "paragraph": 28779,
+    "heading": 1064,
+    "formula": 1640,
+    "table": 886
+  },
+  "avg_len": 228,
+  "split_parts": 468
+}

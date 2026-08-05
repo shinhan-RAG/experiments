@@ -1,0 +1,52 @@
+{
+  "split": "main",
+  "BASE": {
+    "n": 100,
+    "recall@1": 0.33,
+    "recall@5": 0.53,
+    "recall@10": 0.59,
+    "mrr@10": 0.419,
+    "errors": 1,
+    "not_found": 3,
+    "avg_tool_calls": 5.98,
+    "tool_mix": {
+      "vector_search": 99,
+      "grep_search": 320,
+      "read_chunk": 179
+    }
+  },
+  "TAG": {
+    "n": 100,
+    "recall@1": 0.25,
+    "recall@5": 0.38,
+    "recall@10": 0.45,
+    "mrr@10": 0.3007,
+    "errors": 3,
+    "not_found": 5,
+    "avg_tool_calls": 6.05,
+    "tool_mix": {
+      "grep_search": 347,
+      "read_chunk": 164,
+      "vector_search": 94
+    }
+  },
+  "TAG-BASE": {
+    "recall@5_diff": -0.15,
+    "ci95": [
+      -0.25,
+      -0.05
+    ]
+  },
+  "recall@5_by_etype": {
+    "BASE": {
+      "formula": "6/14",
+      "table": "31/57",
+      "text": "16/29"
+    },
+    "TAG": {
+      "formula": "5/14",
+      "table": "24/57",
+      "text": "9/29"
+    }
+  }
+}
