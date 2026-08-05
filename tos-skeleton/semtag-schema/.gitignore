@@ -1,1 +1,4 @@
 out/gold_mapped.jsonl
+out/agentic/sessions/
+out/agentic/view_*.txt
+out/agentic/tooldir/
