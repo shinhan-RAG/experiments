@@ -1,0 +1,11 @@
+out/*.npy
+out/*.part.npy
+out/sessions/
+out/vec_*_texts.jsonl
+out/grep_*.jsonl
+out/chunks.jsonl
+out/elements.jsonl
+out/chunk_metadata*.jsonl
+out/element_tags*.jsonl
+out/semantic_tags.jsonl
+__pycache__/

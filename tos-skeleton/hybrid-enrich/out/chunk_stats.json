@@ -1,0 +1,14 @@
+{
+  "n_chunks": 13780,
+  "doc_chars": 7471445,
+  "doc_lines": 249047,
+  "chunk_size": 600,
+  "overlap": 100,
+  "element_type": {
+    "formula": 1333,
+    "text": 8398,
+    "table": 4049
+  },
+  "avg_len": 639,
+  "doc_sha256": "279f134bedef2a34"
+}
