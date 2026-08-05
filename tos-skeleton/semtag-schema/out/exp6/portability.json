@@ -4,21 +4,21 @@
   "extractor": "jo",
   "lines": 249047,
   "elements": 6852,
-  "section_cov": 0.98,
+  "section_cov": 0.984,
   "scope_cov": 1.0,
   "scope_top": [
    [
-    "제1-10조(특약의 무효) 제1항 이외에 다음에 해당되는 경우",
-    653
-   ],
-   [
     "표준하체인수특약",
     532
+   ],
+   [
+    "특정순환계질환주요치료비특약",
+    418
    ]
   ],
-  "scope_distinct": 123,
+  "scope_distinct": 118,
   "role_cov": 0.448,
-  "tag_p50": 58,
+  "tag_p50": 57,
   "over200": 0
  },
  {

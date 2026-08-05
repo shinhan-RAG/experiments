@@ -9,6 +9,11 @@ import semtag_experiment as SE
 JO2 = re.compile(r"^#{0,4}\s*(제\s?\d+(?:-\d+)?\s?조(?:의\s?\d+)?)\s+(.{2,50})$")
 JO2P = re.compile(r"^#{0,4}\s*(제\s?\d+(?:-\d+)?\s?조(?:의\s?\d+)?)\s*[\(（【]\s*([^\)）】]{1,40})")
 RIDER2 = re.compile(r"^#{0,2}\s*[\(\[]?[가-힣A-Za-z0-9\(\)\[\]%·\-\s]{1,55}특약\s*(?:약관)?\s*$")
+# 특약으로 끝나되 특약명이 아닌 문장 조각 가드 — 조·항 참조, "경우", 자기참조("이 특약"),
+# 용언 수식("~되는/하는 "), 불릿·조사 시작. 정상명 반례("… 및 원자력병원 포함) …특약")는
+# 통과해야 하므로 "및" 단독은 걸지 않는다.
+RIDER2_PROSE = re.compile(
+    r"제\s?\d+(?:-\d+)?\s?[조항]|경우|이\s?특약|않은|[되하]는\s|^\s*[-·]|^\s*의\s")
 PYEON2 = re.compile(r"^#{0,4}\s*(제\s?\d+\s?편)\b")
 
 
@@ -20,7 +25,8 @@ def annotate_v2(els, lines):
     for i, raw in enumerate(lines, 1):
         first = raw.strip()
         if first and not first.startswith("|"):
-            if "특약" in first and RIDER2.match(first):
+            if ("특약" in first and RIDER2.match(first)
+                    and not RIDER2_PROSE.search(first)):
                 scope = re.sub(r"^#+\s*", "", first)[:34]
                 jo = ""
             m = PYEON2.match(first)
