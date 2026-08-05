@@ -1,0 +1,119 @@
+{
+  "exp": "exp8 query-side aliasing (Q_BRIDGE 역방향, 결정적 질의 확장)",
+  "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+  "n_elements": 6852,
+  "n_dev": 96,
+  "index": "A0 element 원문 BM25(bigram) — 전 변형 공유·불변",
+  "gate_A0_reproduced": true,
+  "determinism_2pass_identical": true,
+  "A0": {
+    "r5": 0.3125,
+    "r10": 0.4792,
+    "mrr10": 0.2647
+  },
+  "V1_append_terms": {
+    "r5": 0.3125,
+    "r10": 0.4792,
+    "mrr10": 0.2647,
+    "vs_A0": {
+      "dmrr": 0.0,
+      "dmrr_ci95": [
+        0.0,
+        0.0
+      ],
+      "r5_improved": [],
+      "r5_regressed": [],
+      "fired_n": 2,
+      "fired_dmrr": 0.0,
+      "fired_dmrr_ci95_exploratory": [
+        0.0,
+        0.0
+      ],
+      "fired_improved": [],
+      "fired_regressed": [],
+      "unfired_with_nonzero_delta": [],
+      "all_effects_within_fired": true
+    }
+  },
+  "V2_replace_exprs": {
+    "r5": 0.3125,
+    "r10": 0.4792,
+    "mrr10": 0.2647,
+    "vs_A0": {
+      "dmrr": 0.0,
+      "dmrr_ci95": [
+        0.0,
+        0.0
+      ],
+      "r5_improved": [],
+      "r5_regressed": [],
+      "fired_n": 2,
+      "fired_dmrr": 0.0,
+      "fired_dmrr_ci95_exploratory": [
+        0.0,
+        0.0
+      ],
+      "fired_improved": [],
+      "fired_regressed": [],
+      "unfired_with_nonzero_delta": [],
+      "all_effects_within_fired": true
+    }
+  },
+  "firing": {
+    "n_fired": 2,
+    "n_dev": 96,
+    "fired_qids": [
+      "204",
+      "205"
+    ],
+    "term_fire_counts": {
+      "납입면제": 2
+    },
+    "matches_where_expr_contains_term": "2/2",
+    "per_query": {
+      "204": {
+        "matches": [
+          {
+            "term": "납입면제",
+            "exprs": [
+              "납입면제 가능"
+            ]
+          }
+        ],
+        "q": "양쪽 난소제거를 했는데 납입면제 가능한가요?",
+        "q_v1": "양쪽 난소제거를 했는데 납입면제 가능한가요? 납입면제",
+        "q_v2": "양쪽 난소제거를 했는데 납입면제한가요?"
+      },
+      "205": {
+        "matches": [
+          {
+            "term": "납입면제",
+            "exprs": [
+              "납입면제 가능"
+            ]
+          }
+        ],
+        "q": "위암 진단받았는데 납입면제 가능한지? 납입면제되면 갱신이 되는지?",
+        "q_v1": "위암 진단받았는데 납입면제 가능한지? 납입면제되면 갱신이 되는지? 납입면제",
+        "q_v2": "위암 진단받았는데 납입면제한지? 납입면제되면 갱신이 되는지?"
+      }
+    }
+  },
+  "vocab_sidedness": {
+    "note": "dev 질의가 이미 문서 용어를 쓰는지(발동률 저조 기제 설명, 채점 미사용)",
+    "n_dev_queries_containing_doc_term": 27,
+    "n_dev_queries_containing_customer_expr": 2,
+    "doc_term_counts": {
+      "납입면제": 9,
+      "보장개시일": 4,
+      "청구": 4,
+      "면책": 3,
+      "감액": 2,
+      "갱신": 2,
+      "정의": 2,
+      "진단확정": 2,
+      "무효": 1,
+      "지급사유": 1
+    }
+  }
+}
