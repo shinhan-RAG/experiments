@@ -1,0 +1,230 @@
+{
+  "n_misses": 24,
+  "classes": {
+    "('rank2_5', 'same_product')": 14,
+    "('kind', 'latest')": 9,
+    "('rank6_10', 'same_product')": 4,
+    "('kind', 'year_type')": 9,
+    "('kind', 'type')": 6,
+    "('rank2_5', 'other_product')": 4,
+    "('out_top10', 'same_product')": 2
+  },
+  "detail": [
+    {
+      "qa_id": "tos-doc-0006",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한올터치상해보험 최신 판매약관",
+      "top1": "(무)신한올터치상해보험/[3](무)신한올터치상해_판매약관_101001.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0008",
+      "kind": "latest",
+      "pos": "rank6_10",
+      "rel": "same_product",
+      "query": "신한변액종신보험Plus 최신 판매약관",
+      "top1": "(무)신한변액종신보험Plus/[3]약관_(무)변액종신보험Plus_110601.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0017",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한아이사랑보험名作Plus 2014년 판매약관",
+      "top1": "(무)신한아이사랑보험名作Plus/판매약관_(무)신한아이사랑보험名作Plus_201404011.md",
+      "gold_n": 4
+    },
+    {
+      "qa_id": "tos-doc-0048",
+      "kind": "type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "행복한미래설계보험 판매약관 보여줘",
+      "top1": "(무)행복한미래설계보험/[3](무)행복한미래설계보험_약관.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0053",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "e-참신한학자금저축보험 최신 판매약관",
+      "top1": "(무)e-참신한학자금저축보험/[3](무)e-참신한학자금저축보험_약관.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0060",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "VIP온가족암보험 2021년 판매약관",
+      "top1": "(무)VIP온가족암보험/판매약관_(무)VIP온가족암보험_202001221.md",
+      "gold_n": 2
+    },
+    {
+      "qa_id": "tos-doc-0076",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "other_product",
+      "query": "신한 모아더드림종신보험 2025년 판매약관",
+      "top1": "신한모아더드림종신보험(무배당, 해약환급금 일부지급형)/판매약관_신한모아더드림종신보험(무배당, 해약환급금 일부",
+      "gold_n": 2
+    },
+    {
+      "qa_id": "tos-doc-0082",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한아이안심보험Ⅱ 2009년 판매약관",
+      "top1": "(무)신한아이안심보험Ⅱ/[3][3]약관_(무)신한아이안심보험Ⅱ_091007_홈피게시용.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0086",
+      "kind": "type",
+      "pos": "out_top10",
+      "rel": "same_product",
+      "query": "세이프업 변액연금보험 공시약관 보여줘",
+      "top1": "(무)세이프업(Safe-Up)변액연금보험/[3](무)세이프업변액연금_ㅎ실손약관개정_100601_공시용 약관.",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0097",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한100세플러스연금보험 최신 판매약관",
+      "top1": "(무)신한100세플러스연금보험/(무)신한100세플러스연금보험_판매약관_20130215.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0098",
+      "kind": "year_type",
+      "pos": "rank6_10",
+      "rel": "same_product",
+      "query": "더블플러스종신보험III 2012년 판매약관",
+      "top1": "(무)더블플러스종신보험III/[3][판매약관](무)더블플러스종신보험III_201204017.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0099",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "당뇨엔더받는건강보험 최신 판매약관",
+      "top1": "(무)당뇨엔더받는건강보험/판매약관_(무)당뇨엔더받는건강보험_20191223.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0101",
+      "kind": "latest",
+      "pos": "out_top10",
+      "rel": "same_product",
+      "query": "리치연금보험II 최신 사업방법서",
+      "top1": "(무)리치연금보험II/[4]사업방법서_(무)리치연금보험Ⅱ_050708.md",
+      "gold_n": 4
+    },
+    {
+      "qa_id": "tos-doc-0120",
+      "kind": "type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한슈퍼SOL상처솔솔보험 사업방법서 보여줘",
+      "top1": "신한슈퍼SOL상처솔솔보험(무배당)/판매약관_신한슈퍼SOL상처솔솔보험(무배당).md",
+      "gold_n": 2
+    },
+    {
+      "qa_id": "tos-doc-0122",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "VIP스마트저축보험 최신 사업방법서",
+      "top1": "(무)VIP스마트저축보험/[4](무)VIP스마트저축보험_사업방법서.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0139",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한아이사랑보험BIGⅡ 2014년 사업방법서",
+      "top1": "(무)신한아이사랑보험BIGⅡ/사업방법서_(무)신한아이사랑보험BIGⅡ_201304012.md",
+      "gold_n": 9
+    },
+    {
+      "qa_id": "tos-doc-0146",
+      "kind": "type",
+      "pos": "rank2_5",
+      "rel": "other_product",
+      "query": "VIP즉시연금보험 사업방법서 보여줘",
+      "top1": "(무)VIP즉시연금보험Ⅱ/(무)VIP즉시연금보험II_사업방법서_20130101_보완.md",
+      "gold_n": 10
+    },
+    {
+      "qa_id": "tos-doc-0148",
+      "kind": "latest",
+      "pos": "rank6_10",
+      "rel": "same_product",
+      "query": "참좋은상해보험 최신 사업방법서",
+      "top1": "(무)참좋은상해보험/(무)참좋은상해보험_150401_사업방법서.md",
+      "gold_n": 3
+    },
+    {
+      "qa_id": "tos-doc-0154",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "other_product",
+      "query": "신한단체정기보험Ⅱ 2014년 사업방법서",
+      "top1": "(무)신한단체정기보험Ⅱ/사업방법서_(무)신한단체정기보험Ⅱ_201804011.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0160",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "윈윈플러스보험Ⅲ 2019년 사업방법서",
+      "top1": "(무)윈윈플러스보험Ⅲ/사업방법서_(무)윈윈플러스보험Ⅲ_2004064.md",
+      "gold_n": 2
+    },
+    {
+      "qa_id": "tos-doc-0163",
+      "kind": "year_type",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한아이사랑보험BIGⅡ 2013년 사업방법서",
+      "top1": "(무)신한아이사랑보험BIGⅡ/사업방법서_(무)신한아이사랑보험BIGⅡ_201304013.md",
+      "gold_n": 2
+    },
+    {
+      "qa_id": "tos-doc-0169",
+      "kind": "latest",
+      "pos": "rank2_5",
+      "rel": "same_product",
+      "query": "신한인터넷당뇨엔두배받는건강보험 최신 사업방법서",
+      "top1": "(무)신한인터넷당뇨엔두배받는건강보험/사업방법서_(무)신한인터넷당뇨엔두배받는건강보험_181001.md",
+      "gold_n": 1
+    },
+    {
+      "qa_id": "tos-doc-0186",
+      "kind": "type",
+      "pos": "rank6_10",
+      "rel": "same_product",
+      "query": "신한THE필요한건강보험 _입원_수술보장형 사업방법서 보여줘",
+      "top1": "(무)신한THE필요한건강보험(갱신형)_입원_수술보장형(1형, 간편심사형)/(무)신한THE필요한건강보험(갱신형",
+      "gold_n": 8
+    },
+    {
+      "qa_id": "tos-doc-0198",
+      "kind": "type",
+      "pos": "rank2_5",
+      "rel": "other_product",
+      "query": "신한 홈닥터의료비보장보험 사업방법서 보여줘",
+      "top1": "신한간편가입홈닥터의료비보장보험(무배당, 갱신형)/사업방법서_신한홈닥터의료비보장보험(무배당, 갱신형)_2310",
+      "gold_n": 5
+    }
+  ]
+}
