@@ -1,0 +1,24 @@
+{
+ "code_commit": "22d7b230f0fb656d4626343ef5680545ad79221f",
+ "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+ "stats": {
+  "train_mapped": 338,
+  "train_unmapped": 12,
+  "test_mapped": 148,
+  "test_약오염(구test개봉)": 60,
+  "test_강오염(구dev)": 25,
+  "test_청정": 65,
+  "test_unmapped": 2
+ },
+ "quote_verify": "1926/2518",
+ "train_baseline_A0": {
+  "recall@5": 0.3964,
+  "recall@10": 0.5503,
+  "recall@20": 0.6568,
+  "recall@50": 0.7574,
+  "recall@100": 0.858,
+  "mrr10": 0.2565
+ },
+ "train_n": 338,
+ "test_sealed": true
+}
