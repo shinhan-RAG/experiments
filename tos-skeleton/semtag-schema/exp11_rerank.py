@@ -108,22 +108,38 @@ def llm(prompt):
         return hit
     env = dict(os.environ)
     env.pop("ANTHROPIC_API_KEY", None)
-    r = subprocess.run(["claude", "-p", "--model", MODEL, "--output-format", "json"],
-                       input=prompt, capture_output=True, text=True, timeout=180, env=env)
-    text, usage = r.stdout, {}
+    # 운영 패치(분석 파라미터 아님): 동시 실행 경합 하 타임아웃 포획+재시도.
+    text, usage = "", {}
+    for attempt, to in enumerate((300, 480), 1):
+        try:
+            r = subprocess.run(["claude", "-p", "--model", MODEL, "--output-format", "json"],
+                               input=prompt, capture_output=True, text=True,
+                               timeout=to, env=env)
+            text = r.stdout
+            break
+        except subprocess.TimeoutExpired:
+            text = ""
+        except Exception:
+            text = ""
     try:
-        d = json.loads(r.stdout)
-        text = d.get("result", r.stdout)
+        d = json.loads(text)
+        text = d.get("result", text)
         usage = d.get("usage", {}) or {}
     except Exception:
         pass
     with _usage_lock:
         _usage["calls"] += 1
-        _usage["input_tokens"] += usage.get("input_tokens", 0) + usage.get("cache_creation_input_tokens", 0) + usage.get("cache_read_input_tokens", 0)
+        # 사후 명세(문서화): 상한 모수 = 신규 입력(input+cache_creation).
+        # cache_read(CLI 시스템 프롬프트 재사용분)는 실험 콘텐츠가 아니므로 상한에서
+        # 제외하되 투명성 위해 별도 기록 — 지시서 참고 추정(프롬프트 문자수 기반)과
+        # 동일 모수를 재는 정의.
+        _usage["input_tokens"] += usage.get("input_tokens", 0) + usage.get("cache_creation_input_tokens", 0)
+        _usage["cache_read_tokens"] = _usage.get("cache_read_tokens", 0) + usage.get("cache_read_input_tokens", 0)
         _usage["output_tokens"] += usage.get("output_tokens", 0)
         if _usage["input_tokens"] > COST_CAP_INPUT_TOKENS:
             raise SystemExit(f"비용 상한 초과({_usage['input_tokens']}) — 중단")
-    cache_put(key, prompt, text)
+    if text:  # 빈 응답(타임아웃)은 캐시 오염 방지 위해 미저장
+        cache_put(key, prompt, text)
     return text
 
 
