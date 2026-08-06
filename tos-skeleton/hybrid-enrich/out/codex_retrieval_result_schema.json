@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "status": {"type": "string", "enum": ["ranked", "error"]},
+    "ranked_unit_ids": {"type": "array", "items": {"type": "string"}, "maxItems": 10},
+    "reason": {"type": "string"}
+  },
+  "required": ["status", "ranked_unit_ids", "reason"],
+  "additionalProperties": false
+}
