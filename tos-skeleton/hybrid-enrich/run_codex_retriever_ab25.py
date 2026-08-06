@@ -12,6 +12,7 @@ BASE = Path(__file__).resolve().parent
 OUT = BASE / "out"
 FILE_ARMS = ("OLD_RET", "NEW_RET")
 VECTOR_ARMS = ("VECTOR_OLD_RET", "VECTOR_NEW_RET")
+ENRICH_ARMS = ("META_OLD", "META_NEW", "ST_OLD", "ST_NEW")
 SESSION_ROOT = "codex_retriever_ab25_sessions"
 
 
@@ -25,10 +26,11 @@ def prompt(row, arm, session_dir):
 질문: {row['question']}
 Arm: {arm}
 gold/정답/평가 파일은 절대 열지 마라. 아래 검색 명령만 사용하라. 도구는 합계 최대 8회다.
-Vector: {tool} --arm {arm} --session-dir {session_dir} vector --query '검색 질의'
 Read: {tool} --arm {arm} --session-dir {session_dir} read --id UNIT_ID
 """
-    if arm == "OLD_RET":
+    if arm in VECTOR_ARMS or arm.startswith("META_"):
+        common += f"Vector만 사용하라: {tool} --arm {arm} --session-dir {session_dir} vector --query '검색 질의'\n"
+    elif arm == "OLD_RET":
         common += f"FileSearch는 기존 정규식 검색이다: {tool} --arm {arm} --session-dir {session_dir} file --pattern '정규식'\n"
     else:
         common += f"""FileSearch는 구조 슬롯 AND 검색이다:
@@ -50,7 +52,11 @@ def run_one(row, arm):
         if cached.get("status") != "error":
             return cached
     command = [
-        "codex", "-s", "workspace-write", "-a", "never", "-C", str(BASE),
+        # Vector search calls the local bge-m3 service on localhost. Codex's
+        # workspace-write sandbox blocks loopback networking, so these isolated
+        # evaluation sessions need full access. The prompt only permits the
+        # experiment's search/read commands and sessions are ephemeral.
+        "codex", "-s", "danger-full-access", "-a", "never", "-C", str(BASE),
         "exec", "--ephemeral", "--color", "never", "--output-schema", str(OUT / "codex_retrieval_result_schema.json"),
         "-o", str(result_path), prompt(row, arm, session_dir),
     ]
@@ -69,14 +75,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--limit", type=int, default=25)
-    parser.add_argument("--experiment", choices=("file", "vector"), default="file")
+    parser.add_argument("--experiment", choices=("file", "vector", "enrich350"), default="file")
     args = parser.parse_args()
     global SESSION_ROOT
-    arms = FILE_ARMS if args.experiment == "file" else VECTOR_ARMS
-    SESSION_ROOT = "codex_retriever_ab25_sessions" if args.experiment == "file" else "codex_vector_retriever_ab25_sessions"
+    arms = FILE_ARMS if args.experiment == "file" else (VECTOR_ARMS if args.experiment == "vector" else ENRICH_ARMS)
+    SESSION_ROOT = ({"file": "codex_filesearch_only_ab25_sessions",
+                     "vector": "codex_vector_only_v30_ab25_sessions",
+                     "enrich350": "codex_enrichment_train350_sessions"}[args.experiment])
     manifest = json.loads((OUT / "retriever_ab25_manifest.json").read_text())
     by_qid = {row["qid"]: row for row in load("train350_gold_repaired_v1.jsonl")}
-    selected = [by_qid[qid] for qid in manifest["qids"][:args.limit]]
+    selected = ([by_qid[qid] for qid in manifest["qids"][:args.limit]] if args.experiment != "enrich350"
+                else list(by_qid.values())[:args.limit])
     jobs = [(row, arm) for row in selected for arm in arms]
     results = []
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -84,7 +93,9 @@ def main():
         for index, future in enumerate(as_completed(futures), 1):
             results.append(future.result())
             print(f"{index}/{len(jobs)} errors={sum(row['status']=='error' for row in results)}", flush=True)
-    output_name = "codex_retriever_ab25_results.jsonl" if args.experiment == "file" else "codex_vector_retriever_ab25_results.jsonl"
+    output_name = {"file": "codex_filesearch_only_ab25_results.jsonl",
+                   "vector": "codex_vector_only_v30_ab25_results.jsonl",
+                   "enrich350": "codex_enrichment_train350_results.jsonl"}[args.experiment]
     with (OUT / output_name).open("w", encoding="utf-8") as handle:
         for row in sorted(results, key=lambda item: (item["qid"], item["arm"])):
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
