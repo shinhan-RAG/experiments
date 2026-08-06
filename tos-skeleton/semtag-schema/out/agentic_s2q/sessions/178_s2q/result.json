@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00446", "e00366", "e00892"], "reason": "특약 소멸은 피보험자 사망시에만 발생하며, 1급장해로 인한 주계약 사망보장 지급은 특약 소멸 사유가 아님", "turns": 12, "cost_usd": 0.13337159999999998, "qid": "178", "arm": "s2q", "model": "haiku", "duration_ms": 62471}

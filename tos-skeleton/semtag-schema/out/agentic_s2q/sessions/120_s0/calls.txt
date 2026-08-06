@@ -1,0 +1,8 @@
+grep	납입면제
+grep	납입면제.*형
+read	e00830
+read	e03715
+grep	납입면제형\]
+read	e00507
+grep	보험료납입면제대상계약.*포함되지 않
+read	e01349

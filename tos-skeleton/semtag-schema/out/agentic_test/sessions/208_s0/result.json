@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00206", "e05981", "e06127"], "reason": "통합건강보험 및 갱신형 특약의 보험금 청구 구비서류 규정에서 청구서, 사고증명서, 신분증 등이 공통으로 명시됨", "turns": 10, "cost_usd": 0.1083726, "qid": "208", "arm": "s0", "model": "haiku", "duration_ms": 47516}

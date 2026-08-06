@@ -1,0 +1,8 @@
+grep	납입면제.*동시
+grep	납입면제
+read	e00794
+read	e02390
+grep	보험료납입면제대상
+read	e01407
+grep	납입면제형.*보험료납입면제특약
+read	e00888

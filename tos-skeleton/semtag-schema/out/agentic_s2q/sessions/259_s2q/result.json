@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e05388", "e02815", "e04503", "e05454"], "reason": "항암방사선치료는 특약별로 최초 1회 또는 연간 1회로 제한되어 여러 번 받기 어려움", "turns": 8, "cost_usd": 0.092804, "qid": "259", "arm": "s2q", "model": "haiku", "duration_ms": 45428}

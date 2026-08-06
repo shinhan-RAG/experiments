@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01627", "e04828"], "reason": "각 보장계약 별로 입원급여금을 각각 합산 적용하는 규정이 명시되어 있음", "turns": 11, "cost_usd": 0.08472229999999999, "qid": "190", "arm": "s2q", "model": "haiku", "duration_ms": 45234}

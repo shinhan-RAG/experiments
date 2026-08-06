@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02112", "e00130", "e02360"], "reason": "뇌졸중, 뇌출혈, 뇌혈관질환 진단금 모두 최초 1회의 진단확정에 한하여 지급", "turns": 9, "cost_usd": 0.0869372, "qid": "237", "arm": "s0", "model": "haiku", "duration_ms": 43468}

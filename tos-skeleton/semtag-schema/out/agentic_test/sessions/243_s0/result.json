@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e06536", "e06530", "e06533"], "reason": "내시경 시술은 치료 목적인 경우 보험금을 지급하나 진단 및 검사 목적의 내시경은 수술 정의에서 명시적으로 제외됨", "turns": 8, "cost_usd": 0.066785, "qid": "243", "arm": "s0", "model": "haiku", "duration_ms": 38749}

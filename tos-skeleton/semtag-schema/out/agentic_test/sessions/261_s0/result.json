@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02641", "e00018", "e00821", "e00844"], "reason": "암 진단 후 보험료 납입면제 특약의 보험료 납입면제사유에서 암진단 시 보험료 납입면제를 명시", "turns": 10, "cost_usd": 0.1284422, "qid": "261", "arm": "s0", "model": "haiku", "duration_ms": 49215}

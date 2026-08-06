@@ -1,0 +1,9 @@
+grep	자궁근종
+grep	재수술
+grep	수술 후|간격|3개월
+grep	동일한 질병
+read	e04759
+grep	자궁|여성|자궁내막
+read	e04744
+grep	특정수술|제외되는|보장하지 않는
+read	e04751

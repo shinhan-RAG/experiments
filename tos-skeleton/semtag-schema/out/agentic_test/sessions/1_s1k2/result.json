@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00199"], "reason": "주계약은 직접 납입면제가 없고, 특약을 통해서만 주계약의 보험료 납입을 면제할 수 있으며, 그 사유는 해당 특약의 기준에 따름.", "turns": 11, "cost_usd": 0.1620941, "qid": "1", "arm": "s1k2", "model": "haiku", "duration_ms": 69591}

@@ -1,0 +1,9 @@
+grep	면책
+grep	삭감
+grep	감액
+grep	보장한도|제한
+grep	대기기간|보장개시
+read	e00061
+read	e00121
+read	e00552
+read	e04206

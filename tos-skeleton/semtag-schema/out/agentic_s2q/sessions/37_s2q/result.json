@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02089", "e02112", "e02122", "e06502", "e06645"], "reason": "뇌졸중진단특약에서 고의적 자해, 타인 가해, 질병 분류 기준 미충족 시 보장하지 않으며 최초 1회만 보장함", "turns": 12, "cost_usd": 0.1475567, "qid": "37", "arm": "s2q", "model": "haiku", "duration_ms": 63931}

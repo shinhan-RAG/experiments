@@ -1,0 +1,10 @@
+grep	암의 직접적인 치료
+grep	직접적인 치료.*정의
+grep	"암"의 정의
+grep	직접치료.*정의
+read	e03840
+grep	"치료"의 정의
+read	e04374
+grep	암 주요치료.*정의
+read	e04424
+grep	제2-1조.*직접

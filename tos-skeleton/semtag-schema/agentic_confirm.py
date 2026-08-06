@@ -18,6 +18,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import semtag_experiment as SE
+from semtag_h3 import build_tag_v2
+from context_v2 import annotate_v2
 
 PROMPT = """당신은 보험 약관 문서에서 질문의 근거 element를 찾는 검색 에이전트다.
 
@@ -44,7 +46,7 @@ calls = os.path.join(SDIR, "calls.txt")
 n = sum(1 for _ in open(calls)) if os.path.exists(calls) else 0
 if n >= CAP:
     print(json.dumps({"error": "call cap reached — 지금까지 정보로 답하라"})); sys.exit(0)
-open(calls, "a").write(sys.argv[1] + "\n")
+open(calls, "a").write("\t".join(sys.argv[1:3]) + "\n")
 cmd = sys.argv[1]
 if cmd == "grep":
     pat = sys.argv[2]
@@ -73,7 +75,7 @@ elif cmd == "read":
 def build_view(els, schema, path):
     with open(path, "w", encoding="utf-8") as f:
         for e in els:
-            tag = SE.build_tag(e, schema)
+            tag = build_tag_v2(e, "s2q") if schema == "s2q" else SE.build_tag(e, schema)
             flat = re.sub(r"\s+", " ", e["text"])[:3000]
             f.write(f"{e['eid']} | {tag} | {flat}\n")
 
@@ -163,14 +165,16 @@ def main():
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--use-test", action="store_true",
+                    help="dev 제외 = 동결 test 문항으로 실행")
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
-    arm_schema = {"s0": "tag.s0", "s1k2": "tag.s1k2"}
+    arm_schema = {"s0": "tag.s0", "s1k2": "tag.s1k2", "s2q": "s2q"}
     arms = args.arms.split(",")
 
     lines = SE.nfc(Path(args.doc).read_text(encoding="utf-8",
                                             errors="ignore")).splitlines()
-    els = SE.annotate_context(SE.split_elements(lines))
+    els = annotate_v2(SE.split_elements(lines), lines)
     views = {}
     for a in arms:
         p = out / f"view_{a}.txt"
@@ -183,7 +187,7 @@ def main():
 
     gold = [json.loads(l) for l in open(args.gold, encoding="utf-8")]
     dev_qids = {json.loads(l)["qid"] for l in open(args.dev_qids)}
-    items = [g for g in gold if g["qid"] in dev_qids]
+    items = [g for g in gold if (g["qid"] not in dev_qids) == args.use_test]
     if args.limit:
         items = items[:args.limit]
     gold_by_qid = {g["qid"]: g for g in items}

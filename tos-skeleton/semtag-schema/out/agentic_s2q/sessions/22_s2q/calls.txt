@@ -1,0 +1,7 @@
+grep	통풍
+read	e02432
+grep	통풍진단
+grep	부표2-1
+grep	보험금 지급기준표
+grep	통풍.*진단
+read	e02431

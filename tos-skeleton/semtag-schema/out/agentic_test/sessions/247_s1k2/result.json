@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00286", "e00313"], "reason": "첫날부터입원특약은 입원 첫날부터 보장하며, 제2-2조에 따라 특약보험기간 중 1일 이상 계속 입원 시 입원급여금을 지급", "turns": 9, "cost_usd": 0.1091571, "qid": "247", "arm": "s1k2", "model": "haiku", "duration_ms": 47792}

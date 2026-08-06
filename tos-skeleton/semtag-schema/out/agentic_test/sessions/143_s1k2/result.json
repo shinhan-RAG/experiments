@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00357", "e00353", "e00371", "e00332"], "reason": "질병장해급여금의 기존 장해 상태에서 신규 장해 발생 시 적용 규정과 장해분류표 기준으로 판정", "turns": 11, "cost_usd": 0.13479399999999997, "qid": "143", "arm": "s1k2", "model": "haiku", "duration_ms": 51345}

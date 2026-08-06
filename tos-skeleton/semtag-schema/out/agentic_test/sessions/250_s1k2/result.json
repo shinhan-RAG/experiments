@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01571", "e01523", "e01602", "e01518"], "reason": "보험금을 받으려면 간병인을 실제 사용한 날만 보상되며 사용하지 않은 날은 급여금 미지급", "turns": 7, "cost_usd": 0.09573500000000001, "qid": "250", "arm": "s1k2", "model": "haiku", "duration_ms": 44923}

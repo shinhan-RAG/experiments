@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00015", "e00292", "e00310"], "reason": "첫날부터입원특약이 특정 병실 유형 제한 없이 일반 입원을 보장하며, 상급병실·중환자실 등 특수 병실은 별도 특약으로 구분", "turns": 12, "cost_usd": 0.1375836, "qid": "254", "arm": "s1k2", "model": "haiku", "duration_ms": 49975}

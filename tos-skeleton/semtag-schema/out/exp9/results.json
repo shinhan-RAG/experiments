@@ -1,0 +1,521 @@
+{
+ "diag": [
+  {
+   "doc": "건강지기암(2000)",
+   "lines": 17347,
+   "baseline": {
+    "n": 198,
+    "p50": 120,
+    "p90": 120,
+    "max": 120,
+    "at_cap": 138,
+    "at_cap_pct": 69.7,
+    "mean": 87.6
+   },
+   "type_dist": {
+    "formula": 143,
+    "text": 44,
+    "table": 11
+   },
+   "jo_census": {
+    "strict": 36
+   },
+   "strict_total": 36,
+   "strict_used_as_boundary": 36,
+   "miss_not_boundary": {},
+   "examples": {},
+   "noise_runs": {
+    "n_runs": 1,
+    "lines": 16385,
+    "pct_of_doc": 94.5
+   }
+  },
+  {
+   "doc": "개인연금저축(1999)",
+   "lines": 1182,
+   "baseline": {
+    "n": 68,
+    "p50": 8,
+    "p90": 34,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 2.9,
+    "mean": 17.4
+   },
+   "type_dist": {
+    "formula": 17,
+    "table": 11,
+    "text": 39,
+    "heading": 1
+   },
+   "jo_census": {
+    "strict": 34
+   },
+   "strict_total": 34,
+   "strict_used_as_boundary": 34,
+   "miss_not_boundary": {},
+   "examples": {},
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  },
+  {
+   "doc": "노후복지연금1종(1992)",
+   "lines": 1847,
+   "baseline": {
+    "n": 122,
+    "p50": 8,
+    "p90": 32,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 1.6,
+    "mean": 15.1
+   },
+   "type_dist": {
+    "text": 82,
+    "formula": 20,
+    "table": 18,
+    "heading": 2
+   },
+   "jo_census": {
+    "strict": 76,
+    "sq_bracket_header": 12,
+    "missing_ui_header": 1
+   },
+   "strict_total": 76,
+   "strict_used_as_boundary": 76,
+   "miss_not_boundary": {
+    "sq_bracket_header": 12,
+    "missing_ui_header": 1
+   },
+   "examples": {
+    "sq_bracket_header": [
+     "제3조 [계약의 효력]",
+     "제5조 [대표자의 지정]",
+     "제6조 [계약의 무효]"
+    ],
+    "missing_ui_header": [
+     "제11조 2 【계약취소권의 행사제한】"
+    ]
+   },
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  },
+  {
+   "doc": "노후복지연금(1997)",
+   "lines": 2062,
+   "baseline": {
+    "n": 133,
+    "p50": 10,
+    "p90": 33,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.8,
+    "mean": 15.5
+   },
+   "type_dist": {
+    "formula": 24,
+    "text": 79,
+    "table": 28,
+    "heading": 2
+   },
+   "jo_census": {
+    "strict": 58,
+    "sq_bracket_header": 13,
+    "table_row": 32,
+    "no_bracket_header": 2
+   },
+   "strict_total": 58,
+   "strict_used_as_boundary": 58,
+   "miss_not_boundary": {
+    "sq_bracket_header": 13,
+    "no_bracket_header": 2
+   },
+   "examples": {
+    "sq_bracket_header": [
+     "제1조 [모험계약의 성립]",
+     "제11조 [가입자의 고지의무]",
+     "제17조 [보험금 등 청구시 구비서류]"
+    ],
+    "table_row": [
+     "|제 1조 | [보험계약의 성립] | 13 |",
+     "| 제 2조 | [계약의 체결 및 보험료] | 13 |",
+     "| 제 3조 | [계약의 효력] | 13 |"
+    ],
+    "no_bracket_header": [
+     "제18조『모임금응급자담』",
+     "제2조『피보습자의 범위』"
+    ]
+   },
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  },
+  {
+   "doc": "네덜란드두배로종신(1994)",
+   "lines": 17731,
+   "baseline": {
+    "n": 222,
+    "p50": 120,
+    "p90": 120,
+    "max": 120,
+    "at_cap": 137,
+    "at_cap_pct": 61.7,
+    "mean": 79.9
+   },
+   "type_dist": {
+    "formula": 13,
+    "table": 18,
+    "text": 189,
+    "heading": 2
+   },
+   "jo_census": {
+    "strict": 44
+   },
+   "strict_total": 44,
+   "strict_used_as_boundary": 44,
+   "miss_not_boundary": {},
+   "examples": {},
+   "noise_runs": {
+    "n_runs": 1,
+    "lines": 16385,
+    "pct_of_doc": 92.4
+   }
+  },
+  {
+   "doc": "군인연금(1997)",
+   "lines": 2256,
+   "baseline": {
+    "n": 164,
+    "p50": 10,
+    "p90": 25,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.6,
+    "mean": 13.8
+   },
+   "type_dist": {
+    "formula": 18,
+    "table": 37,
+    "text": 107,
+    "heading": 2
+   },
+   "jo_census": {
+    "table_row": 35,
+    "strict": 83,
+    "sq_bracket_header": 8
+   },
+   "strict_total": 83,
+   "strict_used_as_boundary": 83,
+   "miss_not_boundary": {
+    "sq_bracket_header": 8
+   },
+   "examples": {
+    "table_row": [
+     "| 제 1조 | [보험계약의 성립] | 13 |",
+     "| 제 2조 | [피보험자의 범위] | 13 |",
+     "| 제 3조 | [증피보험자 자격의 취득 및 상실] | 13 |"
+    ],
+    "sq_bracket_header": [
+     "제11조 [계약의 무효]",
+     "제25조 [보험금등의 지급]",
+     "제32조 [분쟁의 조정]"
+    ]
+   },
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  },
+  {
+   "doc": "신한종신(2000)",
+   "lines": 3998,
+   "baseline": {
+    "n": 287,
+    "p50": 9,
+    "p90": 26,
+    "max": 120,
+    "at_cap": 3,
+    "at_cap_pct": 1.0,
+    "mean": 13.9
+   },
+   "type_dist": {
+    "formula": 43,
+    "table": 49,
+    "text": 194,
+    "heading": 1
+   },
+   "jo_census": {
+    "table_row": 131,
+    "strict": 197
+   },
+   "strict_total": 197,
+   "strict_used_as_boundary": 197,
+   "miss_not_boundary": {},
+   "examples": {
+    "table_row": [
+     "|제 2조 【청약의 철회】·····13|",
+     "|제 3조 【피보험자의 범위 및 자격의 득실】|13|",
+     "|제 4조 【약관교부 및 설명의무 등】·····14|"
+    ]
+   },
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  },
+  {
+   "doc": "원ONE(2026)·회귀기준",
+   "lines": 249047,
+   "baseline": {
+    "n": 6852,
+    "p50": 11,
+    "p90": 120,
+    "max": 120,
+    "at_cap": 1008,
+    "at_cap_pct": 14.7,
+    "mean": 36.3
+   },
+   "type_dist": {
+    "text": 2535,
+    "heading": 629,
+    "formula": 1304,
+    "table": 2384
+   },
+   "jo_census": {
+    "table_row": 45,
+    "sq_bracket_ref": 28,
+    "strict": 170,
+    "no_bracket_header": 5491,
+    "ref_or_prose": 933
+   },
+   "strict_total": 170,
+   "strict_used_as_boundary": 170,
+   "miss_not_boundary": {
+    "no_bracket_header": 5446
+   },
+   "examples": {
+    "table_row": [
+     "| 제1조 목적 | 78 |",
+     "| 제2조 용어의 정의 | 78 |",
+     "| 제2조의2 한국표준질병·사인분류 적용 기준 | 80 |"
+    ],
+    "sq_bracket_ref": [
+     "제27조[보험료의 납입을 연체하여 해지된 계약의 부활(효력회복)]",
+     "제26조[보험료의 납입이 연체되는 경우 납입최고(독촉)와 계약의 해지]  P105",
+     "제1-13조[보험료의 납입을 연체하여 해지된 특약의 부활(효력회복)] 제1항부터 제5항을 따르며, 이 특약의 부활(효력회복)을"
+    ],
+    "no_bracket_header": [
+     "제1조 목적",
+     "제2조 용어의 정의",
+     "제2조의2 한국표준질병·사인분류 적용 기준"
+    ],
+    "ref_or_prose": [
+     "제4조 보험금 지급에 관한 세부규정",
+     "제26조 보험료의 납입이 연체되는 경우 납입최고(독촉)와 계약의 해지",
+     "제28조 강제집행 등으로 인하여 해지된 계약의 특별부활(효력회복)"
+    ]
+   },
+   "noise_runs": {
+    "n_runs": 0,
+    "lines": 0,
+    "pct_of_doc": 0.0
+   }
+  }
+ ],
+ "compare": [
+  {
+   "doc": "건강지기암(2000)",
+   "v1": {
+    "n": 198,
+    "p50": 120,
+    "p90": 120,
+    "max": 120,
+    "at_cap": 138,
+    "at_cap_pct": 69.7,
+    "mean": 87.6,
+    "role_cov": 0.172,
+    "sect_cov": 0.99
+   },
+   "v2": {
+    "n": 62,
+    "p50": 11,
+    "p90": 23,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 3.2,
+    "mean": 15.5,
+    "role_cov": 0.548,
+    "sect_cov": 0.968
+   }
+  },
+  {
+   "doc": "개인연금저축(1999)",
+   "v1": {
+    "n": 68,
+    "p50": 8,
+    "p90": 34,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 2.9,
+    "mean": 17.4,
+    "role_cov": 0.559,
+    "sect_cov": 0.912
+   },
+   "v2": {
+    "n": 68,
+    "p50": 8,
+    "p90": 34,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 2.9,
+    "mean": 17.4,
+    "role_cov": 0.559,
+    "sect_cov": 0.912
+   }
+  },
+  {
+   "doc": "노후복지연금1종(1992)",
+   "v1": {
+    "n": 122,
+    "p50": 8,
+    "p90": 32,
+    "max": 120,
+    "at_cap": 2,
+    "at_cap_pct": 1.6,
+    "mean": 15.1,
+    "role_cov": 0.533,
+    "sect_cov": 0.811
+   },
+   "v2": {
+    "n": 134,
+    "p50": 8,
+    "p90": 27,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.7,
+    "mean": 13.8,
+    "role_cov": 0.545,
+    "sect_cov": 0.828
+   }
+  },
+  {
+   "doc": "노후복지연금(1997)",
+   "v1": {
+    "n": 133,
+    "p50": 10,
+    "p90": 33,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.8,
+    "mean": 15.5,
+    "role_cov": 0.549,
+    "sect_cov": 0.82
+   },
+   "v2": {
+    "n": 146,
+    "p50": 10,
+    "p90": 32,
+    "max": 71,
+    "at_cap": 0,
+    "at_cap_pct": 0.0,
+    "mean": 14.1,
+    "role_cov": 0.582,
+    "sect_cov": 0.836
+   }
+  },
+  {
+   "doc": "네덜란드두배로종신(1994)",
+   "v1": {
+    "n": 222,
+    "p50": 120,
+    "p90": 120,
+    "max": 120,
+    "at_cap": 137,
+    "at_cap_pct": 61.7,
+    "mean": 79.9,
+    "role_cov": 0.225,
+    "sect_cov": 0.932
+   },
+   "v2": {
+    "n": 86,
+    "p50": 9,
+    "p90": 33,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 1.2,
+    "mean": 15.6,
+    "role_cov": 0.581,
+    "sect_cov": 0.826
+   }
+  },
+  {
+   "doc": "군인연금(1997)",
+   "v1": {
+    "n": 164,
+    "p50": 10,
+    "p90": 25,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.6,
+    "mean": 13.8,
+    "role_cov": 0.652,
+    "sect_cov": 0.854
+   },
+   "v2": {
+    "n": 172,
+    "p50": 10,
+    "p90": 24,
+    "max": 120,
+    "at_cap": 1,
+    "at_cap_pct": 0.6,
+    "mean": 13.1,
+    "role_cov": 0.645,
+    "sect_cov": 0.86
+   }
+  },
+  {
+   "doc": "신한종신(2000)",
+   "v1": {
+    "n": 287,
+    "p50": 9,
+    "p90": 26,
+    "max": 120,
+    "at_cap": 3,
+    "at_cap_pct": 1.0,
+    "mean": 13.9,
+    "role_cov": 0.78,
+    "sect_cov": 0.882
+   },
+   "v2": {
+    "n": 287,
+    "p50": 9,
+    "p90": 26,
+    "max": 120,
+    "at_cap": 3,
+    "at_cap_pct": 1.0,
+    "mean": 13.9,
+    "role_cov": 0.78,
+    "sect_cov": 0.882
+   }
+  }
+ ],
+ "regression": {
+  "one_v1_elements": 6852,
+  "one_v2_elements": 6852,
+  "identical": true,
+  "diff": null
+ },
+ "determinism": {
+  "two_runs_identical": true
+ }
+}

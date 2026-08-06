@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00335"], "reason": "동일한 재해로 인한 장해지급률 합산은 100%를 한도로 하며, 추가 발생 시 이전 지급액을 차감한 부분만 추가보험금으로 지급", "turns": 10, "cost_usd": 0.0954707, "qid": "20", "arm": "s1k2", "model": "haiku", "duration_ms": 45098}

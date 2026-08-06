@@ -1,0 +1,10 @@
+grep	사고증명서
+read	e02029
+read	e00756
+read	e02301
+grep	보험금 등의 청구
+read	e04292
+grep	제1-5조 보험금
+read	e00254
+grep	청구서.*회사양식
+grep	보험금 등의 지급절차|사고 확인|보험금 확인

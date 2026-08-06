@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e01696", "e05701", "e01500", "e00960"], "reason": "심근경색 진단 시 특약보험가입금액의 100%(또는 1년 미만 시 50%) 또는 10% 지급", "turns": 8, "cost_usd": 0.09005590000000001, "qid": "240", "arm": "s0", "model": "haiku", "duration_ms": 42724}

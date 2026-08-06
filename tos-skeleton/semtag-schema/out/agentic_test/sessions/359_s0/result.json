@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e03922", "e03974", "e01716", "e01803"], "reason": "신한 원(ONE) 보험의 MRI는 특정 질병 진단/치료 목적에만 보장되며, 단순 어깨 MRI는 보장 대상 아님", "turns": 12, "cost_usd": 0.15534220000000004, "qid": "359", "arm": "s0", "model": "haiku", "duration_ms": 74594}

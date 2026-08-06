@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02573", "e02560"], "reason": "간편 통합건강원 상품에서 비급여암치료 관련 특약은 비급여(전액본인부담 포함)암주요치료비특약이며, e02573에서 정식명칭 확인", "turns": 8, "cost_usd": 0.0729176, "qid": "312", "arm": "s0", "model": "haiku", "duration_ms": 47638}

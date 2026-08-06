@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e04994", "e04996", "e00117"], "reason": "통합암(전이포함)진단특약의 정의에서 갑상선암이 명시적으로 제외되어 있음", "turns": 11, "cost_usd": 0.1104145, "qid": "303", "arm": "s0", "model": "haiku", "duration_ms": 52420}

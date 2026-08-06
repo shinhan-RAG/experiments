@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02191", "e02173", "e03821", "e03868", "e02300"], "reason": "뇌혈관·허혈심장질환과 암 직접치료 목적의 상급종합병원 통원이 보장되며 연간 30회 한도로 제한됨", "turns": 11, "cost_usd": 0.129851, "qid": "268", "arm": "s1k2", "model": "haiku", "duration_ms": 44732}

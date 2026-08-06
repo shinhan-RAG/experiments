@@ -1,0 +1,10 @@
+grep	통합건강원
+grep	치질
+grep	건강
+grep	항문|직장
+read	e06300
+grep	보장.*제외|제외.*보장|부담보
+grep	특정신체부위
+read	e06297
+grep	통합
+read	e06298

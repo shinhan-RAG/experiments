@@ -1,0 +1,10 @@
+grep	보장개시일
+grep	청구
+read	e00254
+grep	제1-5조|보험금 등의 청구
+read	e01393
+read	e00803
+grep	제1-5조
+read	e05322
+grep	제1-5조.*청구 및 지급절차
+grep	보험금 등의 청구.*서류

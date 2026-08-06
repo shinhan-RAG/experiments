@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02069", "e01803", "e06636"], "reason": "간질(뇌전증)은 뇌전증진단특약에서 진단금으로 보장되며, 급여뇌심장질환특정검사지원특약에서 검사도 보장됨", "turns": 9, "cost_usd": 0.100427, "qid": "266", "arm": "s0", "model": "haiku", "duration_ms": 42876}

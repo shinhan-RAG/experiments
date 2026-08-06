@@ -1,0 +1,7 @@
+grep	뇌혈관질환
+grep	진단확정
+grep	외상성|두개내출혈
+read	e00873
+grep	부표2-2|뇌혈관질환 분류표
+read	e03430
+read	e06502

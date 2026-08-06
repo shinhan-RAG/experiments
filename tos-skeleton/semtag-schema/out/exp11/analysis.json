@@ -1,0 +1,388 @@
+{
+ "code_commit": "dc8ca9a8b77488e3e39afeb3dc46ea08279ef749",
+ "A0": {
+  "r5": 0.3125,
+  "mrr10": 0.2647
+ },
+ "main": {
+  "R1": {
+   "r5": 0.3958,
+   "mrr10": 0.2793,
+   "oracle": 0.5208,
+   "delta_r5": 0.0833,
+   "improve": 15,
+   "regress": 7,
+   "mcnemar_p": 0.1338,
+   "delta_mrr": 0.0146,
+   "mrr_bca": [
+    -0.0594,
+    0.0877
+   ],
+   "parse_fail_windows": 0,
+   "usage": {
+    "input_tokens": 132453,
+    "output_tokens": 66837,
+    "calls": 18,
+    "cache_hits": 78,
+    "cache_read_tokens": 400647
+   },
+   "holm_p": 0.1338
+  },
+  "R2": {
+   "r5": 0.4792,
+   "mrr10": 0.3085,
+   "oracle": 0.6771,
+   "delta_r5": 0.1667,
+   "improve": 24,
+   "regress": 8,
+   "mcnemar_p": 0.007,
+   "delta_mrr": 0.0438,
+   "mrr_bca": [
+    -0.038,
+    0.1217
+   ],
+   "parse_fail_windows": 0,
+   "usage": {
+    "input_tokens": 760277,
+    "output_tokens": 222113,
+    "calls": 40,
+    "cache_hits": 56,
+    "cache_read_tokens": 898758
+   },
+   "holm_p": 0.021
+  },
+  "R3": {
+   "r5": 0.4375,
+   "mrr10": 0.3187,
+   "oracle": 0.7917,
+   "delta_r5": 0.125,
+   "improve": 22,
+   "regress": 10,
+   "mcnemar_p": 0.0501,
+   "delta_mrr": 0.0541,
+   "mrr_bca": [
+    -0.0361,
+    0.1426
+   ],
+   "parse_fail_windows": 21,
+   "usage": {
+    "input_tokens": 7918109,
+    "output_tokens": 3321066,
+    "calls": 769,
+    "cache_hits": 117,
+    "cache_read_tokens": 16495588
+   },
+   "holm_p": 0.1002
+  },
+  "R4": {
+   "r5": 0.3854,
+   "mrr10": 0.2561,
+   "oracle": 0.6771,
+   "delta_r5": 0.0729,
+   "improve": 19,
+   "regress": 12,
+   "mcnemar_p": 0.281,
+   "delta_mrr": -0.0086,
+   "mrr_bca": [
+    -0.0986,
+    0.0758
+   ],
+   "parse_fail_windows": 1,
+   "usage": {
+    "input_tokens": 688735,
+    "output_tokens": 196089,
+    "calls": 37,
+    "cache_hits": 60,
+    "cache_read_tokens": 836832
+   }
+  }
+ },
+ "strata": [
+  {
+   "strata": "gold_ambiguous (트랙 A)",
+   "rows": {
+    "모호": {
+     "n": 1,
+     "A0": 0.0,
+     "R1": 0.0,
+     "R2": 0.0,
+     "R3": 0.0
+    },
+    "명확": {
+     "n": 95,
+     "A0": 0.3158,
+     "R1": 0.4,
+     "R2": 0.4842,
+     "R3": 0.4421
+    }
+   }
+  },
+  {
+   "strata": "DUP_A 중복/고유",
+   "rows": {
+    "DUP_A 중복군": {
+     "n": 19,
+     "A0": 0.1579,
+     "R1": 0.3158,
+     "R2": 0.4737,
+     "R3": 0.4211
+    },
+    "고유 본문": {
+     "n": 77,
+     "A0": 0.3506,
+     "R1": 0.4156,
+     "R2": 0.4805,
+     "R3": 0.4416
+    }
+   }
+  },
+  {
+   "strata": "gold 유형(첫 gold 기준, 서술만·검정 금지)",
+   "rows": {
+    "table": {
+     "n": 17,
+     "A0": 0.1765,
+     "R1": 0.3529,
+     "R2": 0.3529,
+     "R3": 0.4118
+    },
+    "formula": {
+     "n": 35,
+     "A0": 0.2286,
+     "R1": 0.2857,
+     "R2": 0.3143,
+     "R3": 0.2286
+    },
+    "text": {
+     "n": 44,
+     "A0": 0.4318,
+     "R1": 0.5,
+     "R2": 0.6591,
+     "R3": 0.6136
+    }
+   }
+  }
+ ],
+ "refute_position_bias": {
+  "mean_tau_R2_R4": 0.156,
+  "top5_overlap": 0.573,
+  "delta_r5_R2_minus_R4": 0.0938,
+  "transitions": "12/3",
+  "mcnemar_p": 0.0352
+ },
+ "refute_bm25_echo": {
+  "R1": 0.385,
+  "R2": 0.416,
+  "R3": 0.727,
+  "R4": 0.237
+ },
+ "refute_failure_census": {
+  "population": 19,
+  "by_bucket": {
+   ">20": 5,
+   "6-10": 8,
+   "11-20": 6
+  },
+  "by_type": {
+   "formula": 10,
+   "text": 5,
+   "table": 4
+  },
+  "dupA": 4,
+  "ambiguous": 1,
+  "twin": 3,
+  "parse_fail_q": 0,
+  "detail": [
+   {
+    "qid": "7",
+    "gold_rank_after": 39,
+    "bucket": ">20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "13",
+    "gold_rank_after": 7,
+    "bucket": "6-10",
+    "gold_type": "formula",
+    "dupA_gold": true,
+    "gold_ambiguous": true,
+    "twin_exists": true,
+    "parse_fail": false
+   },
+   {
+    "qid": "29",
+    "gold_rank_after": 12,
+    "bucket": "11-20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "40",
+    "gold_rank_after": 8,
+    "bucket": "6-10",
+    "gold_type": "text",
+    "dupA_gold": true,
+    "gold_ambiguous": false,
+    "twin_exists": true,
+    "parse_fail": false
+   },
+   {
+    "qid": "51",
+    "gold_rank_after": 50,
+    "bucket": ">20",
+    "gold_type": "text",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "74",
+    "gold_rank_after": 39,
+    "bucket": ">20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "76",
+    "gold_rank_after": 9,
+    "bucket": "6-10",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "130",
+    "gold_rank_after": 8,
+    "bucket": "6-10",
+    "gold_type": "table",
+    "dupA_gold": true,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "131",
+    "gold_rank_after": 32,
+    "bucket": ">20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "137",
+    "gold_rank_after": 40,
+    "bucket": ">20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "138",
+    "gold_rank_after": 12,
+    "bucket": "11-20",
+    "gold_type": "text",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "173",
+    "gold_rank_after": 8,
+    "bucket": "6-10",
+    "gold_type": "table",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "193",
+    "gold_rank_after": 17,
+    "bucket": "11-20",
+    "gold_type": "text",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "214",
+    "gold_rank_after": 7,
+    "bucket": "6-10",
+    "gold_type": "text",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "226",
+    "gold_rank_after": 6,
+    "bucket": "6-10",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "231",
+    "gold_rank_after": 11,
+    "bucket": "11-20",
+    "gold_type": "table",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "253",
+    "gold_rank_after": 16,
+    "bucket": "11-20",
+    "gold_type": "formula",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   },
+   {
+    "qid": "258",
+    "gold_rank_after": 9,
+    "bucket": "6-10",
+    "gold_type": "formula",
+    "dupA_gold": true,
+    "gold_ambiguous": false,
+    "twin_exists": true,
+    "parse_fail": false
+   },
+   {
+    "qid": "312",
+    "gold_rank_after": 18,
+    "bucket": "11-20",
+    "gold_type": "table",
+    "dupA_gold": false,
+    "gold_ambiguous": false,
+    "twin_exists": false,
+    "parse_fail": false
+   }
+  ]
+ }
+}

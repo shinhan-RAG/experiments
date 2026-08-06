@@ -1,0 +1,8 @@
+grep	I20|협심증|angina
+read	e02240
+read	e03372
+read	e06508
+read	e06739
+read	e02239
+read	e02271
+read	e03406

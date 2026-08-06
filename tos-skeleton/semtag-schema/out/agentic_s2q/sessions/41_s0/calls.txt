@@ -1,0 +1,8 @@
+grep	암.*진단
+grep	급성심근경색
+read	e01133
+read	e04342
+grep	급성심근경색.*정의.*진단
+read	e01960
+grep	"암".*악성
+read	e03840

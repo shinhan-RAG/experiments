@@ -1,0 +1,136 @@
+[
+ {
+  "doc": "기준: 원ONE 약관(건강,2026)",
+  "extractor": "jo",
+  "lines": 249047,
+  "elements": 6852,
+  "section_cov": 0.984,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "표준하체인수특약",
+    532
+   ],
+   [
+    "특정순환계질환주요치료비특약",
+    418
+   ]
+  ],
+  "scope_distinct": 118,
+  "role_cov": 0.448,
+  "tag_p50": 57,
+  "over200": 0
+ },
+ {
+  "doc": "약관: 건강지기암보험(2000)",
+  "extractor": "jo",
+  "lines": 17347,
+  "elements": 198,
+  "section_cov": 0.99,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    198
+   ]
+  ],
+  "scope_distinct": 1,
+  "role_cov": 0.152,
+  "tag_p50": 33,
+  "over200": 0
+ },
+ {
+  "doc": "약관: 개인연금저축(1999)",
+  "extractor": "jo",
+  "lines": 1182,
+  "elements": 68,
+  "section_cov": 0.912,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    68
+   ]
+  ],
+  "scope_distinct": 1,
+  "role_cov": 0.456,
+  "tag_p50": 34,
+  "over200": 0
+ },
+ {
+  "doc": "약관: 유니버설종신(2016)",
+  "extractor": "jo",
+  "lines": 18678,
+  "elements": 642,
+  "section_cov": 0.964,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    532
+   ],
+   [
+    "장애인가족우대특약",
+    44
+   ]
+  ],
+  "scope_distinct": 9,
+  "role_cov": 0.425,
+  "tag_p50": 45,
+  "over200": 0
+ },
+ {
+  "doc": "사업방법서: 큐브(2025)",
+  "extractor": "item",
+  "lines": 566,
+  "elements": 34,
+  "section_cov": 0.853,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    34
+   ]
+  ],
+  "scope_distinct": 1,
+  "role_cov": 0.647,
+  "tag_p50": 46,
+  "over200": 0
+ },
+ {
+  "doc": "사업방법서: 세이프업변액(2012)",
+  "extractor": "item",
+  "lines": 796,
+  "elements": 21,
+  "section_cov": 0.81,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    21
+   ]
+  ],
+  "scope_distinct": 1,
+  "role_cov": 0.333,
+  "tag_p50": 41,
+  "over200": 0
+ },
+ {
+  "doc": "사업방법서: 치매보험(2019)",
+  "extractor": "item",
+  "lines": 403,
+  "elements": 20,
+  "section_cov": 0.9,
+  "scope_cov": 1.0,
+  "scope_top": [
+   [
+    "주계약",
+    20
+   ]
+  ],
+  "scope_distinct": 1,
+  "role_cov": 0.55,
+  "tag_p50": 47,
+  "over200": 0
+ }
+]

@@ -1,0 +1,8 @@
+grep	당뇨
+read	e06519
+read	e05859
+grep	분류코드
+read	e06448
+grep	E10|E11|E13|E14
+read	e06520
+read	e06316

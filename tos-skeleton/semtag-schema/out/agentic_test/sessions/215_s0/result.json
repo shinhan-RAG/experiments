@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00295", "e01570", "e04862", "e00276"], "reason": "보장한도 소진 후 마지막 급여금이 지급된 퇴원일부터 180일이 지난 후 새로운 입원/사용일부터 다시 보장 시작", "turns": 10, "cost_usd": 0.1254169, "qid": "215", "arm": "s0", "model": "haiku", "duration_ms": 50622}

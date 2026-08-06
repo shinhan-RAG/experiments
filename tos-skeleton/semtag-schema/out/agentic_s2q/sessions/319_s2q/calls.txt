@@ -1,0 +1,10 @@
+grep	통합건강보험원
+grep	보험가입연령
+grep	가입연령
+grep	건강보험
+grep	연령
+grep	만.*세
+grep	가입 연령
+grep	가입
+read	e00221
+grep	보험

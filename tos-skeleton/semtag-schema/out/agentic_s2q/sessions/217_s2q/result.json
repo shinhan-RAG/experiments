@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e02189", "e03817"], "reason": "동일 날짜 여러 통원시 1일 1회만 인정되므로 보장한도를 각각 적용하지 않고 1회분만 지급", "turns": 12, "cost_usd": 0.1645109, "qid": "217", "arm": "s2q", "model": "haiku", "duration_ms": 60930}

@@ -1,0 +1,10 @@
+grep	스텐트
+grep	시술
+grep	진단금
+grep	경피적
+grep	관상동맥
+grep	중재
+grep	카테터
+read	e06530
+grep	허혈심장
+read	e05700

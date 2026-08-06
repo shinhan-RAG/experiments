@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e04800", "e04797"], "reason": "첫날부터6대질병중환자실입원특약에서 보장개시일 이전 진단된 암도 5년 무추가 진단·치료 시 5년 경과 후 보장 유지 가능", "turns": 8, "cost_usd": 0.12347630000000001, "qid": "168", "arm": "s2q", "model": "haiku", "duration_ms": 50369}

@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e04503", "e05387"], "reason": "방사선치료는 특약 유형과 암 종류에 따라 연간 1회 또는 최초 1회로 시술 횟수가 제한됨", "turns": 9, "cost_usd": 0.08559789999999999, "qid": "259", "arm": "s0", "model": "haiku", "duration_ms": 39716}

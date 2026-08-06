@@ -1,0 +1,1 @@
+{"status": "ranked", "ranked_eids": ["e00200", "e00947", "e05451", "e00233"], "reason": "계약 효력이 없는 상태에서는 보험금 지급사유가 발생해도 보장 제외(주계약 제5조, 특약 소멸 규정)", "turns": 13, "cost_usd": 0.1387387, "qid": "137", "arm": "s2q", "model": "haiku", "duration_ms": 64522}
