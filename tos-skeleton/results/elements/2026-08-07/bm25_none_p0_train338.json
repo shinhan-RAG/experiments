@@ -1,0 +1,36 @@
+{
+  "config_id": "bm25_none_p0_train338",
+  "date": "2026-08-07",
+  "author": "donggyu",
+  "experiment": "exp21r",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "bbf514db6a0ceb112dbf5b649c07dd66e5fa0970",
+    "two_pass_sha": "24a45956"
+  },
+  "population": { "name": "train338", "n": 338, "note": "정답셋 원본 train 350 중 gold 매핑 성공분" },
+  "config": {
+    "channel": "bm25",
+    "channel_params": { "tokenizer": "char-bigram", "k1": 1.2, "b": 0.75, "depth": "unbounded" },
+    "schema": { "name": "none", "fields": [], "extractor": null },
+    "split": { "name": "p0", "n_elements": 6852, "median_chars": 309,
+               "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환" }
+  },
+  "metrics": {
+    "R@1": null, "R@5": null, "R@10": null, "R@20": null, "R@50": null, "R@100": null,
+    "MRR@10": null, "L_star_median": 314
+  },
+  "nulls": {
+    "query_shuffle": { "value": 0.0174, "seeds": 200, "min": 0.0104, "max": 0.0246,
+                       "note": "hit@줄예산 214 기준" },
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "예시 레코드 — R@K는 hit@줄예산 기준으로만 측정돼 있어 null. 실험 23에서 element any-hit R@K로 채운다",
+    "평가셋 gold 오류율 추정 11% (Wilson 95% CI 4.5~26.0%)",
+    "확정 210 중 55건(26%)의 gold가 BM25로 매핑됨 — 그 55건은 구성 무차별(.655~.673)"
+  ]
+}

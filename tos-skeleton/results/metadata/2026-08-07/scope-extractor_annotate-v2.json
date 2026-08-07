@@ -1,0 +1,37 @@
+{
+  "config_id": "scope-extractor_annotate-v2",
+  "date": "2026-08-07",
+  "author": "donggyu",
+  "experiment": "exp18-21r",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "bbf514db6a0ceb112dbf5b649c07dd66e5fa0970",
+    "two_pass_sha": "24a45956"
+  },
+  "population": { "name": "train338", "n": 338 },
+  "config": {
+    "target": "특약명(scope)",
+    "method": "context_v2.annotate_v2 — 줄 단위 스캔 상태열, RIDER2 정규식",
+    "coverage": { "n_total": 6852, "n_assigned": 6852, "ratio": 1.0, "distinct_values": 118 },
+    "uniqueness": { "unique_ratio": 0.002, "max_collision": 532 },
+    "downstream": { "used_as": "element 원문에 태그 문자열로 접두", "channel": "bm25" }
+  },
+  "metrics": {
+    "R@1": null, "R@5": 0.4852, "R@10": null, "R@20": null, "R@50": null, "R@100": null,
+    "MRR@10": null, "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": { "value": 0.4083, "note": "길이 일치 상수 문자열" },
+    "shuffled_tag": { "value": 0.3950, "seeds": 19, "min": 0.381, "max": 0.410,
+                      "note": "무작위 특약명 — 실존 특약명을 틀린 element에 배정" },
+    "random_vector": null
+  },
+  "limitations": [
+    "구 추출기(annotate_context, 6종)는 +0.3%p, 신 추출기(118종)는 +8.9%p — 효과의 소재는 필드가 아니라 추출기다",
+    "이득 전량이 검수필요 128층에 집중. 확정 210에서는 널 대비 순효과 ≈ 0 (짝지은 McNemar p=.6875)",
+    "널 시드 19개 — 순위 기반 순열 p 하한 .05",
+    "평가셋 순환성: 확정 210 중 55건(26%)의 gold가 BM25로 매핑됨"
+  ]
+}
