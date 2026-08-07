@@ -50,9 +50,12 @@ def main():
         for m in metas:
             f.write(json.dumps({"chunk_id": m["chunk_id"],
                                 "text": ser_meta(m) + "\n" + chunks[m["chunk_id"]]["text"]}, ensure_ascii=False) + "\n")
-    elems = {e["element_id"]: e for e in (json.loads(l) for l in open(os.path.join(OUT, "elements.jsonl")))}
-    tags = [json.loads(l) for l in open(os.path.join(OUT, "element_tags_v2.jsonl"))]
-    with open(os.path.join(OUT, "grep_tag_v2.jsonl"), "w", encoding="utf-8") as f:
+    elements_input = os.environ.get("ELEMENTS_INPUT", os.path.join(OUT, "elements.jsonl"))
+    tags_input = os.environ.get("ELEMENT_TAGS_V2_INPUT", os.path.join(OUT, "element_tags_v2.jsonl"))
+    grep_output = os.environ.get("GREP_TAG_V2_OUTPUT", os.path.join(OUT, "grep_tag_v2.jsonl"))
+    elems = {e["element_id"]: e for e in (json.loads(l) for l in open(elements_input))}
+    tags = [json.loads(l) for l in open(tags_input)]
+    with open(grep_output, "w", encoding="utf-8") as f:
         for t in tags:
             flat = elems[t["element_id"]]["text"].replace("\n", " ")
             f.write(json.dumps({"element_id": t["element_id"],

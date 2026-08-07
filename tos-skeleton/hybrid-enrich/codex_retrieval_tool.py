@@ -16,7 +16,7 @@ from slot_filesearch import SlotFileSearch
 BASE = Path(__file__).resolve().parent
 OUT = BASE / "out"
 MAX_CALLS = 8
-VECTOR_ARMS = {"VECTOR_OLD_RET", "VECTOR_NEW_RET"}
+VECTOR_ARMS = {"VECTOR_OLD_RET", "VECTOR_NEW_RET", "META_OLD", "META_NEW"}
 
 
 def load(name):
@@ -62,8 +62,9 @@ def _field_text(value):
     return str(value or "")
 
 
-def vector_search(query, vector_ret="old"):
-    stem = "vec_meta_v3_1_vector_separated"
+def vector_search(query, vector_ret="old", stem="vec_meta_v3_concat", metadata_name="chunk_metadata_v3_0_reconstructed.jsonl"):
+    # Retriever A/B is frozen to the same v3.0 metadata vector used by the
+    # FileSearch compatibility experiment. Only candidate selection changes.
     matrix = np.load(OUT / f"{stem}.npy", mmap_mode="r")
     ids = json.loads((OUT / f"{stem}_ids.json").read_text())["ids"]
     chunks = {row["chunk_id"]: row["text"] for row in load("chunks.jsonl")}
@@ -72,7 +73,7 @@ def vector_search(query, vector_ret="old"):
         top = np.argsort(-scores)[:10]
         rerank = {}
     else:
-        metadata = {row["chunk_id"]: row for row in load("chunk_metadata_v3_1_vector_separated.jsonl")}
+        metadata = {row["chunk_id"]: row for row in load(metadata_name)}
         qtokens = _tokens(query)
         candidates = np.argsort(-scores)[:200]
         reranked = []
@@ -124,7 +125,8 @@ def read_unit(unit_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--arm", choices=("OLD_RET", "NEW_RET", "VECTOR_OLD_RET", "VECTOR_NEW_RET"), required=True)
+    parser.add_argument("--arm", choices=("OLD_RET", "NEW_RET", "VECTOR_OLD_RET", "VECTOR_NEW_RET",
+                                           "META_OLD", "META_NEW", "ST_OLD", "ST_NEW"), required=True)
     parser.add_argument("--session-dir", type=Path, required=True)
     sub = parser.add_subparsers(dest="action", required=True)
     vector = sub.add_parser("vector")
@@ -142,9 +144,18 @@ def main():
     if call is None:
         print(json.dumps({"error": "8-call limit reached"}, ensure_ascii=False)); return
     if args.action == "vector":
-        result = vector_search(args.query, "new" if args.arm == "VECTOR_NEW_RET" else "old")
+        if args.arm == "META_OLD":
+            result = vector_search(args.query, stem="vec_meta_v2_current_chunks")
+        elif args.arm == "META_NEW":
+            result = vector_search(args.query, stem="vec_meta_v3_1_vector_separated")
+        else:
+            result = vector_search(args.query, "new" if args.arm == "VECTOR_NEW_RET" else "old")
     elif args.action == "file":
-        result = old_file_search(args.pattern) if args.arm == "OLD_RET" else SlotFileSearch("new").search(json.loads(args.filters), args.raw_regex)
+        if args.arm == "OLD_RET":
+            result = old_file_search(args.pattern)
+        else:
+            variant = "old" if args.arm == "ST_OLD" else "new"
+            result = SlotFileSearch(variant).search(json.loads(args.filters), args.raw_regex)
     else:
         result = read_unit(args.id)
     result["calls_used"] = call

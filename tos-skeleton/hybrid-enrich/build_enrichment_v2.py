@@ -64,9 +64,17 @@ def main():
             art_bounds.append((i + 1, b.group(1).replace(" ", ""), b.group(2).strip()[:30], "보험금 지급기준·지급한도"))
     al = [a[0] for a in art_bounds]
 
+    contract_head = re.compile(
+        r"^(?:[^|\n]{2,180}특약[^()\n]{0,40}\(무배당[^)\n]*\)|"
+        r"신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^\n]*\))\s*$"
+    )
+    contract_lines = [i + 1 for i, line in enumerate(lines) if i + 1 > 200 and "|" not in line and contract_head.match(line.strip())]
+
     def art_of(line_no):
         j = bisect.bisect_right(al, line_no) - 1
-        return art_bounds[j] if j >= 0 else None
+        c = bisect.bisect_right(contract_lines, line_no) - 1
+        contract_start = contract_lines[c] if c >= 0 else 0
+        return art_bounds[j] if j >= 0 and art_bounds[j][0] >= contract_start else None
 
     aliases = json.load(_real_open(os.path.join(BASE, "aliases.json"), encoding="utf-8"))
     aliases.pop("_comment", None)
@@ -100,8 +108,10 @@ def main():
         return ""
 
     # ---------- 엘리먼트 태그 v2 ----------
-    elems = [json.loads(l) for l in _real_open(os.path.join(OUT, "elements.jsonl"), encoding="utf-8")]
-    with _real_open(os.path.join(OUT, "element_tags_v2.jsonl"), "w", encoding="utf-8") as f:
+    elements_input = os.environ.get("ELEMENTS_INPUT", os.path.join(OUT, "elements.jsonl"))
+    tags_output = os.environ.get("ELEMENT_TAGS_V2_OUTPUT", os.path.join(OUT, "element_tags_v2.jsonl"))
+    elems = [json.loads(l) for l in _real_open(elements_input, encoding="utf-8")]
+    with _real_open(tags_output, "w", encoding="utf-8") as f:
         for idx, e in enumerate(elems):
             text = e["text"]
             a = art_of(e["line_start"])
@@ -137,7 +147,7 @@ def main():
     chunks = [json.loads(l) for l in _real_open(os.path.join(OUT, "chunks.jsonl"), encoding="utf-8")]
     with _real_open(os.path.join(OUT, "chunk_metadata_v2.jsonl"), "w", encoding="utf-8") as f:
         for c in chunks:
-            a = art_of(c["line_start"])
+            a = art_of(c.get("core_line_start", c["line_start"]))
             text = c["text"]
             vals = list(dict.fromkeys(VAL_RX.findall(text)))[:6]
             meta = {
@@ -151,7 +161,7 @@ def main():
             f.write(json.dumps(meta, ensure_ascii=False) + "\n")
 
     stats = {"articles_detected": len(art_bounds),
-             "toc_elements": sum(1 for l in _real_open(os.path.join(OUT, "element_tags_v2.jsonl"), encoding="utf-8") if json.loads(l)["is_toc"]),
+             "toc_elements": sum(1 for l in _real_open(tags_output, encoding="utf-8") if json.loads(l)["is_toc"]),
              "version": "v2"}
     print(json.dumps(stats, ensure_ascii=False))
 

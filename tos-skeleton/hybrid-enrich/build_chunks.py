@@ -1,52 +1,81 @@
 #!/usr/bin/env python3
-"""Recursive 600/100 청킹. line 범위 보존. 구조 컨텍스트(section_path, contract_scope)는
-청크 위치 기준으로 헤딩 스택에서 계산해 함께 저장한다 (enrichment 원료, BASE 색인에는 미포함)."""
+"""Source-faithful recursive 600/100 chunking with hard contract boundaries."""
 import json, re, unicodedata, hashlib, os
 
 DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 CHUNK_SIZE = 600
 OVERLAP = 100
-SEPS = ["\n\n", "\n", ". ", " ", ""]
+SEPS = ["\n\n", "\n", ". ", " "]
+MIN_CORE = CHUNK_SIZE // 2
 
 
-def recursive_split(text, size, seps):
-    if len(text) <= size:
-        return [text]
-    for i, sep in enumerate(seps):
-        if sep == "":
-            return [text[j:j + size] for j in range(0, len(text), size)]
-        parts = text.split(sep)
-        if len(parts) == 1:
-            continue
-        pieces, buf = [], ""
-        for p in parts:
-            cand = buf + sep + p if buf else p
-            if len(cand) <= size:
-                buf = cand
-            else:
-                if buf:
-                    pieces.append(buf)
-                if len(p) > size:
-                    pieces.extend(recursive_split(p, size, seps[i + 1:]))
-                    buf = ""
-                else:
-                    buf = p
-        if buf:
-            pieces.append(buf)
-        return [x for x in pieces if x.strip()]
-    return [text]
-
-
-def add_overlap(pieces, overlap):
-    out = []
-    for i, p in enumerate(pieces):
-        if i == 0:
-            out.append(p)
+def recursive_ranges(text, start, end):
+    """Return contiguous, gap-free core ranges while preferring semantic separators."""
+    ranges = []
+    cursor = start
+    while cursor < end:
+        hard_end = min(end, cursor + CHUNK_SIZE)
+        if hard_end == end:
+            ranges.append((cursor, end))
+            break
+        cut = None
+        low = cursor + MIN_CORE
+        window = text[cursor:hard_end]
+        for sep in SEPS:
+            relative = window.rfind(sep, MIN_CORE)
+            if relative >= 0:
+                candidate = cursor + relative + len(sep)
+                if candidate >= low:
+                    cut = candidate
+                    break
+        if cut is None or cut <= cursor:
+            cut = hard_end
+        ranges.append((cursor, cut))
+        cursor = cut
+    # Avoid a tiny tail created only by a separator near a hard boundary.
+    if len(ranges) >= 2 and ranges[-1][1] - ranges[-1][0] < MIN_CORE:
+        left, right = ranges[-2][0], ranges[-1][1]
+        total = right - left
+        if total <= CHUNK_SIZE:
+            ranges[-2:] = [(left, right)]
         else:
-            tail = pieces[i - 1][-overlap:]
-            out.append(tail + p)
-    return out
+            target = left + total // 2
+            lower, upper = right - CHUNK_SIZE, left + CHUNK_SIZE
+            cut = None
+            for sep in SEPS:
+                candidates = []
+                before = text.rfind(sep, lower, target + 1)
+                after = text.find(sep, target, upper)
+                if before >= 0:
+                    candidates.append(before + len(sep))
+                if after >= 0:
+                    candidates.append(after + len(sep))
+                if candidates:
+                    cut = min(candidates, key=lambda point: abs(point - target))
+                    break
+            cut = cut or target
+            ranges[-2:] = [(left, cut), (cut, right)]
+    return ranges
+
+
+def limit_article_mix(text, ranges):
+    """Keep at most two article headings in a core range."""
+    article = re.compile(r"(?m)(?=^#{0,6}\s*제\s?\d+(?:-\d+)?조(?:의\s?\d+)?(?:\s|$))")
+    output = []
+    for left, right in ranges:
+        cursor = left
+        while cursor < right:
+            starts = [cursor + match.start() for match in article.finditer(text[cursor:right])]
+            if len(starts) <= 2:
+                output.append((cursor, right))
+                break
+            cut = starts[2]
+            if cut <= cursor:
+                cut = min(right, cursor + CHUNK_SIZE)
+            output.append((cursor, cut))
+            cursor = cut
+    return output
 
 
 def main():
@@ -89,26 +118,34 @@ def main():
                 return t
         return ""
 
-    # 문단(빈 줄) 단위로 먼저 모으고 recursive
+    # Contract headers are hard boundaries. Recursive ranges are contiguous inside each scope.
+    contract_line_re = re.compile(
+        r"^(?:[^|\n]{2,180}특약[^()\n]{0,40}\(무배당[^)\n]*\)|"
+        r"신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^\n]*\))\s*$"
+    )
+    hard_bounds = [(0, "")]
+    for line_no, line in enumerate(lines):
+        value = line.strip()
+        if "|" not in line and contract_line_re.match(value) and line_no + 1 > 200:
+            label = "주계약(" + value + ")" if value.startswith("신한(간편가입)") else value
+            hard_bounds.append((line_starts[line_no], label))
+    hard_bounds = sorted(dict(hard_bounds).items())
+    hard_starts = [point for point, _ in hard_bounds] + [len(raw)]
+    core_ranges = []
+    for left, right in zip(hard_starts, hard_starts[1:]):
+        core_ranges.extend(recursive_ranges(raw, left, right))
+
     chunks = []
-    para_re = re.compile(r"\n{2,}")
-    # 전체 텍스트를 그대로 recursive (문서 전체가 하나의 텍스트)
-    # 위치 추적을 위해 순차 탐색으로 offset 복원
-    pieces = recursive_split(raw, CHUNK_SIZE, SEPS)
-    pieces = add_overlap(pieces, OVERLAP)
-    cursor = 0
-    for idx, p in enumerate(pieces):
-        core = p if idx == 0 else p[OVERLAP:] if len(p) > OVERLAP else p
-        off = raw.find(core, cursor)
-        if off < 0:
-            off = raw.find(core[:200], cursor)
-        if off < 0:
-            off = cursor
-        start = max(0, off - (0 if idx == 0 else OVERLAP))
-        end = off + len(core)
-        cursor = off + max(1, len(core) - 5)
+    for idx, (core_start, end) in enumerate(core_ranges):
+        # Overlap never crosses a contract hard boundary.
+        boundary_index = bisect.bisect_right(hard_starts, core_start) - 1
+        scope_start = hard_starts[boundary_index]
+        scope_label = hard_bounds[boundary_index][1]
+        start = max(scope_start, core_start - OVERLAP)
+        p = raw[start:end]
         ls, le = line_of(start), line_of(max(start, end - 1))
-        path = section_path(ls)
+        core_ls = line_of(core_start)
+        path = section_path(core_ls)
         has_table = "|" in p and re.search(r"^\s*\|", p, re.M) is not None
         has_formula = "$$" in p or re.search(r"\\frac|\\times|\\sum", p) is not None
         etype = "table" if has_table else ("formula" if has_formula else "text")
@@ -116,9 +153,10 @@ def main():
             "chunk_id": f"c{idx:05d}",
             "text": p,
             "char_start": start, "char_end": end,
-            "line_start": ls, "line_end": le,
+            "core_char_start": core_start,
+            "line_start": ls, "line_end": le, "core_line_start": core_ls,
             "section_path": path[-4:],
-            "contract_scope": contract_scope(path),
+            "contract_scope": scope_label or contract_scope(path),
             "element_type": etype,
         })
 
