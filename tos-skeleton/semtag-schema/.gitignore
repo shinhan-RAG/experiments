@@ -1,4 +1,21 @@
+__pycache__/
+*.pyc
+
+# 정답셋·원문 — 절대 커밋 금지 (test 150 질문 문구 포함)
 out/gold_mapped.jsonl
+out/qa500/gold_mapped_500.jsonl
+out/qa500/eval_confirmed.jsonl
+out/qa500/quarantine_review.jsonl
+out/qa500/unmapped.jsonl
+
+# 임베딩·대용량 산출물
+out/**/emb/
+*.npy
+
+# 실행 로그·캐시·세션
+out/*.log
+out/**/cache.jsonl
+out/exp12/**/sessions/
 out/agentic/sessions/
 out/agentic/view_*.txt
 out/agentic/tooldir/
