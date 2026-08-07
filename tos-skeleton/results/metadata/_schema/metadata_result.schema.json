@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tos-skeleton/results/metadata/_schema/metadata_result.schema.json",
+  "title": "Metadata / schema result",
+  "description": "태그·메타데이터 설계 결과. 커버리지와 유일 지목률을 함께 기록한다.",
+  "type": "object",
+  "required": [
+    "config_id",
+    "date",
+    "author",
+    "repro",
+    "population",
+    "config",
+    "metrics",
+    "nulls",
+    "limitations"
+  ],
+  "properties": {
+    "config_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+(_[a-z0-9-]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "author": {
+      "type": "string"
+    },
+    "experiment": {
+      "type": "string"
+    },
+    "repro": {
+      "type": "object",
+      "required": [
+        "doc_sha256",
+        "gold_sha",
+        "code_commit",
+        "two_pass_sha"
+      ],
+      "properties": {
+        "doc_sha256": {
+          "type": "string"
+        },
+        "gold_sha": {
+          "type": "string"
+        },
+        "code_commit": {
+          "type": "string"
+        },
+        "two_pass_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "population": {
+      "type": "object",
+      "required": [
+        "name",
+        "n"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "n": {
+          "type": "integer"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "R@1": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "R@5": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "R@10": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "R@20": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "R@50": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "R@100": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "MRR@10": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "L_star_median": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "nulls": {
+      "type": "object",
+      "required": [
+        "query_shuffle",
+        "constant_dummy",
+        "shuffled_tag",
+        "random_vector"
+      ],
+      "properties": {
+        "query_shuffle": {
+          "$ref": "#/$defs/nullEntry"
+        },
+        "constant_dummy": {
+          "$ref": "#/$defs/nullEntry"
+        },
+        "shuffled_tag": {
+          "$ref": "#/$defs/nullEntry"
+        },
+        "random_vector": {
+          "$ref": "#/$defs/nullEntry"
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "config": {
+      "type": "object",
+      "required": [
+        "target",
+        "method",
+        "coverage"
+      ],
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "무엇에 대한 메타데이터인가 (예: 특약·조항·질병코드·EDI·보종코드)"
+        },
+        "method": {
+          "type": "string",
+          "description": "추출·부여 방법"
+        },
+        "coverage": {
+          "type": "object",
+          "required": [
+            "n_total",
+            "n_assigned"
+          ],
+          "properties": {
+            "n_total": {
+              "type": "integer"
+            },
+            "n_assigned": {
+              "type": "integer"
+            },
+            "ratio": {
+              "type": "number"
+            },
+            "distinct_values": {
+              "type": "integer"
+            }
+          }
+        },
+        "uniqueness": {
+          "type": "object",
+          "description": "이 메타데이터로 대상을 유일하게 지목하는 비율",
+          "properties": {
+            "unique_ratio": {
+              "type": "number"
+            },
+            "max_collision": {
+              "type": "integer"
+            }
+          }
+        },
+        "downstream": {
+          "type": "object",
+          "description": "검색에 실제로 쓴 방식 (필터·가산·색인)",
+          "properties": {
+            "used_as": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nullEntry": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "seeds": {
+              "type": "integer"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

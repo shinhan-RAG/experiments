@@ -1,0 +1,4 @@
+D: {50: (0.2, 0.2381, 0.492448), 100: (0.3, 0.3476, 0.492448), 214: (0.3905, 0.4524, 0.289817), 400: (0.5095, 0.519, 0.871415)}
+verdict: {'1_P1>P0_3of4': True, 'wins': 4, '2_Holm유의_2of4': False, 'sig': 0, '3_E1_전시드초과_3of4': False, 'e1_pass': 0, '4_E2_초과_3of4': False, 'e2_pass': 0, '5_검수필요_동방향': True, '채택': False}
+E1 size ok: 0 / 20
+combined sha: 8eac8bfbf3c5e35fb10947ff19293cfed9958f5e102d166b36b7a5cc8da052c8
