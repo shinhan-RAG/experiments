@@ -1,0 +1,79 @@
+{
+  "config_id": "rrf-bm25-bgem3ko-tuned2_none_p0_full350v2",
+  "date": "2026-08-07",
+  "author": "lsh (Claude Sonnet 5 보조)",
+  "experiment": "hybrid-enrich_tag-meta_grid",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "3de68e13c98f6bbff478089e42a4b9f40a917e5ac682c38bf984f07449bbbee7",
+    "code_commit": "78d33bea92d16f8ac7c5028527afb2daf6a8e21c",
+    "two_pass_sha": "8e17159a53e908b2"
+  },
+  "population": {
+    "name": "full350v2",
+    "n": 332,
+    "note": "full350의 신뢰도=확정 gold=[] 49건을 원문 대조로 재검토(2026-08-08). 31건 신규매핑(주로 KCD 제9차/제8차 판번호 불일치), 18건 population 제외(문서판에 없는 상품/문구, 또는 정의조항 10곳+ 중복·특약미특정). 350->332. 229건 gold 확보(69.0%), 검수필요(비구조) 103건은 이번 작업 범위 밖으로 gold=[] 유지(0점 처리, population엔 포함)"
+  },
+  "config": {
+    "channel": "rrf",
+    "channel_params": {
+      "tag_channel": "bm25-char-bigram",
+      "tag_k1": 1.6,
+      "tag_b": 0.5,
+      "tag_note": "64개 필드 부분집합 전수탐색(2026-08-08) 결과 contract_key_tag+qualifier_tag만 사용 -- 나머지 4필드(subject/role/locator/reference) 제외가 clean152에서 최선으로 확인됨",
+      "vector_model": "dragonkue/BGE-m3-ko",
+      "vector_input": "원문만(2000자 절단)",
+      "rrf_k": 20,
+      "top_n": 100
+    },
+    "schema": {
+      "name": "tag-v3-rulebased-v2",
+      "fields": [
+        "contract_key_tag",
+        "qualifier_tag"
+      ],
+      "extractor": "build_meta_tag_lsh.py (build_retrieval_fields_v3.py 포팅) (contract_key_tag+qualifier_tag만 사용, 2026-08-08 64조합 전수탐색 결과, k1=1.6/b=0.5/RRF_K=20 튜닝)"
+    },
+    "split": {
+      "name": "semtag-split_elements",
+      "n_elements": 7907,
+      "rule": "semtag_experiment.split_elements/annotate_context, 문서별 정규식 3개 패치"
+    }
+  },
+  "metrics": {
+    "R@1": 0.1295,
+    "R@5": 0.2831,
+    "R@10": 0.3464,
+    "R@20": 0.4187,
+    "R@50": 0.488,
+    "R@100": 0.5482,
+    "MRR@10": 0.1928,
+    "L_star_median": 5
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0042,
+      "seeds": 5,
+      "min": 0.0,
+      "max": 0.009,
+      "note": "R@5 기준, gold를 무작위 재배정 후 재계산"
+    },
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": {
+      "value": 0.1647,
+      "seeds": 3,
+      "min": 0.1627,
+      "max": 0.1657,
+      "note": "R@5 기준, 벡터 성분을 랜덤 유닛벡터로 교체(TAG는 실제값 유지)"
+    }
+  },
+  "limitations": [
+    "탐색적 측정 — 확증 검정(다중비교 보정) 없음, 단일 config 최고값 보고",
+    "gold 오염 조사 미완료: 161건 중 특약명이 문자열로 검출되는 18건만 검증해 9건 불일치 확인, 나머지 143건은 미검증 — 전수 검증 전까지 population 자체에 잔여 오염 가능성 있음",
+    "constant_dummy·shuffled_tag null 대조 미측정",
+    "동일 문서(원ONE)라도 250212 버전 사용 — 팀 다른 결과(예: bm25_none_p0_train338)와 doc_sha256이 달라 직접 비교 불가",
+    "two_pass_match=True — BGE-m3-ko GPU 추론이 완전히 결정적이지 않을 수 있음",
+    "2026-08-08 64개 TAG 필드 부분집합 전수탐색(clean152 스크리닝) 결과 contract_key_tag+qualifier_tag만 사용 + RRF_K=20이 최선 확인되어 정식 등록함. 64개 동시비교라 다중비교 보정은 하지 않았음 — 상위 1위(.5724, 2개조합)와 2위 티어(.5592, 11개 조합)의 차이(152건 중 2건)는 노이즈 수준으로 판단해 더 안정적인(11개 조합이 수렴한) 2위 티어에서 재선별한 결과"
+  ]
+}
