@@ -9,21 +9,48 @@
     "code_commit": "bbf514db6a0ceb112dbf5b649c07dd66e5fa0970",
     "two_pass_sha": "24a45956"
   },
-  "population": { "name": "train338", "n": 338, "note": "정답셋 원본 train 350 중 gold 매핑 성공분" },
+  "population": {
+    "name": "train338",
+    "n": 338,
+    "note": "정답셋 원본 train 350 중 gold 매핑 성공분"
+  },
   "config": {
     "channel": "bm25",
-    "channel_params": { "tokenizer": "char-bigram", "k1": 1.2, "b": 0.75, "depth": "unbounded" },
-    "schema": { "name": "none", "fields": [], "extractor": null },
-    "split": { "name": "p0", "n_elements": 6852, "median_chars": 309,
-               "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환" }
+    "channel_params": {
+      "tokenizer": "char-bigram",
+      "k1": 1.2,
+      "b": 0.75,
+      "depth": "unbounded"
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
   },
   "metrics": {
-    "R@1": null, "R@5": null, "R@10": null, "R@20": null, "R@50": null, "R@100": null,
-    "MRR@10": null, "L_star_median": 314
+    "R@1": null,
+    "R@5": null,
+    "R@10": null,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": 314
   },
   "nulls": {
-    "query_shuffle": { "value": 0.0174, "seeds": 200, "min": 0.0104, "max": 0.0246,
-                       "note": "hit@줄예산 214 기준" },
+    "query_shuffle": {
+      "value": 0.0174,
+      "seeds": 200,
+      "min": 0.0104,
+      "max": 0.0246,
+      "note": "hit@줄예산 214 기준"
+    },
     "constant_dummy": null,
     "shuffled_tag": null,
     "random_vector": null
