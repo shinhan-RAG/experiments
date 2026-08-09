@@ -1,0 +1,57 @@
+{
+  "config_id": "rrf5-bm25-bgem3_none_p0_confirmed155-nocirc",
+  "date": "2026-08-09",
+  "author": "donggyu",
+  "experiment": "v5-matrix-20260809",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed155-nocirc",
+    "n": 155,
+    "note": "방법이 BM25타깃으로 시작하는 55건 제외"
+  },
+  "config": {
+    "channel": "rrf",
+    "channel_params": {
+      "k": 5,
+      "members": [
+        "bm25",
+        "dense-bgem3"
+      ],
+      "depth": 200
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": 0.4065,
+    "R@10": 0.5806,
+    "R@20": 0.6581,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "사전 등록 없이 산출한 사후 매트릭스다. 확증이 아니라 위치 파악용"
+  ]
+}
