@@ -1,0 +1,18 @@
+{
+  "chunkset": "fixed600",
+  "gold": "qa_gold.jsonl",
+  "query_shuffle": {
+    "value": 0.0098,
+    "seeds": 100,
+    "min": 0.0,
+    "max": 0.0305,
+    "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V7_DENSE_dense.jsonl의 기존 랭킹을 재채점. n=164질의, 항등 순열 거부."
+  },
+  "random_vector": {
+    "value": 0.0026,
+    "seeds": 19,
+    "min": 0.0,
+    "max": 0.0122,
+    "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=164질의(질의벡터 캐시 보유분)."
+  }
+}

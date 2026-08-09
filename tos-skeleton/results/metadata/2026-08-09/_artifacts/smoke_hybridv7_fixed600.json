@@ -1,0 +1,70 @@
+{
+  "chunkset": "fixed600",
+  "dense_arm": "V7_ADDR",
+  "lex_arm": "V7_KEYS",
+  "n": 164,
+  "pool": 800,
+  "topk": 100,
+  "lex_coverage": {
+    "n_questions": 164,
+    "docs_nonempty": 5302,
+    "mean_returned": 389.9,
+    "median_returned": 326,
+    "zero_return_questions": 0
+  },
+  "dense_only": {
+    "recall@1": 0.2622,
+    "recall@5": 0.5183,
+    "recall@10": 0.5976,
+    "recall@20": 0.6951,
+    "recall@50": 0.7622,
+    "recall@100": 0.8354,
+    "mrr@10": 0.3691,
+    "ndcg@10": 0.3685,
+    "recall@3000chars": 0.5122,
+    "found_pct": 83.5,
+    "n": 164,
+    "l_star_median": 62,
+    "l_star_n": 137,
+    "l_star_excluded_no_gold": 27
+  },
+  "lex_only": {
+    "recall@1": 0.0244,
+    "recall@5": 0.061,
+    "recall@10": 0.1098,
+    "recall@20": 0.1159,
+    "recall@50": 0.1707,
+    "recall@100": 0.2073,
+    "mrr@10": 0.0466,
+    "ndcg@10": 0.0458,
+    "recall@3000chars": 0.061,
+    "found_pct": 20.7,
+    "n": 164,
+    "l_star_median": 250.5,
+    "l_star_n": 34,
+    "l_star_excluded_no_gold": 130
+  },
+  "grid": [
+    {
+      "w_lex": 0.1,
+      "rrf_k": 60,
+      "metrics": {
+        "recall@1": 0.1829,
+        "recall@5": 0.5305,
+        "recall@10": 0.5915,
+        "recall@20": 0.7073,
+        "recall@50": 0.7622,
+        "recall@100": 0.8476,
+        "mrr@10": 0.3256,
+        "ndcg@10": 0.3415,
+        "recall@3000chars": 0.5061,
+        "found_pct": 84.8,
+        "n": 164,
+        "l_star_median": 69,
+        "l_star_n": 139,
+        "l_star_excluded_no_gold": 25
+      }
+    }
+  ],
+  "note": "스모크 전용. 사전등록·널대조·다중비교 보정을 거치지 않았으므로 results/에 등록하지 않는다. PREREG_V7.md §7 참조."
+}

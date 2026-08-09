@@ -1,0 +1,161 @@
+{
+  "config_id": "dense-bgem3ko_v7addr_fixed600_train164",
+  "date": "2026-08-09",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "11ece481cccacca4cc5353c5f60513d7c3e0ac39c1107a3e7febe7e617d5b36f",
+    "code_commit": "1a0ad89dea4a8892142d2202826f650b4b5b7d47",
+    "two_pass_sha": "662203ca"
+  },
+  "population": {
+    "name": "train164",
+    "n": 164
+  },
+  "config": {
+    "target": "특약·조항제목만 (정규식). 조 번호를 뗀 형태 — 번호 분리의 순효과 격리용",
+    "method": "정규식 구조 추출. build_lex_keys.split_article()이 `제12조(보험금의 지급사유)`를 번호와 제목으로 쪼개고 제목만 [조항]에 넣는다. LLM 호출 0회.",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5324,
+      "ratio": 0.998
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2622,
+    "R@5": 0.5183,
+    "R@10": 0.5976,
+    "R@20": 0.6951,
+    "R@50": 0.7622,
+    "R@100": 0.8354,
+    "MRR@10": 0.3691,
+    "L_star_median": 62
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0098,
+      "seeds": 100,
+      "min": 0.0,
+      "max": 0.0305,
+      "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V7_DENSE_dense.jsonl의 기존 랭킹을 재채점. n=164질의, 항등 순열 거부."
+    },
+    "random_vector": {
+      "value": 0.0026,
+      "seeds": 19,
+      "min": 0.0,
+      "max": 0.0122,
+      "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=164질의(질의벡터 캐시 보유분)."
+    },
+    "constant_dummy": {
+      "value": 0.4268,
+      "note": "J1_JSONCTX 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다."
+    },
+    "shuffled_tag": {
+      "value": 0.253,
+      "seeds": 2,
+      "min": 0.2256,
+      "max": 0.2805,
+      "note": "실존 메타데이터 문자열을 무작위로 다른 청크에 재배정 (시드 20260810, 20260811). 임베딩 비용 때문에 시드 수가 적다."
+    }
+  },
+  "limitations": [
+    "n=164에서 R@5의 MDE는 +5.2~6.3pp다. A6_HIER2(.5427)·V7_DENSE(.5366)와의 상호 비교는 전부 이 아래라 '미검출'이며 우열을 말할 수 없다.",
+    "메타데이터는 정규식 추출만 쓴다(LLM 호출 0회). 같은 라운드의 V7_DENSE는 claude-haiku(claude CLI)로 생성했고, 08-07 등록본은 claude-sonnet이었다.",
+    "two_pass_sha(662203ca)는 build_views->retrieve->eval 구간을 보증한다. 이 arm은 LLM을 쓰지 않으므로 전 구간이 결정적이다.",
+    "shuffled_tag·constant_dummy 널은 V7_DENSE 문자열 기준으로 만들어졌다(이 arm 자체의 널이 아니다). query_shuffle .0098(100시드)·random_vector .0026(19시드)은 채널 공통이다.",
+    "청킹 강건성 미확인. 08-06에서 구조요소 청킹이 fixed600 대비 +20.1pp였고 그 위에서는 메타데이터 형식 7종이 전부 n.s.였다.",
+    "평가셋 기존 결함 승계(results/README.md 5절): gold 오류율 추정 11%, 확정 210 중 55건(26%) BM25 매핑 순환성, test150 57% 노출.",
+    "test150 미개봉.",
+    "조 번호를 뗀 조 제목만 dense에 넣은 arm이다. A6_HIER2(번호+제목, .5427)보다 2.4pp 낮은데 MDE 아래라 단정할 수 없다. 다만 v7의 설계 전제('제N조는 임베딩이 표상하지 못하므로 어휘 채널로 보내면 된다')는 어휘 채널이 그만큼을 회수해야 성립하는데, 어휘 채널 단독 R@5는 .061에 그쳤다.",
+    "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp."
+  ],
+  "experiment": "v7 채널분리",
+  "stats": {
+    "eval": "eval_v7_main.json",
+    "baseline": "run_fixed600_A0_BASE_dense.jsonl",
+    "family": "v7_dense",
+    "family_size": 4,
+    "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+    "rows": [
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5427,
+        "r5_delta_pp": 8.54,
+        "improve": 16,
+        "regress": 2,
+        "mcnemar_p": 0.001312,
+        "mrr_delta": 0.085,
+        "mrr_bca_ci": [
+          0.0469,
+          0.1278
+        ],
+        "arm": "run_fixed600_A6_HIER2_dense.jsonl",
+        "holm_p": 0.005248,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5366,
+        "r5_delta_pp": 7.93,
+        "improve": 15,
+        "regress": 2,
+        "mcnemar_p": 0.00235,
+        "mrr_delta": 0.0563,
+        "mrr_bca_ci": [
+          0.0192,
+          0.0973
+        ],
+        "arm": "run_fixed600_M1_ADDR_dense.jsonl",
+        "holm_p": 0.00705,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5183,
+        "r5_delta_pp": 6.1,
+        "improve": 14,
+        "regress": 4,
+        "mcnemar_p": 0.030884,
+        "mrr_delta": 0.0567,
+        "mrr_bca_ci": [
+          0.0182,
+          0.098
+        ],
+        "arm": "run_fixed600_V7_ADDR_dense.jsonl",
+        "holm_p": 0.04824,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5366,
+        "r5_delta_pp": 7.93,
+        "improve": 21,
+        "regress": 8,
+        "mcnemar_p": 0.02412,
+        "mrr_delta": 0.0493,
+        "mrr_bca_ci": [
+          -0.0013,
+          0.1021
+        ],
+        "arm": "run_fixed600_V7_DENSE_dense.jsonl",
+        "holm_p": 0.04824,
+        "significant": true
+      }
+    ]
+  },
+  "_source": {
+    "eval": "eval_v7_main.json",
+    "run": "run_fixed600_V7_ADDR_dense.jsonl",
+    "nulls": "nulls_v7_fixed600.json",
+    "quality": "cards/dense-bgem3ko_v7addr_fixed600_train164.json",
+    "stats": "stats_v7_dense.json"
+  }
+}
