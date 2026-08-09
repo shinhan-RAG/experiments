@@ -2,7 +2,7 @@
   "config_id": "bm25_newstv3_p0_confirmed210",
   "date": "2026-08-09",
   "author": "donggyu",
-  "experiment": "v5-matrix-20260809",
+  "experiment": "v5-rrffill-20260809",
   "repro": {
     "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
     "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
@@ -12,11 +12,12 @@
   "population": {
     "name": "confirmed210",
     "n": 210,
-    "note": "v5 라운드가 실제 채점한 문항. 판정 무대. gold 매핑은 BM25타깃 55건·dense타깃 0건으로 어휘 채널에 편향"
+    "note": "v5 라운드가 채점한 문항. gold 매핑 BM25타깃 55건·dense타깃 0건으로 어휘 채널 편향"
   },
   "config": {
     "channel": "bm25",
     "channel_params": {
+      "impl": "재구현(정본 아님)",
       "tokenizer": "문자 bigram",
       "k1": 1.2,
       "b": 0.75
@@ -48,17 +49,14 @@
     "query_shuffle": null,
     "constant_dummy": {
       "value": 0.4429,
-      "note": "특약명을 같은 길이의 〇로 치환한 길이일치 널. R@5 .4429 · R@10 .5429 · R@20 .6190 — v3와 같거나 높다"
+      "note": "특약명을 같은 길이의 〇로 치환한 길이일치 널. R@5 .4429 · R@10 .5429 — v3와 같거나 높다"
     },
     "shuffled_tag": null,
     "random_vector": null
   },
   "limitations": [
-    "확정 210의 gold 매핑은 BM25타깃 55건·dense타깃 0건. 어휘 채널에 편향된 무대다",
-    "확정 210 중 과거 라운드에 노출되지 않은 신규 질의는 9건",
-    "정답셋 오류율 추정 11%. 블라인드 재주석은 미실시",
-    "사전 등록 없이 산출한 사후 매트릭스다. 확증이 아니라 위치 파악용",
-    "색인 문자열 ",
+    "동일 재구현 코드로 6개 스키마를 비교한 사다리의 한 행이다. 정본 대비 절대값이 약 +3문항 높다",
+    "구조 간 비교에만 쓸 것. 정본 무태그 BM25는 .4000/.5143/.6000이다",
     "길이일치 널이 R@10에서 실측을 넘는다. 이 스키마는 널과 구분되지 않는다"
   ]
 }
