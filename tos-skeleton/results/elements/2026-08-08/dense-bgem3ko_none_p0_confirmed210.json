@@ -1,0 +1,72 @@
+{
+  "config_id": "dense-bgem3ko_none_p0_confirmed210",
+  "date": "2026-08-08",
+  "author": "donggyu",
+  "experiment": "exp23",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "68a54058",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "정답에 딸린 인용문이 실제 약관에서 확인된 문항. 판정 무대"
+  },
+  "config": {
+    "channel": "dense",
+    "channel_params": {
+      "model": "dragonkue/BGE-m3-ko",
+      "revision": "7074d66aa46562342193ca4feb3d89bf9dad71b4",
+      "max_len": 2048,
+      "batch": 8,
+      "dtype": "fp16",
+      "device": "mps",
+      "normalize": true
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": 0.1,
+    "R@5": 0.2571,
+    "R@10": 0.3381,
+    "R@20": 0.4286,
+    "R@50": 0.6143,
+    "R@100": 0.7381,
+    "MRR@10": 0.167,
+    "L_star_median": 923
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.011,
+      "seeds": 100,
+      "note": "질의 셔플"
+    },
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": {
+      "value": 0.0039,
+      "seeds": 19,
+      "note": "무작위 벡터"
+    }
+  },
+  "limitations": [
+    "확정 210의 경험적 검정력 0.02~0.06 — 이 모집단에서 확증은 원리적으로 어렵다 (태그 대조 불일치쌍 5~7)",
+    "평가셋 gold 오류율 추정 11% (Wilson 95% CI 4.5~26.0%)",
+    "확정 210 중 55건(26%)의 gold가 BM25로 매핑됨 — 채널 비교를 오염시킨다. 순환제외 155 병기 필요",
+    "동료 전수 감사: 확정 210 중 '판정 정상 AND 출처 전부 일치'는 51건(24.3%)",
+    "★ [조항] 라벨 정합률 3.3% — 아래 metadata/label-integrity_annotate-v2 참조. 조항을 포함한 스키마의 수치는 이 결함 위에서 측정됐다",
+    "2,048 토큰 절단 367개(5.4%)",
+    "이 모델은 태그 스키마를 하나도 측정하지 않았다 — 모델 비교 전용"
+  ]
+}

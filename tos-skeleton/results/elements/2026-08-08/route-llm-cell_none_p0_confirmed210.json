@@ -1,0 +1,87 @@
+{
+  "config_id": "route-llm-cell_none_p0_confirmed210",
+  "date": "2026-08-08",
+  "author": "donggyu",
+  "experiment": "c1",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": "b8986e50"
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "판정 근거는 순환제외 155 병기"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "router": "LLM 분류 단발, 셀 1,062지선다, 210×5회 다수결",
+      "carrier": "예약 J=2 — 라우팅 셀의 BM25 상위 J개를 맨 앞에 삽입, 배제 없음",
+      "base": "bm25 char-bigram k1=1.2 b=0.75",
+      "router_accuracy": {
+        "셀_다수결_210분모": 0.0524,
+        "셀_콜별_210분모": 0.059,
+        "셀_관대": 0.081,
+        "정확도상한": 0.981,
+        "특약축": 0.5524,
+        "조항축": 0.1381,
+        "참조_BM25_1홉_특약": 0.4667,
+        "참조_BM25_1홉_조항": 0.3905,
+        "참조_상수예측_조항": 0.2762,
+        "오답구조": {
+          "특약맞음_조항틀림": 99,
+          "둘다틀림": 88,
+          "조항맞음_특약틀림": 6,
+          "정답_관대": 17
+        },
+        "반복불일치율_k5": 0.5952,
+        "반복불일치율_k3": 0.4714,
+        "집계지표_SD_문항": 0.71
+      },
+      "method_kind": "route-reserve — 라우팅 셀의 상위 J개를 예약, 배제 없음"
+    },
+    "schema": {
+      "name": "cell-scope-jo",
+      "fields": [
+        "특약(scope)",
+        "조항(jo)"
+      ],
+      "note": "셀 = (특약, 조항) 1,062종. 빈 조항 제외"
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": 0.0524,
+    "R@5": 0.381,
+    "R@10": 0.5095,
+    "R@20": 0.6095,
+    "R@50": null,
+    "R@100": 0.8238,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "★ 게이트 판정: 폐기(음수). 기준선 R@5 .4000 → 라우터 J=2 .3810, Δ −4문항, McNemar b=6 c=10 p=.4545",
+    "★ 9칸 격자(기저 3 × J 3) 전부 음수. bm25 −1/−4/−4 · dense −1/−3/−9 · rrf5 −4/−13/−19",
+    "★ 정확도 4배인 BM25 1홉 라우터(셀 .324)를 넣어도 J=2 Δ=−1 — 라우터를 개선해도 오르지 않는다",
+    "★ 손실 10문항의 gold 전역순위가 전부 4~5위. K=5에 J=2는 예산 40%를 소비한다",
+    "★ gold의 27.6%(58문항)가 부록 누수 셀(497조각)에 걸려 있고 라우터가 1,050콜 중 0회 지목 — 도달 불가",
+    "따라서 '셀 라우팅이 R@5를 못 올린다'는 검정되지 않았다. 확증된 것은 '배제 없는 예약(K=5, J≥1)은 이득을 내지 않는다'뿐",
+    "φ 게이트(문턱 .5)는 발화 불가능했다 — 관측 φ_max = .2879",
+    "temperature 고정 불가(CLI 구독 경로). 재현 계약은 산출물 SHA 동결 수준",
+    "라벨 정합률 3.3% 결함 위에서 측정됨 — label-integrity_annotate-v2 참조"
+  ]
+}

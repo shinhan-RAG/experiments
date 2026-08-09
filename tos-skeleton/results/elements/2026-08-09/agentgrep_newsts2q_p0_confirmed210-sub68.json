@@ -1,0 +1,65 @@
+{
+  "config_id": "agentgrep_newsts2q_p0_confirmed210-sub68",
+  "date": "2026-08-09",
+  "author": "donggyu",
+  "experiment": "grep-schema-paired",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed210-sub68",
+    "n": 68,
+    "note": "s2q 라운드가 완주한 부분집합. 구 ST s0와 짝지음"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "method_kind": "에이전트가 rg·read를 직접 호출",
+      "tool_cap": 10,
+      "display": "grep 히트 등간격 20건",
+      "rg": "15.1.0",
+      "model": "haiku"
+    },
+    "schema": {
+      "name": "newst-s2q",
+      "fields": [
+        "유형",
+        "특약",
+        "조항",
+        "역할",
+        "묻는말"
+      ]
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": 0.2794,
+    "R@10": null,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "짝지은 대조 구 ST s0 = .4412. 순 Δ −11, McNemar 정확검정 p=.0266 — 유의하게 악화",
+    "3단 깔때기 분해: ① 패턴 .913 → ② 표시 .609 → ③ 선택 .275. 손실이 선택 단계에 몰린다",
+    "묻는말은 질문 어휘를 태그에 심는 필드다. 표시된 모든 줄이 질문과 유사해져 변별이 무너진다",
+    "n=68 부분집합이며 s0 성적이 .4412로 전체 평균보다 높은 층이다"
+  ]
+}
