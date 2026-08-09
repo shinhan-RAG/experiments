@@ -1,0 +1,80 @@
+{
+  "config_id": "rrffill-agent5-rrf5_none_p0_test148",
+  "date": "2026-08-10",
+  "author": "donggyu",
+  "experiment": "test1-확증-사전등록bc207a8",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "0c33c9dc",
+    "two_pass_sha": "pass1==pass2"
+  },
+  "population": {
+    "name": "test148",
+    "n": 148,
+    "note": "봉인 해제된 test 150 중 gold·lines 보유 148건. 사전등록 bc207a8 하에 1회만 개봉. 순환(BM25타깃 계열) 22건 = 14.9% — 확정210의 26%보다 낮다"
+  },
+  "config": {
+    "channel": "hybrid",
+    "channel_params": {
+      "method_kind": "에이전트 grep top5 + 전역 RRF k=5로 나머지 칸 채움(중복 제거, 순서 보존)",
+      "agent": "claude -p haiku · rg·read · 캡 10회 · 반환 5개 강제",
+      "fuse": "concat-fill",
+      "rrf": {
+        "k": 5,
+        "members": [
+          "bm25-fastbm25-char-bigram",
+          "dense-bgem3"
+        ],
+        "depth": 200
+      },
+      "aggregation": "문항별 2회 평균",
+      "frozen": "out/test1/frozen.json · 개봉 전 2026-08-09 23:00:38"
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": 0.4088,
+    "R@5": 0.5676,
+    "R@10": 0.75,
+    "R@20": 0.75,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.5082,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": {
+      "value": 0.6159,
+      "seeds": 20,
+      "min": 0.6149,
+      "max": 0.6216,
+      "note": "에이전트 5칸을 무작위 element로 치환하고 동일하게 RRF 채움. R@10 .6159"
+    },
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "★ 사전 등록 게이트 판정: 0 방향 통과 · 1 효과크기 미달 · 2 유의 미달 · 3 널 초과 통과 → 철회(과적합)",
+    "전역 RRF top10 대비 풀링 순 Δ +5.0문항 [-1.8, +11.8], b=10 c=5, 부호검정 p=.302. 신뢰구간이 0을 포함한다",
+    "개발셋 효과 Δ/n는 확정210 +.119 · 비순환155 +.148이었다. test는 +.0338 — 약 1/4로 축소됐다",
+    "R@5에서는 오히려 낮다 — RRF .6149 vs 채움 .5676. 에이전트 5개가 RRF 상위를 밀어낸다",
+    "출처 분해: 에이전트만 8 · RRF만 29 · 둘 다 77 · 둘 다 실패 34. 개발셋(48/43)과 반대로 RRF가 압도한다",
+    "회차간 R@10 불일치 4/148 = .027. 순위 대부분을 결정론적 RRF가 정하므로 잡음이 거의 없다",
+    "비용 $32.74 · 296세션 유효 · 실패 1 · 제외 0",
+    "test 무대는 확정 210보다 쉽다. 같은 RRF가 확정210에서 R@10 .5667, test에서 .7162다",
+    "순환 비율 확정210 26% vs test 14.9%. 매핑 방법 분포가 다르다",
+    "정답셋 오류율 추정 11% (95% CI 4.5~26.0%). test에도 적용된다",
+    "1회 개봉이며 재실행하지 않는다"
+  ]
+}
