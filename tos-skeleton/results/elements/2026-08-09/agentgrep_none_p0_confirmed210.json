@@ -1,0 +1,62 @@
+{
+  "config_id": "agentgrep_none_p0_confirmed210",
+  "date": "2026-08-09",
+  "author": "donggyu",
+  "experiment": "v5-matrix-20260809",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "v5 라운드가 실제 채점한 문항. 판정 무대. gold 매핑은 BM25타깃 55건·dense타깃 0건으로 어휘 채널에 편향"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "method_kind": "에이전트가 rg·read를 직접 호출",
+      "tool_cap": 10,
+      "display": "grep 히트 줄순서 상위 40 + 총 히트 수",
+      "rg": "15.1.0",
+      "model": "haiku",
+      "round": "v5 r1",
+      "mean_returned": 3.92
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": 0.4429,
+    "R@10": 0.4476,
+    "R@20": 0.4476,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "확정 210의 gold 매핑은 BM25타깃 55건·dense타깃 0건. 어휘 채널에 편향된 무대다",
+    "확정 210 중 과거 라운드에 노출되지 않은 신규 질의는 9건",
+    "정답셋 오류율 추정 11%. 블라인드 재주석은 미실시",
+    "반환 개수 평균 3.92개. R@10·R@20이 사실상 R@5에 묶여 있다",
+    "2회차 미완. 잡음 바닥 미산출"
+  ]
+}
