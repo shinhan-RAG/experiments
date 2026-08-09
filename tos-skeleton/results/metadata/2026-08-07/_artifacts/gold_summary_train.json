@@ -1,0 +1,44 @@
+{
+  "csv": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\정답셋_350_train_유형내용균형_v1_답변검수.csv",
+  "ref_chunkset": "fixed600",
+  "total_rows": 350,
+  "mapped": 218,
+  "stat": {
+    "매칭실패": 129,
+    "출처없음": 3,
+    "매칭성공": 218
+  },
+  "ambiguous": 113,
+  "business_dist": {
+    "Claim": 16,
+    "상품": 32,
+    "고객상담": 49,
+    "LICO": 24,
+    "챗봇": 30,
+    "문서커버리지": 67
+  },
+  "src_form_dist": {
+    "list": 151,
+    "raw_block": 67
+  },
+  "match_mode_dist": {
+    "contiguous": 199,
+    "mixed": 6,
+    "fragment": 13
+  },
+  "avg_gold_chunks": 8.32,
+  "gold_chunks_zero": 0,
+  "narrowed_by_line_total": 23,
+  "primary": {
+    "n": 164,
+    "avg_gold_chunks": 2.24,
+    "business_dist": {
+      "Claim": 13,
+      "상품": 19,
+      "고객상담": 33,
+      "LICO": 14,
+      "챗봇": 20,
+      "문서커버리지": 65
+    }
+  }
+}

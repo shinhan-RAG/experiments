@@ -1,0 +1,23 @@
+{
+  "fixed600": {
+    "name": "fixed600",
+    "mode": "fixed",
+    "size": 600,
+    "overlap": 100,
+    "n_chunks": 5335,
+    "avg_len": 615.0,
+    "std_len": 119.0,
+    "min_len": 103,
+    "max_len": 700,
+    "total_chars": 3280867,
+    "element_type": {
+      "text": 3610,
+      "formula": 281,
+      "table": 1444
+    },
+    "chunks_per_doc": {
+      "1040aa492c": 5335
+    },
+    "offset_exact": true
+  }
+}
