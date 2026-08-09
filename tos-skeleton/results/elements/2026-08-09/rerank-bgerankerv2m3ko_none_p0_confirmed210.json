@@ -1,0 +1,74 @@
+{
+  "config_id": "rerank-bgerankerv2m3ko_none_p0_confirmed210",
+  "date": "2026-08-09",
+  "author": "donggyu",
+  "experiment": "c4",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": "e54205c933793f0a"
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "정답에 딸린 인용문이 실제 약관에서 확인된 문항. 판정 무대"
+  },
+  "config": {
+    "channel": "rerank",
+    "channel_params": {
+      "model": "dragonkue/bge-reranker-v2-m3-ko",
+      "revision": "2aca5884ecac490192af9ebd86836d9073d826cd",
+      "dtype": "float32",
+      "max_length": 2048,
+      "batch": 8,
+      "device": "mps",
+      "pool": "bm25 top-100",
+      "determinism": "동일 입력 2회 비트 일치, max_abs_diff 0.0"
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": 0.1048,
+    "R@5": 0.281,
+    "R@10": 0.3905,
+    "R@20": 0.5619,
+    "R@50": 0.7619,
+    "R@100": 0.8286,
+    "MRR@10": 0.1818,
+    "L_star_median": 671
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": {
+      "value": 0.0938,
+      "seeds": 20,
+      "min": 0.0762,
+      "max": 0.1667,
+      "note": "무작위 재순위 널"
+    }
+  },
+  "limitations": [
+    "확정 210의 경험적 검정력 0.02~0.06. 확증 하한: 악화 c=0이면 순 Δ +6, c=5면 +10, Holm 50칸이면 +18",
+    "확정 210 중 55건(26%)의 gold가 BM25로 매핑됨(dense 매핑 0건) — 무대가 어휘 채널에 편향",
+    "확정 210 중 과거 라운드 미노출 질의는 9건",
+    "평가셋 gold 오류율 추정 11%. 동료 독립 감사 통과 51건(24.3%)",
+    "★ 게이트 폐기. Δ −25문항. H1(vs 기준선) b=23 c=48 p=.0041",
+    "층화: 1~5위층 −48문항 · 6~20위 +12 · 21~100위 +11 · top-100밖 0",
+    "R@5에서 상위 5를 고정하면 정의상 기준선 — 이득과 손실이 같은 동작이다",
+    "★ H1의 유의성은 전부 순환 55건에서 발생(b=5 c=23 p=.0009). 비순환 155에서는 b=18 c=25 p=.360 무승부",
+    "예산 악화: K=10 427→472줄 · K=20 872→1,001줄",
+    "절단 1,044/33,800쌍(3.1%). 소요 12,316초, 최대 RSS 1.12GB"
+  ]
+}

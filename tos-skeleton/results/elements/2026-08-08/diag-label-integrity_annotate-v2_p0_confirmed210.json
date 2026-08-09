@@ -1,0 +1,96 @@
+{
+  "config_id": "diag-label-integrity_annotate-v2_p0_confirmed210",
+  "date": "2026-08-08",
+  "author": "donggyu",
+  "experiment": "c2-diagnosis",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "68a54058",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "라벨 정합은 element 6,852 전수, gold 관련 통계만 확정 210"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "target": "조항 라벨(jo)",
+      "method": "context_v2.annotate_v2 — 줄 단위 상태열. element 시작점에서 가장 최근 조 헤딩을 단일 라벨로 배정",
+      "coverage": {
+        "n_total": 6852,
+        "n_assigned": 6852,
+        "ratio": 1.0,
+        "distinct_values": 205
+      },
+      "uniqueness": {
+        "max_collision": 497,
+        "note": "최대 셀(특약×조항)이 497조각 = 코퍼스 7.25%. element 6355~6851(문서 꼬리 전체). 첫 조각만 실제 해당 조이고 나머지 496개는 부록 표"
+      },
+      "integrity": {
+        "정합_판정": "element 안에 조 헤딩이 있을 때, 그 element의 라벨이 자기 안 첫 조와 일치하는가",
+        "조헤딩_없는_element": 5261,
+        "조헤딩_없는_비율": 0.768,
+        "조헤딩_있고_일치": 223,
+        "일치_비율_전체": 0.0326,
+        "일치_비율_조헤딩보유분": 0.14,
+        "조헤딩_있고_불일치": 1368,
+        "element당_조헤딩수": {
+          "0개": 5261,
+          "1개": 525,
+          "2개이상": 1066,
+          "최대": 26
+        },
+        "라벨_끌려온_거리_줄": {
+          "중앙": 61,
+          "p90": 868,
+          "p99": 15741,
+          "최대": 19156,
+          "5000줄초과": 422
+        },
+        "조헤딩_총수": 6562,
+        "gold에_조헤딩2개이상_element_포함_문항": 147,
+        "부록누수셀_gold포함_문항": 58,
+        "부록누수셀_gold전용_문항": 21
+      },
+      "method_kind": "diagnosis — 성능 측정 아님"
+    },
+    "schema": {
+      "name": "annotate-v2",
+      "fields": [
+        "조항(jo)"
+      ]
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": null,
+    "R@10": null,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "★ 이것은 성능 측정이 아니라 결함 진단이다. metrics는 전부 null",
+    "★ 2026-08-09 정정: '라벨 정합률 3.3%'는 철회한다. 그 지표는 element가 조 경계에서 시작하는 비율을 재고 있었고(일치 223건 = 조 경계 시작 223건, 완전 동일 집합), 조 헤딩을 담은 element가 23.2%뿐이라 나머지 76.8%는 어떤 라벨로도 '일치'가 될 수 없었다",
+    "공정한 지표(라벨 조가 element 문자를 덮는 비율): 마이크로 .62 · 중앙 1.00 · 완전커버 76.7%",
+    "진짜 결함은 라벨이 아니라 청크 입도다. gold element 문자 중앙 946자(전체 309자의 3.1배), 라벨 커버리지 중앙 .51, gold에 조가 2개 이상 든 element가 걸린 문항 147/210(70%)",
+    "입도 개입은 exp18(R@5 .3964→.3491)·exp20(무작위 경계 널 p_perm=.476 미돌파)에서 두 번 실패했다"
+  ]
+}
