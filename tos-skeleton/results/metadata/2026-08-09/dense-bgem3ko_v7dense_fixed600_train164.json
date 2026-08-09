@@ -1,0 +1,168 @@
+{
+  "config_id": "dense-bgem3ko_v7dense_fixed600_train164",
+  "date": "2026-08-09",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "11ece481cccacca4cc5353c5f60513d7c3e0ac39c1107a3e7febe7e617d5b36f",
+    "code_commit": "1a0ad89dea4a8892142d2202826f650b4b5b7d47",
+    "two_pass_sha": "662203ca"
+  },
+  "population": {
+    "name": "train164",
+    "n": 164
+  },
+  "config": {
+    "target": "특약·조항제목(정규식) + 고객어투 질문 2개·요지(LLM) — D1 벡터 채널 전용. 조번호·별표·질병코드·금액은 D2 어휘 채널이 따로 색인한다(비겹침).",
+    "method": "정규식(build_structure.py)이 특약명·조 제목을 만들고, claude-haiku(claude CLI, MAX_THINKING_TOKENS=0, 20청크 배치)가 ask 2개·gist 1개만 생성한다. sanitize_v7이 특약명·조번호·별표·질병코드 재등장과 본문 복사를 코드로 폐기. [특약]/[조항]/[질문]/[요지] 라벨로 본문 앞에 접두, 240자 예산(실측 최대 156자, 절단 0%).",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5335,
+      "ratio": 1.0,
+      "distinct_values": 5249
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9824,
+      "max_collision": 40
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩(D1 벡터 채널). D2 어휘 채널(조번호·별표·코드·값·표머리)은 별도 색인이며 이 arm의 벡터에는 들어가지 않는다",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2561,
+    "R@5": 0.5366,
+    "R@10": 0.6037,
+    "R@20": 0.689,
+    "R@50": 0.7805,
+    "R@100": 0.8415,
+    "MRR@10": 0.3618,
+    "L_star_median": 70.0
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0098,
+      "seeds": 100,
+      "min": 0.0,
+      "max": 0.0305,
+      "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V7_DENSE_dense.jsonl의 기존 랭킹을 재채점. n=164질의, 항등 순열 거부."
+    },
+    "random_vector": {
+      "value": 0.0026,
+      "seeds": 19,
+      "min": 0.0,
+      "max": 0.0122,
+      "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=164질의(질의벡터 캐시 보유분)."
+    },
+    "constant_dummy": {
+      "value": 0.4268,
+      "note": "J1_JSONCTX 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다."
+    },
+    "shuffled_tag": {
+      "value": 0.253,
+      "seeds": 2,
+      "min": 0.2256,
+      "max": 0.2805,
+      "note": "실존 메타데이터 문자열을 무작위로 다른 청크에 재배정 (시드 20260810, 20260811). 임베딩 비용 때문에 시드 수가 적다."
+    }
+  },
+  "limitations": [
+    "n=164에서 R@5의 MDE는 +5.2~6.3pp(클린 패턴)·+12pp(혼합 패턴)다. 이 arm은 개선21/회귀8의 혼합 패턴에 +7.93pp라 Holm p=.0482로 경계값이며, 네 arm 중 유의성이 가장 약하다.",
+    "v7 vs A6_HIER2(현 챔피언, R@5 .5427) 비교는 이 표본에서 검출 불가다. 기대 효과 +2~4pp < MDE. 두 arm의 차이는 '동등'이 아니라 '미검출'이며, 필요 n은 약 500~700이다.",
+    "LLM 필드(ask/gist)의 순기여는 V7_ADDR(.518)->V7_DENSE(.537) = +1.9pp로 MDE 아래다. 즉 이 실험은 '채널 분리가 A0보다 낫다'를 보였을 뿐 'LLM 생성이 정규식보다 낫다'를 보이지 못했다.",
+    "메타데이터 생성기가 08-07 등록본(claude-sonnet, claude CLI)과 다르다. v7은 claude-haiku(claude CLI, MAX_THINKING_TOKENS=0, 20청크 배치, 5,335건 0실패). 전송 계층은 같고 모델 계보만 sonnet->haiku로 한 단계 내려갔다. OpenAI 크레딧 소진(429 insufficient_quota)으로 gpt-4o-mini 경로는 사용 불가였다.",
+    "LLM 생성은 비결정적이라 two_pass_sha(662203ca)는 메타데이터를 고정한 이후 구간(build_views->retrieve->eval)만 보증한다. 임베딩 재현은 V7_DENSE 프로브로 별도 확인했다(두 회차 모두 5f242559fdbcc855).",
+    "shuffled_tag 널은 시드 2개뿐이다(arm당 임베딩 약 11분). constant_dummy .4268 / shuffled_tag .253으로, 08-07 등록본이 둘 다 .4207로 같았던 것과 달리 확연히 갈렸다 — 주소가 틀린 메타데이터는 메타데이터가 없는 것보다 나쁘다.",
+    "비겹침(G3)은 하드 2종 0건, Jaccard 평균 .0097/p95 .0500/max .1630으로 통과했다. 다만 G3-a는 초기 24건 위반이 있었고(목차 표에서 뽑은 table_head가 조 제목과 동일), build_lex_keys의 table_head 억제로 0건이 됐다. 금액·기간처럼 양 채널에 자연히 걸치는 값은 하드 게이트 대상이 아니다.",
+    "청킹 강건성 미확인. 08-06에서 구조요소 청킹 .482 vs fixed600 .281(+20.1pp, Holm p=.0001)이었고 elem 위에서는 메타데이터 7종이 전부 n.s.였다. v7 이득의 상당분이 fixed600 결함 보정일 가능성이 남아 있다.",
+    "평가셋 기존 결함 승계(results/README.md 5절): gold 오류율 추정 11%(Wilson 95% CI 4.5~26.0%), 재주석 70건 중 54%가 부분/불가, 확정 210 중 55건(26%)의 gold가 BM25로 매핑된 순환성, test150의 57%가 이전 라운드에 노출.",
+    "test150 미개봉. 이번 라운드는 train164 전용이며 어떤 결정도 test를 보고 내리지 않았다.",
+    "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp."
+  ],
+  "experiment": "v7 채널분리",
+  "stats": {
+    "eval": "eval_v7_main.json",
+    "baseline": "run_fixed600_A0_BASE_dense.jsonl",
+    "family": "v7_dense",
+    "family_size": 4,
+    "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+    "rows": [
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5427,
+        "r5_delta_pp": 8.54,
+        "improve": 16,
+        "regress": 2,
+        "mcnemar_p": 0.001312,
+        "mrr_delta": 0.085,
+        "mrr_bca_ci": [
+          0.0469,
+          0.1278
+        ],
+        "arm": "run_fixed600_A6_HIER2_dense.jsonl",
+        "holm_p": 0.005248,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5366,
+        "r5_delta_pp": 7.93,
+        "improve": 15,
+        "regress": 2,
+        "mcnemar_p": 0.00235,
+        "mrr_delta": 0.0563,
+        "mrr_bca_ci": [
+          0.0192,
+          0.0973
+        ],
+        "arm": "run_fixed600_M1_ADDR_dense.jsonl",
+        "holm_p": 0.00705,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5183,
+        "r5_delta_pp": 6.1,
+        "improve": 14,
+        "regress": 4,
+        "mcnemar_p": 0.030884,
+        "mrr_delta": 0.0567,
+        "mrr_bca_ci": [
+          0.0182,
+          0.098
+        ],
+        "arm": "run_fixed600_V7_ADDR_dense.jsonl",
+        "holm_p": 0.04824,
+        "significant": true
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5366,
+        "r5_delta_pp": 7.93,
+        "improve": 21,
+        "regress": 8,
+        "mcnemar_p": 0.02412,
+        "mrr_delta": 0.0493,
+        "mrr_bca_ci": [
+          -0.0013,
+          0.1021
+        ],
+        "arm": "run_fixed600_V7_DENSE_dense.jsonl",
+        "holm_p": 0.04824,
+        "significant": true
+      }
+    ]
+  },
+  "_source": {
+    "eval": "eval_v7_main.json",
+    "run": "run_fixed600_V7_DENSE_dense.jsonl",
+    "nulls": "nulls_v7_fixed600.json",
+    "quality": "cards/dense-bgem3ko_v7dense_fixed600_train164.json",
+    "stats": "stats_v7_dense.json"
+  }
+}
