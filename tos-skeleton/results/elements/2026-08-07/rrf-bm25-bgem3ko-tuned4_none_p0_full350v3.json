@@ -1,0 +1,84 @@
+{
+  "config_id": "rrf-bm25-bgem3ko-tuned4_none_p0_full350v3",
+  "date": "2026-08-07",
+  "author": "lsh (Claude Sonnet 5 보조)",
+  "experiment": "hybrid-enrich_tag-meta_grid",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "8f832c7d1bc5373ec6bde28af7bf3487d6fc792e304a599b78e30838a61d01cd",
+    "code_commit": "a8b576063ecdceff9d3c552576eba793f32219e4",
+    "two_pass_sha": "1a7727c0e2bbc925"
+  },
+  "population": {
+    "name": "full350v3",
+    "n": 329,
+    "note": "full350v2의 gold있음 229건 자동 전수감사(2026-08-09, gold_audit.py: 질문에 특약명이 명시된 48건을 gold element의 실제 contract_scope와 대조). 11건 불일치 확인 -- 8건은 clean152에서만 제외됐던 기존 알려진 9건 중 8개가 full350v2 매핑 파이프라인(build_gold_full350_lsh.py)에는 반영 안 되고 그대로 남아있던 것, 3건은 신규 발견. 8건 재매핑, 3건 population 제외(브래킷 변형 다수/나열형 질문이라 단일 gold 특정 불가). 332->329, gold확보 229->226"
+  },
+  "config": {
+    "channel": "rrf",
+    "channel_params": {
+      "tag_channel": "bm25-char-bigram",
+      "tag_k1": 1.6,
+      "tag_b": 0.5,
+      "tag_note": "tuned3와 TAG/융합 구성 동일. 여기에 브래킷 exact-match 부스트만 추가: '확실한 QA' 5건 오답분석(2026-08-09)에서 4건이 형제 상품(브래킷 변형, 예: [30일한도형] vs [180일한도형]) 혼동으로 확인됨",
+      "fusion": "rrf_or_boost + bracket_exact_boost",
+      "or_boost_threshold": 15,
+      "or_boost_amount": 0.05,
+      "bracket_exact_boost": 1.0,
+      "bracket_exact_note": "질문에 [..] 브래킷이 그대로 등장하면, 그 문자열을 contract_scope에 포함하는 element에만 고정 보너스 부여 (char-bigram TF 반복 방식은 형제 변형끼리 bigram 4/5 공유로 역효과였음 -- exact-string 규칙 매칭만 회귀 없이 순개선)",
+      "vector_model": "dragonkue/BGE-m3-ko",
+      "vector_input": "원문만(2000자 절단)",
+      "rrf_k": 20,
+      "top_n": 100
+    },
+    "schema": {
+      "name": "tag-v3-rulebased-v2",
+      "fields": [
+        "contract_key_tag",
+        "qualifier_tag"
+      ],
+      "extractor": "build_meta_tag_lsh.py (build_retrieval_fields_v3.py 포팅) (contract_key_tag+qualifier_tag만 사용, 2026-08-08 64조합 전수탐색 결과, k1=1.6/b=0.5/RRF_K=20 튜닝)"
+    },
+    "split": {
+      "name": "semtag-split_elements",
+      "n_elements": 7907,
+      "rule": "semtag_experiment.split_elements/annotate_context, 문서별 정규식 3개 패치"
+    }
+  },
+  "metrics": {
+    "R@1": 0.1337,
+    "R@5": 0.304,
+    "R@10": 0.3678,
+    "R@20": 0.4377,
+    "R@50": 0.5046,
+    "R@100": 0.5593,
+    "MRR@10": 0.2022,
+    "L_star_median": 5
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0073,
+      "seeds": 5,
+      "min": 0.003,
+      "max": 0.0152,
+      "note": "R@5 기준, gold를 무작위 재배정 후 재계산"
+    },
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": {
+      "value": 0.1733,
+      "seeds": 3,
+      "min": 0.1702,
+      "max": 0.1763,
+      "note": "R@5 기준, 벡터 성분을 랜덤 유닛벡터로 교체(TAG는 실제값 유지), 브래킷 exact-match 부스트 융합"
+    }
+  },
+  "limitations": [
+    "탐색적 측정 — 확증 검정(다중비교 보정) 없음, 단일 config 최고값 보고",
+    "gold 오염 조사 미완료: 161건 중 특약명이 문자열로 검출되는 18건만 검증해 9건 불일치 확인, 나머지 143건은 미검증 — 전수 검증 전까지 population 자체에 잔여 오염 가능성 있음",
+    "constant_dummy·shuffled_tag null 대조 미측정",
+    "동일 문서(원ONE)라도 250212 버전 사용 — 팀 다른 결과(예: bm25_none_p0_train338)와 doc_sha256이 달라 직접 비교 불가",
+    "two_pass_match=True — BGE-m3-ko GPU 추론이 완전히 결정적이지 않을 수 있음",
+    "2026-08-09 '확실한 QA'(특약명 명확 45건) 미스 5건 상세분석에서 4건이 형제 상품(브래킷 변형) 혼동으로 확인됨(예: [30일한도형]첫날부터입원특약 질의가 [180일한도형] 변형에 밀림). char-bigram TF 반복 부스트는 형제 변형끼리 bigram을 4/5 공유해 역효과(clean152 R@20 .5658->.5461, repeat=5). 대신 질문에 브래킷이 그대로 등장할 때만 그 문자열을 포함하는 element에 규칙 기반 고정 보너스(+1.0)를 주는 방식으로 전환, clean152(R@20 .5658->.5724, 다른 지표 불변)·full350v3(226건 중 브래킷 명시 질문 8건, R@20 63.27%->63.72%, 다른 지표 불변) 둘 다 회귀 없는 순개선 확인되어 이 구성으로 정식 등록함. 브래킷이 없는 질문(226건 중 218건)에는 전혀 영향 없음 — 적용 범위가 좁아 전체 효과는 작음"
+  ]
+}
