@@ -2,7 +2,7 @@
   "config_id": "bm25_none_p0_confirmed210",
   "date": "2026-08-09",
   "author": "donggyu",
-  "experiment": "v5-matrix-20260809",
+  "experiment": "v5-rrffill-20260809",
   "repro": {
     "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
     "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
@@ -12,15 +12,16 @@
   "population": {
     "name": "confirmed210",
     "n": 210,
-    "note": "v5 라운드가 실제 채점한 문항. 판정 무대. gold 매핑은 BM25타깃 55건·dense타깃 0건으로 어휘 채널에 편향"
+    "note": "v5 라운드가 채점한 문항. gold 매핑 BM25타깃 55건·dense타깃 0건으로 어휘 채널 편향"
   },
   "config": {
     "channel": "bm25",
     "channel_params": {
+      "impl": "FastBM25(exp19_tracks)",
       "tokenizer": "문자 bigram",
       "k1": 1.2,
       "b": 0.75,
-      "tie_break": "element index 오름차순(stable)"
+      "tie_break": "(-score, index)"
     },
     "schema": {
       "name": "none",
@@ -35,9 +36,9 @@
   },
   "metrics": {
     "R@1": null,
-    "R@5": 0.4286,
-    "R@10": 0.5381,
-    "R@20": 0.6095,
+    "R@5": 0.4,
+    "R@10": 0.5143,
+    "R@20": 0.6,
     "R@50": null,
     "R@100": null,
     "MRR@10": null,
@@ -50,10 +51,8 @@
     "random_vector": null
   },
   "limitations": [
-    "확정 210의 gold 매핑은 BM25타깃 55건·dense타깃 0건. 어휘 채널에 편향된 무대다",
-    "확정 210 중 과거 라운드에 노출되지 않은 신규 질의는 9건",
-    "정답셋 오류율 추정 11%. 블라인드 재주석은 미실시",
-    "사전 등록 없이 산출한 사후 매트릭스다. 확증이 아니라 위치 파악용",
-    "색인 문자열은 element 본문 그대로. 태그 칸이 존재하지 않는다"
+    "정본 재현. out/c1/router_eval_k5.json grid9_격자/bm25/무개입과 소수 4자리 일치",
+    "초판(2026-08-09)에 등록한 .4286/.5381/.6095는 재구현 코드 산출이었다. 철회하고 이 값으로 대체",
+    "색인 문자열은 element 본문 그대로"
   ]
 }

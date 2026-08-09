@@ -2,7 +2,7 @@
   "config_id": "agentgrep_none_p0_confirmed210",
   "date": "2026-08-09",
   "author": "donggyu",
-  "experiment": "v5-matrix-20260809",
+  "experiment": "v5-rrffill-20260809",
   "repro": {
     "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
     "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
@@ -12,7 +12,7 @@
   "population": {
     "name": "confirmed210",
     "n": 210,
-    "note": "v5 라운드가 실제 채점한 문항. 판정 무대. gold 매핑은 BM25타깃 55건·dense타깃 0건으로 어휘 채널에 편향"
+    "note": "v5 라운드가 채점한 문항. gold 매핑 BM25타깃 55건·dense타깃 0건으로 어휘 채널 편향"
   },
   "config": {
     "channel": "other",
@@ -20,10 +20,11 @@
       "method_kind": "에이전트가 rg·read를 직접 호출",
       "tool_cap": 10,
       "display": "grep 히트 줄순서 상위 40 + 총 히트 수",
-      "rg": "15.1.0",
+      "rg": "ripgrep 15.1.0",
       "model": "haiku",
-      "round": "v5 r1",
-      "mean_returned": 3.92
+      "round": "v5 r1+r2",
+      "aggregation": "문항별 2회 평균",
+      "return_budget": null
     },
     "schema": {
       "name": "none",
@@ -38,9 +39,9 @@
   },
   "metrics": {
     "R@1": null,
-    "R@5": 0.4429,
-    "R@10": 0.4476,
-    "R@20": 0.4476,
+    "R@5": 0.4167,
+    "R@10": 0.4262,
+    "R@20": 0.4262,
     "R@50": null,
     "R@100": null,
     "MRR@10": null,
@@ -53,10 +54,10 @@
     "random_vector": null
   },
   "limitations": [
-    "확정 210의 gold 매핑은 BM25타깃 55건·dense타깃 0건. 어휘 채널에 편향된 무대다",
-    "확정 210 중 과거 라운드에 노출되지 않은 신규 질의는 9건",
-    "정답셋 오류율 추정 11%. 블라인드 재주석은 미실시",
-    "반환 개수 평균 3.92개. R@10·R@20이 사실상 R@5에 묶여 있다",
-    "2회차 미완. 잡음 바닥 미산출"
+    "회차별 병기: r1 R@5 .4381 / r2 .3952",
+    "평균 반환 3.87개. R@10·R@20이 사실상 R@5에 묶여 있다",
+    "잡음 바닥 π̂_d = .2238 [.181,.267] (같은 arm 두 회차 R@5 불일치 47/210). 유의선 +15문항 · 80% 검정력선 +20문항",
+    "잡음의 71.3%는 양 회차 모두 정답이 화면에 표시된 층에서 발생한다 — 열람 분류 비결정성",
+    "초판 등록값은 1회차 단독이었다. 회차 라벨은 정보를 담지 않으므로 풀링으로 정정"
   ]
 }

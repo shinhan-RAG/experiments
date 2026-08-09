@@ -1,0 +1,75 @@
+{
+  "config_id": "rrffill-agent5-rrf5_none_p0_confirmed210",
+  "date": "2026-08-09",
+  "author": "donggyu",
+  "experiment": "v5-rrffill-20260809",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "d9507640",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "confirmed210",
+    "n": 210,
+    "note": "v5 라운드가 채점한 문항. gold 매핑 BM25타깃 55건·dense타깃 0건으로 어휘 채널 편향"
+  },
+  "config": {
+    "channel": "hybrid",
+    "channel_params": {
+      "method_kind": "에이전트 grep top5 + 전역 RRF k=5로 나머지 칸 채움(중복 제거, 순서 보존)",
+      "agent": "claude -p haiku · rg·read 도구 · 캡 10회 · 반환 5개 강제",
+      "fuse": "concat-fill",
+      "rrf": {
+        "k": 5,
+        "members": [
+          "bm25-fastbm25-char-bigram",
+          "dense-bgem3"
+        ],
+        "depth": 200,
+        "tie_break": "(-score, index)"
+      },
+      "aggregation": "문항별 2회 평균 (회차 라벨은 정보를 담지 않음)"
+    },
+    "schema": {
+      "name": "none",
+      "fields": []
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": 0.4786,
+    "R@10": 0.6857,
+    "R@20": 0.6857,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": {
+      "value": 0.4369,
+      "seeds": 20,
+      "note": "에이전트 5칸을 무작위 element 5개로 치환하고 동일하게 RRF 채움. R@10 .4369"
+    },
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "사후 산출이며 사전 등록이 없다. 확증이 아니다",
+    "채움 규칙에 자유 파라미터가 0개다(단순 이어붙이기). 그 점에서 과적합 위험은 낮다",
+    "에이전트 top5는 반환 5개가 강제된 arm에서 나온 값이다. 무개입 arm에서는 Δ +19로 낮다",
+    "확정 210의 gold 매핑은 BM25타깃 55건·dense타깃 0건",
+    "정답셋 오류율 추정 11% (95% CI 4.5~26.0%). 블라인드 재주석 미실시",
+    "전역 RRF k=5 top10 대비 풀링 순 Δ +25.0문항, 95%CI [+13.7,+36.3], 부호검정 p=4.2e-05",
+    "이 무대의 유의선 +15문항 · 80% 검정력선 +20문항 — 둘 다 초과",
+    "출처 분해: 에이전트만 48 · RRF만 43 · 둘 다 48 · 둘 다 실패 71"
+  ]
+}
