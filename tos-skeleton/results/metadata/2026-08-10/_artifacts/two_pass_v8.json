@@ -1,0 +1,12 @@
+{
+  "chunkset": "fixed600",
+  "arms": [
+    "V8_CONTRAST",
+    "V8_PLUS"
+  ],
+  "pass1": "514f756924618bb49316e234eb7a863c8649604d8b1a70b1decde33875096144",
+  "pass2": "514f756924618bb49316e234eb7a863c8649604d8b1a70b1decde33875096144",
+  "deterministic": true,
+  "two_pass_sha": "514f7569",
+  "scope": "메타데이터 고정 이후 구간(뷰조립->검색->채점). LLM 생성은 비결정적이라 보증 대상 아님."
+}

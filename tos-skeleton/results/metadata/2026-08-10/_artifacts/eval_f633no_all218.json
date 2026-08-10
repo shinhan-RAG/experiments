@@ -1,0 +1,4173 @@
+{
+  "chunkset": "fixed633no",
+  "gold": "qa_gold.jsonl",
+  "n_gold": 218,
+  "primary_only": false,
+  "budget_chars": 3000,
+  "runs": {
+    "run_fixed633no_A0_BASE_dense.jsonl": {
+      "overall": {
+        "recall@1": 0.2339,
+        "recall@5": 0.4771,
+        "recall@10": 0.5413,
+        "recall@20": 0.6193,
+        "recall@50": 0.7385,
+        "recall@100": 0.8349,
+        "mrr@10": 0.333,
+        "ndcg@10": 0.3061,
+        "recall@3000chars": 0.4771,
+        "found_pct": 83.5,
+        "n": 218,
+        "l_star_median": 64.0,
+        "l_star_n": 182,
+        "l_star_excluded_no_gold": 36
+      },
+      "per_query": [
+        {
+          "qid": "4",
+          "business_type": "Claim",
+          "rank": 8,
+          "ndcg": 0.31546487678572877,
+          "budget_hit": 0,
+          "l_star": 170,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "8",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "9",
+          "business_type": "Claim",
+          "rank": 61,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 881,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "10",
+          "business_type": "Claim",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "17",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.644824486427155,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "18",
+          "business_type": "Claim",
+          "rank": 75,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2110,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "21",
+          "business_type": "Claim",
+          "rank": 92,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2053,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "22",
+          "business_type": "Claim",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 106,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "24",
+          "business_type": "Claim",
+          "rank": 6,
+          "ndcg": 0.3562071871080222,
+          "budget_hit": 0,
+          "l_star": 221,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "25",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.6131471927654584,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "30",
+          "business_type": "Claim",
+          "rank": 2,
+          "ndcg": 0.575073986183329,
+          "budget_hit": 1,
+          "l_star": 25,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "33",
+          "business_type": "Claim",
+          "rank": 33,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 704,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "34",
+          "business_type": "Claim",
+          "rank": 2,
+          "ndcg": 0.6240505200038379,
+          "budget_hit": 1,
+          "l_star": 33,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "35",
+          "business_type": "Claim",
+          "rank": 20,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 442,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "39",
+          "business_type": "Claim",
+          "rank": 12,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 188,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "41",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.5087403079104241,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "44",
+          "business_type": "상품",
+          "rank": 21,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1075,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "45",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "46",
+          "business_type": "상품",
+          "rank": 10,
+          "ndcg": 0.06362078819895171,
+          "budget_hit": 0,
+          "l_star": 222,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "47",
+          "business_type": "상품",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 283,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "48",
+          "business_type": "상품",
+          "rank": 9,
+          "ndcg": 0.06625422345438903,
+          "budget_hit": 0,
+          "l_star": 285,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "49",
+          "business_type": "상품",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 239,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "50",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "51",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "52",
+          "business_type": "상품",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 461,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "53",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.8315546295836225,
+          "budget_hit": 1,
+          "l_star": 22,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "56",
+          "business_type": "상품",
+          "rank": 76,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2015,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "60",
+          "business_type": "상품",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 458,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "61",
+          "business_type": "상품",
+          "rank": 3,
+          "ndcg": 0.28323251649726616,
+          "budget_hit": 1,
+          "l_star": 65,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "65",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "70",
+          "business_type": "상품",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 183,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "73",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "76",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.2960819109658652,
+          "budget_hit": 1,
+          "l_star": 73,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "77",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "78",
+          "business_type": "상품",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 343,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "83",
+          "business_type": "상품",
+          "rank": 54,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1364,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "85",
+          "business_type": "상품",
+          "rank": 5,
+          "ndcg": 0.23719771276929622,
+          "budget_hit": 1,
+          "l_star": 96,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "91",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.3589542101716347,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "96",
+          "business_type": "상품",
+          "rank": 63,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1446,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "98",
+          "business_type": "상품",
+          "rank": 76,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2500,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "108",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "111",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "115",
+          "business_type": "상품",
+          "rank": 37,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 888,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "119",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 9,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "120",
+          "business_type": "상품",
+          "rank": 3,
+          "ndcg": 0.23535109180711325,
+          "budget_hit": 1,
+          "l_star": 76,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "121",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 27,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "124",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.3903800499921017,
+          "budget_hit": 1,
+          "l_star": 23,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "129",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "138",
+          "business_type": "고객상담",
+          "rank": 48,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1087,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "139",
+          "business_type": "고객상담",
+          "rank": 46,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 903,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "140",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "144",
+          "business_type": "고객상담",
+          "rank": 45,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 774,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "145",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "146",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 44,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "148",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 29,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "150",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.16812753627111746,
+          "budget_hit": 1,
+          "l_star": 69,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "157",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.4362932381209216,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "161",
+          "business_type": "고객상담",
+          "rank": 32,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 773,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "163",
+          "business_type": "고객상담",
+          "rank": 88,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1777,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "164",
+          "business_type": "고객상담",
+          "rank": 6,
+          "ndcg": 0.10778915452451095,
+          "budget_hit": 0,
+          "l_star": 138,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "165",
+          "business_type": "고객상담",
+          "rank": 32,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 650,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "166",
+          "business_type": "고객상담",
+          "rank": 49,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1342,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "167",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.6578986223737446,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "172",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "175",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 6,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "176",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 23,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "177",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.09478836436955078,
+          "budget_hit": 1,
+          "l_star": 45,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "179",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "181",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "182",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 80,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "183",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.9098999913476322,
+          "budget_hit": 1,
+          "l_star": 11,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "184",
+          "business_type": "고객상담",
+          "rank": 10,
+          "ndcg": 0.07311683844390995,
+          "budget_hit": 0,
+          "l_star": 106,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "186",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "189",
+          "business_type": "고객상담",
+          "rank": 21,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 447,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "191",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.2640681225725909,
+          "budget_hit": 1,
+          "l_star": 56,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "193",
+          "business_type": "고객상담",
+          "rank": 30,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 838,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "194",
+          "business_type": "고객상담",
+          "rank": 7,
+          "ndcg": 0.3333333333333333,
+          "budget_hit": 0,
+          "l_star": 135,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "195",
+          "business_type": "고객상담",
+          "rank": 51,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 997,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "196",
+          "business_type": "고객상담",
+          "rank": 54,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 815,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "197",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.5654495432396527,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "199",
+          "business_type": "고객상담",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 207,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "200",
+          "business_type": "고객상담",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 160,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "201",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.3853585682515056,
+          "budget_hit": 1,
+          "l_star": 28,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "204",
+          "business_type": "고객상담",
+          "rank": 39,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 873,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "205",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.3900741276002217,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "206",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.47087795603961946,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "207",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "211",
+          "business_type": "고객상담",
+          "rank": 5,
+          "ndcg": 0.38685280723454163,
+          "budget_hit": 1,
+          "l_star": 59,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "212",
+          "business_type": "고객상담",
+          "rank": 47,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1111,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "213",
+          "business_type": "고객상담",
+          "rank": 5,
+          "ndcg": 0.13120507751234178,
+          "budget_hit": 1,
+          "l_star": 96,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "214",
+          "business_type": "고객상담",
+          "rank": 81,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1402,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "217",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "222",
+          "business_type": "고객상담",
+          "rank": 22,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 370,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "223",
+          "business_type": "고객상담",
+          "rank": 69,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1458,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "224",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "226",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.15130120674940675,
+          "budget_hit": 1,
+          "l_star": 63,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "227",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.11004588314904008,
+          "budget_hit": 1,
+          "l_star": 35,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "230",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "231",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 0.31488013066763093,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "233",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "235",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 0.3187704634136789,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "236",
+          "business_type": "LICO",
+          "rank": 44,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 681,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "237",
+          "business_type": "LICO",
+          "rank": 19,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 494,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "238",
+          "business_type": "LICO",
+          "rank": 75,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1442,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "240",
+          "business_type": "LICO",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 44,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "242",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "244",
+          "business_type": "LICO",
+          "rank": 50,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 730,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "245",
+          "business_type": "LICO",
+          "rank": 5,
+          "ndcg": 0.47084972088011423,
+          "budget_hit": 1,
+          "l_star": 117,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "247",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "248",
+          "business_type": "LICO",
+          "rank": 21,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 495,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "249",
+          "business_type": "LICO",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 257,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "251",
+          "business_type": "LICO",
+          "rank": 62,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1010,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "255",
+          "business_type": "LICO",
+          "rank": 5,
+          "ndcg": 0.15101961822780524,
+          "budget_hit": 1,
+          "l_star": 91,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "256",
+          "business_type": "LICO",
+          "rank": 42,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 859,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "258",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 0.6941911863804712,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "259",
+          "business_type": "LICO",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 261,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "261",
+          "business_type": "LICO",
+          "rank": 6,
+          "ndcg": 0.21840743681816419,
+          "budget_hit": 0,
+          "l_star": 85,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "263",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "264",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "271",
+          "business_type": "LICO",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "275",
+          "business_type": "LICO",
+          "rank": 84,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1114,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "284",
+          "business_type": "챗봇",
+          "rank": 4,
+          "ndcg": 0.2247194739855928,
+          "budget_hit": 1,
+          "l_star": 70,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "286",
+          "business_type": "챗봇",
+          "rank": 1,
+          "ndcg": 0.42838543210841196,
+          "budget_hit": 1,
+          "l_star": 11,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "289",
+          "business_type": "챗봇",
+          "rank": 3,
+          "ndcg": 0.36632433461048963,
+          "budget_hit": 1,
+          "l_star": 33,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "290",
+          "business_type": "챗봇",
+          "rank": 4,
+          "ndcg": 0.17957712468379533,
+          "budget_hit": 1,
+          "l_star": 38,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "291",
+          "business_type": "챗봇",
+          "rank": 33,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 656,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "292",
+          "business_type": "챗봇",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 489,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "297",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "299",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "300",
+          "business_type": "챗봇",
+          "rank": 9,
+          "ndcg": 0.10209739512291163,
+          "budget_hit": 0,
+          "l_star": 115,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "307",
+          "business_type": "챗봇",
+          "rank": 59,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1556,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "309",
+          "business_type": "챗봇",
+          "rank": 89,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2936,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "310",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "317",
+          "business_type": "챗봇",
+          "rank": 7,
+          "ndcg": 0.15642624200758548,
+          "budget_hit": 0,
+          "l_star": 100,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "319",
+          "business_type": "챗봇",
+          "rank": 7,
+          "ndcg": 0.3333333333333333,
+          "budget_hit": 0,
+          "l_star": 166,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "321",
+          "business_type": "챗봇",
+          "rank": 1,
+          "ndcg": 0.7653606369886217,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "324",
+          "business_type": "챗봇",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 192,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "325",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "328",
+          "business_type": "챗봇",
+          "rank": 22,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 425,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "332",
+          "business_type": "챗봇",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 27,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "335",
+          "business_type": "챗봇",
+          "rank": 68,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1400,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "336",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "338",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "342",
+          "business_type": "챗봇",
+          "rank": 68,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1400,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "343",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "344",
+          "business_type": "챗봇",
+          "rank": 24,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 374,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "345",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "350",
+          "business_type": "챗봇",
+          "rank": 10,
+          "ndcg": 0.07945707943276742,
+          "budget_hit": 0,
+          "l_star": 201,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "353",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "356",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "359",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "360",
+          "business_type": "문서커버리지",
+          "rank": 23,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 463,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "361",
+          "business_type": "문서커버리지",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "362",
+          "business_type": "문서커버리지",
+          "rank": 26,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 361,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "363",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.11838279295536293,
+          "budget_hit": 1,
+          "l_star": 23,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "364",
+          "business_type": "문서커버리지",
+          "rank": 60,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1010,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "365",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.4697368900553819,
+          "budget_hit": 1,
+          "l_star": 46,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "366",
+          "business_type": "문서커버리지",
+          "rank": 19,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 420,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "367",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.3794140541514857,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "368",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.2350455494144854,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "371",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.38356636737133565,
+          "budget_hit": 1,
+          "l_star": 18,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "372",
+          "business_type": "문서커버리지",
+          "rank": 34,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 484,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "373",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.37138978232323294,
+          "budget_hit": 1,
+          "l_star": 8,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "378",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.3638242329768377,
+          "budget_hit": 1,
+          "l_star": 103,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "379",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.9178287402913374,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "380",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "382",
+          "business_type": "문서커버리지",
+          "rank": 63,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1134,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "387",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 47,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "389",
+          "business_type": "문서커버리지",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "390",
+          "business_type": "문서커버리지",
+          "rank": 8,
+          "ndcg": 0.19342640361727081,
+          "budget_hit": 0,
+          "l_star": 154,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "391",
+          "business_type": "문서커버리지",
+          "rank": 7,
+          "ndcg": 0.20438239758848611,
+          "budget_hit": 0,
+          "l_star": 120,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "396",
+          "business_type": "문서커버리지",
+          "rank": 16,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 287,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "398",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "399",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "412",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "413",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6934264036172708,
+          "budget_hit": 1,
+          "l_star": 6,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "415",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 29,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "416",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "417",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "419",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "420",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "421",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "424",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 63,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "425",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "428",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "434",
+          "business_type": "문서커버리지",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "435",
+          "business_type": "문서커버리지",
+          "rank": 25,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 406,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "436",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "454",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "455",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "464",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 49,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "465",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 24,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "467",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "474",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.2640681225725909,
+          "budget_hit": 1,
+          "l_star": 61,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "475",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.9197207891481876,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "482",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "483",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "486",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "489",
+          "business_type": "문서커버리지",
+          "rank": 24,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 175,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "490",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 59,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "491",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "492",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.75369761125927,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "493",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6096199500078984,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "500",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 25,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "501",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "502",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 8,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "504",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 63,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "508",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "509",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "522",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.6422813708518126,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "523",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.6207412960974641,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "526",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "527",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "528",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 67,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "549",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "556",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.5912352048230277,
+          "budget_hit": 1,
+          "l_star": 6,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "558",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "559",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 7,
+          "n_candidates": 5036
+        }
+      ],
+      "unresolved_ids": {},
+      "ranked_list_depth": 100,
+      "by_business": {
+        "Claim": {
+          "recall@1": 0.25,
+          "recall@5": 0.4375,
+          "recall@10": 0.5625,
+          "recall@20": 0.6875,
+          "recall@50": 0.75,
+          "recall@100": 0.9375,
+          "mrr@10": 0.3516,
+          "ndcg@10": 0.3211,
+          "recall@3000chars": 0.4375,
+          "found_pct": 93.8,
+          "n": 16,
+          "l_star_median": 170,
+          "l_star_n": 15,
+          "l_star_excluded_no_gold": 1
+        },
+        "LICO": {
+          "recall@1": 0.1667,
+          "recall@5": 0.3333,
+          "recall@10": 0.375,
+          "recall@20": 0.5,
+          "recall@50": 0.6667,
+          "recall@100": 0.7917,
+          "mrr@10": 0.225,
+          "ndcg@10": 0.1791,
+          "recall@3000chars": 0.3333,
+          "found_pct": 79.2,
+          "n": 24,
+          "l_star_median": 257,
+          "l_star_n": 19,
+          "l_star_excluded_no_gold": 5
+        },
+        "고객상담": {
+          "recall@1": 0.1837,
+          "recall@5": 0.4286,
+          "recall@10": 0.4898,
+          "recall@20": 0.5306,
+          "recall@50": 0.7551,
+          "recall@100": 0.8571,
+          "mrr@10": 0.2699,
+          "ndcg@10": 0.2271,
+          "recall@3000chars": 0.4286,
+          "found_pct": 85.7,
+          "n": 49,
+          "l_star_median": 101.0,
+          "l_star_n": 42,
+          "l_star_excluded_no_gold": 7
+        },
+        "문서커버리지": {
+          "recall@1": 0.4179,
+          "recall@5": 0.791,
+          "recall@10": 0.8209,
+          "recall@20": 0.8507,
+          "recall@50": 0.9254,
+          "recall@100": 0.9552,
+          "mrr@10": 0.5761,
+          "ndcg@10": 0.5767,
+          "recall@3000chars": 0.791,
+          "found_pct": 95.5,
+          "n": 67,
+          "l_star_median": 13.0,
+          "l_star_n": 64,
+          "l_star_excluded_no_gold": 3
+        },
+        "상품": {
+          "recall@1": 0.125,
+          "recall@5": 0.2812,
+          "recall@10": 0.3438,
+          "recall@20": 0.5312,
+          "recall@50": 0.5938,
+          "recall@100": 0.7188,
+          "mrr@10": 0.1899,
+          "ndcg@10": 0.1373,
+          "recall@3000chars": 0.2812,
+          "found_pct": 71.9,
+          "n": 32,
+          "l_star_median": 239,
+          "l_star_n": 23,
+          "l_star_excluded_no_gold": 9
+        },
+        "챗봇": {
+          "recall@1": 0.0667,
+          "recall@5": 0.2,
+          "recall@10": 0.3333,
+          "recall@20": 0.4,
+          "recall@50": 0.5,
+          "recall@100": 0.6333,
+          "mrr@10": 0.1221,
+          "ndcg@10": 0.1045,
+          "recall@3000chars": 0.2,
+          "found_pct": 63.3,
+          "n": 30,
+          "l_star_median": 192,
+          "l_star_n": 19,
+          "l_star_excluded_no_gold": 11
+        }
+      }
+    },
+    "run_fixed633no_A6_HIER2_dense.jsonl": {
+      "overall": {
+        "recall@1": 0.2844,
+        "recall@5": 0.5275,
+        "recall@10": 0.5963,
+        "recall@20": 0.711,
+        "recall@50": 0.7936,
+        "recall@100": 0.8532,
+        "mrr@10": 0.3873,
+        "ndcg@10": 0.3594,
+        "recall@3000chars": 0.5275,
+        "found_pct": 85.3,
+        "n": 218,
+        "l_star_median": 44.5,
+        "l_star_n": 186,
+        "l_star_excluded_no_gold": 32
+      },
+      "per_query": [
+        {
+          "qid": "4",
+          "business_type": "Claim",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "8",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "9",
+          "business_type": "Claim",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 16,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "10",
+          "business_type": "Claim",
+          "rank": 62,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1867,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "17",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.644824486427155,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "18",
+          "business_type": "Claim",
+          "rank": 72,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2443,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "21",
+          "business_type": "Claim",
+          "rank": 20,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 601,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "22",
+          "business_type": "Claim",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 106,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "24",
+          "business_type": "Claim",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 28,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "25",
+          "business_type": "Claim",
+          "rank": 4,
+          "ndcg": 0.5012658353418871,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "30",
+          "business_type": "Claim",
+          "rank": 2,
+          "ndcg": 0.30701473034246535,
+          "budget_hit": 1,
+          "l_star": 28,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "33",
+          "business_type": "Claim",
+          "rank": 5,
+          "ndcg": 0.3379680345449381,
+          "budget_hit": 1,
+          "l_star": 151,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "34",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.8772153153380493,
+          "budget_hit": 1,
+          "l_star": 26,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "35",
+          "business_type": "Claim",
+          "rank": 6,
+          "ndcg": 0.21840743681816419,
+          "budget_hit": 0,
+          "l_star": 144,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "39",
+          "business_type": "Claim",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 214,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "41",
+          "business_type": "Claim",
+          "rank": 1,
+          "ndcg": 0.5730249097309823,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "44",
+          "business_type": "상품",
+          "rank": 5,
+          "ndcg": 0.08514311764162098,
+          "budget_hit": 1,
+          "l_star": 123,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "45",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "46",
+          "business_type": "상품",
+          "rank": 7,
+          "ndcg": 0.07336392209936005,
+          "budget_hit": 0,
+          "l_star": 196,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "47",
+          "business_type": "상품",
+          "rank": 24,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 502,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "48",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "49",
+          "business_type": "상품",
+          "rank": 8,
+          "ndcg": 0.13305201013572898,
+          "budget_hit": 0,
+          "l_star": 167,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "50",
+          "business_type": "상품",
+          "rank": 38,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1152,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "51",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "52",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.38685280723454163,
+          "budget_hit": 1,
+          "l_star": 32,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "53",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.6131471927654584,
+          "budget_hit": 1,
+          "l_star": 22,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "56",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "60",
+          "business_type": "상품",
+          "rank": 59,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1603,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "61",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.47938213678331176,
+          "budget_hit": 1,
+          "l_star": 32,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "65",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "70",
+          "business_type": "상품",
+          "rank": 27,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 526,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "73",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "76",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.2960819109658652,
+          "budget_hit": 1,
+          "l_star": 73,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "77",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "78",
+          "business_type": "상품",
+          "rank": 2,
+          "ndcg": 0.13886244387355454,
+          "budget_hit": 1,
+          "l_star": 47,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "83",
+          "business_type": "상품",
+          "rank": 16,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 479,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "85",
+          "business_type": "상품",
+          "rank": 7,
+          "ndcg": 0.20438239758848611,
+          "budget_hit": 0,
+          "l_star": 130,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "91",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.5867945846769145,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "96",
+          "business_type": "상품",
+          "rank": 35,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 614,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "98",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "108",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "111",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "115",
+          "business_type": "상품",
+          "rank": 81,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1953,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "119",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.9197207891481876,
+          "budget_hit": 1,
+          "l_star": 9,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "120",
+          "business_type": "상품",
+          "rank": 3,
+          "ndcg": 0.2558209594125084,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "121",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 23,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "124",
+          "business_type": "상품",
+          "rank": 1,
+          "ndcg": 0.3903800499921017,
+          "budget_hit": 1,
+          "l_star": 23,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "129",
+          "business_type": "상품",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "138",
+          "business_type": "고객상담",
+          "rank": 92,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 2068,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "139",
+          "business_type": "고객상담",
+          "rank": 29,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 517,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "140",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "144",
+          "business_type": "고객상담",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 371,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "145",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "146",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 44,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "148",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 29,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "150",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.3903800499921017,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "157",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.34954491927658526,
+          "budget_hit": 1,
+          "l_star": 18,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "161",
+          "business_type": "고객상담",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 373,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "163",
+          "business_type": "고객상담",
+          "rank": 46,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 964,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "164",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.4034438924063655,
+          "budget_hit": 1,
+          "l_star": 26,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "165",
+          "business_type": "고객상담",
+          "rank": 41,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 713,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "166",
+          "business_type": "고객상담",
+          "rank": 42,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1112,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "167",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.7084409501232899,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "172",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "175",
+          "business_type": "고객상담",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 68,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "176",
+          "business_type": "고객상담",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 71,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "177",
+          "business_type": "고객상담",
+          "rank": 13,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 201,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "179",
+          "business_type": "고객상담",
+          "rank": 68,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1022,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "181",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "182",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 49,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "183",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.8881917374298554,
+          "budget_hit": 1,
+          "l_star": 11,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "184",
+          "business_type": "고객상담",
+          "rank": 15,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 171,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "186",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 24,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "189",
+          "business_type": "고객상담",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 443,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "191",
+          "business_type": "고객상담",
+          "rank": 8,
+          "ndcg": 0.19342640361727081,
+          "budget_hit": 0,
+          "l_star": 129,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "193",
+          "business_type": "고객상담",
+          "rank": 27,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 568,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "194",
+          "business_type": "고객상담",
+          "rank": 5,
+          "ndcg": 0.38685280723454163,
+          "budget_hit": 1,
+          "l_star": 93,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "195",
+          "business_type": "고객상담",
+          "rank": 37,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 644,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "196",
+          "business_type": "고객상담",
+          "rank": 50,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 819,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "197",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.6124254077907308,
+          "budget_hit": 1,
+          "l_star": 5,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "199",
+          "business_type": "고객상담",
+          "rank": 6,
+          "ndcg": 0.07839826897867533,
+          "budget_hit": 0,
+          "l_star": 104,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "200",
+          "business_type": "고객상담",
+          "rank": 9,
+          "ndcg": 0.11751610475642714,
+          "budget_hit": 0,
+          "l_star": 122,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "201",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.6165954389682339,
+          "budget_hit": 1,
+          "l_star": 43,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "204",
+          "business_type": "고객상담",
+          "rank": 16,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 285,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "205",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.41039156802332444,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "206",
+          "business_type": "고객상담",
+          "rank": 1,
+          "ndcg": 0.5750141699769518,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "207",
+          "business_type": "고객상담",
+          "rank": 17,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 660,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "211",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 21,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "212",
+          "business_type": "고객상담",
+          "rank": 9,
+          "ndcg": 0.09109240322345807,
+          "budget_hit": 0,
+          "l_star": 125,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "213",
+          "business_type": "고객상담",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 194,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "214",
+          "business_type": "고객상담",
+          "rank": 42,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 690,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "217",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "222",
+          "business_type": "고객상담",
+          "rank": 5,
+          "ndcg": 0.38685280723454163,
+          "budget_hit": 1,
+          "l_star": 52,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "223",
+          "business_type": "고객상담",
+          "rank": 2,
+          "ndcg": 0.21398626473452756,
+          "budget_hit": 1,
+          "l_star": 28,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "224",
+          "business_type": "고객상담",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "226",
+          "business_type": "고객상담",
+          "rank": 3,
+          "ndcg": 0.2683637998873703,
+          "budget_hit": 1,
+          "l_star": 63,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "227",
+          "business_type": "고객상담",
+          "rank": 9,
+          "ndcg": 0.06625422345438903,
+          "budget_hit": 0,
+          "l_star": 206,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "230",
+          "business_type": "LICO",
+          "rank": 83,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1643,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "231",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 0.3589542101716347,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "233",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "235",
+          "business_type": "LICO",
+          "rank": 2,
+          "ndcg": 0.2162406314884399,
+          "budget_hit": 1,
+          "l_star": 18,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "236",
+          "business_type": "LICO",
+          "rank": 46,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 753,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "237",
+          "business_type": "LICO",
+          "rank": 2,
+          "ndcg": 0.5154852515822061,
+          "budget_hit": 1,
+          "l_star": 28,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "238",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "240",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 29,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "242",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "244",
+          "business_type": "LICO",
+          "rank": 69,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 958,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "245",
+          "business_type": "LICO",
+          "rank": 5,
+          "ndcg": 0.34870224750355494,
+          "budget_hit": 0,
+          "l_star": 55,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "247",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "248",
+          "business_type": "LICO",
+          "rank": 12,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 317,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "249",
+          "business_type": "LICO",
+          "rank": 8,
+          "ndcg": 0.06943122193677727,
+          "budget_hit": 0,
+          "l_star": 139,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "251",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "255",
+          "business_type": "LICO",
+          "rank": 4,
+          "ndcg": 0.16812753627111746,
+          "budget_hit": 1,
+          "l_star": 41,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "256",
+          "business_type": "LICO",
+          "rank": 12,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 281,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "258",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 0.9705437052559006,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "259",
+          "business_type": "LICO",
+          "rank": 5,
+          "ndcg": 0.23719771276929622,
+          "budget_hit": 1,
+          "l_star": 62,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "261",
+          "business_type": "LICO",
+          "rank": 19,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 269,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "263",
+          "business_type": "LICO",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "264",
+          "business_type": "LICO",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "271",
+          "business_type": "LICO",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 21,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "275",
+          "business_type": "LICO",
+          "rank": 58,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 964,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "284",
+          "business_type": "챗봇",
+          "rank": 1,
+          "ndcg": 0.6730234638881232,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "286",
+          "business_type": "챗봇",
+          "rank": 6,
+          "ndcg": 0.1478294909154526,
+          "budget_hit": 0,
+          "l_star": 128,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "289",
+          "business_type": "챗봇",
+          "rank": 2,
+          "ndcg": 0.30617075985441716,
+          "budget_hit": 1,
+          "l_star": 26,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "290",
+          "business_type": "챗봇",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 171,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "291",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "292",
+          "business_type": "챗봇",
+          "rank": 14,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 364,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "297",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "299",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "300",
+          "business_type": "챗봇",
+          "rank": 4,
+          "ndcg": 0.26687965254220064,
+          "budget_hit": 1,
+          "l_star": 45,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "307",
+          "business_type": "챗봇",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 601,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "309",
+          "business_type": "챗봇",
+          "rank": 21,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 684,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "310",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "317",
+          "business_type": "챗봇",
+          "rank": 1,
+          "ndcg": 0.46927872602275644,
+          "budget_hit": 1,
+          "l_star": 9,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "319",
+          "business_type": "챗봇",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 16,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "321",
+          "business_type": "챗봇",
+          "rank": 1,
+          "ndcg": 0.7653606369886217,
+          "budget_hit": 1,
+          "l_star": 9,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "324",
+          "business_type": "챗봇",
+          "rank": 8,
+          "ndcg": 0.1480409554829326,
+          "budget_hit": 0,
+          "l_star": 256,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "325",
+          "business_type": "챗봇",
+          "rank": 84,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1804,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "328",
+          "business_type": "챗봇",
+          "rank": 20,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 393,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "332",
+          "business_type": "챗봇",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 67,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "335",
+          "business_type": "챗봇",
+          "rank": 95,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1841,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "336",
+          "business_type": "챗봇",
+          "rank": 2,
+          "ndcg": 0.6934264036172708,
+          "budget_hit": 1,
+          "l_star": 10,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "338",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "342",
+          "business_type": "챗봇",
+          "rank": 95,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1841,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "343",
+          "business_type": "챗봇",
+          "rank": 2,
+          "ndcg": 0.6934264036172708,
+          "budget_hit": 1,
+          "l_star": 10,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "344",
+          "business_type": "챗봇",
+          "rank": 20,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 396,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "345",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "350",
+          "business_type": "챗봇",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 170,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "353",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "356",
+          "business_type": "챗봇",
+          "rank": 71,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 1247,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "359",
+          "business_type": "챗봇",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "360",
+          "business_type": "문서커버리지",
+          "rank": 18,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 351,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "361",
+          "business_type": "문서커버리지",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "362",
+          "business_type": "문서커버리지",
+          "rank": 12,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 171,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "363",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.11838279295536293,
+          "budget_hit": 1,
+          "l_star": 30,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "364",
+          "business_type": "문서커버리지",
+          "rank": 28,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 567,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "365",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.5072380780124417,
+          "budget_hit": 1,
+          "l_star": 46,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "366",
+          "business_type": "문서커버리지",
+          "rank": 21,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 557,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "367",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.3794140541514857,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "368",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.30919416469956,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "371",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.48522855511632257,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "372",
+          "business_type": "문서커버리지",
+          "rank": 24,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 441,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "373",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.2918104499436024,
+          "budget_hit": 1,
+          "l_star": 8,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "378",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.394170453792913,
+          "budget_hit": 1,
+          "l_star": 66,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "379",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "380",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "382",
+          "business_type": "문서커버리지",
+          "rank": 11,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 200,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "387",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.43067655807339306,
+          "budget_hit": 1,
+          "l_star": 64,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "389",
+          "business_type": "문서커버리지",
+          "rank": null,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": null,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "390",
+          "business_type": "문서커버리지",
+          "rank": 7,
+          "ndcg": 0.20438239758848611,
+          "budget_hit": 0,
+          "l_star": 133,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "391",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.448643819352159,
+          "budget_hit": 1,
+          "l_star": 79,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "396",
+          "business_type": "문서커버리지",
+          "rank": 6,
+          "ndcg": 0.3562071871080222,
+          "budget_hit": 1,
+          "l_star": 89,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "398",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 16,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "399",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "412",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 13,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "413",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5706417189553201,
+          "budget_hit": 1,
+          "l_star": 31,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "415",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 29,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "416",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "417",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "419",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "420",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "421",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "424",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "425",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "428",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "434",
+          "business_type": "문서커버리지",
+          "rank": 27,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 630,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "435",
+          "business_type": "문서커버리지",
+          "rank": 5,
+          "ndcg": 0.38685280723454163,
+          "budget_hit": 1,
+          "l_star": 111,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "436",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 26,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "454",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "455",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "464",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 18,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "465",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 18,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "467",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 17,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "474",
+          "business_type": "문서커버리지",
+          "rank": 5,
+          "ndcg": 0.4415801103577823,
+          "budget_hit": 1,
+          "l_star": 96,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "475",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "482",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "483",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "486",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "489",
+          "business_type": "문서커버리지",
+          "rank": 12,
+          "ndcg": 0.0,
+          "budget_hit": 0,
+          "l_star": 167,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "490",
+          "business_type": "문서커버리지",
+          "rank": 7,
+          "ndcg": 0.3333333333333333,
+          "budget_hit": 0,
+          "l_star": 152,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "491",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "492",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.7365896932159578,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "493",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.7757386182436072,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "500",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 15,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "501",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "502",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 4,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "504",
+          "business_type": "문서커버리지",
+          "rank": 2,
+          "ndcg": 0.6309297535714575,
+          "budget_hit": 1,
+          "l_star": 55,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "508",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "509",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "522",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.5135312443624667,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "523",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 0.6816587806335841,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "526",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "527",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 1,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "528",
+          "business_type": "문서커버리지",
+          "rank": 3,
+          "ndcg": 0.5,
+          "budget_hit": 1,
+          "l_star": 59,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "549",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "556",
+          "business_type": "문서커버리지",
+          "rank": 4,
+          "ndcg": 0.48247555939075504,
+          "budget_hit": 1,
+          "l_star": 40,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "558",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        },
+        {
+          "qid": "559",
+          "business_type": "문서커버리지",
+          "rank": 1,
+          "ndcg": 1.0,
+          "budget_hit": 1,
+          "l_star": 3,
+          "n_candidates": 5036
+        }
+      ],
+      "unresolved_ids": {},
+      "ranked_list_depth": 100,
+      "by_business": {
+        "Claim": {
+          "recall@1": 0.25,
+          "recall@5": 0.6875,
+          "recall@10": 0.75,
+          "recall@20": 0.875,
+          "recall@50": 0.875,
+          "recall@100": 1.0,
+          "mrr@10": 0.4188,
+          "ndcg@10": 0.4158,
+          "recall@3000chars": 0.6875,
+          "found_pct": 100.0,
+          "n": 16,
+          "l_star_median": 30.0,
+          "l_star_n": 16,
+          "l_star_excluded_no_gold": 0
+        },
+        "LICO": {
+          "recall@1": 0.1667,
+          "recall@5": 0.4167,
+          "recall@10": 0.4583,
+          "recall@20": 0.5833,
+          "recall@50": 0.625,
+          "recall@100": 0.75,
+          "mrr@10": 0.2615,
+          "ndcg@10": 0.2298,
+          "recall@3000chars": 0.375,
+          "found_pct": 75.0,
+          "n": 24,
+          "l_star_median": 58.5,
+          "l_star_n": 18,
+          "l_star_excluded_no_gold": 6
+        },
+        "고객상담": {
+          "recall@1": 0.1429,
+          "recall@5": 0.4082,
+          "recall@10": 0.5102,
+          "recall@20": 0.6939,
+          "recall@50": 0.8571,
+          "recall@100": 0.898,
+          "mrr@10": 0.2573,
+          "ndcg@10": 0.2337,
+          "recall@3000chars": 0.4082,
+          "found_pct": 89.8,
+          "n": 49,
+          "l_star_median": 113.0,
+          "l_star_n": 44,
+          "l_star_excluded_no_gold": 5
+        },
+        "문서커버리지": {
+          "recall@1": 0.5821,
+          "recall@5": 0.806,
+          "recall@10": 0.8507,
+          "recall@20": 0.9104,
+          "recall@50": 0.9701,
+          "recall@100": 0.9701,
+          "mrr@10": 0.6719,
+          "ndcg@10": 0.6548,
+          "recall@3000chars": 0.8209,
+          "found_pct": 97.0,
+          "n": 67,
+          "l_star_median": 13,
+          "l_star_n": 65,
+          "l_star_excluded_no_gold": 2
+        },
+        "상품": {
+          "recall@1": 0.1562,
+          "recall@5": 0.3438,
+          "recall@10": 0.4375,
+          "recall@20": 0.4688,
+          "recall@50": 0.5938,
+          "recall@100": 0.6562,
+          "mrr@10": 0.2483,
+          "ndcg@10": 0.1738,
+          "recall@3000chars": 0.3438,
+          "found_pct": 65.6,
+          "n": 32,
+          "l_star_median": 123,
+          "l_star_n": 21,
+          "l_star_excluded_no_gold": 11
+        },
+        "챗봇": {
+          "recall@1": 0.1,
+          "recall@5": 0.3,
+          "recall@10": 0.3667,
+          "recall@20": 0.5667,
+          "recall@50": 0.6,
+          "recall@100": 0.7333,
+          "mrr@10": 0.1958,
+          "ndcg@10": 0.1765,
+          "recall@3000chars": 0.3,
+          "found_pct": 73.3,
+          "n": 30,
+          "l_star_median": 170.5,
+          "l_star_n": 22,
+          "l_star_excluded_no_gold": 8
+        }
+      }
+    }
+  }
+}

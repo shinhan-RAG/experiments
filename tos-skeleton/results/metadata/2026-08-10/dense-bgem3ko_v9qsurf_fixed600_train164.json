@@ -1,0 +1,116 @@
+{
+  "config_id": "dense-bgem3ko_v9qsurf_fixed600_train164",
+  "date": "2026-08-10",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "11ece481cccacca4cc5353c5f60513d7c3e0ac39c1107a3e7febe7e617d5b36f",
+    "code_commit": "edf076c35b5c3a30d0d0bcf21fc68b5318254388",
+    "two_pass_sha": "e369f355"
+  },
+  "population": {
+    "name": "train164",
+    "n": 164
+  },
+  "config": {
+    "target": "청크가 답이 되는 질문을 층위별로 3층(범주 질문 / 구체 질문 / 고객 구어체 표현)으로 투영한 문자열. 조각을 서술하지 않고 조각에 물어볼 수 있는 것만 적는다.",
+    "method": "gpt-5.4-mini(codex CLI, model_reasoning_effort=low, --output-schema 강제, 20청크 배치)가 3필드를 전부 생성 — v8(형제 대조 생성, 2026-08-10 등록)과 동일한 생성 모델·전송 계층(v9 vs v8 비교에서는 스키마 1요인만 다름). 정규식 필드 0개, LLM 100% 생성. `--variant pure`(구조 컨텍스트 미제공, 본문 최대 2,400자만). 배치는 전송 최적화일 뿐 형제 대조 지시는 없다(v8의 대조 생성과 다름). 240자 예산 prefix 배치, dense 단일 벡터. `wide`는 형제와 공유되어도 허용하고 `narrow`의 본문 그라운딩은 강제하지 않고 측정만 한다. 주의: as-is(v6, J2_JSONPURE)는 claude-sonnet으로 생성됐으므로 v9 vs as-is 비교는 스키마·모델이 동시에 다른 2요인 비교다(스키마 1요인 아님).",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5287,
+      "ratio": 0.991,
+      "distinct_values": 5195
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9786,
+      "max_collision": 20
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2744,
+    "R@5": 0.5427,
+    "R@10": 0.622,
+    "R@20": 0.6707,
+    "R@50": 0.7622,
+    "R@100": 0.8537,
+    "MRR@10": 0.3889,
+    "L_star_median": 45.5
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0094,
+      "seeds": 100,
+      "min": 0.0,
+      "max": 0.0488,
+      "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V9_QSURF_dense.jsonl의 기존 랭킹을 재채점. n=164질의, 항등 순열 거부."
+    },
+    "random_vector": {
+      "value": 0.0026,
+      "seeds": 19,
+      "min": 0.0,
+      "max": 0.0122,
+      "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=164질의(질의벡터 캐시 보유분)."
+    },
+    "constant_dummy": {
+      "value": 0.439,
+      "note": "J1_JSONCTX 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다."
+    },
+    "shuffled_tag": {
+      "value": 0.2561,
+      "seeds": 2,
+      "min": 0.2317,
+      "max": 0.2805,
+      "note": "실존 메타데이터 문자열을 무작위로 다른 청크에 재배정 (시드 20260814, 20260815). 임베딩 비용 때문에 시드 수가 적다."
+    }
+  },
+  "limitations": [
+    "생성 모델이 as-is(J2_JSONPURE, claude-sonnet)와 다르다(codex gpt-5.4-mini). as-is 대비 차이를 스키마 효과로 귀속할 수 없다. 모델이 통제된 비교는 V8_CONTRAST 대비뿐이며 그 결과는 미검출(+2.44%p, p=.5966)이다.",
+    "gpt-5.4-mini는 deprecated 예정 모델이다(대체 gpt-5.6-luna). 재현 시 모델이 사라질 수 있다.",
+    "프롬프트를 한 번 개정한 뒤의 결과다(v9.0 narrow 28자 -> v9.1 40자). 개정은 검색 평가 전에 생성 품질 게이트만 보고 이뤄졌으나, 게이트를 통과할 때까지 고친 구조 자체가 낙관 편향의 원천이다. 상세는 docs/0810/메타데이터_스키마_v9_설계안_20260810.md 5-6.",
+    "청킹이 최선 구성이 아니다. 같은 날 실험에서 겹침 제거만으로 +4.88%p, 구조 경계까지 +9.2%p가 확인됐다. fixed600(겹침 100)에서 재는 것은 실험 1 계열과 비교하기 위해서다.",
+    "절제(별도 family v9_ablation)에서 narrow 단독(.561)이 3층 전체(.543)보다 높았다. 층위 이원화 가설은 지지되지 않았다. narrow 단독은 사후 관찰이므로 확증이 아니다.",
+    "n=164의 MDE는 +5.2~6.3%p다. A0_BASE 대비를 제외한 모든 비교(J2_JSONPURE -0.61%p, A6_HIER2 ±0.0%p, V8_CONTRAST +2.44%p)가 이 아래이므로 우열 불명이다.",
+    "정답셋의 32%(53건)는 단일 청크 검색으로 풀 수 없는 집계·비교·열거·문서외 질문이다. 모든 arm의 점수를 똑같이 끌어내려 비교를 둔하게 만든다.",
+    "정답셋 자체의 기존 결함(350 -> 매칭성공 218, 매칭실패 129)을 그대로 물려받는다.",
+    "원문 마크다운이 2026-08-10 15:39 정제 스크립트로 덮어써졌다(2,757,704자 -> 2,745,041자). 이 결과는 정제 **전** 문서(sha256_16 40a471d54b2ec8c8, .markdown_cleanup_backup/20260810-153936/에 보존)로 만든 청크·gold에서 나온 것이며, 2026-08-07/09/10 등록본 전체와 같은 코퍼스다. 정답셋 CSV는 변경되지 않았다(gold_sha 동일).",
+    "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp."
+  ],
+  "experiment": "v9 질의 층위 스키마 (wide/narrow/terms, LLM 100%, codex gpt-5.4-mini)",
+  "stats": {
+    "eval": "eval_v9_main.json",
+    "baseline": "run_fixed600_A0_BASE_dense.jsonl",
+    "family": "metajson_v9",
+    "family_size": 1,
+    "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+    "rows": [
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5427,
+        "r5_delta_pp": 8.54,
+        "improve": 27,
+        "regress": 13,
+        "mcnemar_p": 0.038477,
+        "mrr_delta": 0.0765,
+        "mrr_bca_ci": [
+          0.0205,
+          0.1317
+        ],
+        "arm": "run_fixed600_V9_QSURF_dense.jsonl",
+        "holm_p": 0.038477,
+        "significant": true
+      }
+    ]
+  },
+  "_source": {
+    "eval": "eval_v9_main.json",
+    "run": "run_fixed600_V9_QSURF_dense.jsonl",
+    "nulls": "nulls_v9.json",
+    "quality": "cards/dense-bgem3ko_v9qsurf_fixed600_train164.json",
+    "stats": "stats_v9_vs_a0.json"
+  }
+}

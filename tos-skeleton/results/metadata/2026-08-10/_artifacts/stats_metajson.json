@@ -1,0 +1,77 @@
+{
+  "eval": "eval_metajson.json",
+  "baseline": "run_fixed600_A0_BASE_dense.jsonl",
+  "family": "metajson_v6",
+  "family_size": 4,
+  "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+  "rows": [
+    {
+      "n": 164,
+      "r5_base": 0.4573,
+      "r5_arm": 0.5366,
+      "r5_delta_pp": 7.93,
+      "improve": 17,
+      "regress": 4,
+      "mcnemar_p": 0.007197,
+      "mrr_delta": 0.0623,
+      "mrr_bca_ci": [
+        0.0224,
+        0.1041
+      ],
+      "arm": "run_fixed600_J1_JSONCTX_dense.jsonl",
+      "holm_p": 0.014394,
+      "significant": true
+    },
+    {
+      "n": 164,
+      "r5_base": 0.4573,
+      "r5_arm": 0.5488,
+      "r5_delta_pp": 9.15,
+      "improve": 19,
+      "regress": 4,
+      "mcnemar_p": 0.002599,
+      "mrr_delta": 0.0567,
+      "mrr_bca_ci": [
+        0.0176,
+        0.0978
+      ],
+      "arm": "run_fixed600_J2_JSONPURE_dense.jsonl",
+      "holm_p": 0.007797,
+      "significant": true
+    },
+    {
+      "n": 164,
+      "r5_base": 0.4573,
+      "r5_arm": 0.5427,
+      "r5_delta_pp": 8.54,
+      "improve": 16,
+      "regress": 2,
+      "mcnemar_p": 0.001312,
+      "mrr_delta": 0.085,
+      "mrr_bca_ci": [
+        0.0469,
+        0.1278
+      ],
+      "arm": "run_fixed600_A6_HIER2_dense.jsonl",
+      "holm_p": 0.005248,
+      "significant": true
+    },
+    {
+      "n": 164,
+      "r5_base": 0.4573,
+      "r5_arm": 0.4207,
+      "r5_delta_pp": -3.66,
+      "improve": 3,
+      "regress": 9,
+      "mcnemar_p": 0.145996,
+      "mrr_delta": -0.0375,
+      "mrr_bca_ci": [
+        -0.0739,
+        -0.0008
+      ],
+      "arm": "run_fixed600_N1_DUMMY_dense.jsonl",
+      "holm_p": 0.145996,
+      "significant": false
+    }
+  ]
+}

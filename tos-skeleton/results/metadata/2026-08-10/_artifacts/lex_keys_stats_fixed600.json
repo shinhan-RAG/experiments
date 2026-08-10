@@ -1,0 +1,21 @@
+{
+  "chunkset": "fixed600",
+  "n_total": 5335,
+  "n_keys_gt0": 5302,
+  "coverage": 0.9938,
+  "field_fill_pct": {
+    "article_no": 95.82,
+    "annex": 44.42,
+    "table_head": 26.15,
+    "codes": 14.34,
+    "amounts": 41.99
+  },
+  "avg_lex_chars": 32.2,
+  "max_lex_chars": 109,
+  "truncated_pct": 0.0,
+  "distinct_lex_text": 2187,
+  "unique_ratio": 0.4125,
+  "max_collision": 212,
+  "lex_budget": 120,
+  "dropped_table_head_address_collision": 45
+}

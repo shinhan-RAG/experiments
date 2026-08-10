@@ -1,0 +1,31 @@
+{
+  "chunkset": "fixed600",
+  "dense_arm": "V7_DENSE",
+  "lex_arm": "V7_KEYS",
+  "g3a_hard_violations": 0,
+  "g3b_hard_violations": 0,
+  "g3c_soft": {
+    "n_compared": 5302,
+    "mean": 0.0097,
+    "median": 0.0,
+    "p95": 0.05,
+    "max": 0.163
+  },
+  "g3c_pass": true,
+  "g3d_dense": {
+    "n_nonempty": 5335,
+    "distinct": 5249,
+    "unique_ratio": 0.9839,
+    "max_collision": 40,
+    "avg_chars": 108.8
+  },
+  "g3d_lex": {
+    "n_nonempty": 5302,
+    "distinct": 2187,
+    "unique_ratio": 0.4125,
+    "max_collision": 212,
+    "avg_chars": 32.2
+  },
+  "samples_a": [],
+  "samples_b": []
+}

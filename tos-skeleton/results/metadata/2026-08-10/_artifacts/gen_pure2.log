@@ -1,0 +1,22 @@
+[pure] 청크 5,335 / 캐시 4,968 / 항법 0 / API 대상 367 → 배치 19개 (batch=20, workers=8, model=sonnet)
+   20/367  0.5/s  ~11.1분 남음  calls=1 fails=0 in=2 out=1,413 cache(c/r)=15,531/20,997 cost=$0.12
+   40/367  1.0/s  ~5.3분 남음  calls=2 fails=0 in=6 out=2,959 cache(c/r)=31,211/78,514 cost=$0.26
+   60/367  1.5/s  ~3.4분 남음  calls=3 fails=0 in=8 out=4,530 cache(c/r)=46,678/99,511 cost=$0.38
+   80/367  1.8/s  ~2.6분 남음  calls=4 fails=0 in=12 out=6,066 cache(c/r)=64,101/158,796 cost=$0.52
+   100/367  2.3/s  ~1.9분 남음  calls=5 fails=0 in=16 out=7,675 cache(c/r)=80,715/217,229 cost=$0.66
+   120/367  2.6/s  ~1.6분 남음  calls=6 fails=0 in=20 out=9,411 cache(c/r)=96,329/274,598 cost=$0.80
+   140/367  3.0/s  ~1.3분 남음  calls=7 fails=0 in=24 out=10,885 cache(c/r)=114,642/334,759 cost=$0.95
+   160/367  3.2/s  ~1.1분 남음  calls=8 fails=0 in=28 out=12,465 cache(c/r)=132,288/394,220 cost=$1.10
+   180/367  2.8/s  ~1.1분 남음  calls=9 fails=0 in=30 out=14,176 cache(c/r)=147,994/415,217 cost=$1.23
+   200/367  3.1/s  ~0.9분 남음  calls=10 fails=0 in=34 out=15,767 cache(c/r)=165,691/474,242 cost=$1.37
+   220/367  2.9/s  ~0.8분 남음  calls=11 fails=0 in=38 out=17,332 cache(c/r)=180,393/530,781 cost=$1.50
+   240/367  3.2/s  ~0.7분 남음  calls=12 fails=0 in=42 out=18,936 cache(c/r)=196,704/588,890 cost=$1.64
+   260/367  3.2/s  ~0.5분 남음  calls=13 fails=0 in=46 out=20,389 cache(c/r)=211,356/645,343 cost=$1.77
+   280/367  3.4/s  ~0.4분 남음  calls=14 fails=0 in=50 out=22,272 cache(c/r)=227,298/703,128 cost=$1.91
+   300/367  3.5/s  ~0.3분 남음  calls=15 fails=0 in=52 out=23,604 cache(c/r)=243,130/724,125 cost=$2.03
+   320/367  3.7/s  ~0.2분 남음  calls=16 fails=0 in=56 out=25,116 cache(c/r)=260,146/782,518 cost=$2.17
+   340/367  3.9/s  ~0.1분 남음  calls=17 fails=0 in=58 out=26,494 cache(c/r)=277,246/803,515 cost=$2.30
+   347/367  3.5/s  ~0.1분 남음  calls=19 fails=0 in=66 out=30,456 cache(c/r)=304,530/914,061 cost=$2.56
+   367/367  2.9/s  ~0.0분 남음  calls=20 fails=0 in=70 out=32,132 cache(c/r)=320,990/971,876 cost=$2.70
+[pure] 완료 125초 · 실패 0건 · calls=20 fails=0 in=70 out=32,132 cache(c/r)=320,990/971,876 cost=$2.70
+   → C:\Users\Atdev-pc\Desktop\wiki\experiments\tos-skeleton\hybrid-enrich\metajson-v6\meta-search-v4\out\llm_meta_json_pure_fixed600.jsonl

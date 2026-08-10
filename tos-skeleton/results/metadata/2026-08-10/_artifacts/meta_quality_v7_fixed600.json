@@ -1,0 +1,28 @@
+{
+  "v7": {
+    "variant": "v7",
+    "n_total": 5335,
+    "n_assigned": 5335,
+    "ratio": 1.0,
+    "truncation_rate": 0.0,
+    "ok_rate": 1.0,
+    "low_content_rate": 0.009,
+    "field_coverage": 0.9759,
+    "distinct_values": 5249,
+    "unique_ratio": 0.9824,
+    "max_collision": 40,
+    "mean_len": 108.8,
+    "p50_len": 110.0,
+    "p90_len": 127.0,
+    "max_len": 156,
+    "body_copy_rate": 0.0001,
+    "field_fill_rate": {
+      "ask": 98.24,
+      "gist": 96.94
+    },
+    "sanitize_dropped_overlap": 128,
+    "sanitize_dropped_body_copy": 2,
+    "gate_g1_pass": true,
+    "gate_g2_pass": true
+  }
+}
