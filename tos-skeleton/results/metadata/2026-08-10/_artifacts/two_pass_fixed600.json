@@ -1,0 +1,19 @@
+{
+  "chunkset": "fixed600",
+  "arms": [
+    "A0_BASE",
+    "A6_HIER2",
+    "J1_JSONCTX",
+    "J2_JSONPURE",
+    "N1_DUMMY",
+    "N2_SHUF20260807",
+    "N2_SHUF20260808"
+  ],
+  "pass1_sha256": "56234ee6ed7b796c4f42dd46883a037ec6ee0a2df07262fdc7983dcd0558b8f8",
+  "pass2_sha256": "56234ee6ed7b796c4f42dd46883a037ec6ee0a2df07262fdc7983dcd0558b8f8",
+  "deterministic": true,
+  "two_pass_sha": "56234ee6",
+  "embed_probe_arm": null,
+  "embed_reproducible": null,
+  "scope": "메타데이터 고정 후 build_views→retrieve→eval 구간. LLM 생성 단계는 비결정적이라 제외."
+}

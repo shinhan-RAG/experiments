@@ -1,0 +1,136 @@
+{
+  "config_id": "dense-bgem3ko_v8contrast_fixed600_train164",
+  "date": "2026-08-10",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "11ece481cccacca4cc5353c5f60513d7c3e0ac39c1107a3e7febe7e617d5b36f",
+    "code_commit": "e6413757c68fcf46025b3490f2180729dc61208c",
+    "two_pass_sha": "514f7569"
+  },
+  "population": {
+    "name": "train164",
+    "n": 164
+  },
+  "config": {
+    "target": "형제 청크를 대조해 만든 6필드(소속·축·표지·질문·차이·동일선언) — 전 필드 LLM 생성, 정규식 0개. 같은 문서에서 나온 청크를 서로 구별하는 것이 유일한 목적이다.",
+    "method": "형제 묶음((특약, 조) 셀, 외톨이는 조제목 전역으로 승격) 단위로 최대 20청크를 한 프롬프트에 함께 넣고 구조화 출력(JSON Schema 강제)으로 6필드를 생성한다. 사전 정제로 영문·수식 잔재와 페이지 경계를 잘라내고(청크 유지), 정제 후 실질 60자 미만·목차 잔재는 제외(5,335→5,151). 후처리가 길이 상한, 본문 미접지 mark 폐기, axis 금칙어 대체, 형제 공유값 폐기, 그룹내 중복 only/ask 폐기를 코드로 강제한다. [소속]/[축]/[표지]/[질문]/[차이] 라벨로 본문 앞에 접두, 240자 예산(실측 최대 141자, 절단 0%).",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5151,
+      "ratio": 0.9655,
+      "distinct_values": 4676
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9124,
+      "max_collision": 16
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩. 정규식 주소를 쓰지 않는다(요구사항: 전 필드 LLM 생성).",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2439,
+    "R@5": 0.5183,
+    "R@10": 0.6159,
+    "R@20": 0.689,
+    "R@50": 0.7622,
+    "R@100": 0.811,
+    "MRR@10": 0.362,
+    "L_star_median": 66
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0103,
+      "seeds": 100,
+      "min": 0.0,
+      "max": 0.0366,
+      "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V8_PLUS_dense.jsonl의 기존 랭킹을 재채점. n=164질의, 항등 순열 거부."
+    },
+    "random_vector": {
+      "value": 0.0026,
+      "seeds": 19,
+      "min": 0.0,
+      "max": 0.0122,
+      "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=164질의(질의벡터 캐시 보유분)."
+    },
+    "constant_dummy": {
+      "value": 0.4146,
+      "note": "V8_CONTRAST 메타데이터 문자열과 길이가 같은 '〇' 상수(N1_DUMMY_V8). 질의와 문자 바이그램이 겹치지 않는다."
+    },
+    "shuffled_tag": {
+      "value": 0.2622,
+      "seeds": 2,
+      "min": 0.2439,
+      "max": 0.2805,
+      "note": "실존 v8 메타데이터 문자열을 무작위로 다른 청크에 재배정 (시드 20260812, 20260813). 임베딩 비용 때문에 시드 수가 적다. 꼬리표 없음(.4573)보다 나쁘다 — 검색기가 꼬리표를 실제로 읽는다는 직접 증거."
+    }
+  },
+  "limitations": [
+    "판정: 기각. 현 챔피언 A6_HIER2(R@5 .5427) 대비 -2.44pp이며 사전등록 채택 요건(+6.1pp)에 못 미친다. 다만 -2.44pp는 MDE 아래라 '더 나쁘다'는 주장도 성립하지 않는다 — 말할 수 있는 것은 '넘지 못했다'까지다.",
+    "A0_BASE 대비 +6.10pp지만 개선22/회귀12의 혼합 패턴이라 McNemar p=.1214, Holm p=.1229로 유의하지 않다. 챔피언(개선16/회귀2, Holm p=.0052)과 대조된다 — v8 꼬리표는 더 많이 고치고 더 많이 망친다.",
+    "널 4종은 전부 넘었다(constant_dummy .4146, shuffled_tag .2622, query_shuffle .0103, random_vector .0026). 즉 v8 꼬리표는 실력이지 우연이 아니다. 널을 넘은 것과 챔피언을 넘은 것은 다르다.",
+    "R@10(.6159)과 nDCG(.3757)는 비교 arm 중 최상위권이다. n=218에서도 R@10 .6147로 챔피언(.5872) 대비 +2.75pp. R@5로는 안 잡히는 순위 품질 개선이 두 모집단에서 일관되나 전부 MDE 아래라 주장으로 삼지 않는다.",
+    "사전등록(PREREG_V8) 이후 게이트 정의를 5건 변경했다(G3-c 재정의, G3-f 분리, U3 신호식 교정, U4 분모 교정, 하위형 그룹 세분 기각). 전부 결과를 본 뒤의 변경이며 docs/0810 설계안 7-7절에 사유와 함께 기록했다. 검색 점수는 이 변경 이전에 확정되지 않았다.",
+    "생성 게이트 2건 미달: 잔재 선언율 .0594(기준 .05), LLM필드 unique_ratio .9124(기준 .990, 최대충돌 16). 후자는 그룹내 중복 only/ask를 빈 문자열로 만든 뒤 빈 값끼리 충돌한 것으로, 값이 있는 청크만 보면 유니크하다.",
+    "axis 품질이 균일하지 않다. 상위는 대상질환(342)·상품유형(250)·대상암종(136)처럼 진짜 축이지만 잔재(54)·파싱잔재(36)·문서구간(55)도 섞였다. 금칙어 목록에 이 단어들이 없어 게이트가 통과됐다.",
+    "청킹 강건성 미확인. 이 결과는 fixed600 전용이다. 08-06에서 구조요소 청킹 위에서는 메타데이터 7종이 전부 n.s.였던 전례가 있다.",
+    "실험 코드가 형상관리 밖에 있다. 생성·뷰조립 스크립트가 scratchpad에 있고 metajson-v6/는 .gitignore 대상이다. code_commit이 가리키는 커밋에 이 코드가 없다(08-07·08-09와 동일한 미해결 상태).",
+    "LLM 생성은 비결정적이라 two_pass_sha(514f7569)는 메타데이터를 고정한 이후 구간(뷰조립->검색->채점)만 보증한다.",
+    "평가셋 기존 결함 승계(results/README.md 5절): gold 오류율 추정 11%(Wilson 95% CI 4.5~26.0%), 재주석 70건 중 54%가 부분/불가, 확정 210 중 55건(26%)의 gold가 BM25로 매핑된 순환성, test150의 57%가 이전 라운드에 노출.",
+    "test150 미개봉. 이번 라운드는 train164 전용이며 어떤 결정도 test를 보고 내리지 않았다.",
+    "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp."
+  ],
+  "experiment": "v8 대조 생성(형제 청크 구별)",
+  "stats": {
+    "eval": "eval_v8_main.json",
+    "baseline": "run_fixed600_A0_BASE_dense.jsonl",
+    "family": "v8_dense",
+    "family_size": 2,
+    "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+    "rows": [
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5183,
+        "r5_delta_pp": 6.1,
+        "improve": 22,
+        "regress": 12,
+        "mcnemar_p": 0.121449,
+        "mrr_delta": 0.0496,
+        "mrr_bca_ci": [
+          -0.0008,
+          0.1041
+        ],
+        "arm": "run_fixed600_V8_CONTRAST_dense.jsonl",
+        "holm_p": 0.122856,
+        "significant": false
+      },
+      {
+        "n": 164,
+        "r5_base": 0.4573,
+        "r5_arm": 0.5244,
+        "r5_delta_pp": 6.71,
+        "improve": 20,
+        "regress": 9,
+        "mcnemar_p": 0.061428,
+        "mrr_delta": 0.0813,
+        "mrr_bca_ci": [
+          0.0301,
+          0.1385
+        ],
+        "arm": "run_fixed600_V8_PLUS_dense.jsonl",
+        "holm_p": 0.122856,
+        "significant": false
+      }
+    ]
+  },
+  "_source": {
+    "eval": "eval_v8_main.json",
+    "run": "run_fixed600_V8_CONTRAST_dense.jsonl",
+    "nulls": "nulls_v8_fixed600.json",
+    "quality": "cards/dense-bgem3ko_v8contrast_fixed600_train164.json",
+    "stats": "stats_v8_dense.json"
+  }
+}

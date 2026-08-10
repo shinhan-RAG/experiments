@@ -1,0 +1,26 @@
+{
+  "eval": "eval_fixed633no.json",
+  "baseline": "run_fixed633no_A0_BASE_dense.jsonl",
+  "family": "f633_tag",
+  "family_size": 1,
+  "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+  "rows": [
+    {
+      "n": 164,
+      "r5_base": 0.5061,
+      "r5_arm": 0.5732,
+      "r5_delta_pp": 6.71,
+      "improve": 16,
+      "regress": 5,
+      "mcnemar_p": 0.026604,
+      "mrr_delta": 0.0724,
+      "mrr_bca_ci": [
+        0.0391,
+        0.1085
+      ],
+      "arm": "run_fixed633no_A6_HIER2_dense.jsonl",
+      "holm_p": 0.026604,
+      "significant": true
+    }
+  ]
+}
