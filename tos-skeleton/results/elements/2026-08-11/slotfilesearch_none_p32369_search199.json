@@ -1,0 +1,86 @@
+{
+  "config_id": "slotfilesearch_none_p32369_search199",
+  "date": "2026-08-11",
+  "author": "donggyu",
+  "experiment": "sfs-v8r",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "7f9c019828afc4a47982980779eafd506a95156f",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "search199",
+    "n": 199,
+    "note": "확정 210에서 집계층 11문항(|Gold|>=30, '총 몇 개'·'모두 찾아 정리' 류) 분리. 집계층은 top-5로 답할 과제가 아니며 구조 상한 .0637. |Gold| 평균 2.30 · 중앙 2 · 최대 13 · Recall@5 구조 상한 .9801"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "retriever": "SlotFileSearch (SFSCore-32369 재구현)",
+      "candidate": "슬롯 필드 간 AND · 필드 내 OR · fuzzy_contains + Q1 토큰 정규식",
+      "limit": null,
+      "ranker": "BM25 char-bigram",
+      "ranker_params": { "tokenizer": "char-bigram", "k1": 1.2, "b": 0.25 },
+      "note": "원본 slot_filesearch.py는 elements_repaired_v1(61,170)과 *_repaired_full_v1 태그를 요구하나 해당 산출물 부재. 동일 어댑터(canonical_old/new)를 32,369 산출물에 적용한 의미 동치 재구현. 원본과 다른 점: limit=None(문서순 선절단 제거)·match_features 반환. sfs_core.py sha a467115a68c9bc0c"
+    },
+    "schema": {
+      "name": "none",
+      "fields": [],
+      "extractor": "태그 미사용 — 후보는 질의 토큰 정규식만으로 생성(대조군)"
+    },
+    "split": {
+      "name": "p32369",
+      "n_elements": 32369,
+      "median_chars": 26,
+      "rule": "ma_slotfs/out/elements.jsonl. 기존 등록값의 p0(6,852)와 다른 분할이며 gold 정의·구조 상한이 다름"
+    }
+  },
+  "metrics": {
+    "R@1": 0.1146,
+    "R@5": 0.2501,
+    "R@10": 0.3217,
+    "R@20": 0.3634,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.2551,
+    "L_star_median": null
+  },
+  "metrics_definition": {
+    "kind": "fractional_recall@k",
+    "formula": "|TopK ∩ Gold| / |Gold| 의 문항 평균(macro)",
+    "warning": "기존 등록값(exp23 계보)의 R@K는 success@k = 1[TopK ∩ Gold != 0]. 정의가 다르므로 같은 축에 놓을 수 없음"
+  },
+  "metrics_success": {
+    "kind": "success@k",
+    "formula": "1[TopK ∩ Gold != 0] 의 문항 평균",
+    "Success@5": 0.3668,
+    "Precision@5": 0.0774,
+    "note": "기존 등록값과 직접 비교 가능한 정의"
+  },
+  "diagnostics": {
+    "candidate_median": 2311,
+    "candidate_p90": 32369,
+    "candidate_pool_ceiling@5": null,
+    "structural_ceiling@5": 0.9801,
+    "limit20_ablation": {
+      "note": "원본 계약(문서순 limit=20)에서는 Recall@5 .1054 / Success@5 .1508 / MRR@10 .0922. 선절단 제거만으로 Recall@5 .1054 -> .2158(new 조건 기준). 태그와 무관한 구조적 손실"
+    }
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "지표 정의: R@K가 fractional recall@k. 기존 등록값(bm25_none_p0_train338 등)의 R@K는 success@k이므로 나란히 비교하면 안 됨. 비교하려면 metrics_success 축을 쓸 것",
+    "평가 단위 32,369(p32369)로 기존 p0(6,852)와 다름. gold 매핑 규약과 구조 상한이 달라 이전 라운드 수치와 같은 표에 놓을 수 없음",
+    "two_pass_sha 미측정 — 구현은 결정론적이나 2패스 동일성 검증을 수행하지 않음",
+    "확정 210은 개발셋이며 25라운드 이상 재사용됨. 상방 편향(적응적 과적합) 가능성. 확증은 봉인된 test 150에서만",
+    "널 대조 미측정(태그 미사용 조건이라 shuffled_tag 비적용). query_shuffle·constant_dummy는 이 라운드에서 수행하지 않음",
+    "후보 풀이 질의 토큰 정규식에 의존. 별도 라운드에서 사용한 Q3(과거 LLM 세션 grep 패턴 재생) 풀은 이 등록값에 포함되지 않음",
+    "다중비교: b·k1 20점 격자를 grouped 5-fold + 1SE로 선택한 뒤의 값. 격자 전체는 sfs_grid v7 산출물 참조",
+    "평가셋 알려진 결함(README §5): gold 오류율 추정 11%(Wilson 95% CI 4.5~26.0%) · 확정 210 중 55건(26%) gold가 BM25로 매핑된 순환성 · 확정 210과 검수필요 128의 층 이질성"
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "config_id": "slotfilesearch_new_p32369_search199",
+  "date": "2026-08-11",
+  "author": "donggyu",
+  "experiment": "sfs-v8r",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "7f9c019828afc4a47982980779eafd506a95156f",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "search199",
+    "n": 199,
+    "note": "확정 210에서 집계층 11문항(|Gold|>=30) 분리. |Gold| 평균 2.30 · Recall@5 구조 상한 .9801"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "retriever": "SlotFileSearch (SFSCore-32369 재구현)",
+      "candidate": "슬롯 필드 간 AND · 필드 내 OR · fuzzy_contains + Q1 토큰 정규식",
+      "limit": null,
+      "ranker": "BM25 char-bigram",
+      "ranker_params": { "tokenizer": "char-bigram", "k1": 1.2, "b": 0.25 },
+      "query_router": "router5 — 정규식 기반. contract·subject·role·article·qualifier만 생성(table·reference·schema는 질의측 미생성)"
+    },
+    "schema": {
+      "name": "new",
+      "fields": ["contract", "subject", "role", "article", "table", "qualifier", "reference", "schema"],
+      "extractor": "ma_slotfs/out/element_semantic_fields_v4.jsonl + slot_filesearch.py:65 canonical_new. old 대비 변경: role 다중값+한국어 별칭 확장 · article에 조제목·절 추가 · table에 행키·수식문맥 추가 · reference 신설 · contract/subject 정규화. generator ma_slotfs/build_element_fields_v4.py. 출처 Git 미추적 — 작성자 확정 불가. 우리가 만든 자체 버전이 아니라 제공받은 산출물"
+    },
+    "split": {
+      "name": "p32369",
+      "n_elements": 32369,
+      "median_chars": 26,
+      "rule": "ma_slotfs/out/elements.jsonl. 기존 p0(6,852)와 다른 분할"
+    }
+  },
+  "metrics": {
+    "R@1": 0.0875,
+    "R@5": 0.2158,
+    "R@10": 0.2732,
+    "R@20": 0.3137,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.2042,
+    "L_star_median": null
+  },
+  "metrics_definition": {
+    "kind": "fractional_recall@k",
+    "formula": "|TopK ∩ Gold| / |Gold| 의 문항 평균(macro)",
+    "warning": "기존 등록값(exp23 계보)의 R@K는 success@k. 같은 축에 놓을 수 없음"
+  },
+  "metrics_success": {
+    "kind": "success@k",
+    "Success@5": 0.2965,
+    "Precision@5": 0.0633,
+    "note": "기존 등록값과 직접 비교 가능한 정의"
+  },
+  "diagnostics": {
+    "candidate_median": 207,
+    "candidate_p90": 5569,
+    "candidate_pool_ceiling@5": 0.5162,
+    "structural_ceiling@5": 0.9801,
+    "field_coverage": {
+      "contract": 0.9998,
+      "subject": 0.333,
+      "role": 0.701,
+      "article": 0.933,
+      "table": 0.039,
+      "qualifier": 0.12,
+      "reference": 0.031,
+      "schema": 1.0
+    },
+    "field_posting_median": {
+      "contract": 144,
+      "subject": 1,
+      "role": 3411,
+      "article": 6,
+      "table": 1,
+      "qualifier": 1,
+      "reference": 1,
+      "schema": 1352
+    },
+    "query_router_generation_rate_199": {
+      "contract": 45,
+      "subject": 91,
+      "role": 82,
+      "qualifier": 10,
+      "article": 0,
+      "table": 0,
+      "reference": 0,
+      "schema": 0
+    },
+    "per_gold_preservation_macro": {
+      "contract": 0.4935,
+      "subject": 0.5293,
+      "role": 0.7946,
+      "qualifier": 0.65
+    },
+    "note": "커버리지가 높은 필드(contract 99.98% · schema 100%)는 posting이 커서 후보를 좁히지 못하고, posting이 작은 필드(subject·table·qualifier·reference)는 커버리지가 낮음. '소수만 걸리도록 + 구조 정보 유지'를 동시에 만족하는 필드가 없음"
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": {
+      "value": 0.0008,
+      "seeds": 2000,
+      "max": 0.005,
+      "note": "contract 층 내 태그행 순열. 널 평균 .0008 · p95 .005. 실제 ΔRecall@5 = -.008로 널을 넘지 못함(p=1.0) → 태그 soft boost의 효과 없음. 단 이 널은 SFS-emu(Q1∪Q3 풀 + BM25 랭킹, w=0.1 boost) 조건에서 측정한 값이며 본 등록값의 AND 필터 조건이 아님"
+    },
+    "random_vector": null
+  },
+  "limitations": [
+    "지표 정의: R@K가 fractional recall@k. 기존 등록값의 R@K는 success@k이므로 나란히 비교하면 안 됨",
+    "평가 단위 32,369(p32369)로 기존 p0(6,852)와 다름",
+    "태그 AND 필터가 후보를 중앙 207개로 축소하며 gold를 함께 배제. 후보 풀 천장 .5162로 목표 .70에 구조적으로 미달",
+    "태그를 끈 조건(slotfilesearch_none)이 전 지표에서 이 값을 상회함. 현행 태그는 검색 성능을 올리지 않고 후보를 과도하게 배제함",
+    "질의측에서 article·table·reference·schema를 생성하지 못해 new가 확장한 필드(table 행키/수식문맥, reference 신설)가 검색에 사용된 적 없음. 따라서 이 값은 new 스키마 전체의 판정이 아니라 5필드 조건에서의 판정",
+    "shuffled_tag 널이 다른 조건(SFS-emu·soft boost)에서 측정됨. 이 등록값(AND 필터) 조건의 널은 미측정",
+    "two_pass_sha 미측정",
+    "확정 210은 개발셋이며 25라운드 이상 재사용됨. 상방 편향 가능성",
+    "태그 산출물의 출처가 Git 미추적이라 작성자·생성 이력을 확정할 수 없음. 자체 제작 버전(new-v1)이 아님",
+    "평가셋 알려진 결함(README §5) 전부 해당"
+  ]
+}
