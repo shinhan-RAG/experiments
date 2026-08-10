@@ -1,0 +1,89 @@
+{
+  "config_id": "filesearch-labelgrain_notag-tag_p0_suspect128",
+  "date": "2026-08-10",
+  "author": "donggyu",
+  "experiment": "v9-labelgrain",
+  "prereg": "PREREG_v9_라벨입도.md (발사 전 동결 · §6 정정판: 널은 코드·시드 동결, 실측은 발사 후)",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "4870d6d5e9e491a1e89fc247c82b7377130af8f0",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "suspect128",
+    "n": 128,
+    "note": "검수필요 128 — 정밀 라벨·앵커 1.4·표행 84.1%. 인용검증 0/0(라벨 미검증), 전건 발췌매핑·신규 질의"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "method_kind": "에이전트 파일검색(rg·read 직접 호출) — v7과 비트 동일 계약",
+      "arms": "notag(view 97a60404) vs tag(SCOPE:+JO:, view accd9813)",
+      "tool_cap": 10,
+      "display": "grep 히트 줄순서 상위 40 + 총 히트 수",
+      "rg": "ripgrep 15.1.0",
+      "model": "haiku",
+      "prompt_sha": "c5590629bb8888c6",
+      "round": "r1+r2",
+      "aggregation": "문항별 2회 평균(풀링) — 1회차 단독 금지",
+      "return_budget": "최대 10(base)"
+    },
+    "schema": {
+      "name": "scope-jo-linetag",
+      "fields": ["SCOPE", "JO"]
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 6852,
+      "median_chars": 309,
+      "rule": "MAX_LINES=120 · 마크다운 헤딩 · 표 전환"
+    }
+  },
+  "metrics": {
+    "R@1": null, "R@5": null, "R@10": null, "R@20": null, "R@50": null, "R@100": null,
+    "MRR@10": null, "L_star_median": null,
+    "note": "2-arm 대조라 단일 metrics 미기재 — arms 필드 참조"
+  },
+  "arms": {
+    "notag": { "R@1": 0.5977, "R@5": 0.7305, "R@10": 0.7305, "R@20": null,
+               "MRR@10": 0.6602, "n": 128, "wilson_R5": [0.6477, 0.7998] },
+    "tag":   { "R@1": 0.6602, "R@5": 0.7852, "R@10": 0.7891, "R@20": null,
+               "MRR@10": 0.7196, "n": 128, "wilson_R5": [0.7062, 0.8474] }
+  },
+  "hypotheses": {
+    "H1_라벨입도": {
+      "검수필요_notag_wilson_R5": [0.6477, 0.7998],
+      "확정_notag_wilson_R5": [0.3521, 0.4843],
+      "기준": "검수필요 CI 하한 > .4843",
+      "게이트": "통과"
+    },
+    "H2_태그효과": {
+      "n_comp": 128, "b": 28, "c": 18, "p": 0.18392, "delta": 7.0,
+      "부지표_R10": { "b": 29, "c": 18, "p": 0.14387, "delta": 7.5 },
+      "하한_α025": 19,
+      "게이트": "미달"
+    },
+    "G3_MRR10": { "tag": 0.7196, "notag": 0.6602, "게이트": "악화 없음" },
+    "G4_회차간_R5_불일치": { "notag": 0.2109, "tag": 0.1641, "v7_기준": ".19~.22", "게이트": "이내" }
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": { "value": 0.8281, "seeds": 1, "min": 0.8281, "max": 0.8281,
+      "note": "길이일치 상수더미(〇) — ② 줄순서40 생존, 기준 실측 .9219 (tag r1 재생)" },
+    "shuffled_tag": { "value": 0.8055, "seeds": 20, "min": 0.7891, "max": 0.8281,
+      "note": "태그 전체 순열 — ② 줄순서40 생존, 기준 실측 .9219" },
+    "random_vector": null,
+    "size_matched": { "value": 0.0316, "seeds": 20, "min": 0.0078, "max": 0.0625,
+      "note": "크기정합 무작위 줄집합(스키마 외 추가 널)" },
+    "G4prime": "기준 .9219 > 널1 .8281 · 널2 .0316 · 널3 max .8281 — 전부 초과"
+  },
+  "limitations": [
+    "인용검증 0/0 — 검수필요 128의 라벨 자체가 미검증. H1 통과는 '이 라벨 집합에서 높다'까지만",
+    "질의 이력 교락 — 검수필요는 전건 발췌매핑·신규 질의, 확정층은 구test포함 132·구dev포함 69. 이 실험으로 분리되지 않음",
+    "표행 편중 84.1%가 입도와 교락",
+    "gold 오류율 추정 11% (Wilson 95% CI 4.5~26.0%)",
+    "H1은 비짝지음(다른 문항 집합) — Wilson CI 비중첩 기준",
+    "널은 재생 수준(LLM 0) — 에이전트 행동 변화 경로는 측정 범위 밖"
+  ]
+}
