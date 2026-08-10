@@ -1,0 +1,26 @@
+{
+  "eval": "eval_v9_main.json",
+  "baseline": "run_fixed600_V8_CONTRAST_dense.jsonl",
+  "family": "metajson_v9_vs_v8",
+  "family_size": 1,
+  "mde": "MDE(dev n=164, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+  "rows": [
+    {
+      "n": 164,
+      "r5_base": 0.5183,
+      "r5_arm": 0.5427,
+      "r5_delta_pp": 2.44,
+      "improve": 18,
+      "regress": 14,
+      "mcnemar_p": 0.596615,
+      "mrr_delta": 0.0269,
+      "mrr_bca_ci": [
+        -0.0315,
+        0.0819
+      ],
+      "arm": "run_fixed600_V9_QSURF_dense.jsonl",
+      "holm_p": 0.596615,
+      "significant": false
+    }
+  ]
+}

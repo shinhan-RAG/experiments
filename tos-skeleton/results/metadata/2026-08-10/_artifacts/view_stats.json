@@ -134,5 +134,77 @@
     "truncated_pct": 0.0,
     "avg_total_chars": 680.5,
     "placement": "prefix"
+  },
+  "fixed633no_A0_BASE": {
+    "n": 5036,
+    "with_metadata_pct": 0.0,
+    "avg_meta_chars": 0.0,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 545.7,
+    "placement": "prefix"
+  },
+  "fixed633no_A6_HIER2": {
+    "n": 5036,
+    "with_metadata_pct": 99.8,
+    "avg_meta_chars": 47.6,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 594.2,
+    "placement": "prefix"
+  },
+  "fixed600_V9_QSURF": {
+    "n": 5335,
+    "with_metadata_pct": 99.1,
+    "avg_meta_chars": 83.7,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 698.9,
+    "placement": "prefix"
+  },
+  "fixed600_V9_WIDE": {
+    "n": 5335,
+    "with_metadata_pct": 98.4,
+    "avg_meta_chars": 21.8,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 637.4,
+    "placement": "prefix"
+  },
+  "fixed600_V9_NARROW": {
+    "n": 5335,
+    "with_metadata_pct": 96.5,
+    "avg_meta_chars": 24.6,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 639.7,
+    "placement": "prefix"
+  },
+  "fixed600_V9_TERMS": {
+    "n": 5335,
+    "with_metadata_pct": 99.1,
+    "avg_meta_chars": 36.1,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 651.7,
+    "placement": "prefix"
+  },
+  "fixed600_N1_DUMMY_V9": {
+    "n": 5335,
+    "with_metadata_pct": 99.1,
+    "avg_meta_chars": 83.7,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 698.9,
+    "placement": "prefix"
+  },
+  "fixed600_N2_SHUF_V920260814": {
+    "n": 5335,
+    "with_metadata_pct": 99.1,
+    "avg_meta_chars": 83.7,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 698.9,
+    "placement": "prefix"
+  },
+  "fixed600_N2_SHUF_V920260815": {
+    "n": 5335,
+    "with_metadata_pct": 99.1,
+    "avg_meta_chars": 83.7,
+    "truncated_pct": 0.0,
+    "avg_total_chars": 698.9,
+    "placement": "prefix"
   }
 }

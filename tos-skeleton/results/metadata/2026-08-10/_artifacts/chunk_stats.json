@@ -40,5 +40,26 @@
       "1040aa492c": 4362
     },
     "offset_exact": true
+  },
+  "fixed633no": {
+    "name": "fixed633no",
+    "mode": "fixed",
+    "size": 633,
+    "overlap": 0,
+    "n_chunks": 5036,
+    "avg_len": 545.7,
+    "std_len": 125.5,
+    "min_len": 3,
+    "max_len": 633,
+    "total_chars": 2748030,
+    "element_type": {
+      "text": 3633,
+      "formula": 232,
+      "table": 1171
+    },
+    "chunks_per_doc": {
+      "1040aa492c": 5036
+    },
+    "offset_exact": true
   }
 }
