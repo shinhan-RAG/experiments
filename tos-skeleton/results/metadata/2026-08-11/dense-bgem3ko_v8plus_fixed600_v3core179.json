@@ -1,0 +1,194 @@
+{
+  "config_id": "dense-bgem3ko_v8plus_fixed600_v3core179",
+  "date": "2026-08-11",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "1d392001cd2f9996be7de028665cb3b551378ab844a3528fd08221b81b99dd73",
+    "code_commit": "622d8eef185e63e49631c47850e270ef82463ace",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "v3core179",
+    "n": 179,
+    "note": "docs/QASet/v3_retrieval core_retrieval train — 적격 조건은 단일조회 AND 근거그룹 1개 AND 한 구절로 답 완결이며 청크 개수는 판단에 쓰지 않는다. 동치 인용은 그룹 OR로 묶는다."
+  },
+  "config": {
+    "target": "v8 대조 생성 6필드(스키마는 100% LLM)에 조립 단계에서만 정규식 주소([특약]·[조항])를 더한 실용 대조. LLM 필드가 정규식 주소를 대체할 수 있는지 가르는 arm이다. 주소가 [소속]의 역할을 대신하므로 [소속]은 뺀다 — 남기면 같은 정보를 두 번 적는다.",
+    "method": "**복원본이다.** 이력 문서(L202)는 'v8은 스키마·sanitize 코드와 원료 산출물이 소실돼 다시 만들 수 없다'고 기록했으나 사실이 아니었다 — 원료(results/metadata/2026-08-10/_artifacts/llm_meta_json_v8_fixed600.jsonl, 5,151행, 파싱 에러 0)는 온전했고 소실된 것은 build_views.py::ARMS의 arm 함수 3개뿐이었다. 복구 후 재생성한 view가 생존 view와 **SHA-256 바이트 동일**이라 기존 벡터를 그대로 재사용했다(재임베딩 0회). 생성 절차는 08-10 등록본과 같다: 형제 묶음((특약, 조) 셀, 외톨이는 조제목 전역으로 승격) 단위로 최대 20청크를 한 프롬프트에 함께 넣고 구조화 출력(JSON Schema 강제)으로 6필드를 생성하고(5,335→5,151), 후처리가 길이 상한·본문 미접지 mark 폐기·axis 금칙어 대체·형제 공유값 폐기·그룹내 중복 only/ask 폐기를 코드로 강제한다. 조립 시 [특약]·[조항](정규식, build_structure.py)을 앞에 두고 [소속]을 제외한다. 주소는 A6_HIER2와 **같은 소스(st의 rider/article, clean_rider)·같은 상한(40/40)**이라 A6_HIER2가 이 arm의 'LLM 0개' 절제 대조가 된다. 240자 예산에 절단률 0.0%. ⚠ **게이트 조건은 '원료에 레코드가 존재하는가'이지 'LLM 블록이 비었는가'가 아니다** — 원료에 레코드가 없는 청크 184개(5,335−5,151)에는 주소도 붙이지 않는다(주소만 붙이면 V8_CONTRAST와 커버리지가 갈려 1요인 비교가 깨진다). 레코드는 있으나 axis/mark/ask/only가 전부 빈 48개 청크에는 정규식 주소가 붙는다. `if not lm: return []` 한 줄이 이 차이를 만든다. ⚠ **원료는 gpt-5.4-mini(codex)가 생성했다** — 근거는 results/metadata/2026-08-10/_artifacts/meta_quality_v8_fixed600.json의 '모델': 'gpt-5.4-mini' · '수정본(FIX)': true 기록이고, gen_meta_claude.py에는 v8 참조가 0건이다. v9·v10·v11과 생성 모델이 같으므로 **v8 vs v9/v10/v11은 생성 모델이 통제된 스키마 1요인 비교**이며 차이를 스키마 효과로 귀속할 수 있다. (등재 초안에 claude-sonnet 생성이라고 잘못 적었던 것을 정정한다 — claude-sonnet이 생성한 것은 v6(J1_JSONCTX·J2_JSONPURE)다.)",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5151,
+      "ratio": 0.9655
+    },
+    "downstream": {
+      "used_as": "정규식 주소 + LLM 대조 블록을 청크 본문 앞에 접두해 함께 임베딩. 스키마 자체는 전 필드 LLM 생성이며 정규식은 조립 단계에서만 개입한다.",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.3296,
+    "R@5": 0.6201,
+    "R@10": 0.6927,
+    "R@20": 0.7709,
+    "R@50": null,
+    "R@100": 0.8659,
+    "MRR@10": 0.4556,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "random_vector": null,
+    "constant_dummy": null,
+    "shuffled_tag": null
+  },
+  "limitations": [
+    "**판정: 기각.** 사전등록 H1(R@5에서 기준선 A6_HIER2 .6257 초과) 미달이다. V8_PLUS의 R@5는 .6201로 −0.56%p, 개선/회귀 7/8(순 −1), McNemar exact p=1.0000, Holm 보정 후 p=1.0000이다. 사전등록 family는 V8_CONTRAST/V8_PLUS/V8_MARKONLY 3 arm이고 Holm 보정 후 셋 다 p=1.0000이며 순증이 각각 0 / −1 / −2로 방향조차 서지 않는다. 형제 층(n=155)에서도 마찬가지다 — V8_MARKONLY .6194 vs A6_HIER2 .6258(net −1), V8_CONTRAST .6323(net +1)로 전부 미검출이다. 따라서 '형제 대조가 R@5를 올린다'는 v8·v12 공통 가설은 이 분모에서 지지되지 않는다.",
+    "분모(v3_retrieval core)는 자동 1차 분류이고 사람이 한 건도 검수하지 않았다. 500문항 전부 pending_review이고 FROZEN_BENCHMARK.json = DRAFT_NOT_FROZEN이다. 이 수치를 인용할 때 이 조건을 반드시 같이 말해야 한다.",
+    "gold_sha가 2026-08-05~08-10 등록본(구 정답셋 train164) 및 2026-08-11 오전(v2_250212 train300)과 모두 다르다. 세 분모의 절대값을 직접 비교할 수 없다. 같은 벡터·같은 검색 코드로 A0_BASE가 .4573(n=164) / .5000(n=300) / .5140(v3core179)으로 움직인다.",
+    "분모가 사업구분 문서커버리지에 76.5%(137/179) 쏠려 있다. 층화가 그 대가를 보여준다 — A6_HIER2의 이득은 사실상 전부 특약지목 층에 있고(n=68에서 A0_BASE .6324 → .8088, net −12, p=.0005) 비순환 층(n=42)에서는 A0_BASE와 소수점까지 같다(양쪽 .3095). 질문이 특약명을 부르지 않으면 주소 메타데이터는 아무것도 사지 않는다.",
+    "주소 메타데이터와 질문 사이에 순환성이 있다 — 특약명을 지목한 층과 문서커버리지가 겹친다. 실제 고객 질문 구간(고객상담·챗봇·LICO)은 특약명을 거의 쓰지 않는다.",
+    "코퍼스가 문서 1건(5,335청크)이라 문서 선택 단계를 아예 평가하지 않는다. 실제 운영에서는 parsed_md 1,223개 중에서 골라야 하고 이름이 겹치는 판본이 최소 3종 실재한다.",
+    "청킹이 최선 구성이 아니다. fixed600(겹침 100)은 v6~v11 계열과 비교하기 위한 선택이며, 2026-08-10 미등록 관측으로 겹침 제거만으로 +4.88%p였다.",
+    "v3 test(140문항)는 열지 않았다. 전부 train 판단이다.",
+    "R@50과 L_star_median은 eval_v3_table.py가 재지 않으므로 null이다(0이 아니다).",
+    "two_pass_sha가 없다 — 이 분모에서 2회 실행 대조를 하지 않았으므로 재현 검증되지 않은 상태다.",
+    "**널을 이 분모에서 재측정하지 않았다.** nulls 4종(query_shuffle · random_vector · constant_dummy · shuffled_tag)이 전부 null인 것은 '0'이 아니라 '재지 않았다'는 뜻이다. 2026-08-10 train164 등록본에 v8 널 값(N1_DUMMY_V8 .4146, N2_SHUF_V8 .2805/.2439)이 있으나 분모가 달라 여기에 옮겨 적지 않는다.",
+    "실효 MDE가 순 +5.6%p다. 이번에 관측된 R@5 차이는 전부 그 아래이므로 미검출 구간이다 — '더 나쁘다'는 주장도 성립하지 않는다.",
+    "특약지목 층의 n은 68이다. 문서에 나오는 '특약명 지목 88건'은 규칙이 소실됐고, 커밋된 diag_dupclause_v3.py:62-68의 q_rider()가 내는 값이 68이다. 근사 재현 시 n=89이고 맞힌 수(54·64)는 발표값과 정확히 일치하나 분모가 1 다르다. 68로 확정하고 그 사실을 적는다.",
+    "**R@1·MRR 관측은 사후 관찰이며 검정하지 않았다.**(§8-13) 사전등록 지표는 R@5였고 McNemar도 R@5 기준으로만 계산했다. R@1 기준 검정은 하지 않았으므로 '유의하다'고 쓸 수 없다. 다만 관측 자체는 실재한다 — A6_HIER2(R@1 .2626 / MRR@10 .4154) 대비 V8_PLUS .3296(+6.70%p)/.4556(+4.02%p), V8_CONTRAST .3240(+6.14%p)/.4545(+3.91%p), V8_MARKONLY .3128(+5.02%p)/.4393(+2.39%p)이고 형제 층(n=155)에서 더 크다(A6_HIER2 R@1 .2516 → V8_CONTRAST .3290, +7.74%p / V8_PLUS .3226 / V8_MARKONLY .3032). 08-10 train164 관측(V8_PLUS가 R@1 .2866·MRR .3937·nDCG .3961로 v8 가족 최고)과 같은 방향으로 재현됐고 분모가 바뀌어도 살아남았다. 그래도 주장이 되려면 다음 라운드에서 R@1/MRR을 사전등록해야 한다.",
+    "**정정 — v8 원료의 생성 모델은 gpt-5.4-mini(codex)다.** 등재 초안에 claude-sonnet(gen_meta_claude.py) 생성이라고 적었으나, results/metadata/2026-08-10/_artifacts/meta_quality_v8_fixed600.json이 '모델': 'gpt-5.4-mini' · '수정본(FIX)': true로 기록하고 있고 gen_meta_claude.py에는 v8 참조가 0건이다. v9·v10·v11과 생성 모델이 같으므로 v8 vs v9/v10/v11은 **스키마 1요인 비교**이며, 이 카드의 수치 차이는 스키마 효과로 귀속할 수 있다. claude-sonnet 생성분은 v6(J1_JSONCTX·J2_JSONPURE)이며 그에 대한 2요인 서술은 그대로 유효하다.",
+    "이 라운드에서 v8 메타데이터의 유일성 지표(distinct_values · unique_ratio · max_collision)를 재측정하지 않았다. 그래서 config.uniqueness를 싣지 않았다 — 08-10 등록본의 값이 있으나 이번 산출물로 다시 확인한 값이 아니다.",
+    "거대셀 층 2문항은 동전던지기다. 구조 파서가 제6조 이후 조항 경계를 못 찾아 문서 말미 전체(별첨 법령 인용·질병분류코드 표·별표)가 629청크 한 셀로 붕괴한 구간이며, 어느 방향으로도 신호로 읽으면 안 된다.",
+    "이 arm은 정규식 주소를 조립 단계에서 더한 실용 대조인데, 그 주소는 A6_HIER2와 같은 소스·같은 상한(40/40)이다. 즉 A6_HIER2가 이 arm의 'LLM 0개' 절제이고 LLM 블록을 얹은 쪽이 R@5를 넘지 못했다."
+  ],
+  "experiment": "v8 형제 대조 + 정규식 주소(실용 대조) 복원 재측정 — v3 core 분모. 사전등록 H1 기각(R@5 .6201 vs A6_HIER2 .6257, Holm p=1.0000). R@1 .3296·MRR .4556으로 v8 가족 최고이고 08-10 train164와 같은 방향이지만 **사후 관찰이며 검정하지 않았다.** 이력 문서가 '재현 불가'로 적었던 세대를 원료에서 되살렸고 재생성 view가 SHA-256 바이트 동일이라 벡터를 재사용했다(재임베딩 0회).",
+  "stats": {
+    "split": "train",
+    "chunkset": "fixed600",
+    "denominator": "v3 core_retrieval",
+    "n": 179,
+    "base": "A6_HIER2_dense",
+    "arms": [
+      {
+        "arm": "A0_BASE_dense",
+        "n": 179,
+        "R@1": 0.2458,
+        "R@5": 0.514,
+        "R@10": 0.6034,
+        "R@20": 0.6983,
+        "R@100": 0.8603,
+        "MRR@10": 0.362
+      },
+      {
+        "arm": "A6_HIER2_dense",
+        "n": 179,
+        "R@1": 0.2626,
+        "R@5": 0.6257,
+        "R@10": 0.7151,
+        "R@20": 0.7877,
+        "R@100": 0.8603,
+        "MRR@10": 0.4154
+      },
+      {
+        "arm": "V8_CONTRAST_dense",
+        "n": 179,
+        "R@1": 0.324,
+        "R@5": 0.6257,
+        "R@10": 0.7039,
+        "R@20": 0.7821,
+        "R@100": 0.8715,
+        "MRR@10": 0.4545
+      },
+      {
+        "arm": "V8_PLUS_dense",
+        "n": 179,
+        "R@1": 0.3296,
+        "R@5": 0.6201,
+        "R@10": 0.6927,
+        "R@20": 0.7709,
+        "R@100": 0.8659,
+        "MRR@10": 0.4556
+      },
+      {
+        "arm": "V8_MARKONLY_dense",
+        "n": 179,
+        "R@1": 0.3128,
+        "R@5": 0.6145,
+        "R@10": 0.7207,
+        "R@20": 0.7709,
+        "R@100": 0.8771,
+        "MRR@10": 0.4393
+      },
+      {
+        "arm": "V9_QSURF_dense",
+        "n": 179,
+        "R@1": 0.3017,
+        "R@5": 0.6369,
+        "R@10": 0.7263,
+        "R@20": 0.7598,
+        "R@100": 0.8883,
+        "MRR@10": 0.4451
+      },
+      {
+        "arm": "V11_ALIAS_dense",
+        "n": 179,
+        "R@1": 0.2849,
+        "R@5": 0.6145,
+        "R@10": 0.7095,
+        "R@20": 0.7877,
+        "R@100": 0.8659,
+        "MRR@10": 0.425
+      }
+    ],
+    "vs_base": {
+      "A0_BASE_dense": {
+        "gain": 5,
+        "loss": 25,
+        "net": -20,
+        "p_exact": 0.0003
+      },
+      "V8_CONTRAST_dense": {
+        "gain": 9,
+        "loss": 9,
+        "net": 0,
+        "p_exact": 1.0,
+        "p_holm": 1.0
+      },
+      "V8_PLUS_dense": {
+        "gain": 7,
+        "loss": 8,
+        "net": -1,
+        "p_exact": 1.0,
+        "p_holm": 1.0
+      },
+      "V8_MARKONLY_dense": {
+        "gain": 8,
+        "loss": 10,
+        "net": -2,
+        "p_exact": 0.8145,
+        "p_holm": 1.0
+      },
+      "V9_QSURF_dense": {
+        "gain": 17,
+        "loss": 15,
+        "net": 2,
+        "p_exact": 0.8601
+      },
+      "V11_ALIAS_dense": {
+        "gain": 3,
+        "loss": 5,
+        "net": -2,
+        "p_exact": 0.7266
+      }
+    }
+  },
+  "_source": {
+    "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+    "eval": "eval_v3_reg_v8.json",
+    "run": "run_fixed600_V8_PLUS_dense_v3tr.jsonl",
+    "nulls": null,
+    "quality": "cards/dense-bgem3ko_v8plus_fixed600_v3core179.json",
+    "stats": "eval_v3_reg_v8_table.json"
+  }
+}

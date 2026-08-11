@@ -1,0 +1,101 @@
+{
+  "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+  "denominator": "v3 core_retrieval",
+  "split": "train",
+  "chunkset": "fixed600",
+  "n_gold": 179,
+  "source": "eval_v3_table.py --out-report",
+  "runs": {
+    "run_fixed600_A0_BASE_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2458,
+        "recall@5": 0.514,
+        "recall@10": 0.6034,
+        "recall@20": 0.6983,
+        "recall@100": 0.8603,
+        "recall@50": null,
+        "mrr@10": 0.362,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_A6_HIER2_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2626,
+        "recall@5": 0.6257,
+        "recall@10": 0.7151,
+        "recall@20": 0.7877,
+        "recall@100": 0.8603,
+        "recall@50": null,
+        "mrr@10": 0.4154,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V8_CONTRAST_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.324,
+        "recall@5": 0.6257,
+        "recall@10": 0.7039,
+        "recall@20": 0.7821,
+        "recall@100": 0.8715,
+        "recall@50": null,
+        "mrr@10": 0.4545,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V8_PLUS_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3296,
+        "recall@5": 0.6201,
+        "recall@10": 0.6927,
+        "recall@20": 0.7709,
+        "recall@100": 0.8659,
+        "recall@50": null,
+        "mrr@10": 0.4556,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V8_MARKONLY_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3128,
+        "recall@5": 0.6145,
+        "recall@10": 0.7207,
+        "recall@20": 0.7709,
+        "recall@100": 0.8771,
+        "recall@50": null,
+        "mrr@10": 0.4393,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V9_QSURF_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3017,
+        "recall@5": 0.6369,
+        "recall@10": 0.7263,
+        "recall@20": 0.7598,
+        "recall@100": 0.8883,
+        "recall@50": null,
+        "mrr@10": 0.4451,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V11_ALIAS_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2849,
+        "recall@5": 0.6145,
+        "recall@10": 0.7095,
+        "recall@20": 0.7877,
+        "recall@100": 0.8659,
+        "recall@50": null,
+        "mrr@10": 0.425,
+        "l_star_median": null,
+        "n": 179
+      }
+    }
+  }
+}

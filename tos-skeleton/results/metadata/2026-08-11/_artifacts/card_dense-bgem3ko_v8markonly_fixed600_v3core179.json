@@ -1,0 +1,16 @@
+{
+  "target": "v8 대조 생성 6필드에서 [소속]과 [표지](mark)만 남긴 절제 arm. V8_CONTRAST에서 axis/ask/only를 떼어 **표지 단독의 순효과**를 격리한다. v8이 형제 구별을 위해 새로 도입한 필드가 mark이므로, 이 arm이 주력과 붙는 폭이 곧 '대조 서술(축·질문·차이)'이 추가로 기여한 몫이다.",
+  "method": "**복원본이다.** 이력 문서(L202)는 'v8은 스키마·sanitize 코드와 원료 산출물이 소실돼 다시 만들 수 없다'고 기록했으나 사실이 아니었다 — 원료(results/metadata/2026-08-10/_artifacts/llm_meta_json_v8_fixed600.jsonl, 5,151행, 파싱 에러 0)는 온전했고 소실된 것은 build_views.py::ARMS의 arm 함수 3개뿐이었다. 복구 후 재생성한 view가 생존 view와 **SHA-256 바이트 동일**이라 기존 벡터를 그대로 재사용했다(재임베딩 0회). 원료 생성 절차는 V8_CONTRAST와 완전히 같고(같은 원료 파일을 소비한다) 조립 단계에서 mark 상위 3개를 각 16자로 잘라 ` · `로 이어 [표지]에 넣고 [소속] 20자와 함께 본문 앞에 접두한다. axis/ask/only/twin은 색인 문자열에 넣지 않는다. 240자 예산에 절단률 0.0%. ⚠ 이번 라운드에 함께 확인한 것: **LEX_ARMS를 확장하면 안 된다** — 그것은 원료 분기용(build_views.py:915, 1026)이고 V8_MARKONLY를 넣으면 source 체인에서 LEX_ARMS가 V8_META_ARMS보다 먼저 평가돼 방금 검증한 바이트 동일성이 깨진다. ⚠ **원료는 gpt-5.4-mini(codex)가 생성했다** — 근거는 results/metadata/2026-08-10/_artifacts/meta_quality_v8_fixed600.json의 '모델': 'gpt-5.4-mini' · '수정본(FIX)': true 기록이고, gen_meta_claude.py에는 v8 참조가 0건이다. v9·v10·v11과 생성 모델이 같으므로 **v8 vs v9/v10/v11은 생성 모델이 통제된 스키마 1요인 비교**이며 차이를 스키마 효과로 귀속할 수 있다. (등재 초안에 claude-sonnet 생성이라고 잘못 적었던 것을 정정한다 — claude-sonnet이 생성한 것은 v6(J1_JSONCTX·J2_JSONPURE)다.)",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 5151,
+    "ratio": 0.9655
+  },
+  "downstream": {
+    "used_as": "라벨 문자열([소속]·[표지])을 청크 본문 앞에 접두해 함께 임베딩. 정규식 주소를 쓰지 않는다."
+  },
+  "nulls": {
+    "constant_dummy": null,
+    "shuffled_tag": null
+  }
+}
