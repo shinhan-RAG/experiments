@@ -1,0 +1,16 @@
+{
+  "target": "특약·조항 (기계 추출 대조군)",
+  "method": "정규식 구조 추출(build_structure.py) — 상용구 제거한 특약명 + 조항명을 [특약]/[조항] 라벨로 본문 앞에 접두. LLM 호출 0회.",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 5324,
+    "ratio": 0.998
+  },
+  "downstream": {
+    "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩"
+  },
+  "nulls": {
+    "constant_dummy": null,
+    "shuffled_tag": null
+  }
+}

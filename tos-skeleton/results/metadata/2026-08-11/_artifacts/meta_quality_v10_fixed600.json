@@ -1,0 +1,38 @@
+{
+  "v10": {
+    "variant": "v10",
+    "n": 5335,
+    "n_total": 5335,
+    "n_assigned": 5287,
+    "ratio": 0.991,
+    "n_missing_record": 0,
+    "ok_rate": 1.0,
+    "low_content_rate": 0.009,
+    "n_nonlow": 5287,
+    "asks_rate": 1.0,
+    "asks_avg_n": 3.0554,
+    "asks_count_dist": {
+      "2": 3,
+      "3": 4988,
+      "4": 296
+    },
+    "asks_total_n": 16154,
+    "asks_grounded_n": 10396,
+    "asks_grounded_rate": 0.6436,
+    "dropped_body_total": 2,
+    "dropped_dup_total": 0,
+    "unique_ratio": 0.9854,
+    "max_collision": 20,
+    "distinct_values": 5219,
+    "n_nonempty": 5287,
+    "avg_chars": 86.1,
+    "max_chars": 174,
+    "truncated_rate": 0.0,
+    "gate_g1_pass": true,
+    "gate_g2_asks_pass": true,
+    "gate_g2b_count_pass": true,
+    "gate_g3_grounded_pass": true,
+    "gate_u1_pass": true,
+    "gate_hard_all_pass": true
+  }
+}

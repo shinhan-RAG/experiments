@@ -1,0 +1,55 @@
+{
+  "split": "train",
+  "chunkset": "fixed600",
+  "denominator": "v3 core_retrieval",
+  "n": 179,
+  "base": "A0_BASE_dense",
+  "arms": [
+    {
+      "arm": "A0_BASE_dense",
+      "n": 179,
+      "R@1": 0.2458,
+      "R@5": 0.514,
+      "R@10": 0.6034,
+      "R@20": 0.6983,
+      "R@100": 0.8603,
+      "MRR@10": 0.362
+    },
+    {
+      "arm": "J2_JSONPURE_dense",
+      "n": 179,
+      "R@1": 0.2793,
+      "R@5": 0.5922,
+      "R@10": 0.676,
+      "R@20": 0.7654,
+      "R@100": 0.8939,
+      "MRR@10": 0.4155
+    },
+    {
+      "arm": "N1_DUMMY_dense",
+      "n": 179,
+      "R@1": 0.2123,
+      "R@5": 0.4972,
+      "R@10": 0.5866,
+      "R@20": 0.676,
+      "R@100": 0.838,
+      "MRR@10": 0.3339
+    }
+  ],
+  "vs_base": {
+    "J2_JSONPURE_dense": {
+      "gain": 17,
+      "loss": 3,
+      "net": 14,
+      "p_exact": 0.0026,
+      "p_holm": 0.0052
+    },
+    "N1_DUMMY_dense": {
+      "gain": 5,
+      "loss": 8,
+      "net": -3,
+      "p_exact": 0.5811,
+      "p_holm": 0.5811
+    }
+  }
+}

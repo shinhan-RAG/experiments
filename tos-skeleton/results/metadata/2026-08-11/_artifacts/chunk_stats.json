@@ -1,0 +1,65 @@
+{
+  "fixed600": {
+    "name": "fixed600",
+    "mode": "fixed",
+    "size": 600,
+    "overlap": 100,
+    "n_chunks": 5335,
+    "avg_len": 615.0,
+    "std_len": 119.0,
+    "min_len": 103,
+    "max_len": 700,
+    "total_chars": 3280867,
+    "element_type": {
+      "text": 3610,
+      "formula": 281,
+      "table": 1444
+    },
+    "chunks_per_doc": {
+      "1040aa492c": 5335
+    },
+    "offset_exact": true
+  },
+  "elem": {
+    "name": "elem",
+    "mode": "elem",
+    "size": 600,
+    "overlap": 100,
+    "n_chunks": 4362,
+    "avg_len": 630.9,
+    "std_len": 447.5,
+    "min_len": 1,
+    "max_len": 1200,
+    "total_chars": 2752037,
+    "element_type": {
+      "formula": 255,
+      "text": 3051,
+      "table": 1056
+    },
+    "chunks_per_doc": {
+      "1040aa492c": 4362
+    },
+    "offset_exact": true
+  },
+  "fixed633no": {
+    "name": "fixed633no",
+    "mode": "fixed",
+    "size": 633,
+    "overlap": 0,
+    "n_chunks": 5036,
+    "avg_len": 545.7,
+    "std_len": 125.5,
+    "min_len": 3,
+    "max_len": 633,
+    "total_chars": 2748030,
+    "element_type": {
+      "text": 3633,
+      "formula": 232,
+      "table": 1171
+    },
+    "chunks_per_doc": {
+      "1040aa492c": 5036
+    },
+    "offset_exact": true
+  }
+}

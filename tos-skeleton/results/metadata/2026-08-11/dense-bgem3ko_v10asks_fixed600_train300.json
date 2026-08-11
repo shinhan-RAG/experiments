@@ -1,0 +1,154 @@
+{
+  "config_id": "dense-bgem3ko_v10asks_fixed600_train300",
+  "date": "2026-08-11",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "427f23ef02b0797756fa0cb5701d35010507102309c9958bcc9aa3d6f2b7997c",
+    "code_commit": "eb1ddac52571f060d006f0138d255ed6f978bbad",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "train300",
+    "n": 300,
+    "note": "정답셋 v2_250212 train350 중 채점 가능(primary) 300문항"
+  },
+  "config": {
+    "target": "청크가 답이 되는 **구체 질문 3~4개** 한 축만. v9의 3층 중 [세부](narrow) 축만 남기고 예산 전부를 그 축에 준다 — v9 절제에서 [세부] 단독(.5610)이 3층 전체(.5427)보다 높았던 관측(08-10 train164)을 검정한다. 각 질문은 본문 실재 표기를 감싸고 물음표로 끝나며 서로 다른 각도여야 한다.",
+    "method": "gpt-5.4-mini(codex CLI, model_reasoning_effort=low, --output-schema 강제, 20청크 배치)가 `asks` 한 필드만 생성 — **v9와 생성 모델·전송 계층·배치 크기·변형(pure)·청크셋이 전부 같고 다른 것은 스키마(질문 개수)뿐이다.** 그래서 v10 vs v9는 1요인 비교다. 정규식 필드 0개, LLM 100% 생성. sanitize_v10이 항목당 40자 클립·본문복사 폐기·정규형 중복 제거를 코드로 강제하고, 본문 그라운딩은 강제하지 않고 측정만 한다(v8이 그라운딩을 하드 강제해 판별 지표를 전부 올리고도 R@5가 -2.5%p였던 전례). `[세부]` 라벨로 본문 앞에 접두, 240자 예산(최악 174자, 절단 0%). 라벨 문자열을 v9의 `[세부]`와 **일부러 같게** 두었다 — 태그까지 같아야 V10_ASKS vs V9_NARROW가 질문 개수 1요인 비교가 된다. 주의: as-is(v6, J2_JSONPURE)는 claude-sonnet으로 생성됐으므로 v10 vs as-is 비교는 2요인이다(스키마 1요인 아님).",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5287,
+      "ratio": 0.991,
+      "distinct_values": 5219
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9854,
+      "max_collision": 20
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.23,
+    "R@5": 0.4833,
+    "R@10": 0.6033,
+    "R@20": 0.7,
+    "R@50": 0.77,
+    "R@100": 0.83,
+    "MRR@10": 0.3464,
+    "L_star_median": 73
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0083,
+      "seeds": 100,
+      "min": 0.0,
+      "max": 0.0267,
+      "note": "R@5 — 질문<->gold 짝을 섞고 baseline_run=run_fixed600_V10_ASKS_dense_qa2.jsonl의 기존 랭킹을 재채점. n=300질의, 항등 순열 거부."
+    },
+    "random_vector": {
+      "value": 0.0026,
+      "seeds": 19,
+      "min": 0.0,
+      "max": 0.0067,
+      "note": "R@5 — 청크 벡터를 (n=5335, dim=1024) 무작위 단위벡터로 교체하고 실제 질의벡터로 dense 점수. n=300질의(질의벡터 캐시 보유분)."
+    },
+    "constant_dummy": {
+      "value": 0.4733,
+      "note": "V10_ASKS 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다. (run=run_fixed600_N1_DUMMY_V10_dense_qa2.jsonl)"
+    },
+    "shuffled_tag": {
+      "value": 0.3634,
+      "seeds": 2,
+      "min": 0.3467,
+      "max": 0.38,
+      "note": "실존 메타데이터 문자열을 무작위로 다른 청크에 재배정 (시드 20260816, 20260817). 임베딩 비용 때문에 시드 수가 적다."
+    }
+  },
+  "limitations": [
+    "⛔ 판정: 기각. 사전등록 하드 게이트 N(널)을 넘지 못했다 — V10_ASKS .483 vs 길이일치 널 N1_DUMMY_V10 .473, +1.00%p, McNemar exact p=.775. results/README.md 3-5 '널을 넘지 못한 값은 개선이 아니다'에 해당한다. 이 카드는 개선 기록이 아니라 기각 기록이다.",
+    "사전등록 가설 H1~H3이 전부 미달이다. H1 vs A0_BASE(.500) -1.67%p p=.533 / H2 vs V9_NARROW(.503) -2.00%p p=.405 / H3 vs V10_ASK1(.497) -1.33%p p=.572. H3이 가장 깨끗한 비교인데(같은 산출물에서 첫 질문 1개만 떼어낸 절제라 생성 조건이 완전히 같다) 1개짜리가 3~4개짜리보다 높다 — 방향이 가설과 반대다.",
+    "생성 품질 게이트는 1차에 전부 통과했다(절단 .0000 / asks 채움률 1.0000 / 평균 개수 3.0554 / 유일률 .9854). 즉 '생성이 잘 됐는데도 검색이 안 오른' 사례이며, 생성 품질 지표로 검색 성능을 대리 예측할 수 없다는 증거가 하나 더 쌓였다.",
+    "무의미한 '〇' 더미를 붙이기만 해도 기준선(.500)보다 내려간다(.473). 프리픽스를 붙이는 것 자체가 비용이고, 스키마는 그 비용을 내용으로 되사와야 한다. 세대별 내용 기여는 v6 +9.3%p / v9 +4.3%p / v10 +1.0%p로 단조 감소한다.",
+    "생성 모델이 as-is(J2_JSONPURE, claude-sonnet)와 다르다(codex gpt-5.4-mini). as-is 대비 차이를 스키마 효과로 귀속할 수 없다. 모델이 통제된 비교는 v9 대비와 v10 내부 절제뿐이다.",
+    "gpt-5.4-mini는 deprecated 예정 모델이다(대체 gpt-5.6-luna). 재현 시 모델이 사라질 수 있다.",
+    "정답셋이 v2_250212로 바뀌어 gold_sha가 2026-08-05~08-10 등록본과 다르다. 직접 비교 불가다.",
+    "분모 train300에는 단일 청크로 풀 수 없는 집계·비교·열거형 문항이 섞여 있다. 모든 arm을 똑같이 끌어내려 실효 MDE가 순 +12%p까지 올라간다 — 이 분모에서 관측된 모든 차이는 그 아래다.",
+    "정답셋 v2_250212 500문항은 사람이 검수하지 않았다. 기계 검증만 통과했다.",
+    "청킹이 최선 구성이 아니다. fixed600(겹침 100)은 v9 계열과 비교하기 위한 선택이며, 2026-08-10 미등록 관측으로 겹침 제거만으로 +4.88%p였다.",
+    "two_pass_sha가 없다 — 2회 실행 대조를 하지 않았으므로 재현 검증되지 않은 상태다.",
+    "MDE(dev n=300, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp."
+  ],
+  "experiment": "v10 단일축 예산 집중 (asks 3~4개, codex gpt-5.4-mini) — 사전등록 분모, 기각",
+  "stats": {
+    "eval": "eval_v10_main.json",
+    "baseline": "run_fixed600_A0_BASE_dense_qa2.jsonl",
+    "family": "metajson_v10",
+    "family_size": 3,
+    "mde": "MDE(dev n=300, R@5, McNemar α=.05): 클린 패턴(회귀 0) 최소 개선 5문항(p=.0625→비유의, 6문항 p=.031 유의)=+5.2~6.3pp; 참고: 사전 등록 문서의 보수 추정은 4문항(+4.2pp). 혼합 패턴은 순 +12pp.",
+    "rows": [
+      {
+        "n": 300,
+        "r5_base": 0.5,
+        "r5_arm": 0.4833,
+        "r5_delta_pp": -1.67,
+        "improve": 18,
+        "regress": 23,
+        "mcnemar_p": 0.532709,
+        "mrr_delta": 0.0165,
+        "mrr_bca_ci": [
+          -0.0189,
+          0.0517
+        ],
+        "arm": "run_fixed600_V10_ASKS_dense_qa2.jsonl",
+        "holm_p": 1.0,
+        "significant": false
+      },
+      {
+        "n": 300,
+        "r5_base": 0.5,
+        "r5_arm": 0.5033,
+        "r5_delta_pp": 0.33,
+        "improve": 20,
+        "regress": 19,
+        "mcnemar_p": 1.0,
+        "mrr_delta": 0.0116,
+        "mrr_bca_ci": [
+          -0.0206,
+          0.0444
+        ],
+        "arm": "run_fixed600_V9_NARROW_dense_qa2.jsonl",
+        "holm_p": 1.0,
+        "significant": false
+      },
+      {
+        "n": 300,
+        "r5_base": 0.5,
+        "r5_arm": 0.4967,
+        "r5_delta_pp": -0.33,
+        "improve": 20,
+        "regress": 21,
+        "mcnemar_p": 1.0,
+        "mrr_delta": 0.0196,
+        "mrr_bca_ci": [
+          -0.0133,
+          0.0521
+        ],
+        "arm": "run_fixed600_V10_ASK1_dense_qa2.jsonl",
+        "holm_p": 1.0,
+        "significant": false
+      }
+    ]
+  },
+  "_source": {
+    "gold": "tos-skeleton/hybrid-enrich/metajson-v6/meta-search-v4/out/qa_gold.jsonl",
+    "eval": "eval_v10_main.json",
+    "run": "run_fixed600_V10_ASKS_dense_qa2.jsonl",
+    "nulls": "nulls_v10.json",
+    "quality": "cards/dense-bgem3ko_v10asks_fixed600_train300.json",
+    "stats": "stats_v10_main.json"
+  }
+}

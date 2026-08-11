@@ -1,0 +1,24 @@
+{
+  "target": "특약·조항·조항성격·주제·검색어 5필드 (전부 LLM 생성)",
+  "method": "claude-sonnet(claude CLI, MAX_THINKING_TOKENS=0, 20청크 배치)이 5필드를 전부 생성. 구조 문맥 없이 청크 본문(최대 2,400자)만 보고 추론. JSON 문자열로 직렬화해 본문 앞에 접두, 240자 예산.",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 5114,
+    "ratio": 0.9586,
+    "distinct_values": 5037
+  },
+  "downstream": {
+    "used_as": "JSON 문자열을 청크 본문 앞에 접두해 함께 임베딩"
+  },
+  "nulls": {
+    "constant_dummy": {
+      "value": 0.4972,
+      "note": "J1_JSONCTX 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다. (run=run_fixed600_N1_DUMMY_dense_v3tr.jsonl)"
+    },
+    "shuffled_tag": null
+  },
+  "uniqueness": {
+    "unique_ratio": 0.9393,
+    "max_collision": 221
+  }
+}
