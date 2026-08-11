@@ -1,0 +1,44 @@
+{
+  "v11": {
+    "variant": "v11",
+    "n": 5335,
+    "n_total": 5335,
+    "n_assigned": 5324,
+    "ratio": 0.9979,
+    "n_with_alias": 5276,
+    "alias_attach_rate": 0.991,
+    "n_rider_keys": 106,
+    "n_article_keys": 304,
+    "rider_fill_rate": 0.9245,
+    "article_fill_rate": 0.8454,
+    "rider_mean_alias": 1.5566,
+    "article_mean_alias": 1.3914,
+    "rider_dropped": {
+      "부분문자열": 98,
+      "충돌": 0
+    },
+    "article_dropped": {
+      "부분문자열": 237,
+      "범용어": 5,
+      "충돌": 191
+    },
+    "collided_alias_total": 48,
+    "unique_alias_total": 511,
+    "collision_ratio": 0.0939,
+    "model": "gpt-5.4-mini",
+    "schema_version": "alias-lexicon-v11.0",
+    "unique_ratio": 0.1337,
+    "max_collision": 101,
+    "distinct_values": 1878,
+    "n_nonempty": 5324,
+    "avg_chars": 70.8,
+    "max_chars": 117,
+    "truncated_rate": 0.0,
+    "gate_g1_pass": true,
+    "gate_g2_rider_fill_pass": true,
+    "gate_g3_article_fill_pass": true,
+    "gate_g4_collision_pass": true,
+    "gate_g5_mean_alias_pass": true,
+    "gate_hard_all_pass": true
+  }
+}

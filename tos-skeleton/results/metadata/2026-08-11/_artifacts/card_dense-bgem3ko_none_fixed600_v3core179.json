@@ -1,0 +1,16 @@
+{
+  "target": "없음 — 청크 본문만 색인한 기준선",
+  "method": "메타데이터 없음. 청크 본문을 그대로 dense 색인.",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 0,
+    "ratio": 0.0
+  },
+  "downstream": {
+    "used_as": "메타데이터 없음"
+  },
+  "nulls": {
+    "constant_dummy": null,
+    "shuffled_tag": null
+  }
+}

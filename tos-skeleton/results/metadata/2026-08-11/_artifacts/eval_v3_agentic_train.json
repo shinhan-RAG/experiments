@@ -1,0 +1,55 @@
+{
+  "split": "train",
+  "chunkset": "fixed600",
+  "denominator": "v3 core_retrieval",
+  "n": 179,
+  "base": "A6_HIER2_agenticcodex",
+  "arms": [
+    {
+      "arm": "A0_BASE_agenticcodex",
+      "n": 179,
+      "R@1": 0.3631,
+      "R@5": 0.5363,
+      "R@10": 0.6257,
+      "R@20": 0.6257,
+      "R@100": 0.6257,
+      "MRR@10": 0.4397
+    },
+    {
+      "arm": "A6_HIER2_agenticcodex",
+      "n": 179,
+      "R@1": 0.3408,
+      "R@5": 0.581,
+      "R@10": 0.6816,
+      "R@20": 0.6816,
+      "R@100": 0.6816,
+      "MRR@10": 0.4468
+    },
+    {
+      "arm": "V11_ALIAS_agenticcodex",
+      "n": 179,
+      "R@1": 0.3073,
+      "R@5": 0.5642,
+      "R@10": 0.676,
+      "R@20": 0.676,
+      "R@100": 0.676,
+      "MRR@10": 0.4282
+    }
+  ],
+  "vs_base": {
+    "A0_BASE_agenticcodex": {
+      "gain": 19,
+      "loss": 27,
+      "net": -8,
+      "p_exact": 0.302,
+      "p_holm": 0.604
+    },
+    "V11_ALIAS_agenticcodex": {
+      "gain": 15,
+      "loss": 18,
+      "net": -3,
+      "p_exact": 0.7283,
+      "p_holm": 0.7283
+    }
+  }
+}

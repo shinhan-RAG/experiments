@@ -1,0 +1,101 @@
+{
+  "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+  "denominator": "v3 core_retrieval",
+  "split": "train",
+  "chunkset": "fixed600",
+  "n_gold": 179,
+  "source": "eval_v3_table.py --out-report",
+  "runs": {
+    "run_fixed600_A0_BASE_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2458,
+        "recall@5": 0.514,
+        "recall@10": 0.6034,
+        "recall@20": 0.6983,
+        "recall@100": 0.8603,
+        "recall@50": null,
+        "mrr@10": 0.362,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V11_ALIAS_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2849,
+        "recall@5": 0.6145,
+        "recall@10": 0.7095,
+        "recall@20": 0.7877,
+        "recall@100": 0.8659,
+        "recall@50": null,
+        "mrr@10": 0.425,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V11_RALIAS_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2737,
+        "recall@5": 0.6089,
+        "recall@10": 0.7095,
+        "recall@20": 0.7709,
+        "recall@100": 0.8659,
+        "recall@50": null,
+        "mrr@10": 0.4175,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V11_AALIAS_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2682,
+        "recall@5": 0.6201,
+        "recall@10": 0.6983,
+        "recall@20": 0.7821,
+        "recall@100": 0.8715,
+        "recall@50": null,
+        "mrr@10": 0.4165,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_N1_DUMMY_V11_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2626,
+        "recall@5": 0.5363,
+        "recall@10": 0.6089,
+        "recall@20": 0.7039,
+        "recall@100": 0.8715,
+        "recall@50": null,
+        "mrr@10": 0.3747,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_N2_SHUF_V1120260818_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.1453,
+        "recall@5": 0.3631,
+        "recall@10": 0.4804,
+        "recall@20": 0.6089,
+        "recall@100": 0.8324,
+        "recall@50": null,
+        "mrr@10": 0.2454,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_N2_SHUF_V1120260819_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.162,
+        "recall@5": 0.4078,
+        "recall@10": 0.5307,
+        "recall@20": 0.5866,
+        "recall@100": 0.7933,
+        "recall@50": null,
+        "mrr@10": 0.2617,
+        "l_star_median": null,
+        "n": 179
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "config_id": "dense-bgem3ko_llmjson-pure_fixed600_v3core179",
+  "date": "2026-08-11",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "1d392001cd2f9996be7de028665cb3b551378ab844a3528fd08221b81b99dd73",
+    "code_commit": "eb1ddac52571f060d006f0138d255ed6f978bbad",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "v3core179",
+    "n": 179,
+    "note": "docs/QASet/v3_retrieval core_retrieval train — 적격 조건은 단일조회 AND 근거그룹 1개 AND 한 구절로 답 완결이며 청크 개수는 판단에 쓰지 않는다. 동치 인용은 그룹 OR로 묶는다."
+  },
+  "config": {
+    "target": "특약·조항·조항성격·주제·검색어 5필드 (전부 LLM 생성)",
+    "method": "claude-sonnet(claude CLI, MAX_THINKING_TOKENS=0, 20청크 배치)이 5필드를 전부 생성. 구조 문맥 없이 청크 본문(최대 2,400자)만 보고 추론. JSON 문자열로 직렬화해 본문 앞에 접두, 240자 예산.",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5114,
+      "ratio": 0.9586,
+      "distinct_values": 5037
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9393,
+      "max_collision": 221
+    },
+    "downstream": {
+      "used_as": "JSON 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2793,
+    "R@5": 0.5922,
+    "R@10": 0.676,
+    "R@20": 0.7654,
+    "R@50": null,
+    "R@100": 0.8939,
+    "MRR@10": 0.4155,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "random_vector": null,
+    "constant_dummy": {
+      "value": 0.4972,
+      "note": "J1_JSONCTX 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다. (run=run_fixed600_N1_DUMMY_dense_v3tr.jsonl)"
+    },
+    "shuffled_tag": null
+  },
+  "limitations": [
+    "분모(v3_retrieval core)는 자동 1차 분류이고 사람이 한 건도 검수하지 않았다. 500문항 전부 pending_review이고 FROZEN_BENCHMARK.json = DRAFT_NOT_FROZEN이다. 이 수치를 인용할 때 이 조건을 반드시 같이 말해야 한다.",
+    "gold_sha가 2026-08-05~08-10 등록본(구 정답셋 train164) 및 2026-08-11 오전(v2_250212 train300)과 모두 다르다. 세 분모의 절대값을 직접 비교할 수 없다. 같은 벡터·같은 검색 코드로 A0_BASE가 .4573(n=164) / .5000(n=300) / .5140(v3core179)으로 움직인다.",
+    "분모가 사업구분 문서커버리지에 76.5%(137/179) 쏠려 있고, 메타데이터의 이득이 사실상 그 구간에서만 나온다. 커버리지 제외 42건에서 A6_HIER2는 기준선과 소수점까지 같다(.3095 vs .3095).",
+    "주소 메타데이터와 질문 사이에 순환성이 있다. 질문에 특약 정식명칭이 들어 있는 88건 중 81건이 문서커버리지(문서에서 만든 질문)다. 실제 고객 질문 구간(고객상담·챗봇·LICO)은 42건 중 7건만 특약명을 쓴다.",
+    "코퍼스가 문서 1건이라 문서 선택 단계를 아예 평가하지 않는다. 실제 운영에서는 parsed_md 1,223개 중에서 골라야 하고 이름이 겹치는 판본이 최소 3종 실재한다. 주소 메타데이터의 값은 다문서 조건에서 달라질 수 있다.",
+    "청킹이 최선 구성이 아니다. fixed600(겹침 100)은 v6~v10 계열과 비교하기 위한 선택이며, 2026-08-10 미등록 관측으로 겹침 제거만으로 +4.88%p였다.",
+    "v3 test(140문항)는 열지 않았다. 전부 train 판단이다.",
+    "R@50과 L_star_median은 eval_v3_table.py가 재지 않으므로 null이다(0이 아니다).",
+    "two_pass_sha가 없다 — 이 분모에서 2회 실행 대조를 하지 않았으므로 재현 검증되지 않은 상태다.",
+    "검색 널(query_shuffle·random_vector)은 이 분모에서 다시 재지 않았다. 2026-08-10 등록본(train164)에서 각각 .0094 / .0026으로 측정된 값이 있으나 분모가 달라 여기에 옮겨 적지 않는다.",
+    "이 분모에서 shuffled_tag(메타데이터 오배정 널)를 재지 않았다. null이다. constant_dummy는 N1_DUMMY(v6 문자열 길이일치)로 측정했다.",
+    "생성 모델이 claude-sonnet이고 v9~v11은 codex gpt-5.4-mini다. as-is 대비 차이는 스키마와 모델이 동시에 다른 2요인 비교다.",
+    "재측정본이다. 2026-08-07 등록본(train164)에서 .5488이던 값이 같은 벡터로 .5922가 된다 — 분모 차이다."
+  ],
+  "experiment": "as-is(v6 LLM 5필드) 재측정 — v3 core 분모",
+  "stats": {
+    "split": "train",
+    "chunkset": "fixed600",
+    "denominator": "v3 core_retrieval",
+    "n": 179,
+    "base": "A0_BASE_dense",
+    "arms": [
+      {
+        "arm": "A0_BASE_dense",
+        "n": 179,
+        "R@1": 0.2458,
+        "R@5": 0.514,
+        "R@10": 0.6034,
+        "R@20": 0.6983,
+        "R@100": 0.8603,
+        "MRR@10": 0.362
+      },
+      {
+        "arm": "J2_JSONPURE_dense",
+        "n": 179,
+        "R@1": 0.2793,
+        "R@5": 0.5922,
+        "R@10": 0.676,
+        "R@20": 0.7654,
+        "R@100": 0.8939,
+        "MRR@10": 0.4155
+      },
+      {
+        "arm": "N1_DUMMY_dense",
+        "n": 179,
+        "R@1": 0.2123,
+        "R@5": 0.4972,
+        "R@10": 0.5866,
+        "R@20": 0.676,
+        "R@100": 0.838,
+        "MRR@10": 0.3339
+      }
+    ],
+    "vs_base": {
+      "J2_JSONPURE_dense": {
+        "gain": 17,
+        "loss": 3,
+        "net": 14,
+        "p_exact": 0.0026,
+        "p_holm": 0.0052
+      },
+      "N1_DUMMY_dense": {
+        "gain": 5,
+        "loss": 8,
+        "net": -3,
+        "p_exact": 0.5811,
+        "p_holm": 0.5811
+      }
+    }
+  },
+  "_source": {
+    "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+    "eval": "eval_v3_reg_v6.json",
+    "run": "run_fixed600_J2_JSONPURE_dense_v3tr.jsonl",
+    "nulls": null,
+    "quality": "cards/dense-bgem3ko_llmjson-pure_fixed600_v3core179.json",
+    "stats": "eval_v3_reg_v6_table.json"
+  }
+}

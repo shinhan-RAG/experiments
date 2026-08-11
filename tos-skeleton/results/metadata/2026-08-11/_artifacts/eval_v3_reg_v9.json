@@ -1,0 +1,49 @@
+{
+  "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+  "denominator": "v3 core_retrieval",
+  "split": "train",
+  "chunkset": "fixed600",
+  "n_gold": 179,
+  "source": "eval_v3_table.py --out-report",
+  "runs": {
+    "run_fixed600_A0_BASE_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2458,
+        "recall@5": 0.514,
+        "recall@10": 0.6034,
+        "recall@20": 0.6983,
+        "recall@100": 0.8603,
+        "recall@50": null,
+        "mrr@10": 0.362,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_V9_QSURF_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3017,
+        "recall@5": 0.6369,
+        "recall@10": 0.7263,
+        "recall@20": 0.7598,
+        "recall@100": 0.8883,
+        "recall@50": null,
+        "mrr@10": 0.4451,
+        "l_star_median": null,
+        "n": 179
+      }
+    },
+    "run_fixed600_N1_DUMMY_V9_dense_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.2235,
+        "recall@5": 0.5084,
+        "recall@10": 0.5922,
+        "recall@20": 0.6983,
+        "recall@100": 0.8603,
+        "recall@50": null,
+        "mrr@10": 0.3425,
+        "l_star_median": null,
+        "n": 179
+      }
+    }
+  }
+}

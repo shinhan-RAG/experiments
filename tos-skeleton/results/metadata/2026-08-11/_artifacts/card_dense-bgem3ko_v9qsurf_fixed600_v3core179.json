@@ -1,0 +1,24 @@
+{
+  "target": "청크가 답이 되는 질문을 층위별로 3층(범주 질문 / 구체 질문 / 고객 구어체 표현)으로 투영한 문자열. 조각을 서술하지 않고 조각에 물어볼 수 있는 것만 적는다.",
+  "method": "gpt-5.4-mini(codex CLI, model_reasoning_effort=low, --output-schema 강제, 20청크 배치)가 3필드를 전부 생성 — v8(형제 대조 생성, 2026-08-10 등록)과 동일한 생성 모델·전송 계층(v9 vs v8 비교에서는 스키마 1요인만 다름). 정규식 필드 0개, LLM 100% 생성. `--variant pure`(구조 컨텍스트 미제공, 본문 최대 2,400자만). 배치는 전송 최적화일 뿐 형제 대조 지시는 없다(v8의 대조 생성과 다름). 240자 예산 prefix 배치, dense 단일 벡터. `wide`는 형제와 공유되어도 허용하고 `narrow`의 본문 그라운딩은 강제하지 않고 측정만 한다. 주의: as-is(v6, J2_JSONPURE)는 claude-sonnet으로 생성됐으므로 v9 vs as-is 비교는 스키마·모델이 동시에 다른 2요인 비교다(스키마 1요인 아님).",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 5287,
+    "ratio": 0.991,
+    "distinct_values": 5195
+  },
+  "downstream": {
+    "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩"
+  },
+  "nulls": {
+    "constant_dummy": {
+      "value": 0.5084,
+      "note": "V9_QSURF 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다. (run=run_fixed600_N1_DUMMY_V9_dense_v3tr.jsonl)"
+    },
+    "shuffled_tag": null
+  },
+  "uniqueness": {
+    "unique_ratio": 0.9786,
+    "max_collision": 20
+  }
+}

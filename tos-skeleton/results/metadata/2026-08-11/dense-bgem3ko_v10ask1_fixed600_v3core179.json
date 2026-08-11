@@ -1,0 +1,148 @@
+{
+  "config_id": "dense-bgem3ko_v10ask1_fixed600_v3core179",
+  "date": "2026-08-11",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "1d392001cd2f9996be7de028665cb3b551378ab844a3528fd08221b81b99dd73",
+    "code_commit": "eb1ddac52571f060d006f0138d255ed6f978bbad",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "v3core179",
+    "n": 179,
+    "note": "docs/QASet/v3_retrieval core_retrieval train — 적격 조건은 단일조회 AND 근거그룹 1개 AND 한 구절로 답 완결이며 청크 개수는 판단에 쓰지 않는다."
+  },
+  "config": {
+    "target": "청크가 답이 되는 **구체 질문 3~4개** 한 축만. v9의 3층 중 [세부](narrow) 축만 남기고 예산 전부를 그 축에 준다 — v9 절제에서 [세부] 단독(.5610)이 3층 전체(.5427)보다 높았던 관측(08-10 train164)을 검정한다. 각 질문은 본문 실재 표기를 감싸고 물음표로 끝나며 서로 다른 각도여야 한다.",
+    "method": "gpt-5.4-mini(codex CLI, model_reasoning_effort=low, --output-schema 강제, 20청크 배치)가 `asks` 한 필드만 생성 — **v9와 생성 모델·전송 계층·배치 크기·변형(pure)·청크셋이 전부 같고 다른 것은 스키마(질문 개수)뿐이다.** 그래서 v10 vs v9는 1요인 비교다. 정규식 필드 0개, LLM 100% 생성. sanitize_v10이 항목당 40자 클립·본문복사 폐기·정규형 중복 제거를 코드로 강제하고, 본문 그라운딩은 강제하지 않고 측정만 한다(v8이 그라운딩을 하드 강제해 판별 지표를 전부 올리고도 R@5가 -2.5%p였던 전례). `[세부]` 라벨로 본문 앞에 접두, 240자 예산(최악 174자, 절단 0%). 라벨 문자열을 v9의 `[세부]`와 **일부러 같게** 두었다 — 태그까지 같아야 V10_ASKS vs V9_NARROW가 질문 개수 1요인 비교가 된다. 주의: as-is(v6, J2_JSONPURE)는 claude-sonnet으로 생성됐으므로 v10 vs as-is 비교는 2요인이다(스키마 1요인 아님).",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5287,
+      "ratio": 0.991,
+      "distinct_values": 5219
+    },
+    "uniqueness": {
+      "unique_ratio": 0.9854,
+      "max_collision": 20
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "dense"
+    }
+  },
+  "metrics": {
+    "R@1": 0.2793,
+    "R@5": 0.5419,
+    "R@10": 0.6313,
+    "R@20": 0.7095,
+    "R@50": null,
+    "R@100": 0.8715,
+    "MRR@10": 0.3979,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "random_vector": null,
+    "constant_dummy": {
+      "value": 0.514,
+      "note": "V10_ASKS 메타데이터 문자열과 길이가 같은 '〇' 상수. 질의와 문자 바이그램이 겹치지 않는다. (run=run_fixed600_N1_DUMMY_V10_dense_v3tr.jsonl)"
+    },
+    "shuffled_tag": null
+  },
+  "limitations": [
+    "⚠ v10은 사전등록 분모(v2_250212 train300)에서 이미 기각됐다(널 미통과, p=.775). 이 카드는 분모를 바꿔 다시 잰 이력이며 판정 변경이 아니다 — 사전등록 분모에서 기각된 실험을 다른 분모의 수치로 되살려 읽으면 안 된다.",
+    "이 분모에서도 A0_BASE(.5140) 대비 +3.91%p, McNemar exact p=.2100, Holm p=.6301로 비유의다. 실효 MDE(+5.6%p) 아래이기도 하다.",
+    "절제(V10_ASK1 .5419)와의 차이 +1.12%p도 MDE 아래다. 개수 가설은 이 분모에서도 지지되지 않는다.",
+    "분모(v3_retrieval core)는 자동 1차 분류이고 사람이 한 건도 검수하지 않았다. FROZEN_BENCHMARK.json = DRAFT_NOT_FROZEN이다.",
+    "gold_sha가 2026-08-05~08-11 오전 등록본과 모두 다르다. 세 분모의 절대값을 직접 비교할 수 없다.",
+    "이 분모에서 shuffled_tag(메타데이터 오배정 널)를 재지 않았다. null이다. constant_dummy는 N1_DUMMY_V10로 측정했다.",
+    "검색 널(query_shuffle·random_vector)은 이 분모에서 다시 재지 않았다. 사전등록 분모에서 측정된 값이 있으나 분모가 달라 옮겨 적지 않는다.",
+    "R@50과 L_star_median은 eval_v3_table.py가 재지 않으므로 null이다.",
+    "two_pass_sha가 없다 — 이 분모에서 2회 실행 대조를 하지 않았다.",
+    "생성 모델 gpt-5.4-mini는 deprecated 예정이다(대체 gpt-5.6-luna).",
+    "코퍼스가 문서 1건이라 문서 선택 단계를 평가하지 않는다.",
+    "v3 test(140문항)는 열지 않았다."
+  ],
+  "experiment": "v10 절제(첫 질문 1개) — v3 core 분모 재측정 (판정 변경 아님)",
+  "stats": {
+    "split": "train",
+    "chunkset": "fixed600",
+    "denominator": "v3 core_retrieval",
+    "n": 179,
+    "base": "A0_BASE_dense",
+    "arms": [
+      {
+        "arm": "A0_BASE_dense",
+        "n": 179,
+        "R@1": 0.2458,
+        "R@5": 0.514,
+        "R@10": 0.6034,
+        "R@20": 0.6983,
+        "R@100": 0.8603,
+        "MRR@10": 0.362
+      },
+      {
+        "arm": "V10_ASKS_dense",
+        "n": 179,
+        "R@1": 0.2905,
+        "R@5": 0.5531,
+        "R@10": 0.648,
+        "R@20": 0.7542,
+        "R@100": 0.8715,
+        "MRR@10": 0.4074
+      },
+      {
+        "arm": "V10_ASK1_dense",
+        "n": 179,
+        "R@1": 0.2793,
+        "R@5": 0.5419,
+        "R@10": 0.6313,
+        "R@20": 0.7095,
+        "R@100": 0.8715,
+        "MRR@10": 0.3979
+      },
+      {
+        "arm": "N1_DUMMY_V10_dense",
+        "n": 179,
+        "R@1": 0.2011,
+        "R@5": 0.514,
+        "R@10": 0.5978,
+        "R@20": 0.6872,
+        "R@100": 0.8492,
+        "MRR@10": 0.3325
+      }
+    ],
+    "vs_base": {
+      "V10_ASKS_dense": {
+        "gain": 15,
+        "loss": 8,
+        "net": 7,
+        "p_exact": 0.21,
+        "p_holm": 0.6301
+      },
+      "V10_ASK1_dense": {
+        "gain": 14,
+        "loss": 9,
+        "net": 5,
+        "p_exact": 0.4049,
+        "p_holm": 0.8097
+      },
+      "N1_DUMMY_V10_dense": {
+        "gain": 3,
+        "loss": 3,
+        "net": 0,
+        "p_exact": 1.0,
+        "p_holm": 1.0
+      }
+    }
+  },
+  "_source": {
+    "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+    "eval": "eval_v3_reg_v10.json",
+    "run": "run_fixed600_V10_ASK1_dense_v3tr.jsonl",
+    "nulls": null,
+    "quality": "cards/dense-bgem3ko_v10ask1_fixed600_v3core179.json",
+    "stats": "eval_v3_reg_v10_table.json"
+  }
+}
