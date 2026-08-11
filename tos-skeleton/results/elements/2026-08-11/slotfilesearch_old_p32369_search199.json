@@ -1,0 +1,90 @@
+{
+  "config_id": "slotfilesearch_old_p32369_search199",
+  "date": "2026-08-11",
+  "author": "donggyu",
+  "experiment": "sfs-v8r",
+  "repro": {
+    "doc_sha256": "279f134bedef2a34cea615d2a3149360ce85b40fb46efdebaae876cf9cf7b7ec",
+    "gold_sha": "b3dc7162491f67ba27c15afdf112e9edef2c357a0736689019bfc3792cce6a9e",
+    "code_commit": "7f9c019828afc4a47982980779eafd506a95156f",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "search199",
+    "n": 199,
+    "note": "확정 210에서 집계층 11문항(|Gold|>=30) 분리. |Gold| 평균 2.30 · Recall@5 구조 상한 .9801"
+  },
+  "config": {
+    "channel": "other",
+    "channel_params": {
+      "retriever": "SlotFileSearch (SFSCore-32369 재구현)",
+      "candidate": "슬롯 필드 간 AND · 필드 내 OR · fuzzy_contains + Q1 토큰 정규식",
+      "limit": null,
+      "ranker": "BM25 char-bigram",
+      "ranker_params": { "tokenizer": "char-bigram", "k1": 1.2, "b": 0.25 },
+      "query_router": "router5 — 정규식 기반. contract·subject·role·article·qualifier만 생성(table·reference·schema는 질의측 미생성)"
+    },
+    "schema": {
+      "name": "old",
+      "fields": ["contract", "subject", "role", "article", "table", "qualifier", "reference", "schema"],
+      "extractor": "ma_slotfs/out/element_tags_v2.jsonl + slot_filesearch.py:81 canonical_old. contract=contract_scope+topic · subject=aliases+table_title+formula_subject · role=semantic_role(단일값) · article=조번호만 · table=headers만 · qualifier=values+conditions · reference=없음 · schema=element_type. 출처 Git 미추적 — 작성자 확정 불가"
+    },
+    "split": {
+      "name": "p32369",
+      "n_elements": 32369,
+      "median_chars": 26,
+      "rule": "ma_slotfs/out/elements.jsonl. 기존 p0(6,852)와 다른 분할"
+    }
+  },
+  "metrics": {
+    "R@1": 0.0399,
+    "R@5": 0.107,
+    "R@10": 0.1415,
+    "R@20": 0.1586,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.0951,
+    "L_star_median": null
+  },
+  "metrics_definition": {
+    "kind": "fractional_recall@k",
+    "formula": "|TopK ∩ Gold| / |Gold| 의 문항 평균(macro)",
+    "warning": "기존 등록값(exp23 계보)의 R@K는 success@k. 같은 축에 놓을 수 없음"
+  },
+  "metrics_success": {
+    "kind": "success@k",
+    "Success@5": 0.1357,
+    "Precision@5": 0.0312,
+    "note": "기존 등록값과 직접 비교 가능한 정의"
+  },
+  "diagnostics": {
+    "candidate_median": 8,
+    "candidate_p90": 3556,
+    "candidate_pool_ceiling@5": 0.2448,
+    "structural_ceiling@5": 0.9801,
+    "per_gold_preservation_macro": {
+      "contract": 0.4935,
+      "subject": 0.5293,
+      "role": 0.7946,
+      "qualifier": 0.65,
+      "note": "필드가 생성된 문항 한정. article·table·reference·schema는 질의측 생성 0"
+    },
+    "note": "태그 AND 필터가 후보를 중앙 8개로 축소하며 gold를 함께 배제. 후보 풀 천장 자체가 .2448이므로 랭킹을 아무리 개선해도 그 이상 불가"
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "지표 정의: R@K가 fractional recall@k. 기존 등록값의 R@K는 success@k이므로 나란히 비교하면 안 됨",
+    "평가 단위 32,369(p32369)로 기존 p0(6,852)와 다름",
+    "후보 풀 천장이 .2448 — 태그 hard AND 필터가 gold를 후보 단계에서 배제. 이 조건에서 Recall@5 목표 .70은 구조적으로 도달 불가",
+    "two_pass_sha 미측정",
+    "확정 210은 개발셋이며 25라운드 이상 재사용됨. 상방 편향 가능성",
+    "널 대조 미측정 — 이 arm의 shuffled_tag 널은 별도 조건(SFS-emu, BM25 랭킹)에서만 수행됨. slotfilesearch_new 등록값의 nulls 참조",
+    "태그 산출물의 출처가 Git 미추적이라 작성자·생성 이력을 확정할 수 없음",
+    "평가셋 알려진 결함(README §5) 전부 해당"
+  ]
+}
