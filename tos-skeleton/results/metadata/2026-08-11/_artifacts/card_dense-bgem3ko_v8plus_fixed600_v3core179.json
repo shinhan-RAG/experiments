@@ -1,0 +1,16 @@
+{
+  "target": "v8 대조 생성 6필드(스키마는 100% LLM)에 조립 단계에서만 정규식 주소([특약]·[조항])를 더한 실용 대조. LLM 필드가 정규식 주소를 대체할 수 있는지 가르는 arm이다. 주소가 [소속]의 역할을 대신하므로 [소속]은 뺀다 — 남기면 같은 정보를 두 번 적는다.",
+  "method": "**복원본이다.** 이력 문서(L202)는 'v8은 스키마·sanitize 코드와 원료 산출물이 소실돼 다시 만들 수 없다'고 기록했으나 사실이 아니었다 — 원료(results/metadata/2026-08-10/_artifacts/llm_meta_json_v8_fixed600.jsonl, 5,151행, 파싱 에러 0)는 온전했고 소실된 것은 build_views.py::ARMS의 arm 함수 3개뿐이었다. 복구 후 재생성한 view가 생존 view와 **SHA-256 바이트 동일**이라 기존 벡터를 그대로 재사용했다(재임베딩 0회). 생성 절차는 08-10 등록본과 같다: 형제 묶음((특약, 조) 셀, 외톨이는 조제목 전역으로 승격) 단위로 최대 20청크를 한 프롬프트에 함께 넣고 구조화 출력(JSON Schema 강제)으로 6필드를 생성하고(5,335→5,151), 후처리가 길이 상한·본문 미접지 mark 폐기·axis 금칙어 대체·형제 공유값 폐기·그룹내 중복 only/ask 폐기를 코드로 강제한다. 조립 시 [특약]·[조항](정규식, build_structure.py)을 앞에 두고 [소속]을 제외한다. 주소는 A6_HIER2와 **같은 소스(st의 rider/article, clean_rider)·같은 상한(40/40)**이라 A6_HIER2가 이 arm의 'LLM 0개' 절제 대조가 된다. 240자 예산에 절단률 0.0%. ⚠ **게이트 조건은 '원료에 레코드가 존재하는가'이지 'LLM 블록이 비었는가'가 아니다** — 원료에 레코드가 없는 청크 184개(5,335−5,151)에는 주소도 붙이지 않는다(주소만 붙이면 V8_CONTRAST와 커버리지가 갈려 1요인 비교가 깨진다). 레코드는 있으나 axis/mark/ask/only가 전부 빈 48개 청크에는 정규식 주소가 붙는다. `if not lm: return []` 한 줄이 이 차이를 만든다. ⚠ **원료는 gpt-5.4-mini(codex)가 생성했다** — 근거는 results/metadata/2026-08-10/_artifacts/meta_quality_v8_fixed600.json의 '모델': 'gpt-5.4-mini' · '수정본(FIX)': true 기록이고, gen_meta_claude.py에는 v8 참조가 0건이다. v9·v10·v11과 생성 모델이 같으므로 **v8 vs v9/v10/v11은 생성 모델이 통제된 스키마 1요인 비교**이며 차이를 스키마 효과로 귀속할 수 있다. (등재 초안에 claude-sonnet 생성이라고 잘못 적었던 것을 정정한다 — claude-sonnet이 생성한 것은 v6(J1_JSONCTX·J2_JSONPURE)다.)",
+  "coverage": {
+    "n_total": 5335,
+    "n_assigned": 5151,
+    "ratio": 0.9655
+  },
+  "downstream": {
+    "used_as": "정규식 주소 + LLM 대조 블록을 청크 본문 앞에 접두해 함께 임베딩. 스키마 자체는 전 필드 LLM 생성이며 정규식은 조립 단계에서만 개입한다."
+  },
+  "nulls": {
+    "constant_dummy": null,
+    "shuffled_tag": null
+  }
+}
