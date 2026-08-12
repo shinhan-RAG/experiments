@@ -1,0 +1,171 @@
+{
+ "package": "semtag 최종 조합 재현 패키지",
+ "generated_for": "미팅 3항 — 다른 사람이 바로 작업 재현할 수 있도록",
+ "confidentiality": "코드·SHA·수치만 포함. 원자료(약관 md·QA·gold·태그)는 별도 경로",
+ "최종조합": {
+  "적재_2_5_태그": {
+   "element_태그": {
+    "file": "out/v2ds/tags_run1.jsonl",
+    "sha256": "edb581c53f15833bf4ae87064ab0c066a0bc39369aab2a032831f3ea49a677f3",
+    "설명": "04B 8슬롯. contract/article/schema=구조규칙, 나머지=LLM"
+   },
+   "질의_태그": [
+    {
+     "file": "out/v2ds/qtags_A_run1.jsonl",
+     "sha256": "91815a0869941e91af17fee25304f94b4d22def3685c20943be590fbbeef0766"
+    },
+    {
+     "file": "out/v2ds/qtags_B_run1.jsonl",
+     "sha256": "aa6bd2d96626ef982a795fea4a03414222ea79ec4870f4aac6457936c14528b6"
+    },
+    {
+     "file": "out/v2ds/qtags_v3_extra.jsonl",
+     "sha256": "81d28b56a6c298e3d2d9af8d11e615d695a6631e5c373c485ddb5d9526dfabac",
+     "설명": "V2DS-44 생성 127문항 (v3 348 완주용)"
+    }
+   ],
+   "활성_슬롯": [
+    "contract",
+    "subject",
+    "role",
+    "qualifier",
+    "schema"
+   ],
+   "비활성_근거": {
+    "article": "질의측 생성률 .0000",
+    "reference": ".0000",
+    "table": ".0200",
+    "schema_주의": "생성률 .0343 — 사실상 사문이나 계약상 유지"
+   }
+  },
+  "검색_3_3": {
+   "결합": "coordination level matching — 슬롯 합집합, '맞은 슬롯 수' 내림차순",
+   "어휘채널": "질문 토큰(TOKEN_RE − STOP)이 element 본문에 있으면 조정수준 +1",
+   "동점": "T1a = 맞은 슬롯 수 → P-section 문서순(line_start,line_end,element_id)",
+   "구현": {
+    "file": "v2ds32_tiebreak.py",
+    "entry": "TieBreak.ordered_tie(qid,'T1a')",
+    "sha256": "addbf117edb20f633ec0cf735e5c58fd9a658098f312a83cde4f25af87efb05f"
+   },
+   "금지": "BM25 · reranker · 임베딩 · 학습 기반 정렬 미사용"
+  },
+  "예산_하네스_S5": {
+   "page": 40,
+   "preview": 160,
+   "search_cap": 20,
+   "read_cap": 8,
+   "output_cap": 64000,
+   "submit": "순위 최대 10개",
+   "도구": [
+    "search",
+    "read",
+    "submit"
+   ],
+   "구현": {
+    "file": "v2ds46_agent_tools.py",
+    "sha256": "1e6d03485c573700178f3dbba06958dd0b18e972805c6e356c9fc6bbf3163e63"
+   },
+   "주의": "에이전트는 태그를 보지 못함 — 태그는 오프라인 정렬 함수의 입력"
+  },
+  "우주": {
+   "file": "out/v2ds/elements_rev4.jsonl",
+   "sha256": "36e8c9e66026a07a4999c018d25bbff51a59974836d45b1606eabaad28b98346",
+   "n_element": 5924,
+   "분할": "P-section (특약>절>조 경계, MAXC 4000 MAXSPAN 50)",
+   "source_doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914"
+  },
+  "QA": {
+   "원본": "noah_qaset.zip",
+   "sha256": "98662c1bc3107cc6c26395a4cb14f12be9757db4c5c255a7928484fff6a4ecdb",
+   "재앵커링": {
+    "file": "out/v2ds/v2ds30_noah_v3_train_anchored_full.jsonl",
+    "sha256": "17bbb12a6d685952c4c77967ba757655e54d5d7138fc2c747e8c8bda04528f10",
+    "n": 337,
+    "제외": "not_answerable 10 + 인용 미해소 1",
+    "규칙": "출처 인용문을 공백정규화 exact substring 으로 md 에 재앵커링"
+   }
+  }
+ },
+ "code_sha256": {
+  "v2ds_04b_final_filesearch.py": "425f64e4fc3987414c4f994e1db05be02b7674ff2abeaba6b67a7dfb32580d9a",
+  "v2ds10_search.py": "c5dcebf76d0f6bba0fd96197ece67cb414c0ec32a3e957030766f79851a7329e",
+  "v2ds28_slotmin_gate.py": "1576861e09d4564d088129d0239b373ce983a359571741a6761b5462e4999c4d",
+  "v2ds32_tiebreak.py": "addbf117edb20f633ec0cf735e5c58fd9a658098f312a83cde4f25af87efb05f",
+  "v2ds34_tagversion.py": "e1278adce87d75fc5c17d1e9087aebf0e248498308569e787fed4f963c69a6e2",
+  "v2ds30_noah_adapter.py": "be9f0f049247d7cd2bc0c4183328330074d23df8f987ebc9e6e5440339c4ec16",
+  "v2ds44_qtag_gen.py": "82c8de3bb4e2d4ed789c4a56c191b9406c60ed208080afec17e073f2074e46c0",
+  "v2ds45_v3_engine.py": "06242f77053ca13e85e20e8f2ad3fe5ea068fc8ab4506dfc72c26e98d8253068",
+  "v2ds46_agent_tools.py": "1e6d03485c573700178f3dbba06958dd0b18e972805c6e356c9fc6bbf3163e63",
+  "v2ds46_runner.py": "3d6f28dc22e8646f5a90474bfd9de5f9cde6ccba324a8dbf6eb304c6c231104d",
+  "v2ds33_eval.py": "ea60f37c4017c09899e172d87dbc206e353d91fb67733d633c0e019d26e3c6b3",
+  "v2ds43_layer_split.py": "2c9d4ecac88e25df14d6f0c422dd8a96dc5f74b54cb84877e50f0633b6f70999"
+ },
+ "결정론_재현_기준값": {
+  "설명": "★ 환경 검증용 체크섬입니다. LLM 0회라 누가 돌려도 소수점까지 동일해야 합니다. **성능 보고 값이 아닙니다** — 성능은 아래 '에이전트_실측_성능' 을 인용하십시오.",
+  "v2ds32_tiebreak --dataset v3 --core-only": {
+   "T1a_R@5": 0.4322,
+   "T1a_MRR@10": 0.2627,
+   "T1a_10p_VisibleCeiling": 0.7881
+  },
+  "v2ds34_tagversion --dataset v3 --core-only": {
+   "OLD_a_R@5": 0.2712,
+   "NEW_a_R@5": 0.4322
+  },
+  "v2ds43_layer_split (core118)": {
+   "G0_R@5": 0.0085,
+   "G1_R@5": 0.3729,
+   "G2_R@5": 0.2288,
+   "G3_R@5": 0.4322
+  },
+  "v2ds43_layer_split --all (214)": {
+   "G1_R@5": 0.2438,
+   "G3_R@5": 0.2765
+  }
+ },
+ "표기_규약": {
+  "Recall@K": "fractional evidence-group — Top-K가 덮은 group 수 / 전체 group 수",
+  "Success@K": "1[group 1개 이상 회수]",
+  "Precision@5": "분모 항상 5",
+  "_oracle 접미": "gold-aware 상한 — 실측 Recall 아님. 같은 열에 놓지 말 것",
+  "R@K 표기 금지": "Recall@K / Success@K 를 반드시 구분 표기",
+  "계보 분리": "에이전트 실측과 결정론을 같은 표에 병합 금지"
+ },
+ "필수_유보": [
+  "C 레벨 수치는 '문서 1건이 이미 골라진 상태' 가정. 11만건에서는 A/B 깔때기(Index·Frontmatter)의 문서 선택 성능이 곱해짐",
+  "core_retrieval=True 는 193/202가 evidence group 1개인 쉬운 층 — 모집단 명시 필수",
+  "test 149 미개봉. noah v3 는 v2 대비 분할이 재추첨돼(205문항 이동) v3-test 를 확증셋으로 쓸 수 없음",
+  "에이전트는 태그를 보지 못함 — 설계서 2.5의 '이정표' 방식은 미구현"
+ ],
+ "body_or_question_text_embedded": false,
+ "에이전트_실측_성능": {
+  "설명": "실제 성능 수치. 에이전트가 순위 10개를 제출한 ITT 결과. 결정론과 같은 표에 놓지 말 것",
+  "최고_조합_S5_NEW_CLM": {
+   "모집단": "noah v3 core 30문항 (계보 비교 가능 부분집합)",
+   "Recall@1": 0.4667,
+   "Recall@5": 0.6667,
+   "Recall@10": 0.7,
+   "MRR@10": 0.5708,
+   "세션": "60 (reps 1) · claude-sonnet-5 · 유효 60/60"
+  },
+  "동일_30문항_결정론_대조": {
+   "Recall@5": 0.3333,
+   "MRR@10": 0.2016,
+   "해석": "에이전트가 정렬을 재배열해 R@5 를 .3333 → .6667 로 끌어올림"
+  },
+  "OLD_태그_대조_S5_동일30": {
+   "Recall@5": 0.5667,
+   "MRR@10": 0.47,
+   "주의": "OLD/NEW 부호가 예산에 따라 반전 — S4a 예산에서는 OLD 가 높았음. 미확정"
+  },
+  "완주_진행중": {
+   "대상": "noah v3 train 337문항 × 4 arm (태그 OLD/NEW × 검색기 AND/CLM)",
+   "상태": "실행 중 — 완료 시 이 절을 갱신"
+  }
+ },
+ "지표_역할_구분": {
+  "결정론_재현_기준값": "환경 검증용. 재현 시 이 값이 나와야 입력·코드가 같은 것",
+  "에이전트_실측_성능": "보고용 성능 수치",
+  "_oracle 접미": "gold-aware 상한. 실측 아님",
+  "주의": "결정론 .4322(core118) 와 에이전트 .6667(core30) 은 프로토콜·모집단이 모두 달라 비교 불가"
+ }
+}

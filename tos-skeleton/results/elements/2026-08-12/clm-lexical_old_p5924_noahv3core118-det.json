@@ -1,0 +1,91 @@
+{
+ "config_id": "clm-lexical_old_p5924_noahv3core118-det",
+ "date": "2026-08-12",
+ "author": "donggyu-ralph",
+ "experiment": "검색기 × 태그 2×2 — 결정론(슬롯만, 어휘채널 CLM arm 에만)",
+ "repro": {
+  "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+  "gold_sha": "17bbb12a6d685952c4c77967ba757655e54d5d7138fc2c747e8c8bda04528f10",
+  "code_commit": "b5e234b75cb0",
+  "two_pass_sha": null
+ },
+ "population": {
+  "name": "noah v3 train core_retrieval=True 전수",
+  "n": 118,
+  "note": "쉬운 층"
+ },
+ "config": {
+  "channel": "file_search",
+  "channel_params": {
+   "retriever": "CLM(coordination level matching)",
+   "candidate": "슬롯 합집합 ∪ Q1 어휘채널",
+   "limit": null,
+   "ranker": "맞은 슬롯 수 내림차순 → P-section 문서순",
+   "ranker_params": {
+    "lexical_channel_as_slot": true,
+    "tie_break": "line_start,line_end,element_id"
+   },
+   "query_router": "query_slots (규칙: contract/article/schema) + LLM qtags (subject/role/qualifier/reference/table)",
+   "forbidden_not_used": [
+    "BM25",
+    "reranker",
+    "embedding",
+    "learned ranking"
+   ]
+  },
+  "schema": {
+   "name": "OLD tag schema",
+   "fields": [
+    "contract",
+    "subject",
+    "role",
+    "qualifier",
+    "schema"
+   ],
+   "extractor": "canonical_old 이식(조제목→role, VAL_RX/COND_RX→qualifier, aliases→subject)"
+  },
+  "split": {
+   "name": "P-section",
+   "n_elements": 5924,
+   "median_chars": null,
+   "rule": "특약>절>조 경계, MAXC 4000 MAXSPAN 50, table/formula standalone"
+  }
+ },
+ "metrics": {
+  "R@1": 0.0169,
+  "R@5": 0.2373,
+  "R@10": 0.2966,
+  "R@20": null,
+  "R@50": null,
+  "R@100": null,
+  "MRR@10": 0.0999,
+  "L_star_median": null
+ },
+ "metrics_definition": {
+  "kind": "deterministic_topK",
+  "formula": "동일. 단 정렬 상위 K를 기계적으로 취함 (LLM 0회)",
+  "warning": "환경 검증용 재현 기준값. 성능 보고 값은 에이전트 실측"
+ },
+ "metrics_success": {
+  "kind": "success",
+  "Success@5": null,
+  "Precision@5": null,
+  "note": ""
+ },
+ "diagnostics": {
+  "note": "AND 는 후보 0 문항 다수(214 기준 NEW 122/214, OLD 8/214) — ITT 0점"
+ },
+ "nulls": {
+  "query_shuffle": null,
+  "constant_dummy": null,
+  "shuffled_tag": null,
+  "random_vector": null
+ },
+ "limitations": [
+  "C 레벨 수치는 '문서 1건이 이미 골라진 상태' 가정. 11만건에서는 A/B 깔때기(Index·Frontmatter)의 문서 선택 성능이 곱해짐",
+  "noah v3 는 v2 대비 train/test 분할이 재추첨됨(205문항 이동). v3-test 는 확증셋으로 사용 불가. test 미개봉",
+  "에이전트는 태그를 보지 못함 — 태그는 오프라인 정렬 함수의 입력. 설계서 2.5 의 '이정표' 방식은 미구현",
+  "R@K 는 fractional evidence-group Recall. Success@K 와 구분 표기",
+  "결정론. 성능 보고 값 아님 — 환경 검증·축 비교용"
+ ]
+}

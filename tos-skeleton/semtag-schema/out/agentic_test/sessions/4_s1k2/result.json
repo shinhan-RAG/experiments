@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e05786", "e05805"], "reason": "피보험자가 보장개시일 전에 이미 고혈압으로 진단된 경우 특약이 무효가 됨", "turns": 10, "cost_usd": 0.0838897, "qid": "4", "arm": "s1k2", "model": "haiku", "duration_ms": 45021}

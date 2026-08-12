@@ -1,9 +1,0 @@
-grep
-read
-read
-grep
-read
-read
-grep
-grep
-read

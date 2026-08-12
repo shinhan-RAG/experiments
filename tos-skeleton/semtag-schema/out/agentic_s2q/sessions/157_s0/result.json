@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00873", "e06502"], "reason": "e00873에서 뇌혈관질환의 진단확정 기준(CT/MRI 등)과 외상성 두개내 출혈 제외를 명시, e06502에서 I62 분류는 비외상성 두개내출혈만 포함됨을 확인.", "turns": 8, "cost_usd": 0.1019497, "qid": "157", "arm": "s0", "model": "haiku", "duration_ms": 43433}

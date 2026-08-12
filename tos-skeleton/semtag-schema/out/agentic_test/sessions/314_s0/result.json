@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06508", "e06739", "e01391"], "reason": "I20.90은 협심증 코드이며, 약관에서 허혈심장질환은 I20~I25 진단코드를 포함하므로 보장 대상에 해당합니다.", "turns": 10, "cost_usd": 0.1112024, "qid": "314", "arm": "s0", "model": "haiku", "duration_ms": 40965}

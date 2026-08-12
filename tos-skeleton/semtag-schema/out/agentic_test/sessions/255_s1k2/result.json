@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02354", "e06502", "e01498"], "reason": "뇌경색은 뇌혈관질환에 포함되며, 뇌혈관질환진단특약은 진단만으로 지급하지만 혈전용해치료특약은 진단 후 치료가 필요함", "turns": 12, "cost_usd": 0.1188979, "qid": "255", "arm": "s1k2", "model": "haiku", "duration_ms": 57373}

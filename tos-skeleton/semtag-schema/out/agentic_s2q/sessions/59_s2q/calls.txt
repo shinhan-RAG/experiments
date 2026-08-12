@@ -1,7 +1,0 @@
-grep	약관 변경
-grep	약관.*개정
-grep	기존.*가입자
-grep	진단 당시
-grep	약관.*규정.*준용
-read	e06461
-read	e06472

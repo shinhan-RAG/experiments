@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e03360"], "reason": "해약환급금 미지급형은 해약환급금이 없는 대신 일반형보다 낮은 보험료로 동일한 보장을 받을 수 있는 상품으로, 보험료 절감이라는 가입 필요성을 제시.", "turns": 8, "cost_usd": 0.1116602, "qid": "278", "arm": "s1k2", "model": "haiku", "duration_ms": 52169}

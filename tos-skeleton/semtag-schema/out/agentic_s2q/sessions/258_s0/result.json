@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e03764", "e04921", "e05356"], "reason": "항암약물치료 정의에 항암면역요법이 명시되어 있으며, CAR-T·표적항암약물 허가치료 특약이 면역항암치료를 보장함", "turns": 10, "cost_usd": 0.1394013, "qid": "258", "arm": "s0", "model": "haiku", "duration_ms": 47442}

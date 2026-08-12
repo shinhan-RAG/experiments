@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02354", "e06502"], "reason": "뇌혈관질환진단특약은 뇌출혈뿐만 아니라 뇌경색증을 포함한 9가지 뇌혈관질환을 보장합니다.", "turns": 10, "cost_usd": 0.1128657, "qid": "289", "arm": "s0", "model": "haiku", "duration_ms": 44776}

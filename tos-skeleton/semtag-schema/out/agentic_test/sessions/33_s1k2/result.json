@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04757", "e04752"], "reason": "질병분류표 II(백내장 및 대장용종 제외)에서 정의한 대로 백내장과 대장용종이 보장제외 질병", "turns": 10, "cost_usd": 0.0982519, "qid": "33", "arm": "s1k2", "model": "haiku", "duration_ms": 43793}

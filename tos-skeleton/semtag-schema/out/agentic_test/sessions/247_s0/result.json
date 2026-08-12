@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00313", "e04822", "e04808", "e00297", "e04874"], "reason": "첫날부터입원특약들이 입원 1일부터 지급사유 발생을 명시하고 있음", "turns": 10, "cost_usd": 0.11022190000000001, "qid": "247", "arm": "s0", "model": "haiku", "duration_ms": 54834}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02138", "e02219"], "reason": "뇌출혈 진단급여금과 입원급여금 모두 진단확정 또는 직접적 치료 입원만을 요건으로 하며 치료 방법을 제한하지 않음", "turns": 10, "cost_usd": 0.1159165, "qid": "256", "arm": "s0", "model": "haiku", "duration_ms": 59985}

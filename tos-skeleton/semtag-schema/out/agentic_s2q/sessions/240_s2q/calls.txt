@@ -1,3 +1,0 @@
-grep	심근경색
-read	e01696
-read	e01500

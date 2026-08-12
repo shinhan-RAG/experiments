@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04611", "e06645", "e06505", "e02138"], "reason": "뇌출혈은 I60~I62의 i코드로 분류되며 통합건강보험에서 보장된다", "turns": 10, "cost_usd": 0.07039089999999999, "qid": "321", "arm": "s0", "model": "haiku", "duration_ms": 37679}

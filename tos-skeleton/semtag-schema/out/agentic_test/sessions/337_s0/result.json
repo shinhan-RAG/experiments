@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06502", "e06739", "e06777", "e06509", "e06511"], "reason": "보험 약관의 치료비선지급서비스특약에서 뇌혈관질환 및 허혈심장질환에 대한 KCD 분류코드를 직접 명시한 표", "turns": 11, "cost_usd": 0.1217299, "qid": "337", "arm": "s0", "model": "haiku", "duration_ms": 50534}

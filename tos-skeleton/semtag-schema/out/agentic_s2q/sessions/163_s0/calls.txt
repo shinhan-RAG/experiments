@@ -1,8 +1,0 @@
-grep	보장개시일
-grep	청구
-grep	제1-5조|청구절차
-read	e00254
-read	e01876
-grep	제1-5조 보험금
-grep	사고증명서|진단서|청구접수
-read	e02029

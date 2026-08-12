@@ -1,8 +1,0 @@
-grep	치질
-grep	통합건강원
-grep	건강원
-grep	한방
-grep	보장
-grep	의료기관
-read	e00033
-grep	지급하지 않는

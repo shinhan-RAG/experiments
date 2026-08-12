@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02138", "e02139"], "reason": "뇌출혈진단특약은 계약일부터 1년 미만 진단 시 보험금의 50%만 지급하는 감액기간을 가지고 있음", "turns": 8, "cost_usd": 0.0807964, "qid": "26", "arm": "s0", "model": "haiku", "duration_ms": 37777}

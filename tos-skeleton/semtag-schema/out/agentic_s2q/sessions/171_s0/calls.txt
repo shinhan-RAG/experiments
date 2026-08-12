@@ -1,8 +1,0 @@
-grep	특정질병분류표
-grep	제7차
-grep	질병분류표
-read	e06307
-read	e06295
-grep	부표2.*특정질병
-grep	개정.*질병분류
-grep	분류표.*개정

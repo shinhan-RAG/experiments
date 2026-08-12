@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e03846", "e00313", "e00295"], "reason": "동일질병 2회 이상 입원시 각 입원일수를 합산하여 1회 입원으로 간주하고 30일 한도를 적용함", "turns": 12, "cost_usd": 0.1438325, "qid": "23", "arm": "s1k2", "model": "haiku", "duration_ms": 55613}

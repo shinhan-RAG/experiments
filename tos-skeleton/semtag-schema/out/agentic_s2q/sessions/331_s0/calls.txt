@@ -1,6 +1,0 @@
-grep	신한통합건강
-grep	통합건강
-grep	260507
-read	e00000
-grep	가입
-grep	제16조.*계약의 성립

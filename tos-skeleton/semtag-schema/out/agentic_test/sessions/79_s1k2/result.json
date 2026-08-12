@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04766", "e05549", "e04488"], "reason": "일부 특약에서 부표2-1 보험금 지급기준표/적립이율 계산 부표가 누락되어 있음", "turns": 10, "cost_usd": 0.12336970000000001, "qid": "79", "arm": "s1k2", "model": "haiku", "duration_ms": 55186}

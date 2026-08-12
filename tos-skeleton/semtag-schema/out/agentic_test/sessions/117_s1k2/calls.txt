@@ -1,5 +1,0 @@
-grep
-read
-read
-read
-read

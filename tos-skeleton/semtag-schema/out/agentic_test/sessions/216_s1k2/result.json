@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04378", "e02575", "e02804"], "reason": "상급종합병원과 종합병원 암주요치료비 특약 모두 연간 1회 제한이 있으며, 동일한 암수술에 대해서는 중복보장 불가", "turns": 12, "cost_usd": 0.1357542, "qid": "216", "arm": "s1k2", "model": "haiku", "duration_ms": 62761}

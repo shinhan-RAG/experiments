@@ -1,3 +1,0 @@
-grep	암.*재활
-read	e01900
-read	e01904

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02354", "e06502"], "reason": "뇌혈관질환진단특약은 한국표준질병·사인분류의 뇌혈관질환 분류표를 따르며, 뇌경색증(I63)은 명시적으로 포함된 질환입니다.", "turns": 10, "cost_usd": 0.1166461, "qid": "290", "arm": "s0", "model": "haiku", "duration_ms": 58446}

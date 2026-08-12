@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00149", "e02577", "e02902", "e03702"], "reason": "암주요치료비특약의 암주요치료 연간 보장 횟수는 각 치료행위별 또는 전체 연간 1회로 제한됨", "turns": 8, "cost_usd": 0.10737759999999999, "qid": "25", "arm": "s0", "model": "haiku", "duration_ms": 61682}

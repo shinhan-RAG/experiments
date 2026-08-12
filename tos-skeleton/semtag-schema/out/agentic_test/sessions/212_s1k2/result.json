@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02583", "e02577", "e03781"], "reason": "암주요치료비는 보장개시일이 계약일 기준이고, 보험금 지급 기간이 진단확정일 기준임", "turns": 8, "cost_usd": 0.09524730000000001, "qid": "212", "arm": "s1k2", "model": "haiku", "duration_ms": 45697}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e03566", "e00597"], "reason": "세 용어의 정의를 약관에서 직접 찾음: 항암방사선치료와 경계성종양은 e03566, 대장점막내암은 e00597에 명시", "turns": 12, "cost_usd": 0.1286151, "qid": "151", "arm": "s1k2", "model": "haiku", "duration_ms": 46588}

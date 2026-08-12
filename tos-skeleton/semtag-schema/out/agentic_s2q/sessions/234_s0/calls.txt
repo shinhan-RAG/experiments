@@ -1,5 +1,0 @@
-grep	전이암
-read	e04188
-read	e04241
-grep	전이암.*정의
-read	e04225

@@ -1,5 +1,0 @@
-grep	알릴의무
-grep	고지의무
-read	e00209
-read	e00175
-grep	위반.*해지

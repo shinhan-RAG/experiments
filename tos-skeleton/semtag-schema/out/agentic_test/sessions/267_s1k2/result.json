@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02055", "e02069"], "reason": "약관에서 뇌전증 진단확정은 병력·신경학적 검진과 함께 뇌파검사, MRI 등 검사를 기초로 하며, 의사의 진단이 필요하므로 1회 발작만으로는 진단확정 불가능", "turns": 10, "cost_usd": 0.1058774, "qid": "267", "arm": "s1k2", "model": "haiku", "duration_ms": 52370}

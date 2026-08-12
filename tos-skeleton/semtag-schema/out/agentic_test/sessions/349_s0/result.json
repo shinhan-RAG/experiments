@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04771", "e04752", "e04751", "e04763", "e04745"], "reason": "질병수술특약의 지급금액(1%)과 대장용종이 포함/제외되는 상황을 명시한 근거", "turns": 11, "cost_usd": 0.1409507, "qid": "349", "arm": "s0", "model": "haiku", "duration_ms": 63573}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00313"], "reason": "첫날부터입원특약에서 입원을 의료기관에서의 치료에 전념하는 모든 경우로 정의하며, 병실 종류를 명시하지 않아 일반병실 입원도 보장됨을 확인.", "turns": 9, "cost_usd": 0.1219528, "qid": "254", "arm": "s0", "model": "haiku", "duration_ms": 37898}

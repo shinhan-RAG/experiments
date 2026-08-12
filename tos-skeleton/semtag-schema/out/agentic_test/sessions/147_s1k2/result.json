@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06313"], "reason": "치료비선지급서비스특약의 제2-2조 보험금 지급사유에서 자궁근종(D25)이 보장 질병으로 명시되어 있음", "turns": 10, "cost_usd": 0.0707422, "qid": "147", "arm": "s1k2", "model": "haiku", "duration_ms": 32721}

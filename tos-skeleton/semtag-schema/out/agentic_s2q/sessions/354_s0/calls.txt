@@ -1,7 +1,0 @@
-grep	암.*담보|담보.*암
-grep	건강보험
-grep	암진단특약
-grep	암.*보장|보장.*암
-read	e00710
-read	e00053
-grep	고액암|소액암

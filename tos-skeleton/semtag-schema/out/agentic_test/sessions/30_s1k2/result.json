@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00662", "e04996"], "reason": "암진단특약과 통합암(전이포함)진단특약 모두 계약일부터 90일이 지난 날의 다음 날이 보장개시일로 정의됨", "turns": 5, "cost_usd": 0.053700399999999995, "qid": "30", "arm": "s1k2", "model": "haiku", "duration_ms": 21987}

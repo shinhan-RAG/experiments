@@ -1,7 +1,0 @@
-grep	전이암
-read	e04188
-read	e04241
-grep	전이암.*정의
-grep	제2-1조의2
-grep	분류코드 C77.*C80
-grep	"전이암".*한국표준질병
