@@ -1,0 +1,62 @@
+{
+  "gold": "docs/QASet/v3_retrieval/qa_gold_v3.jsonl",
+  "denominator": "v3 core_retrieval",
+  "split": "train",
+  "chunkset": "fixed600",
+  "n_gold": 171,
+  "source": "eval_v3_table.py --out-report",
+  "runs": {
+    "run_fixed600_A0_BASE_agenticcodex_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.4094,
+        "recall@5": 0.6023,
+        "recall@10": 0.6901,
+        "recall@20": 0.6901,
+        "recall@100": 0.6901,
+        "recall@50": null,
+        "mrr@10": 0.4932,
+        "l_star_median": null,
+        "n": 171
+      }
+    },
+    "run_fixed600_V13_LOC_agenticcodex_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3626,
+        "recall@5": 0.5263,
+        "recall@10": 0.5965,
+        "recall@20": 0.5965,
+        "recall@100": 0.5965,
+        "recall@50": null,
+        "mrr@10": 0.4386,
+        "l_star_median": null,
+        "n": 171
+      }
+    },
+    "run_fixed600_V13_FACT_agenticcodex_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.4269,
+        "recall@5": 0.5906,
+        "recall@10": 0.6784,
+        "recall@20": 0.6784,
+        "recall@100": 0.6784,
+        "recall@50": null,
+        "mrr@10": 0.4979,
+        "l_star_median": null,
+        "n": 171
+      }
+    },
+    "run_fixed600_V13_BOUNDARY_agenticcodex_v3tr.jsonl": {
+      "overall": {
+        "recall@1": 0.3684,
+        "recall@5": 0.5614,
+        "recall@10": 0.6316,
+        "recall@20": 0.6316,
+        "recall@100": 0.6316,
+        "recall@50": null,
+        "mrr@10": 0.4504,
+        "l_star_median": null,
+        "n": 171
+      }
+    }
+  }
+}

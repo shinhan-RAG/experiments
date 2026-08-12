@@ -1,0 +1,20 @@
+{
+  "chunkset": "fixed600",
+  "schema": "v13",
+  "n_total": 5335,
+  "n_nonlow": 5287,
+  "n_nav": 48,
+  "document_scope": "간편 신한통합건강보장보험 원",
+  "fill_rates": {
+    "location": 0.8678,
+    "fact": 0.9834,
+    "applies": 0.5519,
+    "excludes": 0.255,
+    "anchors": 0.951
+  },
+  "sanitize": {
+    "dropped_body": 1401,
+    "dropped_question": 0
+  },
+  "ok_false": 0
+}

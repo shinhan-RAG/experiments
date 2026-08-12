@@ -1,0 +1,72 @@
+{
+  "split": "train",
+  "chunkset": "fixed600",
+  "denominator": "v3 core_retrieval",
+  "n": 171,
+  "base": "A0_BASE_agenticcodex",
+  "arms": [
+    {
+      "arm": "A0_BASE_agenticcodex",
+      "n": 171,
+      "R@1": 0.4094,
+      "R@5": 0.6023,
+      "R@10": 0.6901,
+      "R@20": 0.6901,
+      "R@100": 0.6901,
+      "MRR@10": 0.4932
+    },
+    {
+      "arm": "V13_LOC_agenticcodex",
+      "n": 171,
+      "R@1": 0.3626,
+      "R@5": 0.5263,
+      "R@10": 0.5965,
+      "R@20": 0.5965,
+      "R@100": 0.5965,
+      "MRR@10": 0.4386
+    },
+    {
+      "arm": "V13_FACT_agenticcodex",
+      "n": 171,
+      "R@1": 0.4269,
+      "R@5": 0.5906,
+      "R@10": 0.6784,
+      "R@20": 0.6784,
+      "R@100": 0.6784,
+      "MRR@10": 0.4979
+    },
+    {
+      "arm": "V13_BOUNDARY_agenticcodex",
+      "n": 171,
+      "R@1": 0.3684,
+      "R@5": 0.5614,
+      "R@10": 0.6316,
+      "R@20": 0.6316,
+      "R@100": 0.6316,
+      "MRR@10": 0.4504
+    }
+  ],
+  "vs_base": {
+    "V13_LOC_agenticcodex": {
+      "gain": 20,
+      "loss": 33,
+      "net": -13,
+      "p_exact": 0.0984,
+      "p_holm": 0.2951
+    },
+    "V13_FACT_agenticcodex": {
+      "gain": 18,
+      "loss": 20,
+      "net": -2,
+      "p_exact": 0.8714,
+      "p_holm": 0.8714
+    },
+    "V13_BOUNDARY_agenticcodex": {
+      "gain": 16,
+      "loss": 23,
+      "net": -7,
+      "p_exact": 0.3368,
+      "p_holm": 0.6736
+    }
+  }
+}
