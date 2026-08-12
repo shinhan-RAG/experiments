@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06605", "e02432"], "reason": "e06605에서 대상포진의 질병분류 코드 B02가 명시되어 있으며, e02432에서 대상포진진단특약의 보험금 지급기준표로 보장대상을 확인할 수 있음", "turns": 10, "cost_usd": 0.0770073, "qid": "12", "arm": "s0", "model": "haiku", "duration_ms": 44896}

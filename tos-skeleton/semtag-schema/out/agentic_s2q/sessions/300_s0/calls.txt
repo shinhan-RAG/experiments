@@ -1,7 +1,0 @@
-grep	뇌경색
-grep	특약
-grep	통합건강보험.*원
-read	e01488
-read	e02240
-grep	간편.*뇌.*특약
-read	e02352

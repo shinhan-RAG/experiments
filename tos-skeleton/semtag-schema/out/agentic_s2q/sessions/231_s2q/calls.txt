@@ -1,5 +1,0 @@
-grep	갑상선암
-read	e01351
-read	e02485
-grep	일반암
-grep	제외한 암

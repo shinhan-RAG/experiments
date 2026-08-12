@@ -1,6 +1,0 @@
-grep	알릴의무|고지의무
-grep	위반|고지하지|부실의고지
-read	e00211
-read	e00209
-read	e00173
-read	e00045

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00609", "e01029"], "reason": "소액암진단특약(기본/삭감없음용)의 지급사유 조항에서 보장대상 암 6가지를 명시하고 있습니다.", "turns": 6, "cost_usd": 0.08944799999999999, "qid": "10", "arm": "s2q", "model": "haiku", "duration_ms": 40678}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06530", "e06536"], "reason": "경피적수술은 카테터(Catheter) 등에 의한 수술로, 한자로 經皮的(Percutaneous)이며, 체강경과는 달리 피부 천공을 통해 의료기기를 삽입하여 시행하는 수술을 의미합니다.", "turns": 5, "cost_usd": 0.0427879, "qid": "176", "arm": "s0", "model": "haiku", "duration_ms": 23126}

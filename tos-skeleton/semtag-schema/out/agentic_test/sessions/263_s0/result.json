@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04646", "e02279", "e00976", "e00018"], "reason": "심장질환은 중증질환자 산정특례 대상으로 보장되며, 허혈심장질환 진단 시 주요치료급여금이 지급된다.", "turns": 6, "cost_usd": 0.0545467, "qid": "263", "arm": "s0", "model": "haiku", "duration_ms": 27570}

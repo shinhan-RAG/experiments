@@ -1,6 +1,0 @@
-grep	암.*수술|수술.*재활|재활
-read	e01863
-grep	암.*치료.*재활|수술.*보장
-grep	급여암특정재활|지급사유.*암
-grep	재활|rehabilitation
-read	e01856

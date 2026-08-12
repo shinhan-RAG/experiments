@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00317", "e00318", "e00316"], "reason": "입원급여금 지급 후 최종 입원의 퇴원일부터 180일 동안 보상제외 면책기간이 있음을 확인", "turns": 11, "cost_usd": 0.1010512, "qid": "29", "arm": "s2q", "model": "haiku", "duration_ms": 49443}

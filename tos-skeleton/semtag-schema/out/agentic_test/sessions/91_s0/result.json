@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00888", "e00840", "e02777", "e01391", "e00507"], "reason": "각 유형의 보험료납입면제특약이 보장하는 대상 담보 중 진단급여금이 최초 1회한으로 제한되는 특약들", "turns": 12, "cost_usd": 0.1691146, "qid": "91", "arm": "s0", "model": "haiku", "duration_ms": 75969}

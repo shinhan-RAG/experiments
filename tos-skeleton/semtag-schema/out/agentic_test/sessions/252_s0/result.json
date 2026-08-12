@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04049", "e01587", "e00024"], "reason": "요양병원 입원은 암 진단 시 또는 간병인 서비스 사용 시에만 보장되며, 기본 입원 특약에서는 요양병원이 제외됨", "turns": 12, "cost_usd": 0.1661568, "qid": "252", "arm": "s0", "model": "haiku", "duration_ms": 59779}

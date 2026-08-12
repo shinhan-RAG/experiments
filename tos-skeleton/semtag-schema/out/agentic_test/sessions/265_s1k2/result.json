@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02431", "e02433", "e02389"], "reason": "통풍 진단만으로 1회 진단급여금을 받을 수 있으며, 의사의 진단확정과 검사 소견을 기초로 보장 시작일 이후에 지급됨", "turns": 9, "cost_usd": 0.1038992, "qid": "265", "arm": "s1k2", "model": "haiku", "duration_ms": 41503}

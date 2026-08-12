@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00762", "e01154", "e04188", "e00689"], "reason": "암진단특약은 최초 1회 진단만 지급하며, 보장개시일 이전 암진단 시 특약 무효로 재발암 진단비 지급 불가", "turns": 10, "cost_usd": 0.1361115, "qid": "305", "arm": "s1k2", "model": "haiku", "duration_ms": 49751}

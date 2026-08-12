@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00257", "e06297", "e04021"], "reason": "부담보 질병은 청약일부터 5년 경과 후 보장이 시작되며, 그 동안 무사건 유지되어야 함", "turns": 12, "cost_usd": 0.10656290000000002, "qid": "179", "arm": "s1k2", "model": "haiku", "duration_ms": 56978}

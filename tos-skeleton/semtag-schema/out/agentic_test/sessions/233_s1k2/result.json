@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00686", "e01154", "e00401", "e03628"], "reason": "암 진단급여금은 최초 1회 진단확정에 한하므로 재발시 재수령 불가", "turns": 9, "cost_usd": 0.12508329999999998, "qid": "233", "arm": "s1k2", "model": "haiku", "duration_ms": 53255}

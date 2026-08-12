@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04215"], "reason": "피보험자가 암보장개시일 전일 이전에 전이암으로 진단이 확정되는 경우 특약이 무효됨", "turns": 9, "cost_usd": 0.1166161, "qid": "7", "arm": "s2q", "model": "haiku", "duration_ms": 48888}

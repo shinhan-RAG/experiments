@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00873", "e00888"], "reason": "뇌혈관질환납입면제형 특약에서 뇌혈관질환으로 진단확정되면 차회 이후의 보험료 납입을 면제하도록 명시.", "turns": 6, "cost_usd": 0.0715568, "qid": "262", "arm": "s1k2", "model": "haiku", "duration_ms": 32818}

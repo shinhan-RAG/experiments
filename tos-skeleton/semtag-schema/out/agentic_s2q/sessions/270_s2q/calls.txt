@@ -1,9 +1,0 @@
-grep	암.*수술.*재활
-grep	재활
-read	e01856
-read	e01863
-read	e01896
-read	e01902
-read	e01883
-read	e01844
-grep	암.*보장|암.*지급사유

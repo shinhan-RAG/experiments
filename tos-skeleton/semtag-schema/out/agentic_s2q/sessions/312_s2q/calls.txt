@@ -1,8 +1,0 @@
-grep	간편 통합건강원
-grep	통합건강원
-grep	비급여암치료
-grep	암치료
-grep	비급여.*암
-read	e02573
-grep	간편.*비급여
-grep	통합

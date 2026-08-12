@@ -1,7 +1,0 @@
-grep	심근경색
-read	e01696
-read	e01500
-grep	급성심근경색증진단
-grep	허혈심장질환진단
-read	e05701
-grep	허혈심장질환.*진단급여금

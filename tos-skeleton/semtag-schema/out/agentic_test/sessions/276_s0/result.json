@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e01523", "e01602"], "reason": "간병인특약은 실제 사용한 날에만 보장금을 지급하며, 간병인을 사용하지 않은 날에 대해서는 보험금을 지급하지 않습니다.", "turns": 5, "cost_usd": 0.0589598, "qid": "276", "arm": "s0", "model": "haiku", "duration_ms": 30557}

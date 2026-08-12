@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04467", "e00300", "e04795"], "reason": "최종 퇴원일부터 180일이 지난 후 재입원하면 새로운 입원으로 인정되어 다시 보장받을 수 있음", "turns": 5, "cost_usd": 0.0595271, "qid": "249", "arm": "s1k2", "model": "haiku", "duration_ms": 34909}

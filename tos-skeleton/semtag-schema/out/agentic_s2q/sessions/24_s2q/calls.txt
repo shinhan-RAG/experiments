@@ -1,5 +1,0 @@
-grep	깁스
-read	e02039
-read	e02028
-read	e02027
-grep	2회 이상

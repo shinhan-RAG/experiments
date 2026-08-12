@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e05354", "e05356"], "reason": "표적항암제는 식품의약품안전처 허가 범위 내 사용 시 보장되며, 처방 받고 약물이 투여되었을 때를 지급사유로 함.", "turns": 5, "cost_usd": 0.043797300000000004, "qid": "257", "arm": "s0", "model": "haiku", "duration_ms": 20979}

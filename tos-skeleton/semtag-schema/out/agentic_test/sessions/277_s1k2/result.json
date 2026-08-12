@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02732", "e03407", "e00245", "e00840"], "reason": "납입면제는 진단확정 후 차회 이후 보험료부터 적용되며, 주계약에는 납입면제가 없고 특약에서만 제공됨", "turns": 10, "cost_usd": 0.1318336, "qid": "277", "arm": "s1k2", "model": "haiku", "duration_ms": 47983}

@@ -1,8 +1,0 @@
-grep	수술분류표
-read	e06536
-grep	별첨.*표.*24
-grep	1종 수술.*2종 수술
-grep	부표2-2
-grep	신한통합|ONE
-grep	관혈.*악성신생물.*근치
-read	e06533

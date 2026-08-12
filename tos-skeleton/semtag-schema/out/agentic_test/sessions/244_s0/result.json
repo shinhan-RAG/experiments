@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02951", "e04499", "e01455"], "reason": "특정질환별 수술은 연간 1회 제한이 있으나, 일반 수술은 횟수제한 없음", "turns": 9, "cost_usd": 0.09213339999999998, "qid": "244", "arm": "s0", "model": "haiku", "duration_ms": 43565}

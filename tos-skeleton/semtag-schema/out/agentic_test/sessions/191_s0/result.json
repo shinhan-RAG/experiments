@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e04138", "e06547"], "reason": "S02 질병코드는 재해골절에 포함되나 S02.5(치아파절)는 명시적으로 제외되므로, 치아파절은 통상의 재해사고 급여금 대상이 아님.", "turns": 10, "cost_usd": 0.076307, "qid": "191", "arm": "s0", "model": "haiku", "duration_ms": 47294}

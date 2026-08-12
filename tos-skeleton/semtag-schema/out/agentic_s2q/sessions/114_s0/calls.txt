@@ -1,8 +1,0 @@
-grep	암
-read	e01170
-read	e00603
-read	e01917
-grep	"암".*정의
-grep	소액암.*보장\|기본암진단
-grep	여성생식기암\|전립선암
-read	e04023

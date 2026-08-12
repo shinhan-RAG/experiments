@@ -1,7 +1,0 @@
-grep	암주요치료비특약
-read	e02832
-grep	상급종합병원.*의료기관
-read	e02876
-grep	상급종합병원.*지역암센터
-read	e02814
-read	e02817

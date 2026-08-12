@@ -1,9 +1,0 @@
-grep	신한통합건강
-grep	통합건강
-grep	260618
-grep	250618
-grep	6월18
-grep	판매약관
-grep	약관
-read	e00000
-grep	2605

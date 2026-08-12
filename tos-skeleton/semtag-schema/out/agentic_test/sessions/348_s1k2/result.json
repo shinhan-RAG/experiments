@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e01571", "e01602", "e01523"], "reason": "간병비는 간병인 또는 간호·간병통합서비스를 실제 사용한 날에만 지급되며, 사용하지 않은 날에는 지급되지 않음", "turns": 9, "cost_usd": 0.1118132, "qid": "348", "arm": "s1k2", "model": "haiku", "duration_ms": 46250}

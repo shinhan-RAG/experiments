@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00199", "e00038"], "reason": "주계약은 납입면제가 없으며 특약 가입이 필수이고, 특약은 선택 가입한 보장이므로 납입면제 특약도 별도 가입이 필요함.", "turns": 8, "cost_usd": 0.10491630000000002, "qid": "280", "arm": "s2q", "model": "haiku", "duration_ms": 54519}

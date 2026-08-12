@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e01391", "e02273"], "reason": "허혈심장질환은 심근경색을 포함하는 상위 개념이므로 둘을 비교할 수 없음", "turns": 12, "cost_usd": 0.13021670000000002, "qid": "274", "arm": "s2q", "model": "haiku", "duration_ms": 54378}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e00632", "e00646", "e00571"], "reason": "경계성종양은 악성과 양성의 중간 단계 신생물로 정의되며, 양성뇌종양은 명확한 양성종양으로 이에 해당하지 않음.", "turns": 12, "cost_usd": 0.1414903, "qid": "307", "arm": "s1k2", "model": "haiku", "duration_ms": 60846}

@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e02615"], "reason": "암주요치료비 연간 1회의 기준은 최초 진단확정일부터 매1년 단위로 도래하는 진단확정일의 전날까지를 의미합니다.", "turns": 6, "cost_usd": 0.0632412, "qid": "213", "arm": "s0", "model": "haiku", "duration_ms": 26279}

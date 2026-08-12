@@ -1,8 +1,0 @@
-grep	뇌질환
-grep	진단금
-grep	뇌질환진단금
-read	e05043
-grep	특정질환|뇌
-read	e02360
-read	e02083
-grep	뇌졸중.*최초 1회

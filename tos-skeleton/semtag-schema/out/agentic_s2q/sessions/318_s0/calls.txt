@@ -1,9 +1,0 @@
-grep	5종수술
-grep	통합건강보험
-read	e01460
-read	e01471
-grep	부표2-2
-read	e01482
-grep	선택적수술
-grep	제왕절개
-read	e01466

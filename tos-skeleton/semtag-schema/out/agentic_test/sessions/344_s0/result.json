@@ -1,1 +1,0 @@
-{"status": "ranked", "ranked_eids": ["e06508", "e06502", "e06739", "e06733"], "reason": "신한통합건강보험 약관의 치료비선지급서비스특약에서 명시한 뇌혈관질환(I60~I69)과 허혈성심장질환(I20~I25)의 KCD 분류코드 정보", "turns": 10, "cost_usd": 0.1213989, "qid": "344", "arm": "s0", "model": "haiku", "duration_ms": 59401}
