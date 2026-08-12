@@ -1,0 +1,93 @@
+{
+  "config_id": "shinhantos-rrf-2ch-tagmeta-compliant_none_p0_shinhantos406",
+  "date": "2026-08-11",
+  "author": "koda-design",
+  "experiment": "shinhantos-tagmeta-2ch-nullchecked",
+  "repro": {
+    "doc_sha256": "644e6231e87dbe505dd911aaf561fedeb3b30d9d0204c409c8f934c13027facb",
+    "gold_sha": "ad55f07ad20df43e132f43208b7cbe7978c14b18175384f75e490df9f56a542f",
+    "code_commit": "a8b576063ecdceff9d3c552576eba793f32219e4",
+    "two_pass_sha": "d329e2ccc87c34d1f20f340bb66be8df272add51a5ff5a381132e10eaf36af91"
+  },
+  "population": {
+    "name": "shinhantos406",
+    "n": 406,
+    "note": "gold_mapped_shinhantos_v5.jsonl -- 원문대조로 확정한 오염 84건(490건 중) 배제 후 406건"
+  },
+  "config": {
+    "channel": "rrf-bm25-dense2ch",
+    "channel_params": {
+      "bm25_k1": 1.0,
+      "bm25_b": 0.6,
+      "rrf_k": 60,
+      "or_boost_threshold": 6,
+      "or_boost_amount": 0.05,
+      "weight_tag": 0.5,
+      "weight_meta": 1.6,
+      "vector_model": "dragonkue/BGE-m3-ko"
+    },
+    "schema": {
+      "name": "tag-meta-2channel-no-rawvector",
+      "fields": [
+        "contract_scope",
+        "element_text(bm25_index_only)",
+        "meta_embedding_text(alias_injected)"
+      ]
+    },
+    "split": {
+      "name": "p0",
+      "n_elements": 4242,
+      "median_chars": 1227
+    }
+  },
+  "metrics": {
+    "R@1": 0.1084,
+    "R@5": 0.2586,
+    "R@10": 0.4433,
+    "R@20": 0.5764,
+    "R@50": 0.6773,
+    "R@100": 0.7365,
+    "MRR@10": 0.1859,
+    "L_star_median": null
+  },
+  "nulls": {
+    "constant_dummy": {
+      "value": 0.0049,
+      "seeds": 1,
+      "min": null,
+      "max": null,
+      "note": "쿼리 무관 고정 순서(id_list 앞 100개), R@20"
+    },
+    "shuffled_tag": {
+      "value": 0.3941,
+      "seeds": 1,
+      "min": null,
+      "max": null,
+      "note": "TAG 색인 텍스트를 element_id와 어긋나게 섞음(seed=42), META는 실측 유지"
+    },
+    "query_shuffle": {
+      "value": 0.0197,
+      "seeds": 1,
+      "min": null,
+      "max": null,
+      "note": "gold를 다음 문항으로 1칸씩 회전시켜 오답과 비교, 실측 랭킹은 그대로"
+    },
+    "random_vector": {
+      "value": 0.33,
+      "seeds": 1,
+      "min": null,
+      "max": null,
+      "note": "META 벡터를 랜덤 단위벡터로 교체(seed=42), TAG는 실측 유지"
+    }
+  },
+  "limitations": [
+    "원문(raw text) 벡터 검색 채널은 고객사 요구로 배제 -- TAG(BM25)+META(요약문 벡터) 2채널만 사용",
+    "하이퍼파라미터(k1/b/threshold/boost/채널가중치)를 grid search로 탐색함 -- 보고된 값은 탐색한 격자 중 R@20 최고점, 다중비교 보정 없음(탐색 격자는 로컬 세션 로그 참고, 서버 미보관)",
+    "L_star_median 정의가 README 예시만으로는 불명확해 미측정(null)",
+    "gold 오류 배제(84건)는 원문 직접대조 기반이나, 검수의견 상호검증(2인 이상 교차확인)은 안 됨 -- 단독 검수자(koda) 판단",
+    "근접 미스 잔여분 상당수는 23개 문서에 반복되는 표준 보일러플레이트 조항(부활/환급/이자 등)이 원인 -- 질문이 특정 상품을 지정하지 않으면 어느 문서 사본이 gold인지 원천적으로 구분 불가(qrels의 구조적 중의성, 배제 대상 아님)",
+    "장해분류표류(구체적 임상 시나리오 vs 판정기준표 어휘 불일치)는 미해결 -- 코퍼스 전체 파서잡음(20.1%) 제거를 시도했으나 null/역효과로 기각됨"
+  ],
+  "supersedes": null,
+  "note_on_prior_registrations": "이 등록 이전(2026-08-11, shinhantos-rrf-3ch-* / shinhantos-rrf-orboost-v1~v4 계열)에 등록된 결과들은 원문벡터 채널을 포함하고 있어 고객사 요구(원문벡터 배제)에 위배됨 + author/repro/nulls 필드 누락 -- 이 파일이 규약 준수 최초 등록."
+}

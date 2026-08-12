@@ -1,0 +1,89 @@
+{
+  "config_id": "concat-bgem3ko_none_p0_full350v2",
+  "date": "2026-08-07",
+  "author": "lsh (Claude Sonnet 5 보조)",
+  "experiment": "hybrid-enrich_tag-meta_grid",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "3de68e13c98f6bbff478089e42a4b9f40a917e5ac682c38bf984f07449bbbee7",
+    "code_commit": "78d33bea92d16f8ac7c5028527afb2daf6a8e21c",
+    "two_pass_sha": "c02a9cf7b23205bf"
+  },
+  "population": {
+    "name": "full350v2",
+    "n": 332,
+    "note": "full350의 신뢰도=확정 gold=[] 49건을 원문 대조로 재검토(2026-08-08). 31건 신규매핑(주로 KCD 제9차/제8차 판번호 불일치), 18건 population 제외(문서판에 없는 상품/문구, 또는 정의조항 10곳+ 중복·특약미특정). 350->332. 229건 gold 확보(69.0%), 검수필요(비구조) 103건은 이번 작업 범위 밖으로 gold=[] 유지(0점 처리, population엔 포함)"
+  },
+  "config": {
+    "channel": "dense",
+    "channel_params": {
+      "vector_model": "dragonkue/BGE-m3-ko",
+      "vector_input": "TAG search_text + META embedding_text + 원문(2000자 절단) 결합 후 단일 임베딩",
+      "top_n": 100
+    },
+    "schema": {
+      "name": "tag-meta-v3-concat",
+      "fields": [
+        "contract_key_tag",
+        "subject_key_tag",
+        "role_tag",
+        "locator_tag",
+        "qualifier_tag",
+        "reference_tag",
+        "retrieval_summary",
+        "scope_context",
+        "topic_context",
+        "canonical_entities",
+        "event_relations",
+        "condition_context",
+        "exception_context",
+        "temporal_numeric_context",
+        "reference_context",
+        "aggregation_context",
+        "aliases"
+      ],
+      "extractor": "build_meta_tag_lsh.py — TAG search_text + META embedding_text + 원문(2000자 절단)을 하나의 텍스트로 이어붙여 단일 임베딩(run_meta_tag_grid_lsh.py의 결합임베딩과 동일 구성)"
+    },
+    "split": {
+      "name": "semtag-split_elements",
+      "n_elements": 7907,
+      "rule": "semtag_experiment.split_elements/annotate_context, 문서별 정규식 3개 패치"
+    }
+  },
+  "metrics": {
+    "R@1": 0.0572,
+    "R@5": 0.2108,
+    "R@10": 0.2831,
+    "R@20": 0.3765,
+    "R@50": 0.4578,
+    "R@100": 0.5151,
+    "MRR@10": 0.1198,
+    "L_star_median": 9
+  },
+  "nulls": {
+    "query_shuffle": {
+      "value": 0.0048,
+      "seeds": 5,
+      "min": 0.003,
+      "max": 0.006,
+      "note": "R@5 기준, gold를 무작위 재배정 후 재계산"
+    },
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": {
+      "value": 0.003,
+      "seeds": 3,
+      "min": 0.003,
+      "max": 0.003,
+      "note": "R@5 기준, 벡터를 랜덤 유닛벡터로 교체(순수 dense 채널)"
+    }
+  },
+  "limitations": [
+    "탐색적 측정 — 확증 검정(다중비교 보정) 없음, 단일 config 최고값 보고",
+    "gold 오염 조사 미완료: 161건 중 특약명이 문자열로 검출되는 18건만 검증해 9건 불일치 확인, 나머지 143건은 미검증 — 전수 검증 전까지 population 자체에 잔여 오염 가능성 있음",
+    "constant_dummy·shuffled_tag null 대조 미측정",
+    "동일 문서(원ONE)라도 250212 버전 사용 — 팀 다른 결과(예: bm25_none_p0_train338)와 doc_sha256이 달라 직접 비교 불가",
+    "two_pass_match=True — BGE-m3-ko GPU 추론이 완전히 결정적이지 않을 수 있음",
+    "TAG+META+원문을 이어붙인 뒤 2000자 절단 없이 임베딩 — 모델 입력 길이 제한에 걸려 뒷부분(주로 원문)이 잘렸을 가능성 있음, 실측 미확인"
+  ]
+}
