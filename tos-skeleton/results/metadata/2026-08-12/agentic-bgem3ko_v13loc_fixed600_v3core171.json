@@ -1,0 +1,128 @@
+{
+  "config_id": "agentic-bgem3ko_v13loc_fixed600_v3core171",
+  "date": "2026-08-12",
+  "author": "noah",
+  "repro": {
+    "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+    "gold_sha": "5af9ea87fde5e973b12a9de7950379a8058122697bd205a8b821fd6eafdb249c",
+    "code_commit": "622d8ee",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "v3core171",
+    "n": 171,
+    "note": "v3_retrieval core_retrieval train, single_lookup — 4개 arm 모두에서 ranked인 문항의 교집합"
+  },
+  "config": {
+    "target": "v13-A LLM Locator Card. [문서] document_scope + [위치] location만 접두. LLM-only 주소 재현 가설(H1) 검정용 절제 arm.",
+    "method": "gpt-5.4-mini(codex CLI) + claude-sonnet-5(claude CLI) 혼합 생성 — codex 주간 한도 소진으로 일부 세션을 claude로 대체. 메타데이터 생성은 gpt-5.4-mini 단일 모델(codex CLI). 에이전틱 검색 에이전트는 gpt-5.4-mini(74~83세션) + claude-sonnet-5(나머지) 혼합. 240자 예산 prefix, dense 단일 벡터(BGE-m3-ko 1024d). 빈 필드 라벨 생략.",
+    "coverage": {
+      "n_total": 5335,
+      "n_assigned": 5287,
+      "ratio": 0.991
+    },
+    "downstream": {
+      "used_as": "라벨 문자열을 청크 본문 앞에 접두해 함께 임베딩",
+      "channel": "agentic_hybrid"
+    }
+  },
+  "metrics": {
+    "R@1": 0.3626,
+    "R@5": 0.5263,
+    "R@10": 0.5965,
+    "R@20": 0.5965,
+    "R@50": null,
+    "R@100": 0.5965,
+    "MRR@10": 0.4386,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "random_vector": null,
+    "constant_dummy": null,
+    "shuffled_tag": null
+  },
+  "limitations": [
+    "에이전틱 검색 에이전트 모델이 혼합(gpt-5.4-mini + claude-sonnet-5)이다. codex 주간 한도 소진으로 일부를 claude로 대체했다. arm 간 비교에서 에이전트 모델이 통제 변수가 아니다.",
+    "분모(v3core171)는 4개 arm 교집합으로, A0_BASE 단독의 v3core179와 8문항 차이가 있다.",
+    "분모(v3_retrieval core)는 자동 1차 분류이고 사람이 한 건도 검수하지 않았다.",
+    "코퍼스가 문서 1건이라 document_scope의 다문서 판별 효과를 평가할 수 없다.",
+    "R@20 = R@100 = R@10인 것은 에이전틱 검색이 최대 10개만 반환하기 때문이다(도구 제약).",
+    "널 대조군(constant_dummy, shuffled_tag)을 이 실험에서 측정하지 않았다.",
+    "two_pass_sha가 없다 — 재현 검증되지 않은 상태다.",
+    "R@50과 L_star_median은 eval_v3_table.py가 재지 않으므로 null이다."
+  ],
+  "experiment": "v13-A LLM Locator Card — LLM 주소만의 에이전틱 검색",
+  "stats": {
+    "split": "train",
+    "chunkset": "fixed600",
+    "denominator": "v3 core_retrieval",
+    "n": 171,
+    "base": "A0_BASE_agenticcodex",
+    "arms": [
+      {
+        "arm": "A0_BASE_agenticcodex",
+        "n": 171,
+        "R@1": 0.4094,
+        "R@5": 0.6023,
+        "R@10": 0.6901,
+        "R@20": 0.6901,
+        "R@100": 0.6901,
+        "MRR@10": 0.4932
+      },
+      {
+        "arm": "V13_LOC_agenticcodex",
+        "n": 171,
+        "R@1": 0.3626,
+        "R@5": 0.5263,
+        "R@10": 0.5965,
+        "R@20": 0.5965,
+        "R@100": 0.5965,
+        "MRR@10": 0.4386
+      },
+      {
+        "arm": "V13_FACT_agenticcodex",
+        "n": 171,
+        "R@1": 0.4269,
+        "R@5": 0.5906,
+        "R@10": 0.6784,
+        "R@20": 0.6784,
+        "R@100": 0.6784,
+        "MRR@10": 0.4979
+      },
+      {
+        "arm": "V13_BOUNDARY_agenticcodex",
+        "n": 171,
+        "R@1": 0.3684,
+        "R@5": 0.5614,
+        "R@10": 0.6316,
+        "R@20": 0.6316,
+        "R@100": 0.6316,
+        "MRR@10": 0.4504
+      }
+    ],
+    "vs_base": {
+      "V13_LOC_agenticcodex": {
+        "gain": 20,
+        "loss": 33,
+        "net": -13,
+        "p_exact": 0.0984,
+        "p_holm": 0.2951
+      },
+      "V13_FACT_agenticcodex": {
+        "gain": 18,
+        "loss": 20,
+        "net": -2,
+        "p_exact": 0.8714,
+        "p_holm": 0.8714
+      },
+      "V13_BOUNDARY_agenticcodex": {
+        "gain": 16,
+        "loss": 23,
+        "net": -7,
+        "p_exact": 0.3368,
+        "p_holm": 0.6736
+      }
+    }
+  }
+}
