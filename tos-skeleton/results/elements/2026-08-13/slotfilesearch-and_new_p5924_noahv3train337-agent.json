@@ -1,0 +1,117 @@
+{
+ "config_id": "slotfilesearch-and_new_p5924_noahv3train337-agent",
+ "date": "2026-08-13",
+ "author": "donggyu-ralph",
+ "experiment": "완주 2×2 (태그 OLD/NEW × 검색기 AND/CLM) — noah v3 train 337 전수",
+ "repro": {
+  "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+  "gold_sha": "17bbb12a6d685952c4c77967ba757655e54d5d7138fc2c747e8c8bda04528f10",
+  "code_commit": "b5e234b75cb0",
+  "two_pass_sha": null
+ },
+ "population": {
+  "name": "noah v3 train 재앵커링 337 전수",
+  "n": 337,
+  "note": "348 중 not_answerable 10 + 인용 미해소 1 제외. core 202 · 비core 135"
+ },
+ "config": {
+  "channel": "file_search",
+  "channel_params": {
+   "retriever": "기존 SlotFileSearch(AND·문서순)",
+   "candidate": "슬롯 교집합(AND)",
+   "limit": null,
+   "ranker": "없음(문서순)",
+   "ranker_params": {
+    "tie_break": "line_start,line_end,element_id"
+   },
+   "query_router": "query_slots(규칙) + LLM qtags. v3 348 용 qtag 127건 신규 생성(V2DS-44)",
+   "forbidden_not_used": [
+    "BM25",
+    "reranker",
+    "embedding",
+    "learned ranking"
+   ]
+  },
+  "schema": {
+   "name": "NEW tag schema",
+   "fields": [
+    "contract",
+    "subject",
+    "role",
+    "qualifier",
+    "schema"
+   ],
+   "extractor": "04B 8슬롯 LLM+구조규칙"
+  },
+  "split": {
+   "name": "P-section",
+   "n_elements": 5924,
+   "median_chars": null,
+   "rule": "특약>절>조 경계, MAXC 4000 MAXSPAN 50"
+  },
+  "budget": {
+   "page": 40,
+   "preview": 160,
+   "search_cap": 20,
+   "read_cap": 8,
+   "output_cap": 64000,
+   "submit": "순위 최대 10개",
+   "tools": [
+    "search",
+    "read",
+    "submit"
+   ],
+   "model": "claude-sonnet-5",
+   "reps": 1
+  }
+ },
+ "metrics": {
+  "R@1": 0.072305,
+  "R@5": 0.139812,
+  "R@10": 0.154402,
+  "R@20": null,
+  "R@50": null,
+  "R@100": null,
+  "MRR@10": 0.125749,
+  "L_star_median": null
+ },
+ "metrics_definition": {
+  "kind": "agent_actual_ITT",
+  "formula": "Recall@K = Top-K가 덮은 고유 evidence group 수 / 전체 group 수 (fractional, 문항 macro)",
+  "warning": "에이전트 실측. 결정론 값과 같은 표에 놓지 말 것"
+ },
+ "metrics_success": {
+  "kind": "success",
+  "Success@5": 0.166172,
+  "Precision@5": 0.036202,
+  "note": ""
+ },
+ "diagnostics": {
+  "visible_ceiling@5_oracle": 0.170969,
+  "no_candidate_n": 214,
+  "output_tokens_median": 0,
+  "slice_core": {
+   "MRR@10": 0.136427,
+   "Recall@5": 0.183168
+  },
+  "slice_noncore": {
+   "MRR@10": 0.109771,
+   "Recall@5": 0.074938
+  },
+  "note": "core 202 / 비core 135. 비core 는 multi_evidence 121건(90%)"
+ },
+ "nulls": {
+  "query_shuffle": null,
+  "constant_dummy": null,
+  "shuffled_tag": null,
+  "random_vector": null
+ },
+ "limitations": [
+  "C 레벨 수치는 '문서 1건이 이미 골라진 상태' 가정. 11만건에서는 A/B 깔때기(Index·Frontmatter)의 문서 선택 성능이 곱해짐",
+  "noah v3 는 v2 대비 train/test 분할 재추첨(205문항 이동) — v3-test 는 확증셋으로 사용 불가. test 미개봉",
+  "에이전트는 태그를 보지 못함 — 태그는 오프라인 정렬 함수의 입력. 설계서 2.5 '이정표' 방식은 별도(M2)로 구현 중",
+  "R@K 는 fractional evidence-group Recall. Success@K 와 구분 표기",
+  "core_retrieval=True 는 evidence group 1개가 대부분인 쉬운 층 — 모집단 명시 필수",
+  "기존 AND 검색기는 337 중 214문항이 후보 0 — ITT 0점"
+ ]
+}
