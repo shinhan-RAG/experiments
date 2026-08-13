@@ -146,6 +146,23 @@ class HttpChatBackend(AgentBackend):
         except Exception as e:
             return f"tool error: {e}"
 
+    @staticmethod
+    def _parse_text_tool_calls(text):
+        """Fallback: parse <tool_call>{"name":..., "arguments":...}</tool_call> from text."""
+        import re
+        calls = []
+        for m in re.finditer(r'<tool_call>\s*(\{.*?\})\s*</tool_call>', text, re.S):
+            try:
+                obj = json.loads(m.group(1))
+                name = obj.get("name", "")
+                args = obj.get("arguments", {})
+                if isinstance(args, str):
+                    args = json.loads(args)
+                calls.append({"name": name, "args": args})
+            except Exception:
+                continue
+        return calls
+
     def run(self, prompt: str, session_dir: str, env: dict, cwd: str) -> tuple[str, dict]:
         usage_total = {"input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0,
                        "cache_creation_tokens": 0, "model": self.model, "backend": self.name}
@@ -154,7 +171,7 @@ class HttpChatBackend(AgentBackend):
                  if t["function"]["name"] != "structured_search"
                  or env.get("STRUCT_ENABLED") == "1"]
 
-        for _ in range(self.max_turns):
+        for turn in range(self.max_turns):
             try:
                 resp = self._post(messages, tools)
             except Exception as e:
@@ -166,22 +183,37 @@ class HttpChatBackend(AgentBackend):
 
             choice = resp["choices"][0]
             msg = choice["message"]
-            messages.append(msg)
+            content = msg.get("content", "") or ""
 
+            # Try structured tool_calls first (VLLM auto-tool-choice)
             tool_calls = msg.get("tool_calls")
-            if not tool_calls or choice.get("finish_reason") == "stop":
-                return msg.get("content", ""), usage_total
+            if tool_calls:
+                messages.append(msg)
+                for tc in tool_calls:
+                    fn = tc["function"]
+                    args = fn.get("arguments", "{}")
+                    if isinstance(args, str):
+                        try:
+                            args = json.loads(args)
+                        except Exception:
+                            args = {}
+                    result = self._exec_tool(fn["name"], args, env, cwd)
+                    messages.append({"role": "tool", "tool_call_id": tc["id"], "content": result})
+                continue
 
-            for tc in tool_calls:
-                fn = tc["function"]
-                args = fn.get("arguments", "{}")
-                if isinstance(args, str):
-                    try:
-                        args = json.loads(args)
-                    except Exception:
-                        args = {}
-                result = self._exec_tool(fn["name"], args, env, cwd)
-                messages.append({"role": "tool", "tool_call_id": tc["id"], "content": result})
+            # Fallback: parse <tool_call> tags from text (Qwen 1.5B emits these)
+            text_calls = self._parse_text_tool_calls(content)
+            if text_calls:
+                messages.append({"role": "assistant", "content": content})
+                tool_results = []
+                for tc in text_calls:
+                    result = self._exec_tool(tc["name"], tc["args"], env, cwd)
+                    tool_results.append(f"[{tc['name']}] {result}")
+                messages.append({"role": "user", "content": "도구 결과:\n" + "\n".join(tool_results)})
+                continue
+
+            # No tool calls — final response
+            return content, usage_total
 
         last = messages[-1].get("content", "") if messages else ""
         return last, usage_total
