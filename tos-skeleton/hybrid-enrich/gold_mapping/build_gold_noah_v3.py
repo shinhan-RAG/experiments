@@ -4,8 +4,9 @@
 gold 매핑. 출처 필드가 줄번호 JSON이 아니라 원문 인용 텍스트라, 원문 .md에서
 정규화된 텍스트로 위치(줄번호)를 먼저 찾은 뒤, 기존 line-overlap 매칭 로직 재사용."""
 import json, re, csv
+from pathlib import Path
 
-BASE = "/home/work/source/embed_exp/dr-dci-lsh/tos-skeleton/hybrid-enrich"
+BASE = str(Path(__file__).resolve().parent.parent)
 OUT = f"{BASE}/out"
 NOAH = f"{BASE}/noah_qaset"
 

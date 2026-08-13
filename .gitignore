@@ -1,1 +1,46 @@
 dr-dci/cache/
+.agents/
+.claude/
+.codeboarding/
+data/
+docs/
+og_data/
+.mcp.json
+*.png
+*.md
+*.csv
+.env
+.codex
+metajson-v6/
+*.jsonl
+agentic-v3/
+hybrid-v7/
+/metajson-v6/
+.markdown_cleanup_backup/
+.pytest_cache
+*.xlsx
+scripts/
+tests/
+parsed_md
+
+
+# 실험 결과 등록 트리는 예외 — 위의 *.md / *.csv / *.jsonl 규칙보다 뒤에 와야 먹는다.
+# results/README.md가 요구하는 증거(run_*.jsonl · llm_meta_json_*.jsonl · README·REPORT)가
+# 전부 저 확장자라, 예외가 없으면 등록 카드만 남고 그 카드를 만든 근거가 사라진다.
+# ⚠ 원문·정답셋 원본은 여기 두지 마라 — README §7이 금지한다(경로와 SHA만 적는다).
+!tos-skeleton/results/**
+
+# 0813 RRF 실험 코드
+!tos-skeleton/hybrid-enrich/agentic-v3/backends.py
+!tos-skeleton/hybrid-enrich/agentic-v3/rrf_det.py
+!tos-skeleton/hybrid-enrich/agentic-v3/postfloor.py
+!tos-skeleton/hybrid-enrich/agentic-v3/run_retrieval_v2.py
+!tos-skeleton/hybrid-enrich/agentic-v3/tools.py
+!tos-skeleton/hybrid-enrich/agentic-v3/retrieval_prompt.md
+!tos-skeleton/hybrid-enrich/configs/doc_1040aa492c.yaml
+!tos-skeleton/hybrid-enrich/configs/docconfig.py
+!tos-skeleton/hybrid-enrich/gold_mapping/build_gold_noah_v3.py
+!tos-skeleton/hybrid-enrich/gold_mapping/build_chunk_map.py
+!tos-skeleton/hybrid-enrich/hybrid-v7/fuse.py
+!tos-skeleton/hybrid-enrich/hybrid-v7/lex_index.py
+!docs/0813/
