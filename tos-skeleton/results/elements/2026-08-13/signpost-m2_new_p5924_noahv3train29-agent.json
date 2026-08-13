@@ -1,0 +1,136 @@
+{
+ "config_id": "signpost-m2_new_p5924_noahv3train29-agent",
+ "date": "2026-08-13",
+ "author": "donggyu-ralph",
+ "experiment": "V2DS-47 (M2) 이정표 하네스 파일럿 — 설계서 2.5 '태그를 이정표로' 첫 본판. 부정 결과",
+ "repro": {
+  "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+  "gold_sha": "17bbb12a6d685952c4c77967ba757655e54d5d7138fc2c747e8c8bda04528f10",
+  "code_commit": "b5e234b75cb0",
+  "two_pass_sha": null
+ },
+ "population": {
+  "name": "noah v3 train 337 에서 seed 20260812 추출 29문항",
+  "n": 29,
+  "note": "core 18 · 비core 11. A4-337 과 동일 문항 쌍대"
+ },
+ "config": {
+  "channel": "file_search",
+  "channel_params": {
+   "retriever": "이정표 하네스 (refine+boost+map)",
+   "candidate": "슬롯 합집합 ∪ Q1 어휘채널 (배제 없음)",
+   "limit": null,
+   "ranker": "조정수준(슬롯+어휘+boost×2) 내림차순 → 문서순",
+   "ranker_params": {
+    "boost_weight": 2,
+    "boost_semantics": "하드 필터 아님 — 가산점",
+    "refine_window": 200,
+    "refine_top": 8,
+    "tools": [
+     "map",
+     "refine",
+     "search",
+     "read",
+     "submit"
+    ]
+   },
+   "query_router": "query_slots + LLM qtags (+ v3 348용 127건 신규 생성)",
+   "forbidden_not_used": [
+    "BM25",
+    "reranker",
+    "embedding",
+    "learned ranking"
+   ]
+  },
+  "schema": {
+   "name": "NEW tag schema (tags_run1)",
+   "fields": [
+    "contract",
+    "subject",
+    "role",
+    "qualifier",
+    "schema"
+   ],
+   "extractor": "04B 8슬롯 LLM+구조규칙. E2 재태깅 미적용"
+  },
+  "split": {
+   "name": "P-section",
+   "n_elements": 5924,
+   "median_chars": null,
+   "rule": "특약>절>조 경계"
+  },
+  "budget": {
+   "page": 40,
+   "preview": 160,
+   "search_cap": 20,
+   "read_cap": 8,
+   "refine_cap": 12,
+   "output_cap": 64000,
+   "submit": "순위 최대 10개",
+   "model": "claude-sonnet-5",
+   "reps": 1
+  }
+ },
+ "metrics": {
+  "R@1": 0.425287,
+  "R@5": 0.637931,
+  "R@10": 0.637931,
+  "R@20": null,
+  "R@50": null,
+  "R@100": null,
+  "MRR@10": 0.587356,
+  "L_star_median": null
+ },
+ "metrics_definition": {
+  "kind": "agent_actual_ITT",
+  "formula": "Recall@K = Top-K가 덮은 고유 evidence group 수 / 전체 group 수",
+  "warning": "에이전트 실측. 결정론 값과 같은 표에 놓지 말 것"
+ },
+ "metrics_success": {
+  "kind": "success",
+  "Success@5": 0.724138,
+  "Precision@5": 0.186207,
+  "note": ""
+ },
+ "diagnostics": {
+  "visible_ceiling@5_oracle": 0.724138,
+  "output_tokens_median": 15911,
+  "process_metrics": {
+   "search_per_session": 4.52,
+   "refine_per_session": 1.45,
+   "read_per_session": 4.55,
+   "map_per_session": 1.0,
+   "boost_set_per_session": 3.83,
+   "boost_drop_per_session": 1.28,
+   "signpost_read_accuracy": 0.3874,
+   "note": "signpost_read_accuracy = 에이전트가 고른 boost 값이 gold element 의 실제 값과 일치한 비율"
+  },
+  "baseline_A4_same_questions": {
+   "R@5": 0.735632,
+   "MRR@10": 0.683908,
+   "visible_ceiling@5_oracle": 0.804598,
+   "output_tokens_median": 16193
+  },
+  "slice_core": {
+   "n": 18,
+   "R@5": 0.777778
+  },
+  "slice_noncore": {
+   "n": 11,
+   "R@5": 0.409091
+  }
+ },
+ "nulls": {
+  "query_shuffle": null,
+  "constant_dummy": null,
+  "shuffled_tag": null,
+  "random_vector": null
+ },
+ "limitations": [
+  "n=29 파일럿. CI 미산출 — 유의성 미검정. 방향·과정 지표·메커니즘의 일관성으로 판정",
+  "C 레벨 수치는 '문서 1건이 이미 골라진 상태' 가정. 11만건에서는 A/B 깔때기 문서 선택 성능이 곱해짐",
+  "boost 가중치 w=2 는 사전 등록 파라미터이나 미검정. w=1 변이는 미측정",
+  "M2 에는 E2 재태깅·TAGVIS 미적용 — 이정표 토폴로지 단일 변인 귀속을 위한 의도적 배제",
+  "test 미개봉. noah v3 분할 재추첨으로 v3-test 는 확증셋 사용 불가"
+ ]
+}
