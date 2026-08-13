@@ -1,0 +1,66 @@
+{
+  "config_id": "rrf-bm25-bgem3ko-bracketboost-qbridge_none_p0_noahv3497",
+  "date": "2026-08-13",
+  "author": "koda-design(lsh)",
+  "experiment": "noah_v3(497건) RRF-META만 baseline(R@20 52.7%) 위에 bracket exact-match boost + Q_BRIDGE 구어체 브릿지 재적용",
+  "repro": {
+    "doc_sha256": "645cc24a08587e45d9278c4ee6d78c1433d668d07b712b394ef8e3fc504bbbbf",
+    "gold_sha": "a9e12450be19523877bf24651fbf7b7823135383000c1b0db739fd1cdddea752",
+    "code_commit": "29ed73e",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "noahv3497",
+    "n": 497,
+    "note": "noah_v3 QA셋 497건 전체, gold는 v3 감사(다중근거 첫occurrence 오매칭 수정) 적용. train 348 + test 149 로컬 전용(test 질문 텍스트는 repo에 커밋 안 함, 823b34d 정책 준수)."
+  },
+  "config": {
+    "channel": "rrf",
+    "channel_params": {
+      "rrf_k": 60,
+      "threshold": 6,
+      "boost": 0.05,
+      "tag_weight": 1.0,
+      "meta_weight": 1.3,
+      "bm25": {"k1": 1.8, "b": 0.3},
+      "embed_model": "dragonkue/BGE-m3-ko",
+      "bracket_exact_boost": 1.0,
+      "bracket_boost_sweep_note": "0.1~5.0 전 구간 동일 수치(포화) - 52/497건(대괄호 포함 질문)에서 순위 확정 즉시 상한 도달",
+      "qbridge_terms": 18,
+      "qbridge_scope": "jo(조 제목) 필드에만 매칭, 최대 3개 브릿지구 삽입"
+    },
+    "schema": {
+      "name": "tag-bracket-qbridge+meta-summary",
+      "fields": ["contract_scope", "text", "meta.embedding_text", "qbridge_bridge_terms(TAG 전용)"],
+      "extractor": "tos-skeleton/hybrid-enrich/test_rrf_boost_v3.py, test_rrf_boost_v3_sweep.py"
+    },
+    "split": {
+      "name": "element(청크)",
+      "n_elements": 4300,
+      "rule": "shinhan-tos.zip 원ONE(noah) 원본 분할 그대로, 재청킹 없음"
+    }
+  },
+  "metrics": {
+    "R@1": null,
+    "R@5": 37.8,
+    "R@10": 46.3,
+    "R@20": 53.1,
+    "R@50": 58.1,
+    "R@100": 65.0,
+    "MRR@10": null,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "null 대조군(query_shuffle/constant_dummy/shuffled_tag/random_vector) 미실시 - 최종 챔피언 구성 확정 시 일괄 검증 예정",
+    "two_pass_sha 미측정 - 결정성 재검증 안 됨",
+    "완전일치(N개 gold 전부 회수) 기준, OR방식(1개라도) 아님 - 497건 전체 통일 계산(build_gold_noah_v3_multigold_v3.py 기준)",
+    "bracket_exact_boost는 대괄호 포함 질문 52/497건(10.5%)에만 작동 - 나머지 445건은 영향 없음",
+    "baseline(52.7%) 대비 +0.4pp로 개선폭이 작음 - 152/350건 시절 수치(bracket +0.66pp, Q_BRIDGE +1.3pp)보다 noah_v3에서 효과가 줄어듦, 모집단 차이로 추정(원인 미분석)"
+  ]
+}
