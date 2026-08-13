@@ -173,7 +173,8 @@ class HttpChatBackend(AgentBackend):
 
         for turn in range(self.max_turns):
             try:
-                resp = self._post(messages, tools)
+                send_tools = tools if turn == 0 else None
+                resp = self._post(messages, send_tools)
             except Exception as e:
                 return f"http error: {e}", usage_total
 
