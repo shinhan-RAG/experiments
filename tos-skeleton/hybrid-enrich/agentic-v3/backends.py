@@ -77,30 +77,114 @@ class ClaudeCliBackend(AgentBackend):
 
 
 class HttpChatBackend(AgentBackend):
-    """OpenAI/Anthropic-compatible HTTP chat API with local tool loop."""
+    """OpenAI-compatible HTTP chat API with local tool-call loop."""
     name = "http"
 
-    def __init__(self, base_url: str, api_key: str, model: str,
-                 tools_module_path: str | None = None):
-        self.base_url = base_url
+    TOOL_DEFS = [
+        {"type": "function", "function": {
+            "name": "vector_search", "description": "의미 기반 벡터 검색 top-10",
+            "parameters": {"type": "object", "properties": {
+                "query": {"type": "string", "description": "자연어 질의"}
+            }, "required": ["query"]}}},
+        {"type": "function", "function": {
+            "name": "grep_search", "description": "정규식 키워드 검색, 최대 20 hit",
+            "parameters": {"type": "object", "properties": {
+                "pattern": {"type": "string", "description": "정규식 패턴"}
+            }, "required": ["pattern"]}}},
+        {"type": "function", "function": {
+            "name": "read_chunk", "description": "청크 전문 읽기 (4000자)",
+            "parameters": {"type": "object", "properties": {
+                "chunk_id": {"type": "string", "description": "청크 ID (예: 1040aa492c::c00012)"}
+            }, "required": ["chunk_id"]}}},
+        {"type": "function", "function": {
+            "name": "structured_search", "description": "시맨틱 태그 슬롯 기반 구조 검색",
+            "parameters": {"type": "object", "properties": {
+                "filters": {"type": "string", "description": "JSON 필터 (예: {\"contract\":\"암진단특약\"})"}
+            }, "required": ["filters"]}}},
+    ]
+
+    TOOL_CMD_MAP = {
+        "vector_search": lambda a: ("vector", a.get("query", "")),
+        "grep_search": lambda a: ("grep", a.get("pattern", "")),
+        "read_chunk": lambda a: ("read", a.get("chunk_id", "")),
+        "structured_search": lambda a: ("structured", a.get("filters", "{}")),
+    }
+
+    def __init__(self, base_url: str = "http://localhost:8002/v1",
+                 api_key: str = "dummy", model: str = "Qwen/Qwen2.5-1.5B-Instruct",
+                 **_ignored):
+        self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
-        # Points at tools.py for in-process tool calls (vector/grep/read dispatch).
-        self.tools_module_path = tools_module_path
         self.max_turns = 24
 
+    def _post(self, messages, tools=None):
+        import urllib.request
+        body = {"model": self.model, "messages": messages, "max_tokens": 1024,
+                "temperature": 0}
+        if tools:
+            body["tools"] = tools
+        data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(
+            f"{self.base_url}/chat/completions", data=data, method="POST",
+            headers={"Content-Type": "application/json; charset=utf-8",
+                     "Authorization": f"Bearer {self.api_key}"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.load(r)
+
+    def _exec_tool(self, name, args, env, cwd):
+        mapping = self.TOOL_CMD_MAP.get(name)
+        if not mapping:
+            return f"unknown tool: {name}"
+        cmd, arg = mapping(args if isinstance(args, dict) else json.loads(args))
+        try:
+            p = subprocess.run(
+                ["python", "tools.py", cmd, arg],
+                capture_output=True, text=True, timeout=60, cwd=cwd, env=env,
+                encoding="utf-8", errors="replace")
+            return p.stdout or p.stderr or "empty"
+        except Exception as e:
+            return f"tool error: {e}"
+
     def run(self, prompt: str, session_dir: str, env: dict, cwd: str) -> tuple[str, dict]:
-        # TODO(KT Cloud integration):
-        #   1. POST {base_url}/chat/completions with the initial message + tool defs
-        #      derived from tools_module_path.
-        #   2. If the response carries tool_calls: import tools_module_path, execute
-        #      each call in-process, and feed the results back as tool-result messages.
-        #   3. Repeat until the model returns a final message with no tool_calls, or
-        #      self.max_turns is reached.
-        #   4. Accumulate usage (input/output/cache tokens) across every turn into the
-        #      returned usage_meta before returning.
-        raise NotImplementedError(
-            "HTTP backend requires KT Cloud integration — use CLI backend for now")
+        usage_total = {"input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0,
+                       "cache_creation_tokens": 0, "model": self.model, "backend": self.name}
+        messages = [{"role": "user", "content": prompt}]
+        tools = [t for t in self.TOOL_DEFS
+                 if t["function"]["name"] != "structured_search"
+                 or env.get("STRUCT_ENABLED") == "1"]
+
+        for _ in range(self.max_turns):
+            try:
+                resp = self._post(messages, tools)
+            except Exception as e:
+                return f"http error: {e}", usage_total
+
+            u = resp.get("usage", {})
+            usage_total["input_tokens"] += u.get("prompt_tokens", 0)
+            usage_total["output_tokens"] += u.get("completion_tokens", 0)
+
+            choice = resp["choices"][0]
+            msg = choice["message"]
+            messages.append(msg)
+
+            tool_calls = msg.get("tool_calls")
+            if not tool_calls or choice.get("finish_reason") == "stop":
+                return msg.get("content", ""), usage_total
+
+            for tc in tool_calls:
+                fn = tc["function"]
+                args = fn.get("arguments", "{}")
+                if isinstance(args, str):
+                    try:
+                        args = json.loads(args)
+                    except Exception:
+                        args = {}
+                result = self._exec_tool(fn["name"], args, env, cwd)
+                messages.append({"role": "tool", "tool_call_id": tc["id"], "content": result})
+
+        last = messages[-1].get("content", "") if messages else ""
+        return last, usage_total
 
 
 def get_backend(backend_type: str = "cli", **kwargs) -> AgentBackend:
