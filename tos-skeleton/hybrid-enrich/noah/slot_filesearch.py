@@ -6,9 +6,15 @@ import argparse
 import collections
 import json
 import re
+import sys
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent
+if sys.stdout.encoding and sys.stdout.encoding.lower().startswith("cp"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+# 코드는 noah/ 에, 데이터는 그 상위 hybrid-enrich/out 에 있다.
+HERE = Path(__file__).resolve().parent   # noah/ — 코드 위치
+BASE = HERE.parent                       # hybrid-enrich/ — 데이터 루트
 OUT = BASE / "out"
 FIELDS = ("contract", "subject", "role", "article", "table", "qualifier", "reference", "schema")
 ROLE_ALIASES = {
@@ -92,12 +98,46 @@ def canonical_old(row):
     }
 
 
+def canonical_llm(row):
+    return {
+        "element_id": row["element_id"],
+        "contract": row.get("contract") or [],
+        "subject": row.get("subject") or [],
+        "role": row.get("role") or [],
+        "article": row.get("article") or [],
+        "table": row.get("table") or [],
+        "qualifier": row.get("qualifier") or [],
+        "reference": row.get("reference") or [],
+        "schema": row.get("schema") or [],
+    }
+
+
+class SlotSearchUnavailable(RuntimeError):
+    """Raised with a clear message when a variant's tag file is missing on disk."""
+
+
 class SlotFileSearch:
-    def __init__(self, variant="new"):
-        source = "element_tags_new_repaired_full_v1.jsonl" if variant == "new" else "element_tags_old_repaired_full_v1.jsonl"
-        adapter = canonical_new if variant == "new" else canonical_old
-        self.rows = [adapter(row) for row in load(source)]
-        self.elements = {row["element_id"]: row for row in load("elements_repaired_v1.jsonl")}
+    _VARIANTS = {
+        "new": ("element_tags_new_repaired_full_v1.jsonl", canonical_new),
+        "old": ("element_tags_old_repaired_full_v1.jsonl", canonical_old),
+        "llm": ("element_tags_llm_v1.jsonl", canonical_llm),
+        "v2": ("element_tags_v2.jsonl", canonical_llm),
+    }
+
+    def __init__(self, variant="v2"):
+        source, adapter = self._VARIANTS.get(variant, self._VARIANTS["v2"])
+        tag_path = OUT / source
+        if not tag_path.exists():
+            raise SlotSearchUnavailable(
+                f"slot_filesearch: tag file missing for variant={variant!r}: {tag_path}"
+            )
+        elements_path = OUT / "elements_psection.jsonl"
+        if not elements_path.exists():
+            raise SlotSearchUnavailable(
+                f"slot_filesearch: elements file missing: {elements_path}"
+            )
+        self.rows = [adapter(row) for row in load(source) if row.get("ok", True)]
+        self.elements = {row["element_id"]: row for row in load("elements_psection.jsonl")}
 
     @staticmethod
     def _queries(value):
@@ -157,12 +197,17 @@ class SlotFileSearch:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--variant", choices=("old", "new"), default="new")
+    parser.add_argument("--variant", choices=tuple(SlotFileSearch._VARIANTS), default="v2")
     parser.add_argument("--filters", default="{}")
     parser.add_argument("--raw-regex", default="")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
-    print(json.dumps(SlotFileSearch(args.variant).search(json.loads(args.filters), args.raw_regex, args.limit), ensure_ascii=False))
+    try:
+        engine = SlotFileSearch(args.variant)
+    except SlotSearchUnavailable as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False))
+        return
+    print(json.dumps(engine.search(json.loads(args.filters), args.raw_regex, args.limit), ensure_ascii=False))
 
 
 if __name__ == "__main__":

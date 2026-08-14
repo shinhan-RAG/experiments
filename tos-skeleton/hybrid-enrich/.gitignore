@@ -9,3 +9,35 @@ out/chunk_metadata*.jsonl
 out/element_tags*.jsonl
 out/semantic_tags.jsonl
 __pycache__/
+
+# 임시/스크래치 산출물 — 이전에 폴더에 40개 넘게 쌓여 있었다
+_tmp_*
+scratch_*
+*_tmp.txt
+err*.log
+vec_*.log
+out_*.json
+out/tmp_*
+out/dump*.txt
+out/*.pkl
+out/sessions_rrf*/
+out/sessions_manual/
+out/sessions_exp*/
+out/sessions_smoke*/
+out/codex_meta_work/
+out/codex_tag_work*/
+
+# 결정론적으로 재생성되는 대용량 산출물 (소스 문서 + noah/ 스크립트로 복원 가능)
+out/elements_psection.jsonl
+out/elements_repaired*.jsonl
+out/view_*.jsonl
+out/vec_*_ids.json
+
+# 스크래치 덤프
+g*.txt
+nr.txt
+
+# 커밋하는 것: LLM 로 생성해 재현에 비용이 드는 산출물과 평가 결과
+#   out/llm_meta_v9.jsonl, out/element_tags_v2.jsonl
+#   out/gold_{train,test}.jsonl, out/results_*.jsonl, out/*_stats.json
+!out/element_tags_v2.jsonl

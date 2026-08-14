@@ -1,0 +1,17 @@
+{
+  "n": 5408,
+  "by_type": {
+    "formula": 149,
+    "paragraph": 5047,
+    "table": 171,
+    "heading": 41
+  },
+  "median_len": 336,
+  "p90_len": 1190,
+  "max_len": 4000,
+  "split_parts": 747,
+  "maxc": 4000,
+  "maxspan": 50,
+  "doc_len": 2757704,
+  "coord_space": "raw"
+}
