@@ -16,7 +16,7 @@
 | 우주 | 색인·태깅 = **u2**(항/표/산식/heading 32,366, `build_universe.py --clean`) · 채점·제출 = **u2jo**(조 7,599, `build_jo_universe.py`) — u2jo 직접 색인을 대조로 병기 |
 | gold | **lsh v4 gold**(span 형식 수령 후 u2/u2jo 매핑). 수령 전 임시 = `map_gold_spans.py`(train 338, 앵커 다중매치 120/531 group 표기) |
 | 모집단 | noah v3 **train 338** 만. test149 봉인(개봉은 최종 챔피언 1회, 사전 등록 별도). 층화 필수: core/비core, task_type |
-| 지표 | Recall@1/5/10/20 (fractional evidence-group), hits/len(gold) 병기, MRR@10, Success@5. 주지표 **R@5** 하나 |
+| 지표 | Recall@1/5/10/20 (fractional evidence-group), hits/len(gold) 병기, MRR@10, Success@5. 주지표 **R@5** 하나. **후보 풀 지표 = R@40**(S5 예산 1페이지 page=40 에서 역산) + R@K 곡선(K=5·10·20·40·100·200) 상시 병기 — 단일 K 임의 지정 금지 |
 | 검정 | 이진 = 정확 McNemar, 연속 = BCa bootstrap, 가족 단위 Holm. MDE 사전 계산(n=338: 클린 패턴 +1.8pp≈6문항, 혼합 2:1 ≈ +5pp) |
 | 널 | query_shuffle(3시드 이상), shuffled_tag(태그 arm), constant_dummy |
 | 에이전트 | 모델·예산(page/preview/search/read/submit) 고정, reps ≥ 2, 도구 반환 후보·점수 전량 로그, 세션 오류 ITT 0점 |
@@ -29,7 +29,7 @@
 |---|---|---|
 | A0 | 태그 없음, 어휘 채널만 | 대조 |
 | A1 | 태그 재생성(u2): 구조 슬롯(contract/article/section/schema = 규칙) + LLM 슬롯(subject/role/qualifier), CLM 동일가중 | 이전 A4 재현 게이트 |
-| A2 | + **소프트 scope 부스트**: 질의 라우터가 특약을 식별한 문항만 contract 일치에 가산(w 사전 고정), 미식별 시 무개입 | 오라클 +.45 상한, 하드 필터의 후보0 회피 |
+| A2 | + **소프트 scope 부스트**: 질의 라우터가 특약을 식별한 문항만 contract 일치에 가산(w∈{2,3,5} 격자 전부 기록), 미식별 시 무개입. 라우터 3종(규칙 완전일치 / +부분일치(신뢰도 ½) / +LLM qtags(질문·특약사전만 입력)) | CLM 기준 scope 오라클 R@5 .364→.646(2026-08-18 진단), 하드 필터의 후보0 회피 |
 | A3 | + 슬롯 가중 CLM (contract 정확 > subject > role alias) | 상용구 19% 판별, 동점 해소 |
 | A4 | + multi-evidence: (특약×역할) 하위질의 분해 → 그룹별 interleave 제출, 형제 확장(같은 조/같은 특약 다른 역할) | 비core R@5 .27 층 겨냥, fractional 채점 구조 |
 | A5 | 에이전트 하네스: 후보 목록에 **태그 헤더 노출**(값 선택 강제 없음, 이정표 v2) | M2 실패 원인(판독 39%) 제거형. 태그를 "고르는" 대신 "읽는" 소비 |

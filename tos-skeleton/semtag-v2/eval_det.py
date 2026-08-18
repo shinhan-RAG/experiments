@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """결정론 평가(LLM 0회): 라우터+SlotSearch 를 gold span 에 대해 채점. arm 은 --arms 로 지정.
 
-arm 문법: <mode>[:lex=<binary|count>][:tags=<0|1>][:w=<field>=<num>,...]
+arm 문법(세미콜론 구분): <mode>[:lex=<binary|count>][:tags=<0|1>][:w=<field>=<num>,...][:oracle=scope]
   예) clm:lex=binary  |  clm:lex=count  |  and  |  clm:tags=0(어휘채널만=A0)  |  clm:w=contract=3
 채점: 원 단위(u2) 와 조 map-back(u2jo) 둘 다. Recall@K = fractional evidence-group, Success@K, MRR@10.
 문항별 순위를 out/det_ranks_<arm>.jsonl 로 남긴다(paired 검정용).
@@ -32,45 +32,71 @@ def main():
     ap.add_argument("--tags", default=str(HERE / "out/tags_u2_rules.jsonl"))
     ap.add_argument("--jo", default=str(HERE / "out/elements_u2jo.jsonl"))
     ap.add_argument("--gold", default=str(HERE / "out/gold_spans_train.jsonl"))
-    ap.add_argument("--arms", default="clm:lex=binary,clm:lex=count,and,clm:tags=0")
-    ap.add_argument("--limit", type=int, default=100)
+    ap.add_argument("--arms", default="clm:lex=count;clm:lex=count:w=contract=3;and;clm:tags=0;clm:lex=count:oracle=scope;clm:lex=count:w=contract=3:oracle=scope")
+    ap.add_argument("--limit", type=int, default=200)
+    ap.add_argument("--partial", default="0", help="라우터 부분 특약명 일치 허용(1)")
+    ap.add_argument("--qtags", default="", help="LLM qtags jsonl (qtag_llm.py 출력)")
+    ap.add_argument("--qmode", default="union", choices=("rule", "llm", "union"), help="라우터 슬롯 결합 방식")
     a = ap.parse_args()
     S = SlotSearch(a.elements, a.tags)
+    S.router.partial = a.partial == "1"
     J = [json.loads(l) for l in open(a.jo)]
     m2j = {m: j for j, u in enumerate(J) for m in u["members"]}
     G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"]]
+    QT = {}
+    if a.qtags:
+        for l in open(a.qtags, encoding="utf-8"):
+            d = json.loads(l); QT[d["qid"]] = d
     print(f"n={len(G)} tags={Path(a.tags).name}")
-    hdr = ["R@1", "R@5", "R@10", "R@20", "S@5", "RR@10"]
+    hdr = ["R@1", "R@5", "R@10", "R@20", "R@40", "R@100", "S@5", "RR@10"]
+    arms = [x for x in a.arms.split(";") if x]
+    parsed = [parse_arm(x) for x in arms]
     print("| arm | 단위 | " + " | ".join(hdr) + " | core R@5 | 비core R@5 | 후보0 |\n|---|---|" + "---|" * (len(hdr) + 3))
-    for arm in a.arms.split(","):
-        mode, opt = parse_arm(arm)
-        agg = collections.defaultdict(list); zero = 0
-        with open(HERE / "out" / f"det_ranks_{arm.replace(':','_').replace('=','-').replace(',','+')}.jsonl", "w") as f:
-            for g in G:
-                slots, toks = S.router.route(g["q"])
-                if opt["tags"] == "0":
-                    slots = {}
-                res = S.search(slots, toks, mode=mode, lex=opt["lex"], weights=opt["w"], limit=a.limit)
-                if not res:
-                    zero += 1
-                ru = [e for e, _ in res]
-                seen, rj = set(), []
-                for e in ru:
-                    j = m2j[e["element_id"]]
-                    if j not in seen:
-                        seen.add(j); rj.append(J[j])
-                for unit, ranked in (("u2", ru), ("jo", rj)):
-                    sc = score(ranked, g["groups"])
-                    for k, v in sc.items():
-                        agg[(unit, k)].append(v)
-                    agg[(unit, "_core")].append(g["core_retrieval"] == "True")
-                f.write(json.dumps({"qid": g["qid"], "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
-                                    "u2_top": [e["element_id"] for e in ru[:20]], "jo_top": [u["element_id"] for u in rj[:20]]}, ensure_ascii=False) + "\n")
+    agg = {arm: collections.defaultdict(list) for arm in arms}; zero = collections.Counter()
+    files = {arm: open(HERE / "out" / f"det_ranks_{arm.replace(':','_').replace('=','-').replace(',','+')}.jsonl", "w") for arm in arms}
+    for g in G:
+        slots, toks = S.router.route(g["q"])
+        conf = slots.pop("_conf", {})
+        if QT:
+            lt = QT.get(g["qid"], {})
+            llm = {k: lt.get(k) or [] for k in ("contract", "role", "subject", "qualifier", "schema")}
+            llm = {k: v for k, v in llm.items() if v}
+            if a.qmode == "llm":
+                slots = llm; conf = {}
+            elif a.qmode == "union":
+                for k, v in llm.items():
+                    slots[k] = list(dict.fromkeys(list(slots.get(k, [])) + v))
+                if llm.get("contract"):
+                    conf.pop("contract", None)  # LLM 이 특약을 지목하면 정신뢰도
+        M, L = S.match_table(slots, toks)
+        M0 = [{} for _ in M]  # tags=0 용
+        gscopes = {e["contract_scope"] for e in S.E if any(overlaps(e, gr) for gr in g["groups"])}
+        for arm, (mode, opt) in zip(arms, parsed):
+            w = {f: v * conf.get(f, 1.0) for f, v in opt["w"].items()} if opt.get("pconf") == "1" else opt["w"]
+            res = S.rank(M0 if opt["tags"] == "0" else M, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
+                         scope_filter=gscopes if opt.get("oracle") == "scope" else None)
+            if not res:
+                zero[arm] += 1
+            ru = [e for e, _ in res]
+            seen, rj = set(), []
+            for e in ru:
+                j = m2j[e["element_id"]]
+                if j not in seen:
+                    seen.add(j); rj.append(J[j])
+            for unit, ranked in (("u2", ru), ("jo", rj)):
+                sc = score(ranked, g["groups"], ks=(1, 5, 10, 20, 40, 100))
+                for k, v in sc.items():
+                    agg[arm][(unit, k)].append(v)
+                agg[arm][(unit, "_core")].append(g["core_retrieval"] == "True")
+            files[arm].write(json.dumps({"qid": g["qid"], "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
+                                         "u2_top": [e["element_id"] for e in ru[:40]], "jo_top": [u["element_id"] for u in rj[:40]]}, ensure_ascii=False) + "\n")
+    for arm in arms:
         for unit in ("u2", "jo"):
-            row = [f"{sum(agg[(unit,k)])/len(G):.3f}" for k in hdr]
-            core = agg[(unit, "_core")]; r5 = agg[(unit, "R@5")]
+            A = agg[arm]
+            row = [f"{sum(A[(unit,k)])/len(G):.3f}" for k in hdr]
+            core = A[(unit, "_core")]; r5 = A[(unit, "R@5")]
             c = [x for x, f_ in zip(r5, core) if f_]; nc = [x for x, f_ in zip(r5, core) if not f_]
-            print(f"| {arm} | {unit} | " + " | ".join(row) + f" | {sum(c)/len(c):.3f} | {sum(nc)/len(nc):.3f} | {zero} |")
+            print(f"| {arm} | {unit} | " + " | ".join(row) + f" | {sum(c)/len(c):.3f} | {sum(nc)/len(nc):.3f} | {zero[arm]} |")
 
 
 if __name__ == "__main__":

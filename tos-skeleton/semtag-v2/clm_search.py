@@ -46,17 +46,39 @@ class Router:
 
     def __init__(self, contracts):
         self.contracts = sorted({c for c in contracts if c}, key=len, reverse=True)
-        self.cores = [(c, contract_core(c)) for c in self.contracts]
+        # core = 정규화 핵심명, core_nb = 대괄호 수식어([기본]·[3~100%장해형]…) 제거 후 정규화
+        self.cores = [(c, contract_core(c), contract_core(re.sub(r"\[.*?\]", "", c))) for c in self.contracts]
+        self.partial = True  # 부분 일치(공통 부분문자열) 허용
+
+    @staticmethod
+    def _lcs(a, b):
+        best = 0
+        for i in range(len(a)):
+            for j in range(len(b)):
+                k = 0
+                while i + k < len(a) and j + k < len(b) and a[i + k] == b[j + k]:
+                    k += 1
+                if k > best:
+                    best = k
+        return best
 
     def route(self, q):
         cq = compact(q)
         slots = collections.defaultdict(list)
-        for c, core in self.cores:
+        partial_hits = []
+        for c, core, core_nb in self.cores:
             if not core:
                 continue
-            core_nb = re.sub(r"\[.*?\]", "", core)  # [기본]·[3~100%장해형] 같은 대괄호 수식어 제거본
             if (len(core) >= 3 and core in cq) or (len(core_nb) >= 3 and core_nb in cq):
                 slots["contract"].append(c)
+            elif self.partial and len(core_nb) >= 4:
+                l = self._lcs(core_nb, cq)
+                if l >= 6 or (l >= 4 and l / len(core_nb) >= 0.6):
+                    partial_hits.append((l / len(core_nb), c))
+        if not slots["contract"] and partial_hits:
+            top = max(x[0] for x in partial_hits)
+            slots["contract"] = [c for r, c in partial_hits if r >= top - 1e-9]
+            slots["_conf"] = {"contract": 0.5}  # 부분 일치 신뢰도(가중 절반)
         if "주계약" in q or "주보험" in q:
             slots["contract"] += [c for c in self.contracts if c.startswith("(간편)신한통합건강보장보험") or c.startswith("신한(간편가입)")]
         for pat, role in ROLE_RULES:
@@ -86,25 +108,34 @@ class SlotSearch:
         vals = [str(v) for v in row.get(field) or [] if str(v).strip()]
         return any(fuzzy_contains(q, v, field) for q in requested for v in vals)
 
-    def search(self, slots, tokens, mode="clm", lex="binary", weights=None, limit=50):
+    def match_table(self, slots, tokens):
+        """질의 1건에 대한 element별 슬롯 매치·어휘 토큰 수를 한 번만 계산(arm 간 재사용)."""
+        req = {f: v for f, v in slots.items() if f in FIELDS and v}
+        M = [{f: self.field_match(row, f, v) for f, v in req.items()} for row in self.rows]
+        L = [sum(1 for t in tokens if compact(t) in b) for b in self.body] if tokens else [0] * len(self.rows)
+        return M, L
+
+    def rank(self, M, L, mode="clm", lex="binary", weights=None, limit=50, scope_filter=None):
         weights = weights or {}
         scored = []
-        req = {f: v for f, v in slots.items() if f in FIELDS and v}
-        for i, row in enumerate(self.rows):
-            m = {f: self.field_match(row, f, v) for f, v in req.items()}
-            if mode == "and":
-                if req and not all(m.values()):
-                    continue
-                scored.append((0.0, i))
+        for i, m in enumerate(M):
+            if scope_filter is not None and self.E[i]["contract_scope"] not in scope_filter:
                 continue
+            if mode == "and":
+                if m and not all(m.values()):
+                    continue
+                scored.append((0.0, i)); continue
             score = sum(weights.get(f, 1.0) for f, hit in m.items() if hit)
-            if tokens:
-                lt = sum(1 for t in tokens if compact(t) in self.body[i])
-                score += (1.0 if lt else 0.0) if lex == "binary" else lt
+            if L[i]:
+                score += 1.0 if lex == "binary" else L[i]
             if score > 0:
                 scored.append((score, i))
         scored.sort(key=lambda x: (-x[0], self.E[x[1]]["line_start"], self.E[x[1]]["line_end"], self.E[x[1]]["element_id"]))
         return [(self.E[i], s) for s, i in scored[:limit]]
+
+    def search(self, slots, tokens, mode="clm", lex="binary", weights=None, limit=50):
+        M, L = self.match_table(slots, tokens)
+        return self.rank(M, L, mode, lex, weights, limit)
 
 
 if __name__ == "__main__":
