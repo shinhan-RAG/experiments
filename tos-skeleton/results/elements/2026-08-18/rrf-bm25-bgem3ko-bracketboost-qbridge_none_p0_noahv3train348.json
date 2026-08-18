@@ -1,0 +1,67 @@
+{
+  "config_id": "rrf-bm25-bgem3ko-bracketboost-qbridge_none_p0_noahv3train348",
+  "date": "2026-08-18",
+  "author": "koda-design(lsh)",
+  "experiment": "noah_v3(신한 원ONE) v4 gold(8개 축 전수감사 완료, noah-v3-rrf_lsh@9ee71f2) 기준 champion RRF 구성(TAG+META, bracket exact-match boost, Q_BRIDGE) 공식 recall_at_k 재측정 및 정식 등록 - train348/test149 분리(497 통합 아님)",
+  "repro": {
+    "doc_sha256": "645cc24a08587e45d9278c4ee6d78c1433d668d07b712b394ef8e3fc504bbbbf",
+    "gold_sha": "57787299521f3f9d6c2b635af1b376c64a53b9ac7004b49feebe1648035582f9",
+    "code_commit": "9ee71f2",
+    "two_pass_sha": "e07a70b6608b29a6fe20deaa3ad66a479ee1bedf94028cb92144e624f255e6c1"
+  },
+  "population": {
+    "name": "noahv3train348",
+    "n": 348,
+    "note": "gold 감사 8개 축 전수 완료(v4), noah-v3-rrf_lsh 9ee71f2. judged 334/348(gold=[] 14건은 원본 recall_at_k를 호출하지 않고 0점 자동 포함, 분모는 전체 348 고정)."
+  },
+  "config": {
+    "channel": "rrf",
+    "channel_params": {
+      "rrf_k": 60,
+      "threshold": 6,
+      "boost": 0.05,
+      "tag_weight": 1.0,
+      "meta_weight": 1.3,
+      "bm25": { "k1": 1.8, "b": 0.3, "tokenizer": "char-bigram" },
+      "embed_model": "dragonkue/BGE-m3-ko",
+      "embed_params": { "normalize_embeddings": true, "batch_size": 8, "device": "cuda:0" },
+      "meta_source_sha256": "de08b31006fc0e2bcd691daeba7b5b9b191a430bba7fa030e04a7b87caf17555",
+      "bracket_exact_boost": 1.0,
+      "qbridge_terms": 18,
+      "qbridge_scope": "jo(조 제목) 필드에만 매칭, 최대 3개 브릿지구 삽입"
+    },
+    "schema": {
+      "name": "tag-bracket-qbridge+meta-summary",
+      "fields": ["contract_scope", "text", "meta.embedding_text", "qbridge_bridge_terms(TAG 전용)"],
+      "extractor": "tos-skeleton/hybrid-enrich/test_rrf_boost_v3.py (noah-v3-rrf_lsh@9ee71f2 변형3: Q_BRIDGE+bracket_exact_boost 결합)"
+    },
+    "split": {
+      "name": "element(청크)",
+      "n_elements": 4300,
+      "rule": "shinhan-tos.zip 원ONE(noah) 원본 분할 그대로, 재청킹 없음"
+    }
+  },
+  "metrics": {
+    "R@1": 26.365,
+    "R@5": 48.683,
+    "R@10": 57.639,
+    "R@20": 64.535,
+    "R@50": 69.66,
+    "R@100": 76.518,
+    "MRR@10": 39.143,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "null 대조군(query_shuffle/constant_dummy/shuffled_tag/random_vector) 미실시 - 참고한 v3 baseline 항목(2026-08-13, rrf-bm25-bgem3ko-bracketboost-qbridge_none_p0_noahv3497)도 동일하게 미실시 상태로 등록했음. 이번 세션은 결과 등록 작업이라 새로 측정하지 않음",
+    "L_star_median 정의가 프로젝트 내에서 확립되어 있지 않아 미측정(null) - shinhantos-rrf-2ch-tagmeta-compliant_none_p0_shinhantos406(2026-08-11) 등록 시 동일 판단(\"README 예시만으로는 불명확\")을 따른 선례",
+    "이번 측정은 공식 recall_at_k(부분회수율, hits/len(gold), /home/work/source/embed_exp/dr-dci/src/eval/retrieval_metrics.py)를 사용함. 참고한 2026-08-13 v3 baseline 항목(rrf-bm25-bgem3ko-bracketboost-qbridge_none_p0_noahv3497)은 완전일치(N개 gold 전부 회수, OR방식 아님) 기준으로 등록되었음(그 항목 자신의 limitations에 명시) - 채점 방식이 다르므로 그 항목의 R@20=53.1%(test149, 완전일치·497 통합)와 이 항목의 수치를 직접 비교하지 말 것",
+    "two_pass_sha는 동일 코드·동일 입력으로 2회 독립 실행한 산출물(JSON, 지표+질의별 세부값 포함) SHA-256이 완전히 일치함(e07a70b6...)으로 확인 - 이번 실행에서는 GPU 비결정성 관찰 안 됨. 단, 과거 R18 실험에서 임베딩(META) 채널의 GPU 부동소수점 비결정성으로 순위 리스트 자체가 run마다 완전히 같지 않을 수 있다는 관찰이 있었음(다만 recall_at_k 수치는 소수 3자리까지 안정적으로 재현됨) - 참고용으로 남김",
+    "원본 champion 스크립트(test_rrf_boost_v3.py)는 임베딩 디바이스로 cuda:1을 하드코딩했으나, 이번 실행은 cuda:0에서 수행 - 모델 가중치·연산 로직은 동일하며 결과가 결정적으로 재현됨(two_pass_sha 일치)으로 디바이스 차이가 결과에 영향 없음을 확인"
+  ]
+}
