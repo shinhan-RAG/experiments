@@ -1,14 +1,13 @@
-# 우주 비교 (2026-08-18) — char-bigram BM25 k1=1.2 b=0.75, noah v3 train 338(gold 매핑분), 결정론
-# fine=u2(항 단위 24,412) coarse=u2jo(조 단위 5,807) map-back=u2 순위→조 사상. gold=출처 인용문 span(우주 독립).
-# 널(query_shuffle 3시드) R@5: u2 .002 / u2jo .008 / map-back .011
+# 우주 비교 (2026-08-18, 산식·펜스 규칙 수정 후 재측정) — char-bigram BM25 k1=1.2 b=0.75, noah v3 train 338(gold 매핑분), 결정론, LLM 0회
+# fine=u2(항 단위 32,366) coarse=u2jo(조 단위 7,599) map-back=u2 순위→조 사상. gold=출처 인용문 char span(우주 독립). 널(query_shuffle 3시드) R@5 ≤ .01
 
 population n=338 (gold 매핑 성공분)
 
 | 채점 | R@1 | R@5 | R@10 | R@20 | S@5 | RR@10 | R@1000chars | R@3000chars |
 |---|---|---|---|---|---|---|---|---|
-| fine(u2) | 0.030 | 0.110 | 0.186 | 0.308 | 0.142 | 0.084 | 0.202 | 0.299 |
-| coarse(u2jo) | 0.075 | 0.233 | 0.373 | 0.476 | 0.281 | 0.183 | 0.117 | 0.181 |
-| u2→jo map-back | 0.057 | 0.209 | 0.393 | 0.489 | 0.260 | 0.158 | 0.107 | 0.171 |
-  fine(u2): R@5 core 0.136 / 비core 0.070 · R@10 core 0.223 / 비core 0.132
-  coarse(u2jo): R@5 core 0.265 / 비core 0.185 · R@10 core 0.436 / 비core 0.280
-  u2→jo map-back: R@5 core 0.228 / 비core 0.182 · R@10 core 0.465 / 비core 0.286
+| fine(u2) | 0.031 | 0.128 | 0.235 | 0.394 | 0.169 | 0.098 | 0.241 | 0.394 |
+| coarse(u2jo) | 0.090 | 0.325 | 0.492 | 0.631 | 0.388 | 0.232 | 0.149 | 0.239 |
+| u2→jo map-back | 0.062 | 0.277 | 0.478 | 0.627 | 0.340 | 0.192 | 0.134 | 0.221 |
+  fine(u2): R@5 core 0.156 / 비core 0.086 · R@10 core 0.287 / 비core 0.157
+  coarse(u2jo): R@5 core 0.384 / 비core 0.237 · R@10 core 0.579 / 비core 0.362
+  u2→jo map-back: R@5 core 0.329 / 비core 0.199 · R@10 core 0.579 / 비core 0.328

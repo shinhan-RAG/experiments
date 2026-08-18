@@ -1,7 +1,7 @@
 {
-  "n_units": 5807,
-  "median_chars": 23,
-  "p90": 1073,
+  "n_units": 7599,
+  "median_chars": 22,
+  "p90": 1061,
   "max": 24564,
-  "sha256": "b3fb77ec38f5ee83f20488e4bc0d5791a076e76379a66f3ff8765a933cdd68d1"
+  "sha256": "4aedc3fa1ff243ad32cabacfe55852db38ef8e1c42d8aa5bf7a8fe7ca2a848ba"
 }

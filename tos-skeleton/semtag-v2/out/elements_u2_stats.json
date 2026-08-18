@@ -6,18 +6,18 @@
   "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
   "doc_lines": 112001,
   "doc_chars": 2757704,
-  "n_elements": 24412,
+  "n_elements": 32366,
   "by_type": {
-    "paragraph": 17606,
-    "table": 768,
-    "formula": 135,
-    "heading": 5903
+    "paragraph": 23497,
+    "table": 973,
+    "formula": 160,
+    "heading": 7736
   },
-  "avg_len": 79,
+  "avg_len": 77,
   "median_len": 43,
-  "p90_len": 158,
-  "split_parts": 6,
+  "p90_len": 159,
+  "split_parts": 7,
   "scope_bounds": 1443,
-  "n_scopes": 108,
-  "elements_sha256": "1201d82fb902880bb0e7dfeaa0abe2c2c85d16f431757c1ec1e1174f501f4773"
+  "n_scopes": 142,
+  "elements_sha256": "37b3240b016ac45327d190a8852545a3c2a0a08c971bb3e4b2909d43baab96af"
 }

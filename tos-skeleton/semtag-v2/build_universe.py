@@ -105,12 +105,19 @@ def build(raw, clean=False):
                 flush(i, i + 1, "formula")
             i += 1
         elif s.startswith("```"):
-            j = i + 1
-            while j < n and not lines[j].lstrip().startswith("```"):
-                j += 1
-            if not clean:  # 펜스 블록은 QR코드 json 잔재(23블록) — clean 에서는 제거
-                flush(i, min(j + 1, n), "paragraph")
-            i = min(j + 1, n)
+            # 펜스 블록(QR코드 json 잔재). 여는 펜스는 언어 태그가 있는 줄(```json 등)만 인정하고
+            # 닫는 펜스는 다음 ``` 줄. 홀로 선 ``` 은 잔재로 보고 그 줄만 소비 (짝 오류로 대량 삭제 방지)
+            if s.strip() == "```":
+                if not clean:
+                    flush(i, i + 1, "paragraph")
+                i += 1
+            else:
+                j = i + 1
+                while j < n and lines[j].strip() != "```" and j - i < 40:
+                    j += 1
+                if not clean:
+                    flush(i, min(j + 1, n), "paragraph")
+                i = min(j + 1, n)
         elif not s:
             i += 1
         else:
