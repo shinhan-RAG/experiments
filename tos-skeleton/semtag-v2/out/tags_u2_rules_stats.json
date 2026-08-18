@@ -1,0 +1,14 @@
+{
+  "version": "semtag-v2-rules-1.0",
+  "n": 32366,
+  "coverage": {
+    "contract_key": 0.998,
+    "subject_key": 0.365,
+    "role": 0.742,
+    "qualifier": 0.149,
+    "reference": 0.102,
+    "article": 0.902,
+    "table": 0.027
+  },
+  "sha256": "d7674ea88444d3dfc68cc8304c39752617c6d51a1d0b5bd5c7a03c777a4cceac"
+}
