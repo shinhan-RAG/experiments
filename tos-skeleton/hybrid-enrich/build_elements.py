@@ -3,7 +3,8 @@
 elements.jsonl: element_id, element_type, text, char_start, char_end, line_start, line_end, contract_scope"""
 import json, re, unicodedata, os, bisect
 
-DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
+_DEFAULT_DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
+DOC = os.environ.get("DOC_PATH", _DEFAULT_DOC)
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 MAX_ELEM_CHARS = 4000  # 초대형 표는 4000자 단위로 분절(part) — 전 Arm 동일 규칙
 
@@ -19,7 +20,7 @@ def main():
 
     # 특약 경계 (update_scope와 동일 패턴)
     RIDER = re.compile(r"^\(간편\).{0,60}특약\(무배당[^)]*\)\s*$")
-    MAIN = re.compile(r"^신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^)]*\)\s*$")
+    MAIN = re.compile(r"^(?:\(간편\))?신한(?:\(간편가입\))?통합건강보[장험]+ 원\(ONE\)\(무배당[^)]*\)\s*$")
     bounds = []
     for i, l in enumerate(lines):
         s = l.strip()

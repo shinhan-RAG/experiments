@@ -52,6 +52,18 @@ def bootstrap_diff(a_ranks: list, b_ranks: list, k: int = 5, n_boot: int = 10000
     return {"mean_diff": round(mean, 4), "ci_lo": round(lo, 4), "ci_hi": round(hi, 4)}
 
 
+def resolve_path(raw: str) -> Path:
+    """상대경로는 데이터 루트(hybrid-enrich) 기준으로 해석한다.
+
+    코드는 noah/ 에 있고 실행도 noah/ 에서 하므로, `out/gold_train.jsonl` 을
+    그대로 넘기면 noah/out/ 을 찾아 실패한다. 절대경로와 실제로 존재하는
+    상대경로는 그대로 두고, 그 외에만 BASE 를 앞에 붙인다."""
+    q = Path(raw)
+    if q.is_absolute() or q.exists():
+        return q
+    return BASE / raw
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default=str(OUT / "agentic_rrf_results.jsonl"))
@@ -59,8 +71,8 @@ def main():
     ap.add_argument("--core-only", action="store_true", default=False)
     args = ap.parse_args()
 
-    results = load_jsonl(Path(args.results))
-    gold_all = load_jsonl(Path(args.gold))
+    results = load_jsonl(resolve_path(args.results))
+    gold_all = load_jsonl(resolve_path(args.gold))
     # 골드가 raw 좌표가 아니면 채점 자체가 무의미하다 (정규화 좌표와 최대 56,667자 어긋남).
     bad = [g["qid"] for g in gold_all if g.get("coord_space") != "raw"]
     if bad:
@@ -137,7 +149,7 @@ def main():
         parts = [f"{t}={c / n:.1f}" for t, c in sorted(tool_counts.items())]
         print(f"  {arm:<12} avg_total={total / n:.1f}  {' '.join(parts)}")
 
-    out_path = Path(args.results).with_suffix(".eval.json")
+    out_path = resolve_path(args.results).with_suffix(".eval.json")
     eval_result = {"n": len(gold_by), "arms": {}}
     for arm in arms:
         ranks = arm_ranks[arm]

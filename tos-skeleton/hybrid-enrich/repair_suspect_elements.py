@@ -5,13 +5,15 @@ from __future__ import annotations
 import bisect
 import collections
 import json
+import os
 import re
 import unicodedata
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
 OUT = BASE / "out"
-DOC = Path("/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md")
+_DEFAULT_DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
+DOC = Path(os.environ.get("DOC_PATH", _DEFAULT_DOC))
 MAX_CHARS = 3000
 MAX_LINES = 60
 ARTICLE_RE = re.compile(r"(?:^|\n)#{0,6}\s*제\s?\d+(?:-\d+)?조(?:의\s?\d+)?", re.M)

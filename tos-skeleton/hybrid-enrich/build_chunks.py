@@ -2,7 +2,8 @@
 """Source-faithful recursive 600/100 chunking with hard contract boundaries."""
 import json, re, unicodedata, hashlib, os
 
-DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
+_DEFAULT_DOC = "/Users/seyoung/Documents/02 Braincrew/Shinhan Life/QA_set/판매약관_신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)_260507.md"
+DOC = os.environ.get("DOC_PATH", _DEFAULT_DOC)
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 CHUNK_SIZE = 600
 OVERLAP = 100
@@ -121,7 +122,7 @@ def main():
     # Contract headers are hard boundaries. Recursive ranges are contiguous inside each scope.
     contract_line_re = re.compile(
         r"^(?:[^|\n]{2,180}특약[^()\n]{0,40}\(무배당[^)\n]*\)|"
-        r"신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^\n]*\))\s*$"
+        r"(?:\(간편\))?신한(?:\(간편가입\))?통합건강보[장험]+ 원\(ONE\)\(무배당[^\n]*\))\s*$"
     )
     hard_bounds = [(0, "")]
     for line_no, line in enumerate(lines):

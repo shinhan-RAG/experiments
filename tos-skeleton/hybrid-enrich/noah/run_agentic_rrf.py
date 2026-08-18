@@ -18,6 +18,7 @@ import hashlib
 import json
 import os
 import re
+import random
 import shutil
 import subprocess
 import sys
@@ -209,11 +210,23 @@ def _invoke(question: str, sdir: Path, env: dict, timeout: int, insist: bool,
     ]
     suffix = "_retry" if insist else ""
     try:
-        proc = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            text=True, encoding="utf-8", errors="replace",
-            cwd=str(HERE), env=env,
-        )
+        # Popen 자체가 실패할 수 있다. claude.exe 는 304MB 이미지라 동시 실행이
+        # 많으면 Windows 커밋 한도를 넘겨 즉시 예외가 난다(16워커에서 실측).
+        # 일시적 자원 고갈이므로 지수 백오프로 몇 번 기다려 준다.
+        proc = None
+        for attempt in range(5):
+            try:
+                proc = subprocess.Popen(
+                    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, encoding="utf-8", errors="replace",
+                    cwd=str(HERE), env=env,
+                )
+                break
+            except OSError as exc:
+                if attempt == 4:
+                    return {"status": "error", "ranked_chunk_ids": [],
+                            "final_reason": f"spawn_failed({type(exc).__name__}): {exc}"[:300]}
+                time.sleep(2 ** attempt + random.random() * 2)
         try:
             raw, err = proc.communicate(timeout=timeout)
         except subprocess.TimeoutExpired:
@@ -235,8 +248,10 @@ def _invoke(question: str, sdir: Path, env: dict, timeout: int, insist: bool,
         return {"status": "error", "ranked_chunk_ids": [], "final_reason": repr(exc)[:300]}
 
 
-def run_one(qid: str, question: str, arm: str, timeout: int) -> dict:
-    sdir = SESSION_ROOT / arm / qid
+def run_one(qid: str, question: str, arm: str, timeout: int, rep: int = 1) -> dict:
+    # 반복(rep)마다 세션 디렉터리를 분리한다. 같은 경로를 쓰면 두 번째 반복이
+    # 첫 번째 결과를 그대로 재사용해 버려 분산을 전혀 못 재게 된다.
+    sdir = SESSION_ROOT / arm / f"rep{rep}" / qid
     sdir.mkdir(parents=True, exist_ok=True)
     done_f = sdir / "result.json"
     if done_f.exists():
@@ -258,15 +273,20 @@ def run_one(qid: str, question: str, arm: str, timeout: int) -> dict:
         final = _invoke(question, sdir, env, timeout, insist=True, arm=arm)
         calls_n = _count_calls(calls_f)
         if calls_n == 0:
-            final = {"status": "error", "ranked_chunk_ids": [],
-                     "final_reason": "no tool calls after retry (모델이 검색 없이 답변)"}
+            # 진짜 원인(spawn_failed/launch_failed/timeout)이 있으면 그것을 남긴다.
+            # 이걸 뭉뚱그려 덮어쓰는 바람에 1,189건의 자원 고갈이 "모델이 검색 없이
+            # 답했다"로 기록돼 원인 파악이 늦어졌다.
+            reason = final.get("final_reason", "")
+            if not any(k in reason for k in ("spawn_failed", "launch_failed", "timeout")):
+                reason = "no tool calls after retry (모델이 검색 없이 답변)"
+            final = {"status": "error", "ranked_chunk_ids": [], "final_reason": reason}
 
     calls: list[dict] = []
     if calls_f.exists():
         calls = [json.loads(l) for l in calls_f.read_text(encoding="utf-8").splitlines() if l.strip()]
 
     result = {
-        "qid": qid, "question": question, "arm": arm,
+        "qid": qid, "question": question, "arm": arm, "rep": rep,
         "status": final.get("status", "error"),
         "ranked_chunk_ids": (final.get("ranked_chunk_ids") or [])[:10],
         "final_reason": final.get("final_reason", ""),
@@ -289,9 +309,10 @@ def first_rank(row: dict, gold: dict, spans: dict) -> int | None:
 
 
 def metrics(rows: list[dict], gold_by: dict, spans: dict, arms: list[str]) -> dict:
+    """arms 는 "BASE#1" 처럼 arm#rep 키를 받는다."""
     out = {}
     for arm in arms:
-        arm_rows = {r["qid"]: r for r in rows if r["arm"] == arm}
+        arm_rows = {r["qid"]: r for r in rows if f'{r["arm"]}#{r.get("rep",1)}' == arm}
         ranks = [first_rank(arm_rows.get(qid, {}), g, spans) for qid, g in gold_by.items()]
         n = max(len(ranks), 1)
         answered = [q for q in gold_by if q in arm_rows]
@@ -336,6 +357,18 @@ def load_spans() -> dict[str, tuple[int, int]]:
     return spans
 
 
+def resolve_path(raw: str) -> Path:
+    """상대경로는 데이터 루트(hybrid-enrich) 기준으로 해석한다.
+
+    코드는 noah/ 에 있고 실행도 noah/ 에서 하므로, `out/gold_train.jsonl` 을
+    그대로 넘기면 noah/out/ 을 찾아 실패한다. 절대경로와 실제로 존재하는
+    상대경로는 그대로 두고, 그 외에만 BASE 를 앞에 붙인다."""
+    q = Path(raw)
+    if q.is_absolute() or q.exists():
+        return q
+    return BASE / raw
+
+
 def purge_sessions(root: Path, include_zero_calls: bool = False) -> dict:
     """재실행할 세션의 result.json 을 지운다.
 
@@ -344,7 +377,7 @@ def purge_sessions(root: Path, include_zero_calls: bool = False) -> dict:
     raw_stdout 등 진단 파일은 남겨 실패 분석에 쓸 수 있게 한다."""
     import shutil as _shutil
     stat = {"removed": 0, "error": 0, "zero": 0, "kept": 0}
-    for rp in root.glob("*/*/result.json"):
+    for rp in list(root.glob("*/*/result.json")) + list(root.glob("*/*/*/result.json")):
         try:
             row = json.loads(rp.read_text(encoding="utf-8"))
         except Exception:
@@ -385,6 +418,12 @@ def preflight(arms: list[str], min_dense_coverage: float = 0.95) -> None:
     unknown = [a for a in arms if a not in ARMS]
     if unknown:
         raise SystemExit(f"[FATAL] 알 수 없는 arm: {unknown}  (가능: {list(ARMS)})")
+
+    for a in arms:
+        p = build_system_prompt(a)
+        exposed = [t for t in ("hybrid", "slot", "slotand", "grep", "read")
+                   if f"tools_rrf.py {t}" in p]
+        print(f"  {a:<10} 도구={'/'.join(exposed):<28} prompt={prompt_hash(a)}")
 
     needs_dense = False
     corpus_n: dict[str, int] = {}
@@ -459,15 +498,17 @@ def main():
     ap.add_argument("--out", default=str(OUT / "agentic_rrf_results.jsonl"))
     ap.add_argument("--session-root", default=str(SESSION_ROOT))
     ap.add_argument("--core-only", dest="core_only", action="store_true", default=False)
+    ap.add_argument("--reps", type=int, default=1,
+                    help="arm 당 반복 실행 횟수. 2 이상이면 실행 간 분산을 잴 수 있다")
     ap.add_argument("--retry-failed", action="store_true",
                     help="실패 세션만 삭제해 재실행 대상으로 만든다 (성공분은 재사용)")
     ap.add_argument("--retry-zero-calls", action="store_true",
                     help="--retry-failed 에 더해, 도구를 한 번도 안 쓴 세션도 재실행한다")
     args = ap.parse_args()
 
-    SESSION_ROOT = Path(args.session_root)
+    SESSION_ROOT = resolve_path(args.session_root)
 
-    gold_path = Path(args.gold)
+    gold_path = resolve_path(args.gold)
     if not gold_path.exists():
         raise SystemExit(f"[FATAL] 골드셋 없음: {gold_path}\n"
                          f"  먼저 실행: python build_unified_gold.py --split train")
@@ -502,17 +543,20 @@ def main():
     total = len(gold)
     for batch_start in range(0, total, args.batch_size):
         batch = gold[batch_start:batch_start + args.batch_size]
-        jobs = [(g["qid"], g["question"], arm) for g in batch for arm in arms]
+        jobs = [(g["qid"], g["question"], arm, rep)
+                for g in batch for arm in arms for rep in range(1, args.reps + 1)]
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            futs = [pool.submit(run_one, qid, q, arm, args.timeout) for qid, q, arm in jobs]
+            futs = [pool.submit(run_one, qid, q, arm, args.timeout, rep)
+                    for qid, q, arm, rep in jobs]
             for fut in as_completed(futs):
                 results.append(fut.result())
         done = min(batch_start + len(batch), total)
-        print_table(done, total, metrics(results, {g["qid"]: g for g in gold[:done]}, spans, arms))
+        keys = [f"{a}#{r}" for a in arms for r in range(1, args.reps + 1)]
+        print_table(done, total, metrics(results, {g["qid"]: g for g in gold[:done]}, spans, keys))
 
-    out_path = Path(args.out)
+    out_path = resolve_path(args.out)
     with out_path.open("w", encoding="utf-8") as f:
-        for r in sorted(results, key=lambda x: (x["qid"], x["arm"])):
+        for r in sorted(results, key=lambda x: (x["qid"], x["arm"], x.get("rep", 1))):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"\n결과 저장: {out_path}")
 
