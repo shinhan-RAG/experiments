@@ -12,7 +12,7 @@ QA·gold 파일은 열지 않는다.
 import argparse, bisect, collections, hashlib, json, os, re, unicodedata
 
 MAX_ELEM_CHARS = 4000
-RULE_VERSION = "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212"
+RULE_VERSION = "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212 + formula-singleline-fix"
 
 RIDER = re.compile(r"^\(간편\).{0,60}특약\(무배당[^)]*\)\s*$")
 MAINS = [
@@ -96,10 +96,20 @@ def build(raw, clean=False):
             flush(i, j, "table")
             i = j
         elif s.startswith("$$"):
+            # 250212 md 의 산식은 한 줄 자기완결(`$$ … $$`, 160/170). 원 규칙(다음 `$$` 줄까지 확장)은
+            # 이 문서에서 최대 수만 자를 산식으로 오포획하므로 한 줄 블록으로 고정. 홀로 선 `$$`(10줄)는 파서 잔재.
+            if s.strip() == "$$":
+                if not clean:
+                    flush(i, i + 1, "formula")
+            else:
+                flush(i, i + 1, "formula")
+            i += 1
+        elif s.startswith("```"):
             j = i + 1
-            while j < n and not lines[j].lstrip().startswith("$$"):
+            while j < n and not lines[j].lstrip().startswith("```"):
                 j += 1
-            flush(i, min(j + 1, n), "formula")
+            if not clean:  # 펜스 블록은 QR코드 json 잔재(23블록) — clean 에서는 제거
+                flush(i, min(j + 1, n), "paragraph")
             i = min(j + 1, n)
         elif not s:
             i += 1
