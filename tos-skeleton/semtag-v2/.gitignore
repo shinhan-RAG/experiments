@@ -1,0 +1,6 @@
+# 원문 파생물(element 본문 포함)·정답셋·캐시 — 커밋 금지. 통계(SHA)만 커밋
+out/*.jsonl
+out/**/*.jsonl
+out/*.npy
+out/sessions/
+__pycache__/

@@ -1,0 +1,23 @@
+{
+  "universe": "elements_u2.jsonl",
+  "rule_version": "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212 + clean(noise-drop, pagebreak-merge)",
+  "max_elem_chars": 4000,
+  "doc": "판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md",
+  "doc_sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914",
+  "doc_lines": 112001,
+  "doc_chars": 2757704,
+  "n_elements": 17202,
+  "by_type": {
+    "paragraph": 12239,
+    "formula": 376,
+    "table": 483,
+    "heading": 4104
+  },
+  "avg_len": 153,
+  "median_len": 44,
+  "p90_len": 176,
+  "split_parts": 58,
+  "scope_bounds": 1443,
+  "n_scopes": 142,
+  "elements_sha256": "6c16d9b8400457f8ca9004246ecddc79281c20a12fc5ff0558bb235cd8e0e575"
+}
