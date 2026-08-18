@@ -1,0 +1,61 @@
+{
+  "config_id": "agentic-dense-bm25w03-clm_v9d03bclm_noahv3train173",
+  "date": "2026-08-18",
+  "author": "noah",
+  "experiment": "0818-2차 채널 가중치: Dense(1.0)+BM25(0.3)+CLM(0.5) 3채널 자동 RRF. 에이전트=claude-sonnet-5, 2 reps 평균.",
+  "repro": {
+    "doc_sha256": "645cc24a08587e45d9278c4ee6d78c1433d668d07b712b394ef8e3fc504bbbbf",
+    "gold_sha": "3c8703a0be9d7c89bbfbabd3fadabfd2e611f108951101ce21e1e24d9edeb2c2",
+    "code_commit": "cd61d8a5",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "noahv3train173",
+    "n": 173,
+    "note": "gold_train.jsonl 173문항, coord_space=raw, 2 reps 평균"
+  },
+  "config": {
+    "target": "에이전틱 검색 — 3채널 가중 RRF (Dense+BM25+CLM 자동 채널)",
+    "method": "claude-sonnet-5 에이전트 + dense/V9(w=1.0) + bm25/V9(w=0.3) + CLM(w=0.5) 자동 RRF k=60. slot 도구 비노출(자동 채널로 흡수).",
+    "coverage": {
+      "n_total": 5797,
+      "n_assigned": 5797,
+      "ratio": 1.0
+    },
+    "downstream": {
+      "used_as": "3채널 가중 RRF (Dense 1.0, BM25 0.3, CLM 0.5)",
+      "channel": "dense+bm25+clm weighted RRF"
+    }
+  },
+  "metrics": {
+    "R@1": 0.382,
+    "R@5": 0.691,
+    "R@10": 0.705,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.508,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "CLM을 자동 RRF 채널로 흡수했으나 추가 이득 없음 (Dense+BM25(0.3) 대비 -2%p).",
+    "CLM 독자 기여가 R@50 기준 4문항에 불과하여 자동 채널 효과가 미미.",
+    "에이전틱에서 slot 도구를 제거한 것이 오히려 탐색 폭을 줄였을 가능성."
+  ],
+  "stats": {
+    "reps": 2,
+    "sessions": 346,
+    "errors": 1,
+    "avg_tool_calls": 7.12,
+    "model": "claude-sonnet-5",
+    "rep1_R5": 0.694,
+    "rep2_R5": 0.688,
+    "noise_floor_pp": 0.6
+  }
+}

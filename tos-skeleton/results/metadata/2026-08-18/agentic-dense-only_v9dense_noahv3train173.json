@@ -1,0 +1,61 @@
+{
+  "config_id": "agentic-dense-only_v9dense_noahv3train173",
+  "date": "2026-08-18",
+  "author": "noah",
+  "experiment": "0818-2차 채널 가중치: Dense 단독 (BM25 제거). 에이전트=claude-sonnet-5, 2 reps 평균.",
+  "repro": {
+    "doc_sha256": "645cc24a08587e45d9278c4ee6d78c1433d668d07b712b394ef8e3fc504bbbbf",
+    "gold_sha": "3c8703a0be9d7c89bbfbabd3fadabfd2e611f108951101ce21e1e24d9edeb2c2",
+    "code_commit": "cd61d8a5",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "noahv3train173",
+    "n": 173,
+    "note": "gold_train.jsonl 173문항, coord_space=raw, 2 reps 평균"
+  },
+  "config": {
+    "target": "에이전틱 검색 — Dense 단독 (BM25 채널 제거)",
+    "method": "claude-sonnet-5 에이전트 + dense/V9만 사용. slot 도구 없음. hybrid+grep+read 도구.",
+    "coverage": {
+      "n_total": 5797,
+      "n_assigned": 5797,
+      "ratio": 1.0
+    },
+    "downstream": {
+      "used_as": "RRF 없이 Dense 단독 top-10",
+      "channel": "dense only"
+    }
+  },
+  "metrics": {
+    "R@1": 0.433,
+    "R@5": 0.688,
+    "R@10": 0.700,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.532,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "deterministic R@5에서 Dense 단독(0.618)이 hybrid(0.538)보다 높았으나, 에이전틱에서는 역전됨 (0.688 vs 0.749).",
+    "BM25의 쿼리 다양화 기여가 에이전틱 수준에서 중요하다는 것을 확인.",
+    "평균 도구 호출 7.06회로 베이스라인(4.2회)보다 높지만 성능은 낮음 — Dense 재검색 다양성 부족."
+  ],
+  "stats": {
+    "reps": 2,
+    "sessions": 346,
+    "errors": 0,
+    "avg_tool_calls": 7.06,
+    "model": "claude-sonnet-5",
+    "rep1_R5": 0.694,
+    "rep2_R5": 0.682,
+    "noise_floor_pp": 1.2
+  }
+}

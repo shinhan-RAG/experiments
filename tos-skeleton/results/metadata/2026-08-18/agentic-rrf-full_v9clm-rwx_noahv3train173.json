@@ -1,0 +1,66 @@
+{
+  "config_id": "agentic-rrf-full_v9clm-rwx_noahv3train173",
+  "date": "2026-08-18",
+  "author": "noah",
+  "experiment": "0818-1차 에이전틱 고도화: 전체결합 (태그라우터 + 워크스페이스 프롬프트 + reference 2-hop 도구). 에이전트=claude-sonnet-5, 2 reps 평균.",
+  "repro": {
+    "doc_sha256": "645cc24a08587e45d9278c4ee6d78c1433d668d07b712b394ef8e3fc504bbbbf",
+    "gold_sha": "3c8703a0be9d7c89bbfbabd3fadabfd2e611f108951101ce21e1e24d9edeb2c2",
+    "code_commit": "cd61d8a5",
+    "two_pass_sha": null
+  },
+  "population": {
+    "name": "noahv3train173",
+    "n": 173,
+    "note": "gold_train.jsonl 173문항, coord_space=raw, 2 reps 평균"
+  },
+  "config": {
+    "target": "에이전틱 검색 — 전체 결합 (태그라우터+워크스페이스+참조확장)",
+    "method": "claude-sonnet-5 에이전트 + BM25/V9 + dense/V9 RRF k=60 + CLM slot 도구 + related 도구. 워크스페이스 프롬프트.",
+    "coverage": {
+      "n_total": 5408,
+      "n_assigned": 5408,
+      "ratio": 1.0
+    },
+    "downstream": {
+      "used_as": "에이전트 도구 (slot_search + related_search) + 워크스페이스 프롬프트",
+      "channel": "bm25+dense RRF + CLM slot + related"
+    }
+  },
+  "metrics": {
+    "R@1": 0.457,
+    "R@5": 0.700,
+    "R@10": 0.706,
+    "R@20": null,
+    "R@50": null,
+    "R@100": null,
+    "MRR@10": 0.555,
+    "L_star_median": null
+  },
+  "nulls": {
+    "query_shuffle": null,
+    "constant_dummy": null,
+    "shuffled_tag": null,
+    "random_vector": null
+  },
+  "limitations": [
+    "에이전틱 실험이므로 null controls를 deterministic으로 측정하지 않았다.",
+    "related 도구 사용률 0% — 에이전트가 346세션에서 한 번도 호출하지 않음.",
+    "slot 사용률 5.8%로 급감 — related STEP3가 slot 도구를 밀어냄.",
+    "결론: 프롬프트만으로는 에이전트가 새 도구를 채택하지 않으며, 파이프라인 자동 삽입이 필요."
+  ],
+  "stats": {
+    "reps": 2,
+    "sessions": 346,
+    "errors": 1,
+    "avg_tool_calls": 4.97,
+    "read_usage_rate": 0.994,
+    "slot_usage_rate": 0.058,
+    "related_usage_rate": 0.0,
+    "one_call_sessions": 1,
+    "model": "claude-sonnet-5",
+    "rep1_R5": 0.711,
+    "rep2_R5": 0.688,
+    "noise_floor_pp": 2.3
+  }
+}
