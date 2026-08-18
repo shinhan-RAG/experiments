@@ -4,3 +4,5 @@ out/**/*.jsonl
 out/*.npy
 out/sessions/
 __pycache__/
+out/agent/*/sessions/
+out/.cache_*.pkl
