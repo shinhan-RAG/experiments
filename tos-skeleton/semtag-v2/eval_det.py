@@ -77,8 +77,22 @@ def main():
             if opt.get("slots"):  # 라우터 슬롯 제한(예: slots=contract+role) — AND 검색기 공정 대조용
                 keep = set(opt["slots"].split("+"))
                 Muse = [{f: v for f, v in m.items() if f in keep} for m in M]
-            res = S.rank(M0 if opt["tags"] == "0" else Muse, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
-                         scope_filter=gscopes if opt.get("oracle") == "scope" else None)
+            if opt.get("decomp") == "role" and len(slots.get("role", [])) >= 2:
+                # A4: 역할별 하위질의 → 라운드로빈 interleave (multi-evidence 겨냥)
+                subs = []
+                for r_ in slots["role"]:
+                    ss = dict(slots); ss["role"] = [r_]
+                    Mr, Lr = S.match_table(ss, toks)
+                    subs.append(S.rank(Mr, Lr, mode=mode, lex=opt["lex"], weights=w, limit=a.limit))
+                seen_e, res = set(), []
+                for k_ in range(a.limit):
+                    for sub in subs:
+                        if k_ < len(sub) and sub[k_][0]["element_id"] not in seen_e:
+                            seen_e.add(sub[k_][0]["element_id"]); res.append(sub[k_])
+                res = res[: a.limit]
+            else:
+                res = S.rank(M0 if opt["tags"] == "0" else Muse, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
+                             scope_filter=gscopes if opt.get("oracle") == "scope" else None)
             if not res:
                 zero[arm] += 1
             ru = [e for e, _ in res]
