@@ -73,7 +73,11 @@ def main():
         gscopes = {e["contract_scope"] for e in S.E if any(overlaps(e, gr) for gr in g["groups"])}
         for arm, (mode, opt) in zip(arms, parsed):
             w = {f: v * conf.get(f, 1.0) for f, v in opt["w"].items()} if opt.get("pconf") == "1" else opt["w"]
-            res = S.rank(M0 if opt["tags"] == "0" else M, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
+            Muse = M
+            if opt.get("slots"):  # 라우터 슬롯 제한(예: slots=contract+role) — AND 검색기 공정 대조용
+                keep = set(opt["slots"].split("+"))
+                Muse = [{f: v for f, v in m.items() if f in keep} for m in M]
+            res = S.rank(M0 if opt["tags"] == "0" else Muse, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
                          scope_filter=gscopes if opt.get("oracle") == "scope" else None)
             if not res:
                 zero[arm] += 1

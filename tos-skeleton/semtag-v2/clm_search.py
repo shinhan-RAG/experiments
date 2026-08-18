@@ -27,6 +27,23 @@ STOP = set("알려줘 알려주세요 어떻게 무엇 무슨 어떤 경우 대�
 
 
 def canonical(t):
+    if "semantic_role" in t:  # OLD 스키마 (slot_filesearch.canonical_old 와 동일 사상 + 역할코드 동치어 병기)
+        OLD_ROLE_CODES = {"면책사유(보장 제외)": "exclusion_exception", "보험금 지급사유(보장 내용)": "payment_trigger",
+                          "보험금 지급기준·지급한도": "limit_frequency payment_amount", "지급 세부규정": "criteria_rule",
+                          "용어 정의": "definition", "갱신 조건": "contract_lifecycle", "보험료 납입면제": "premium_waiver",
+                          "보험기간·보장개시": "timing_period", "해지·해약환급금": "contract_lifecycle",
+                          "청약·철회": "contract_lifecycle", "계약 성립·무효": "contract_lifecycle", "보험료 납입·부활": "contract_lifecycle"}
+        r = t.get("semantic_role", "")
+        return {
+            "contract": [t.get("contract_scope", ""), t.get("topic", "")],
+            "subject": (t.get("aliases") or []) + [t.get("table_title", ""), t.get("formula_subject", "")],
+            "role": [r, OLD_ROLE_CODES.get(r, "")],
+            "article": [t.get("article", "")],
+            "table": t.get("table_headers") or [],
+            "qualifier": (t.get("values") or []) + (t.get("conditions") or []),
+            "reference": [],
+            "schema": [t.get("element_type", "")],
+        }
     loc = t.get("locator") or {}
     roles = t.get("role") or []
     return {

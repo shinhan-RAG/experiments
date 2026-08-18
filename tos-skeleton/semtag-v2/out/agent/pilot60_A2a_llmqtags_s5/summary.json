@@ -1,0 +1,27 @@
+{
+ "run": "pilot60_A2a_llmqtags_s5",
+ "n_q": 60,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "lex": "count",
+  "w": {},
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "expose_tags": 0
+ },
+ "metrics": {
+  "R@1": 0.3264,
+  "R@5": 0.5431,
+  "R@10": 0.575,
+  "R@20": 0.575,
+  "S@5": 0.6083,
+  "RR@10": 0.497
+ },
+ "core_R@5": 0.6944,
+ "noncore_R@5": 0.316,
+ "no_submit": 1,
+ "errors": 0,
+ "cost_usd": 21.36,
+ "rep_disagreement_R@5": 0.183
+}
