@@ -10,7 +10,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from bm25_compare import score
-from agent_runner import PROMPT
+from agent_runner import PROMPT, VSEARCH_DOC
 
 TOOLS = [
     {"type": "function", "function": {"name": "search", "description": "약관 element 검색. 한 페이지 40건, 세션당 최대 20회.",
@@ -20,6 +20,8 @@ TOOLS = [
             "contract": {"type": "string", "description": "특약명(쉼표 구분, 선택)"},
             "role": {"type": "string", "description": "역할코드(쉼표 구분, 선택)"},
             "subject": {"type": "string", "description": "대상어(쉼표 구분, 선택)"}}, "required": ["q"]}}},
+    {"type": "function", "function": {"name": "vsearch", "description": "임베딩(의미) 검색. 한 페이지 40건. search 와 합쳐 세션당 최대 20회.",
+        "parameters": {"type": "object", "properties": {"q": {"type": "string"}, "page": {"type": "integer", "default": 1}, "contract": {"type": "string", "description": "특약명(선택, 소프트 scope)"}}, "required": ["q"]}}},
     {"type": "function", "function": {"name": "read", "description": "element_id 의 조(條) 전체 원문. 세션당 최대 8회.",
         "parameters": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}}},
     {"type": "function", "function": {"name": "submit", "description": "근거 element_id 순위 제출(최대 10). 1회만, 이후 종료.",
@@ -30,7 +32,7 @@ TEXT_PROTOCOL = """
 
 
 def run_tool(env, name, args):
-    cmd = ["python3", str(HERE / "agent_tools.py"), name]
+    cmd = [sys.executable, str(HERE / "agent_tools.py"), name]
     for k, v in args.items():
         if v in (None, "", 0) and k != "page":
             continue
@@ -49,7 +51,7 @@ def run_one(args, run_dir, g, rep, arm, client):
         if (sess / f).exists():
             (sess / f).unlink()
     env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
-    sysmsg = PROMPT.format(question=g["q"]).replace("python3 agent_tools.py ", "")
+    sysmsg = PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("vec_view") else "").replace("python3 agent_tools.py ", "")
     if args.protocol == "text":
         sysmsg += TEXT_PROTOCOL
     msgs = [{"role": "system", "content": "당신은 도구를 사용하는 검색 에이전트입니다."}, {"role": "user", "content": sysmsg}]
@@ -94,7 +96,7 @@ def run_one(args, run_dir, g, rep, arm, client):
                         pass
                     continue
             for cid, name, a in calls:
-                if name not in ("search", "read", "submit"):
+                if name not in ("search", "vsearch", "read", "submit"):
                     out = json.dumps({"error": "unknown tool"})
                 else:
                     out = run_tool(env, name, a)

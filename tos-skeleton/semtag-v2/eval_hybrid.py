@@ -34,8 +34,7 @@ def main():
     ap.add_argument("--topk", type=int, default=200)
     ap.add_argument("--w", default='{"contract":2}')
     a = ap.parse_args()
-    from sentence_transformers import SentenceTransformer
-    import torch
+    import embedder
     S = SlotSearch(str(HERE / "out/elements_u2.jsonl"), str(HERE / "out/tags_u2_rules.jsonl"))
     J = [json.loads(l) for l in open(HERE / "out/elements_u2jo.jsonl")]
     m2j = {m: j for j, u in enumerate(J) for m in u["members"]}
@@ -46,8 +45,7 @@ def main():
     views = sorted({x.split(":")[1] for x in arms if ":" in x})
     V = {v: np.load(HERE / "out/emb" / f"u2_{v}.npy") for v in views}
     Vids = {v: json.load(open(HERE / "out/emb" / f"u2_{v}_ids.json")) for v in views}
-    model = SentenceTransformer("dragonkue/BGE-m3-ko", device="mps" if torch.backends.mps.is_available() else "cpu") if views else None
-    qv = model.encode([g["q"] for g in G], batch_size=32, normalize_embeddings=True, convert_to_numpy=True) if views else None
+    qv = embedder.encode([g["q"] for g in G], batch=32) if views else None
     W = json.loads(a.w)
     hdr = ["R@1", "R@5", "R@10", "R@20", "R@40", "S@5", "RR@10"]
     agg = {arm: collections.defaultdict(list) for arm in arms}

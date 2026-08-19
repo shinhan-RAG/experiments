@@ -11,6 +11,10 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from bm25_compare import score
 
+VSEARCH_DOC = """1b) 벡터 검색: python3 agent_tools.py vsearch --q "<자연어 질의>" [--page N] [--contract "<특약명>"]
+   - 의미 유사도 기반(질문 표현이 문서 용어와 달라도 찾음). 검색 횟수는 search 와 합쳐 세션당 20회.
+   - 태그 검색(search)과 벡터 검색(vsearch)을 질문 성격에 따라 골라 쓰거나 둘 다 써서 교차 확인하십시오.
+"""
 PROMPT = """당신은 보험 약관 문서 안에서 질문의 근거 조항(element)을 찾는 검색 에이전트입니다.
 도구는 아래 셸 명령 3개뿐입니다(다른 파일·명령 사용 금지). 반드시 `python3 agent_tools.py ...` 형태로 호출하십시오.
 
@@ -18,7 +22,7 @@ PROMPT = """당신은 보험 약관 문서 안에서 질문의 근거 조항(ele
    - 한 페이지 40건(총 후보 수와 남은 호출 수가 함께 나옵니다). 세션당 최대 20회.
    - 검색어는 질문에서 핵심어(특약명·급여금명·질병명·조건)를 골라 쓰고, 결과가 엉뚱하면 다른 표현으로 다시 검색하십시오.
    - 역할코드: exclusion_exception, premium_waiver, payment_trigger, payment_amount, limit_frequency, timing_period, definition, criteria_rule, contract_lifecycle, claim_procedure, code_reference
-2) 읽기: python3 agent_tools.py read --id <element_id>   — 해당 조(條) 전체 원문. 세션당 최대 8회. 확신이 서지 않는 후보를 확인할 때 쓰십시오.
+{vsearch}2) 읽기: python3 agent_tools.py read --id <element_id>   — 해당 조(條) 전체 원문. 세션당 최대 8회. 확신이 서지 않는 후보를 확인할 때 쓰십시오.
 3) 제출: python3 agent_tools.py submit --ids <id1>,<id2>,...   — 근거일 가능성이 높은 순서로 **최대 10개**. 반드시 1회 호출하고, 그 뒤에는 어떤 도구도 부르지 마십시오.
 
 원칙: 질문이 특정 특약을 가리키면 그 특약의 element 를 우선하십시오. 질문이 여러 근거(예: 정의 + 지급조건 + 청구절차)를 요구하면 서로 다른 조의 element 를 섞어 제출하십시오. 답변 문장은 쓰지 말고 제출만 하십시오.
@@ -43,7 +47,7 @@ def run_one(args, run_dir, g, rep, arm):
            "--disallowedTools", "Read,Edit,Write,Grep,Glob,WebFetch,WebSearch,Agent,NotebookEdit,Task"]
     t0 = time.time()
     try:
-        r = subprocess.run(cmd, input=PROMPT.format(question=g["q"]), capture_output=True, text=True, timeout=args.timeout, cwd=str(HERE), env=env)
+        r = subprocess.run(cmd, input=PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("vec_view") else ""), capture_output=True, text=True, timeout=args.timeout, cwd=str(HERE), env=env)
         try:
             cj = json.loads(r.stdout)
         except Exception:

@@ -34,23 +34,19 @@ def main():
     ap.add_argument("--limit", type=int, default=-1)
     ap.add_argument("--qdrant", default="", help="예: http://localhost:6333 (지정 시 업서트)")
     a = ap.parse_args()
-    import torch
-    from sentence_transformers import SentenceTransformer
-    dev = "mps" if torch.backends.mps.is_available() else "cpu"
+    import embedder
     E = [json.loads(l) for l in open(a.elements, encoding="utf-8")]
     if a.limit > 0:
         E = E[: a.limit]
     T = {json.loads(l)["element_id"]: json.loads(l) for l in open(a.tags, encoding="utf-8")} if a.view == "ctx" else {}
     texts = views(E, T, a.view)
-    m = SentenceTransformer(MODEL, device=dev)
-    m.max_seq_length = a.max_len
     t0 = time.time()
-    V = m.encode(texts, batch_size=a.batch, normalize_embeddings=True, show_progress_bar=True, convert_to_numpy=True).astype("float32")
+    V = embedder.encode(texts, batch=a.batch, max_len=a.max_len, progress=True)
     out = HERE / "out" / "emb"; out.mkdir(parents=True, exist_ok=True)
     np.save(out / f"u2_{a.view}.npy", V)
     ids = [e["element_id"] for e in E]
     json.dump(ids, open(out / f"u2_{a.view}_ids.json", "w"))
-    meta = {"model": MODEL, "device": dev, "view": a.view, "n": len(ids), "dim": int(V.shape[1]), "batch": a.batch, "max_len": a.max_len,
+    meta = {"model": MODEL, "embed_source": embedder.source(), "view": a.view, "n": len(ids), "dim": int(V.shape[1]), "batch": a.batch, "max_len": a.max_len,
             "elapsed_s": round(time.time() - t0, 1), "elements_sha256": hashlib.sha256(open(a.elements, "rb").read()).hexdigest(),
             "vec_sha256": hashlib.sha256(V.tobytes()).hexdigest()}
     json.dump(meta, open(out / f"u2_{a.view}_meta.json", "w"), indent=1)
