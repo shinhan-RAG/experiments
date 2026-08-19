@@ -14,9 +14,9 @@
 |---|---|
 | 문서 | 원(ONE) 판매약관 250212 md, SHA `40a471d5…` |
 | 우주 | 색인·태깅 = **u2**(항/표/산식/heading 32,366, `build_universe.py --clean`) · 채점·제출 = **u2jo**(조 7,599, `build_jo_universe.py`) — u2jo 직접 색인을 대조로 병기 |
-| gold | **lsh v4 gold**(span 형식 수령 후 u2/u2jo 매핑). 수령 전 임시 = `map_gold_spans.py`(train 338, 앵커 다중매치 120/531 group 표기) |
+| gold | **lsh QA셋 gold**(회의 2026-08-19) → `map_lsh_gold.py`: 텍스트 앵커링 → char span → **AND group / OR member** 구조. 규칙: ① gap≤200자 병합(같은 근거 블록) ② 동일 텍스트(앞 160자) group 은 OR 병합(a/a′ 동치) ③ 동일문구 출현 확장(정확 일치, 40자 이상만) — 질문이 특약을 지정하면 그 scope 안 출현만 ④ 남은 group = AND. train 334문항·432 group. 임시 gold(`map_gold_spans.py`)는 진단용 |
 | 모집단 | noah v3 **train 338** 만. test149 봉인(개봉은 최종 챔피언 1회, 사전 등록 별도). 층화 필수: core/비core, task_type |
-| 지표 | Recall@1/5/10/20 (fractional evidence-group), hits/len(gold) 병기, MRR@10, Success@5. 주지표 **R@5** 하나. **후보 풀 지표 = R@40**(S5 예산 1페이지 page=40 에서 역산) + R@K 곡선(K=5·10·20·40·100·200) 상시 병기 — 단일 K 임의 지정 금지 |
+| 지표 | **비율 채점** = fractional evidence-group Recall@1/5/10/20(Top-K 가 덮은 AND group 수 / 전체, OR 은 멤버 1개면 충족 — 회의의 "gold 4개 중 3개 = 75점"), 부지표 Success@5·**sufficient@10**(모든 group 회수, 명세 v1)·MRR@10. 주지표 **R@5** 하나. **후보 풀 지표 = R@40**(S5 예산 1페이지 page=40 에서 역산) + R@K 곡선(K=5·10·20·40·100·200) 상시 병기 — 단일 K 임의 지정 금지 |
 | 검정 | 이진 = 정확 McNemar, 연속 = BCa bootstrap, 가족 단위 Holm. MDE 사전 계산(n=338: 클린 패턴 +1.8pp≈6문항, 혼합 2:1 ≈ +5pp) |
 | 널 | query_shuffle(3시드 이상), shuffled_tag(태그 arm), constant_dummy |
 | 에이전트 | 모델·예산(page/preview/search/read/submit) 고정, reps ≥ 2, 도구 반환 후보·점수 전량 로그, 세션 오류 ITT 0점 |

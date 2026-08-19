@@ -9,7 +9,9 @@ def bigrams(s):
     return [s[i:i + 2] for i in range(len(s) - 1)] if len(s) > 1 else [s]
 
 def overlaps(e, g):
-    return e["char_start"] < g["c1"] and e["char_end"] > g["c0"]
+    """element e 가 gold group g 와 겹치는가. g 는 {c0,c1} 단일 구간 또는 {members:[{c0,c1},…]} (OR 멤버 — a/a' 동치·동일문구 출현)."""
+    mem = g.get("members") or [g]
+    return any(e["char_start"] < m["c1"] and e["char_end"] > m["c0"] for m in mem)
 
 def score(ranked_units, groups, ks=(1, 5, 10, 20)):
     """ranked_units: element dict 리스트(순위순). 반환: recall@k(fractional), success@k, rr@10"""
@@ -25,6 +27,9 @@ def score(ranked_units, groups, ks=(1, 5, 10, 20)):
         out[f"S@{k}"] = 1.0 if n else 0.0
     fr = min(hit_rank.values()) if hit_rank else None
     out["RR@10"] = 1.0 / fr if fr and fr <= 10 else 0.0
+    # sufficient@k: 모든 group(AND) 이 top-k 안에서 회수(OR 은 멤버 1개면 충족) — 정답기준 명세 v1 주지표
+    for k in (5, 10):
+        out[f"suff@{k}"] = 1.0 if groups and all(hit_rank.get(gi, 10**9) <= k for gi in range(len(groups))) else 0.0
     return out
 
 def budget_recall(ranked_units, groups, B):

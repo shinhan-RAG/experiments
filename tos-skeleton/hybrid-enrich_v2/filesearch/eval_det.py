@@ -31,7 +31,7 @@ def main():
     ap.add_argument("--elements", default=str(HERE / "out/elements_u2.jsonl"))
     ap.add_argument("--tags", default=str(HERE / "out/tags_u2_rules.jsonl"))
     ap.add_argument("--jo", default=str(HERE / "out/elements_u2jo.jsonl"))
-    ap.add_argument("--gold", default=str(HERE / "out/gold_spans_train.jsonl"))
+    ap.add_argument("--gold", default=str(HERE / "out/gold_spans_lsh_train.jsonl"))
     ap.add_argument("--arms", default="clm:lex=count;clm:lex=count:w=contract=3;and;clm:tags=0;clm:lex=count:oracle=scope;clm:lex=count:w=contract=3:oracle=scope")
     ap.add_argument("--limit", type=int, default=200)
     ap.add_argument("--partial", default="0", help="라우터 부분 특약명 일치 허용(1)")
@@ -48,7 +48,7 @@ def main():
         for l in open(a.qtags, encoding="utf-8"):
             d = json.loads(l); QT[d["qid"]] = d
     print(f"n={len(G)} tags={Path(a.tags).name}")
-    hdr = ["R@1", "R@5", "R@10", "R@20", "R@40", "R@100", "S@5", "RR@10"]
+    hdr = ["R@1", "R@5", "R@10", "R@20", "R@40", "R@100", "S@5", "suff@10", "RR@10"]
     arms = [x for x in a.arms.split(";") if x]
     parsed = [parse_arm(x) for x in arms]
     print("| arm | 단위 | " + " | ".join(hdr) + " | core R@5 | 비core R@5 | 후보0 |\n|---|---|" + "---|" * (len(hdr) + 3))

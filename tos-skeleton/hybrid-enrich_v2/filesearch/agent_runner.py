@@ -64,7 +64,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True, help="run 이름 (out/agent/<run>)")
     ap.add_argument("--arm", required=True, help="ARM json")
-    ap.add_argument("--gold", default=str(HERE / "out/gold_spans_train.jsonl"))
+    ap.add_argument("--gold", default=str(HERE / "out/gold_spans_lsh_train.jsonl"))
     ap.add_argument("--jo", default=str(HERE / "out/elements_u2jo.jsonl"))
     ap.add_argument("--elements", default=str(HERE / "out/elements_u2.jsonl"))
     ap.add_argument("--n", type=int, default=-1, help="문항 수(층화 표본), -1=전수")
@@ -112,7 +112,7 @@ def main():
     for r in rows:
         byq[r["qid"]].append(r)
     agg = {}
-    for k in ("R@1", "R@5", "R@10", "R@20", "S@5", "RR@10"):
+    for k in ("R@1", "R@5", "R@10", "R@20", "S@5", "suff@5", "suff@10", "RR@10"):
         agg[k] = sum(sum(x[k] for x in v) / len(v) for v in byq.values()) / len(byq)
     core = [sum(x["R@5"] for x in v) / len(v) for v in byq.values() if v[0]["core"]]
     nc = [sum(x["R@5"] for x in v) / len(v) for v in byq.values() if not v[0]["core"]]
