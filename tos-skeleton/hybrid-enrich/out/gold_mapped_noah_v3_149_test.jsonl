@@ -1,0 +1,149 @@
+{"qid": "v3-offline-0033", "q": "각 납입면제 형태에 대해 납입면제특약이 아닌 상품과 보장의 포함관계를 정리", "gold": [], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0196", "q": "약관안에 있는 면책사유를 모두 찾아서 쉬운말로 정리해줘", "gold": ["e07894", "e07524", "e07896", "e07476"], "task_type": "exhaustive_list", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0309", "q": "통합건강원 1~5종 수술분류표", "gold": ["e07574"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0283", "q": "통합건강보장보험 원에서 고액암이란?", "gold": ["e07541"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "챗봇"}
+{"qid": "v3-offline-0310", "q": "통합건강원 고액암 분류표", "gold": ["e07541"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "챗봇"}
+{"qid": "v3-offline-0111", "q": "보장하고있는 암의 범위를 특약별로 정리해봐", "gold": ["e00973", "e06635"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0117", "q": "보험금이 지급되지 않는 경우를 사례 중심으로 설명해줘", "gold": ["e06437", "e00176", "e00179"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0176", "q": "암의 진단확정 기준은 무엇인가요? 급성심근경색증의 진단확정 기준은 무엇인가요?", "gold": ["e05668", "e00652", "e05699"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0336", "q": "항암방사선치료, 경계성 종양, 대장점막암 등 정의 알려줘", "gold": ["e01646", "e01678"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0194", "q": "약관 변경이 생겼을때 기존 가입자에게 어떤 기준이 적용되는지 설명해줘", "gold": ["e05592"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0129", "q": "선진 의료적 첨단수술에 대한 인정기준 알려줘", "gold": ["e07574"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0280", "q": "통합건강 보험료 납입면제 특약들 알려줘", "gold": ["e00077"], "task_type": "document_global", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0093", "q": "대장용종 제거하였는데  당시 신한(간편가입)통합건강보험 원(one) 가입가능할가요?", "gold": ["e07422", "e07439", "e07440"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0187", "q": "암진단시 납입면제 해당되는지 알려줘", "gold": [], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0061", "q": "급여바늘생검조직병리진단특약의 지급요건은 무엇인가요?", "gold": ["e02481", "e02457", "e03808", "e03807"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0162", "q": "심근경색진단시얼마를받을수있나요?", "gold": ["e03171"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0287", "q": "통합건강보험 one 간편가입에 유방암수술 5년이 안된고객 가입가능한가요?", "gold": ["e00179", "e00175", "e00178"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0060", "q": "급여 갑상선 바늘생검 조직병리진단의 정의에 부합하기 위해 충족해야 하는 조건은 무엇인가요?", "gold": ["e02481", "e02477"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0238", "q": "재해 사고 보장 되는지 알려줘", "gold": ["e07476"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0175", "q": "암수술후재활도보장되나요?", "gold": ["e02256"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0001", "q": "'사망', '진단', '입원', '수술', '기타치료' 등 보장의 형태로 상품을 분류하고, 형태별 약관 상에 차이가 나는 특징을 정리", "gold": ["e03531", "e03532", "e07104", "e07105"], "task_type": "comparison", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0190", "q": "(간편)[기본]남녀특정암진단특약의 보장개시일과 암보장개시일은 언제인가요?", "gold": ["e00884"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0252", "q": "종합병원과 상급종합이 뭐가 다른데?", "gold": ["e03484"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0242", "q": "재해사고급여금에 해당되는 코드가 뭐가있어? 치아파절되었는데 보장가능해?", "gold": ["e07578", "e07577"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0229", "q": "입원급여금 면책기간 및 보장한도일 알려줘.", "gold": ["e05542"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0136", "q": "신한 통합건강보장보험 원(ONE) 에 대해 알려주세요", "gold": ["e00058", "e00143"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0133", "q": "수술 보장에 횟수제한이있나요?", "gold": ["e05091"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0026", "q": "[30일한도형]첫날부터입원특약에서 동일한 질병으로 2회 이상 입원시 보장기준은 무엇인가요?", "gold": ["e05434"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0139", "q": "신한(간편가입)통합건강보험 원(one)은 유병자만 가입이 가능한가?", "gold": ["e00061", "e00141", "e00143"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0282", "q": "통합건강보장보험 원 납입면제", "gold": ["e00216", "e00168", "e00169"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0307", "q": "통합건강보험원의 5종수술은 뭐가 있지?", "gold": [], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0173", "q": "암걸리면보험료를안내도되나요?", "gold": ["e01176"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0189", "q": "암진단으로 방사선조사 2000Rad 조사 후 1달후 다시 4000Rad 조사를 한 경우 합산해서 적용이 가능한가요?", "gold": ["e07572", "e07573", "e07574"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0343", "q": "해당보장(입원,간호급여금등) 보장한도 모두 보장받으면 다시 또 언제부터 보장가능해?", "gold": ["e05542"], "task_type": "exhaustive_list", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0050", "q": "경증이상치매상태 진단확정 기준일이랑 보장대상 제외 원인 뽑아줘.", "gold": ["e06381", "e06382"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0221", "q": "이 조항이 고객에게 불리하게 해석될수 있는 부분이 있는지 알려줘", "gold": ["e01619"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0342", "q": "해당 질병이 걸렸을때 면책/취소/무효가 되는 상품들을 알려줘", "gold": ["e06406", "e07443"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0002", "q": "'의료기관'이 정의된 상품에 대해 각 상품별 '의료기관'의 정의에 차이가 있는지 확인하여 정리", "gold": ["e05760", "e05782", "e05757"], "task_type": "comparison", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0031", "q": "가입할때 허리쪽에 장해가 있었는데 가입하고 더 심해졌어, 질별장해 청구가능할까?", "gold": ["e00572", "e00501", "e00500"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0312", "q": "통합건강원 상품 암보장 개시일 알려줘", "gold": ["e01404"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "챗봇"}
+{"qid": "v3-offline-0032", "q": "가족이간병해도지급되나요?", "gold": ["e05701"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0110", "q": "보장만료(해약또는실효)상태에서 유지중 발생한 사고 보장가능해?", "gold": ["e06879", "e00655", "e00643"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0273", "q": "치료의 정의에서 급부의 진단, 치료를 회사가 알기위한 의학적인 치료 등 용어를 알려줘", "gold": ["e02662"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0315", "q": "통합건강원에서 치질 보장되나요", "gold": ["e04330"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0007", "q": "(일반)암이 감액기간에 발생한 경우, 보험금은 어떻게 산정되나요?", "gold": ["e01193"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0053", "q": "고객이 \"이 경우 보험금 나와요?\"라고 물었을때, 판단에 필요한 추가질문은 무엇인지 알려줘", "gold": ["e06437", "e06435"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0068", "q": "내시경 시술도 보장이 되나요?", "gold": ["e05044"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0124", "q": "상급병원 통원에 회수제한이있나요?", "gold": ["e02722", "e02719"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0320", "q": "특정 급부(ex. S06)등의 계약자 행동 리스크를 알려줘 \n(ex. 뇌출혈 진단(I코드)을 받았는데, 가입한 특약이 외상성뇌출혈 특약이라 S06코드로 진단서를 발급받는 등의 계약자 리스크)", "gold": ["e03747"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0294", "q": "통합건강보험 원. 가입했는데 간병비는 입원만하면 무조건 나오는건가요?", "gold": ["e05725"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0305", "q": "통합건강보험원에 가입을 하려고 합니다. 당뇨약을 먹어도 가능할까요", "gold": [], "task_type": "not_answerable", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0045", "q": "같은날 대장용종 하고 위용종제거를 했을경우 각각 보장가능해?", "gold": ["e05159"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0148", "q": "신한통합건강보장보험을 가입하여 진행중입니다 만기후 환급금액이 얼마인가요", "gold": ["e00203"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0276", "q": "통풍진단의 보험금 지급한도는 어떻게 되나요?", "gold": ["e04174"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0128", "q": "상품 별 보험금 받는 방법이 다른게 있다면 유형별로 정리해줘", "gold": ["e05836", "e05778"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0016", "q": "2026년 2월 기준  신한통합건강보험 원  무배당 해약환급금 미지급형 약관 부탁드려요", "gold": ["e00366"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0042", "q": "갑상선암 진단되었는데 납입면제 가능해?", "gold": ["e06924", "e06899"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0145", "q": "신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형)을 납부 완료 후에 연금 전환 가능한가요?", "gold": ["e00141"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0112", "q": "보험금 대리청구인 지정할 때, 피보험자의 몇 촌 이내 까지지?", "gold": ["e07291"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "상품"}
+{"qid": "v3-offline-0186", "q": "암진단금은몇번지급되나요?", "gold": ["e01381"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0080", "q": "뇌혈관 질환진단은 뇌출혈만보장되나요?", "gold": ["e07547"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0331", "q": "한귀 청력이 완전히 소실 + 한눈 시력을 완전히 잃었는데 장해보험금 지급률이 어떻게 되는지?", "gold": [], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0511", "q": "암주요치료비특약에서 암·대장점막내암·비침습방광암 주요치료는 몇 년 동안 몇 회까지 보장되나요?", "gold": ["e01792"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0431", "q": "(간편)중증질환자[암]산정특례대상보장특약의 중증질환자[암] 산정특례대상 보장급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?", "gold": ["e06202"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0417", "q": "(간편)암주요치료비특약의 기타피부암 및 갑상선암 주요치료급여금 지급액은 보험가입금액의 몇 %인가요?", "gold": ["e01794"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0474", "q": "급여암특정재활치료특약에서 전문재활치료 급여금을 받을 수 있는 암의 범위와 하루·연간 지급 횟수는 어떻게 되나요?", "gold": ["e02280"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0353", "q": "(간편)1-5종수술특약의 3종 수술 급여금은 가입 후 얼마가 지나야 전액을 받을 수 있나요?", "gold": ["e04301"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0473", "q": "급여암특정재활치료특약에서 단순재활치료 급여금을 받을 수 있는 암의 범위와 하루·연간 지급 횟수는 어떻게 되나요?", "gold": ["e02280"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0359", "q": "(간편)혈전용해치료특약의 급성뇌경색증혈전용해치료급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?", "gold": ["e03417"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0495", "q": "(간편)암주요치료비특약은 어떤 암의 치료를 보장하며, 최초 진단 후 몇 년 동안 몇 회까지 지급하나요?", "gold": ["e01772", "e01793", "e01792"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0507", "q": "암다빈치로봇수술특약에서 갑상선암과 전립선암을 제외한 다빈치로봇수술급여금의 지급 요건은 무엇인가요?", "gold": ["e01626"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0481", "q": "뇌혈관질환 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?", "gold": ["e03463", "e03442"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0422", "q": "(간편)암다빈치로봇수술특약의 (갑상선암 및 전립선암 제외) 다빈치로봇수술급여금 지급률이 가입 경과기간에 따라 달라지나요? 구간별로 알려주세요.", "gold": ["e01626"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0427", "q": "(간편)재해골절치료특약의 재해골절 치료급여금은 수술이나 치료 1회당 보험가입금액의 몇 %를 받나요?", "gold": ["e06495"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0498", "q": "(간편)뇌혈관·허혈심장질환상급종합병원입원특약에서 상급종합병원 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?", "gold": ["e03485"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0548", "q": "허혈심장질환 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?", "gold": ["e03513"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0406", "q": "(간편)뇌혈관·허혈심장질환상급종합병원통원특약에서 치료를 받으러 통원했을 때 뇌혈관질환 상급종합병원 통원급여금을 받을 수 있는 병원 조건과 연간 횟수 한도는 어떻게 되나요?", "gold": ["e03666"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0428", "q": "(간편)재해수술특약의 재해수술급여금은 수술이나 치료 1회당 보험가입금액의 몇 %를 받나요?", "gold": ["e05023"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0430", "q": "(간편)정기특약의 사망보험금은 어떤 경우에 지급되나요?", "gold": ["e00337"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0530", "q": "질병수술특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?", "gold": ["e05057"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0382", "q": "(간편)[기본]뇌혈관질환진단특약의 뇌혈관질환진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?", "gold": ["e02888"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0492", "q": "보험료를 연체해 계약이 끊겼는데, 언제까지 다시 살릴 수 있나요?", "gold": ["e00197"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0424", "q": "(간편)암주요치료비특약의 기타피부암 및 갑상선암 주요치료 급여금은 특약보험가입금액의 몇 %가 지급되나요?", "gold": ["e01794"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0460", "q": "간편심사형으로 가입한 뒤 2년이 되기 전에 질병으로 사망하면 사망보험금을 전액 받나요?", "gold": ["e00058"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0512", "q": "암진단특약에서 기타피부암이나 갑상선암도 일반암으로 보나요?", "gold": ["e01676"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0527", "q": "질병 코드가 개정됐다면 가입 당시 코드와 진단받은 날의 코드 중 어느 기준을 따르나요?", "gold": ["e00164"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0461", "q": "동일한 질병으로 상급종합병원에서 퇴원한 후 180일이 지나기 전에 다시 입원한 경우 입원일수는 어떻게 계산되나요?", "gold": ["e03486"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0247", "q": "(간편)[질병별]신수술특약에서 계약자가 특약을 취소할 수 있는 사유와 취소 시 처리 내용은 무엇인가요?", "gold": ["e04815"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0204", "q": "여러 담보들도 함께 보장이 있고 면책이 있는 담보도 포함되어 있어 취소권을 부여해야 하는데, \n취소권 관련 문구가 들어가 있는지, 무효에는 어떤 문구가 있는지 확인해줘", "gold": ["e07443", "e05058"], "task_type": "exhaustive_list", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0267", "q": "질병수술(백내장및대장용종제외)특약의 보장제외 질병은 무엇인가요?", "gold": ["e07894", "e07895", "e07896"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0266", "q": "질병수술(백내장및대장용종제외)특약에서 보장제외되는 질병분류 코드는 무엇인가요?", "gold": ["e07894"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0308", "q": "통합건강원  수술비 분류표 알려줘", "gold": ["e07561", "e07573"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0039", "q": "간편 통합건강원 상품에서 비급여암치료 특약 항목 이름이 뭐야", "gold": [], "task_type": "not_answerable", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0499", "q": "상급종합병원 입원급여금의 지급 요건과 1회 입원당 보장일수, 지급금액은 어떻게 되나요?", "gold": ["e05559"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0015", "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(전문재활치료 및 기타이학요법)\"의 정의는 무엇인가요?", "gold": ["e03754"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0026", "q": "(간편)[21대다빈도생활질병]신수술특약에서 \"21대다빈도생활질병\"의 정의는 무엇인가요?", "gold": ["e04693"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0008", "q": "(간편)암직접치료상급종합병원통원특약에서 \"암, 대장점막내암, 비침습방광암, 기타피부암, 갑상선암, 제자리암 또는 경계성종양의 직접적인 치료\"의 정의는 무엇인가요?", "gold": ["e02718"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0023", "q": "(간편)[질병별]신수술특약에서 \"17대심한상해\"의 정의는 무엇인가요?", "gold": ["e04532"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0031", "q": "중증난치질환자(중증치매제외)산정특례대상보장특약에서 \"중증난치질환자(중증치매제외) 산정특례대상\"의 정의는 무엇인가요?", "gold": ["e06222"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0016", "q": "당뇨병(당화혈색소 6.5%이상)진단특약에서 \"당뇨병(당화혈색소 6.5%이상)\"의 정의는 무엇인가요?", "gold": ["e03924"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0017", "q": "당뇨병(당화혈색소 7.5%이상)진단특약에서 \"당뇨병(당화혈색소 7.5%이상)\"의 정의는 무엇인가요?", "gold": ["e03962"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0018", "q": "당뇨병(당화혈색소 8.5%이상)진단특약에서 \"당뇨병(당화혈색소 8.5%이상)\"의 정의는 무엇인가요?", "gold": ["e04000"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0001", "q": "(간편)남성12대주요암진단특약에서 \"남성12대주요암\"의 정의는 무엇인가요?", "gold": ["e01081"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0270", "q": "첫날부터상급종합병원입원특약에서 보험금을 지급하지 않는 사유는 무엇인가요?", "gold": ["e05544"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0207", "q": "요양병원 입원도 보장 되나요?", "gold": ["e05704"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0329", "q": "표적항암제도되나요?", "gold": ["e02064", "e02050"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0084", "q": "뇌혈관질환의 질병코드 알려줘", "gold": ["e07547"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0078", "q": "뇌출혈진단이 감액기간에 발생한 경우, 보험금은 어떻게 산정되나요?", "gold": ["e03001"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0340", "q": "해당 상품에서 협심증(I20)을 보장하는 특약리스트 알려줘", "gold": ["e00037", "e07553"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0010", "q": "(간편)암주요치료비특약과 (간편)암다빈치로봇수술특약의 무효사유를 정리해줘", "gold": ["e01584", "e01620", "e01785", "e01786"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0180", "q": "(간편)암주요치료비특약의 주요치료급여금은 수술, 항암약물치료, 항암방사선치료를 각각 이용하면 각각 지급돼? 아니면 연간 1회만 지급돼?", "gold": ["e01772"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0121", "q": "사망,장해,진단,입원,수술,실손에 따른 보험금 청구시 필요한 서류를 알려줘", "gold": ["e00155"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0063", "q": "깁스치료특약에서 깁스치료를 2회 이상 받은 경우 보장기준은 무엇인가요?", "gold": ["e06514"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "Claim"}
+{"qid": "v3-offline-0344", "q": "해약환급금이없는데왜가입해야하나요?", "gold": ["e00203"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0235", "q": "자살할 경우 사망보험금 보장 가능한지 알려줘", "gold": ["e00167"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0119", "q": "보험료납입면제특약의 유형별로 납입면제의 대상이 되는 담보를 최초 1회한으로 보장하는 특약을 정리해줘", "gold": ["e00077"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0182", "q": "암주요치료비특약의 보험금 지급사유는 무엇인가요?", "gold": ["e01772"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "Claim"}
+{"qid": "v3-offline-0156", "q": "신한통합건강보험원 암유병자 5년후 가입시 기존 원발암 보장되나요?", "gold": [], "task_type": "not_answerable", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0163", "q": "심장질환도되나요?", "gold": ["e03586"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0171", "q": "암 재활치료 횟수제한이있나요?", "gold": ["e02265"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "LICO"}
+{"qid": "v3-offline-0255", "q": "주계약 납면시 가입한 특약모두 납입면제 가능해?", "gold": ["e00353"], "task_type": "exhaustive_list", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0146", "q": "신한통합건강보장보험원 보험 보장 내용궁금", "gold": ["e00058", "e05506", "e00041"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0233", "q": "자궁 전체기간 부담보로 가입됐는데 5년지나면 보장된다고 하는데 맞나요?", "gold": ["e07440"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0036", "q": "간병인을따로안써도되나요?", "gold": ["e05801"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0088", "q": "다빈도생활질병에 자궁근종이 포함돼? 보장되는 코드 알려줘", "gold": [], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0209", "q": "유방암인 경우 납입면제되고 갱신도 되는지, 납입면제 되고 갱신 안되는지 알려줘", "gold": ["e06985"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "고객상담"}
+{"qid": "v3-offline-0398", "q": "(간편)급여암특정재활치료특약의 [단순재활] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?", "gold": ["e02280"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0397", "q": "(간편)급여암특정재활치료특약의 [기본물리] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?", "gold": ["e02280"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0487", "q": "보험금을 늦게 청구해도 되나요? 청구할 수 있는 기간이 정해져 있나요?", "gold": ["e00208"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0519", "q": "이 상품의 주계약은 어떤 상황에서 보험금이 나오나요?", "gold": ["e00057", "e00058"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0528", "q": "질병수술(8대특정수술제외)특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?", "gold": ["e05191", "e05175"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0501", "q": "상급종합병원질병수술특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?", "gold": ["e05228"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0520", "q": "재해수술특약의 수술급여금은 어떤 경우에 지급되나요?", "gold": ["e05010"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0533", "q": "특정 급성심근경색증으로 혈전용해치료를 받으면 어떤 조건에서 급여금이 지급되며, 몇 회까지 받을 수 있나요?", "gold": ["e03419"], "task_type": "exhaustive_list", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0399", "q": "(간편)급여암특정재활치료특약의 [전문재활] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?", "gold": ["e02280"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0437", "q": "(간편)첫날부터6대질병중환자실입원특약의 6대질병 중환자실 입원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?", "gold": ["e05632"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0524", "q": "진단받은 뒤에 질병 분류체계가 바뀌면 보험금 판단도 다시 하는지 약관에 명확하게 나와 있나요?", "gold": ["e00164"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "문서커버리지"}
+{"qid": "v3-offline-0075", "q": "뇌출혈 및 금성신근경생증, 유방암, 자궁암, 전립선암 등 분류표 알려줘", "gold": [], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0263", "q": "진단특약(갱신형)의 갱신계약과 진단특약80plus의 연장형 계약의 차이를 알려줘", "gold": [], "task_type": "not_answerable", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-offline-0301", "q": "통합건강보험원 보험가입연령", "gold": ["e00189"], "task_type": "single_lookup", "core_retrieval": "False", "사업구분": "챗봇"}
+{"qid": "v3-offline-0161", "q": "실제간병인을써야하나요?", "gold": ["e05926"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "LICO"}
+{"qid": "v3-offline-0349", "q": "현재 판매되고 있지 않은 특약명이 있다면 알려줘", "gold": ["e03031"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "상품"}
+{"qid": "v3-offline-0296", "q": "통합건강보험 원에서 뇌출혈은 i코드도 보장되나", "gold": ["e07549"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "챗봇"}
+{"qid": "v3-offline-0230", "q": "입원시 입권급여금과 상급종합병원입원급여금이 합산보장 되는지 알려줘", "gold": [], "task_type": "not_answerable", "core_retrieval": "False", "사업구분": "고객상담"}
+{"qid": "v3-offline-0222", "q": "이 판매 약관에 오타 있으면 알려줘", "gold": ["e07517"], "task_type": "multi_evidence", "core_retrieval": "False", "사업구분": "상품"}
+{"qid": "v3-generated-def-0013", "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(기본물리치료)\"의 정의는 무엇인가요?", "gold": ["e03748"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0014", "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(단순재활치료)\"의 정의는 무엇인가요?", "gold": ["e03751"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0024", "q": "(간편)[질병별]신수술특약에서 \"10대양성종양\"의 정의는 무엇인가요?", "gold": ["e04533"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
+{"qid": "v3-generated-def-0022", "q": "(간편)[질병별]신수술특약에서 \"14대질병\"의 정의는 무엇인가요?", "gold": ["e04531"], "task_type": "single_lookup", "core_retrieval": "True", "사업구분": "문서커버리지"}
