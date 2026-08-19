@@ -1,0 +1,16 @@
+out/*.npy
+out/*.part.npy
+out/sessions/
+out/vec_*_texts.jsonl
+out/grep_*.jsonl
+out/chunks.jsonl
+out/elements.jsonl
+out/chunk_metadata*.jsonl
+out/element_tags*.jsonl
+out/semantic_tags.jsonl
+__pycache__/
+
+# 정답셋(test) — 절대 커밋 금지 (test149 질문 문구 포함, 823b34d 정책 준용)
+out/gold_mapped_noah_v3_test149.jsonl
+out/gold_mapped_noah_v3_test149.jsonl.bak*
+.DS_Store

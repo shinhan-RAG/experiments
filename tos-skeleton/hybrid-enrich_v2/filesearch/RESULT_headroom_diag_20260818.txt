@@ -1,0 +1,13 @@
+# 헤드룸 진단 (2026-08-18) — u2jo 조 단위 BM25, train 338. oracle scope = gold 특약 scope 를 알 때의 상한(태그 contract 좌표 가치). 주의: gold 앵커 다중매치 120/531 group 은 첫 매치 채택이라 oracle 이 부풀 수 있음(lsh v4 gold 로 재측정 필요)
+
+n 338 BM25 u2jo R@5 0.325
+first-hit rank bins {'101-1000': 45, '21-100': 53, '6-10': 58, '1-5': 131, '11-20': 48, '>1000/none': 3}
+oracle scope-filter R@5 0.78 | gold scopes per q Counter({1: 254, 2: 69, 3: 10, 4: 5})
+q-bigram overlap with gold: median 0.44 p25 0.33 share<0.3 0.2
+R@5 when overlap<0.3: 0.061 (n=66) | overlap>=0.5: 0.561 (n=129)
+document_global 1 R@5 0.0 oracle-scope 0.0
+multi_evidence 121 R@5 0.228 oracle-scope 0.572
+comparison 4 R@5 0.417 oracle-scope 0.75
+single_lookup 210 R@5 0.379 oracle-scope 0.905
+exhaustive_list 2 R@5 0.5 oracle-scope 0.667
+gold unit duplicated (>1 identical copies) share 0.19 p50 copies 1

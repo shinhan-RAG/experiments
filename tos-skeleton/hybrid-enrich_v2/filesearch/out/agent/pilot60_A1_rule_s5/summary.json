@@ -1,0 +1,26 @@
+{
+ "run": "pilot60_A1_rule_s5",
+ "n_q": 60,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "lex": "count",
+  "w": {},
+  "router": "rule",
+  "expose_tags": 0
+ },
+ "metrics": {
+  "R@1": 0.2625,
+  "R@5": 0.5583,
+  "R@10": 0.5653,
+  "R@20": 0.5653,
+  "S@5": 0.6083,
+  "RR@10": 0.444
+ },
+ "core_R@5": 0.7222,
+ "noncore_R@5": 0.3125,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 22.85,
+ "rep_disagreement_R@5": 0.183
+}

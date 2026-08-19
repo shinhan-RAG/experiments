@@ -1,0 +1,147 @@
+run=pilot60_A1_rule_s5 n=60 reps=2 jobs=120 model=sonnet
+v3-offline-0385 r0 R@5=1.00 n_sub=4 turns=4 $0.1614267
+v3-offline-0256 r0 R@5=1.00 n_sub=7 turns=4 $0.16609060000000003
+v3-offline-0290 r0 R@5=1.00 n_sub=10 turns=6 $0.33795379999999997
+v3-offline-0532 r0 R@5=0.00 n_sub=4 turns=3 $0.14267620000000003
+v3-offline-0468 r0 R@5=1.00 n_sub=10 turns=3 $0.13838350000000002
+v3-offline-0378 r0 R@5=1.00 n_sub=2 turns=4 $0.16566209999999998
+v3-offline-0178 r0 R@5=0.00 n_sub=6 turns=3 $0.1026321
+v3-generated-def-0035 r0 R@5=1.00 n_sub=4 turns=4 $0.1285281
+v3-offline-0392 r0 R@5=1.00 n_sub=5 turns=4 $0.12175910000000002
+v3-offline-0551 r0 R@5=1.00 n_sub=5 turns=5 $0.186291
+v3-offline-0452 r0 R@5=1.00 n_sub=6 turns=3 $0.10744229999999999
+v3-offline-0017 r0 R@5=1.00 n_sub=8 turns=3 $0.09604470000000001
+v3-generated-def-0002 r0 R@5=1.00 n_sub=5 turns=4 $0.1272104
+v3-offline-0531 r0 R@5=1.00 n_sub=4 turns=4 $0.1170458
+v3-offline-0388 r0 R@5=1.00 n_sub=4 turns=5 $0.1547131
+v3-offline-0086 r0 R@5=0.00 n_sub=8 turns=4 $0.12470869999999999
+v3-offline-0480 r0 R@5=1.00 n_sub=8 turns=3 $0.1107565
+v3-offline-0131 r0 R@5=0.00 n_sub=10 turns=3 $0.0899418
+v3-offline-0459 r0 R@5=1.00 n_sub=10 turns=5 $0.20360260000000002
+v3-offline-0354 r0 R@5=1.00 n_sub=4 turns=4 $0.1330604
+v3-offline-0454 r0 R@5=1.00 n_sub=7 turns=3 $0.1045689
+v3-offline-0055 r0 R@5=0.00 n_sub=2 turns=7 $0.26281580000000004
+v3-offline-0072 r0 R@5=1.00 n_sub=6 turns=7 $0.32516330000000004
+v3-offline-0545 r0 R@5=1.00 n_sub=4 turns=5 $0.18606480000000003
+v3-offline-0522 r0 R@5=0.00 n_sub=10 turns=4 $0.1825671
+v3-offline-0348 r0 R@5=1.00 n_sub=10 turns=8 $0.3609582
+v3-offline-0041 r0 R@5=1.00 n_sub=10 turns=7 $0.287694
+v3-offline-0415 r0 R@5=1.00 n_sub=5 turns=4 $0.1443294
+v3-offline-0502 r0 R@5=1.00 n_sub=2 turns=3 $0.10344359999999998
+v3-offline-0375 r0 R@5=0.00 n_sub=5 turns=4 $0.1239401
+v3-offline-0278 r0 R@5=1.00 n_sub=10 turns=5 $0.2505053
+v3-offline-0071 r0 R@5=1.00 n_sub=8 turns=8 $0.28038209999999997
+v3-offline-0418 r0 R@5=1.00 n_sub=4 turns=5 $0.1789853
+v3-offline-0377 r0 R@5=1.00 n_sub=3 turns=5 $0.1489718
+v3-offline-0383 r0 R@5=1.00 n_sub=4 turns=3 $0.09817719999999999
+v3-offline-0521 r0 R@5=0.00 n_sub=7 turns=3 $0.103007
+v3-offline-0020 r0 R@5=1.00 n_sub=8 turns=8 $0.397984
+v3-offline-0269 r0 R@5=0.75 n_sub=8 turns=5 $0.1732474
+v3-offline-0292 r0 R@5=0.00 n_sub=10 turns=5 $0.1955207
+v3-offline-0288 r0 R@5=0.50 n_sub=10 turns=4 $0.1592387
+v3-offline-0035 r0 R@5=0.00 n_sub=10 turns=4 $0.12630929999999999
+v3-offline-0298 r0 R@5=0.00 n_sub=10 turns=5 $0.2439701
+v3-offline-0107 r0 R@5=0.00 n_sub=10 turns=3 $0.11291979999999999
+v3-offline-0293 r0 R@5=0.00 n_sub=10 turns=3 $0.095827
+v3-offline-0262 r0 R@5=0.00 n_sub=10 turns=10 $0.4515222
+v3-offline-0227 r0 R@5=1.00 n_sub=5 turns=3 $0.0991627
+v3-offline-0149 r0 R@5=0.00 n_sub=8 turns=14 $0.8830380000000001
+v3-offline-0044 r0 R@5=1.00 n_sub=8 turns=5 $0.23270419999999997
+v3-offline-0085 r0 R@5=0.50 n_sub=5 turns=5 $0.1631281
+v3-offline-0297 r0 R@5=1.00 n_sub=4 turns=7 $0.1703484
+v3-offline-0152 r0 R@5=0.50 n_sub=8 turns=3 $0.1093162
+v3-offline-0019 r0 R@5=0.00 n_sub=6 turns=7 $0.3580659
+v3-offline-0325 r0 R@5=0.67 n_sub=10 turns=11 $0.5586528
+v3-offline-0216 r0 R@5=0.00 n_sub=0 turns=3 $0.11417649999999999
+v3-offline-0284 r0 R@5=0.00 n_sub=10 turns=7 $0.260759
+v3-offline-0076 r0 R@5=0.00 n_sub=10 turns=3 $0.0927578
+v3-offline-0508 r0 R@5=0.00 n_sub=3 turns=4 $0.11989339999999998
+v3-offline-0132 r0 R@5=0.67 n_sub=10 turns=5 $0.2169265
+v3-offline-0488 r0 R@5=0.50 n_sub=4 turns=6 $0.28028
+v3-offline-0113 r0 R@5=0.00 n_sub=10 turns=4 $0.1220622
+v3-offline-0385 r1 R@5=1.00 n_sub=4 turns=4 $0.12671140000000003
+v3-offline-0256 r1 R@5=1.00 n_sub=5 turns=4 $0.11097489999999999
+v3-offline-0290 r1 R@5=0.00 n_sub=10 turns=8 $0.37856360000000006
+v3-offline-0532 r1 R@5=0.00 n_sub=2 turns=3 $0.0954898
+v3-offline-0468 r1 R@5=1.00 n_sub=8 turns=3 $0.0853909
+v3-offline-0378 r1 R@5=1.00 n_sub=8 turns=4 $0.10702409999999998
+v3-offline-0178 r1 R@5=0.00 n_sub=6 turns=3 $0.08222130000000001
+v3-generated-def-0035 r1 R@5=1.00 n_sub=7 turns=6 $0.1795942
+v3-offline-0392 r1 R@5=1.00 n_sub=3 turns=4 $0.1127798
+v3-offline-0551 r1 R@5=1.00 n_sub=7 turns=4 $0.180804
+v3-offline-0452 r1 R@5=1.00 n_sub=5 turns=3 $0.0876624
+v3-offline-0017 r1 R@5=1.00 n_sub=10 turns=3 $0.0802638
+v3-generated-def-0002 r1 R@5=1.00 n_sub=4 turns=3 $0.08358290000000002
+v3-offline-0531 r1 R@5=1.00 n_sub=4 turns=4 $0.1210407
+v3-offline-0388 r1 R@5=1.00 n_sub=10 turns=9 $0.5256921999999999
+v3-offline-0086 r1 R@5=0.00 n_sub=5 turns=3 $0.0845193
+v3-offline-0480 r1 R@5=0.00 n_sub=5 turns=3 $0.0904678
+v3-offline-0131 r1 R@5=1.00 n_sub=5 turns=3 $0.0810027
+v3-offline-0459 r1 R@5=1.00 n_sub=8 turns=6 $0.25899500000000003
+v3-offline-0354 r1 R@5=1.00 n_sub=6 turns=4 $0.1333014
+v3-offline-0454 r1 R@5=1.00 n_sub=7 turns=3 $0.0876239
+v3-offline-0055 r1 R@5=0.00 n_sub=2 turns=5 $0.17965640000000002
+v3-offline-0072 r1 R@5=0.00 n_sub=5 turns=7 $0.35355439999999994
+v3-offline-0545 r1 R@5=1.00 n_sub=4 turns=4 $0.11071119999999998
+v3-offline-0522 r1 R@5=0.00 n_sub=10 turns=3 $0.0947109
+v3-offline-0348 r1 R@5=1.00 n_sub=10 turns=7 $0.3233283
+v3-offline-0041 r1 R@5=0.00 n_sub=8 turns=8 $0.3270915
+v3-offline-0415 r1 R@5=1.00 n_sub=4 turns=4 $0.14471849999999997
+v3-offline-0502 r1 R@5=1.00 n_sub=1 turns=3 $0.08644220000000001
+v3-offline-0375 r1 R@5=0.00 n_sub=3 turns=4 $0.10348279999999999
+v3-offline-0278 r1 R@5=1.00 n_sub=10 turns=4 $0.14556260000000001
+v3-offline-0071 r1 R@5=1.00 n_sub=6 turns=8 $0.3503273
+v3-offline-0418 r1 R@5=1.00 n_sub=4 turns=4 $0.1535045
+v3-offline-0377 r1 R@5=1.00 n_sub=5 turns=4 $0.10888280000000002
+v3-offline-0383 r1 R@5=0.00 n_sub=2 turns=3 $0.144397
+v3-offline-0521 r1 R@5=0.00 n_sub=7 turns=3 $0.10292180000000001
+v3-offline-0020 r1 R@5=0.67 n_sub=10 turns=9 $0.41070880000000004
+v3-offline-0269 r1 R@5=0.75 n_sub=10 turns=8 $0.325831
+v3-offline-0292 r1 R@5=0.00 n_sub=8 turns=6 $0.2533096
+v3-offline-0288 r1 R@5=0.00 n_sub=10 turns=5 $0.1832921
+v3-offline-0035 r1 R@5=0.00 n_sub=10 turns=3 $0.11238010000000001
+v3-offline-0298 r1 R@5=0.00 n_sub=5 turns=6 $0.28159399999999996
+v3-offline-0107 r1 R@5=0.00 n_sub=10 turns=3 $0.11516649999999999
+v3-offline-0293 r1 R@5=0.00 n_sub=10 turns=3 $0.09488830000000001
+v3-offline-0262 r1 R@5=0.00 n_sub=10 turns=7 $0.3235868
+v3-offline-0227 r1 R@5=1.00 n_sub=5 turns=4 $0.14070100000000002
+v3-offline-0149 r1 R@5=0.00 n_sub=6 turns=9 $0.488417
+v3-offline-0044 r1 R@5=1.00 n_sub=8 turns=4 $0.17011099999999998
+v3-offline-0085 r1 R@5=0.00 n_sub=5 turns=6 $0.1717825
+v3-offline-0297 r1 R@5=1.00 n_sub=3 turns=5 $0.1039201
+v3-offline-0152 r1 R@5=0.50 n_sub=8 turns=3 $0.1078552
+v3-offline-0019 r1 R@5=0.00 n_sub=6 turns=6 $0.2697255
+v3-offline-0325 r1 R@5=0.33 n_sub=10 turns=10 $0.4574502
+v3-offline-0216 r1 R@5=0.00 n_sub=7 turns=4 $0.1814414
+v3-offline-0284 r1 R@5=0.50 n_sub=6 turns=5 $0.1922064
+v3-offline-0076 r1 R@5=0.00 n_sub=6 turns=4 $0.1794858
+v3-offline-0508 r1 R@5=0.00 n_sub=5 turns=4 $0.1224222
+v3-offline-0132 r1 R@5=0.67 n_sub=10 turns=4 $0.12037519999999999
+v3-offline-0488 r1 R@5=0.50 n_sub=10 turns=8 $0.31472740000000005
+v3-offline-0113 r1 R@5=0.00 n_sub=10 turns=3 $0.11175929999999999
+{
+ "run": "pilot60_A1_rule_s5",
+ "n_q": 60,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "lex": "count",
+  "w": {},
+  "router": "rule",
+  "expose_tags": 0
+ },
+ "metrics": {
+  "R@1": 0.2625,
+  "R@5": 0.5583,
+  "R@10": 0.5653,
+  "R@20": 0.5653,
+  "S@5": 0.6083,
+  "RR@10": 0.444
+ },
+ "core_R@5": 0.7222,
+ "noncore_R@5": 0.3125,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 22.85,
+ "rep_disagreement_R@5": 0.183
+}
