@@ -32,8 +32,8 @@ def main():
     s = sub.add_parser("search"); s.add_argument("--q", required=True); s.add_argument("--page", type=int, default=1)
     for f in ("contract", "role", "subject", "qualifier", "schema"):
         s.add_argument(f"--{f}", default="", help="쉼표 구분, 선택")
-    vs = sub.add_parser("vsearch"); vs.add_argument("--q", required=True); vs.add_argument("--page", type=int, default=1)
-    vs.add_argument("--contract", default="", help="특약명(쉼표 구분, 선택) — 소프트 scope")
+    vs = sub.add_parser("msearch"); vs.add_argument("--q", required=True); vs.add_argument("--page", type=int, default=1)
+    vs.add_argument("--strategy", default="hybrid", choices=("hybrid", "bm25", "dense"))
     r = sub.add_parser("read"); r.add_argument("--id", required=True)
     m = sub.add_parser("submit"); m.add_argument("--ids", required=True, help="쉼표 구분 element_id 순위(최대 10)")
     a = ap.parse_args()
@@ -43,7 +43,7 @@ def main():
     arm = json.loads(os.environ.get("SEMTAG_ARM", "{}"))
     log_path = sess / "calls.jsonl"
     calls = [json.loads(l) for l in open(log_path)] if log_path.exists() else []
-    n_search = sum(1 for c in calls if c["cmd"] in ("search", "vsearch")); n_read = sum(1 for c in calls if c["cmd"] == "read")
+    n_search = sum(1 for c in calls if c["cmd"] in ("search", "msearch")); n_read = sum(1 for c in calls if c["cmd"] == "read")
 
     def log(rec):
         rec.update({"t": time.time(), "cmd": a.cmd})
@@ -104,34 +104,26 @@ def main():
              "returned": [(e["element_id"], sc) for e, sc in page]})
         out({"query": a.q, "slots_used": slots, "total_candidates": len(res), "page": a.page, "page_size": PAGE,
              "search_calls_left": SEARCH_CAP - n_search - 1, "results": items})
-    elif a.cmd == "vsearch":
-        # 임베딩 채널(설계서 3.3 벡터 서치). 검색 예산은 search 와 공유(합계 ≤20회)
+    elif a.cmd == "msearch":
+        # 메타데이터(청크) 검색 — vector_search.ChunkHybridSearch(BM25+Dense RRF). 이 채널은 고정이며 우리 변인이 아니다.
         if n_search >= SEARCH_CAP:
             out({"error": f"search 예산 초과({SEARCH_CAP}회). submit 하십시오."}); return
-        if not arm.get("vec_view"):
-            out({"error": "이 arm 에서는 vsearch 를 사용할 수 없습니다."}); return
-        import numpy as np, embedder
-        view = arm["vec_view"]
-        if not hasattr(S, "_vec"):
-            S._vec = np.load(HERE / "out/emb" / f"u2_{view}.npy"); S._vids = json.load(open(HERE / "out/emb" / f"u2_{view}_ids.json"))
-        qv = embedder.encode([a.q], batch=1)[0]
-        sims = S._vec @ qv
-        cs = [x.strip() for x in a.contract.split(",") if x.strip()]
-        if cs:
-            pen = np.array([0.0 if any(c_ in S.E[S._eidx[eid]]["contract_scope"] for c_ in cs) else 0.15 for eid in S._vids], dtype="float32")
-            sims = sims - pen
-        order = np.argsort(-sims)[: PAGE * a.page]
-        page = [(S.E[S._eidx[S._vids[i]]], float(sims[i])) for i in order[PAGE * (a.page - 1): PAGE * a.page]]
+        if not arm.get("meta"):
+            out({"error": "이 arm 에서는 msearch 를 사용할 수 없습니다."}); return
+        sys.path.insert(0, str(HERE.parent / "vector_search"))
+        from hybrid_search import ChunkHybridSearch
+        from units import Units
+        hs = ChunkHybridSearch(view=arm.get("meta_view", "V9"))
+        U = Units()
+        res = hs.search(a.q, strategy=a.strategy, top_k=PAGE * a.page)
+        page = res[PAGE * (a.page - 1): PAGE * a.page]
         items = []
-        for e, sc in page:
-            j = S._jo[S._m2j[e["element_id"]]]
-            it = {"id": e["element_id"], "jo": j["element_id"], "score": round(sc, 4), "contract": e["contract_scope"][:40], "preview": " ".join(e["text"].split())[:PREVIEW]}
-            if T:
-                t = T[e["element_id"]]; loc = t.get("locator") or {}
-                it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
-            items.append(it)
-        log({"q": a.q, "contract": cs, "page": a.page, "returned": [(e["element_id"], round(sc, 4)) for e, sc in page], "cmd": "vsearch"})
-        out({"query": a.q, "channel": f"vector:{view}", "page": a.page, "page_size": PAGE, "search_calls_left": SEARCH_CAP - n_search - 1, "results": items})
+        for r in page:
+            j = U.jo_of_span(r["char_start"], r["char_end"]) if r.get("char_start") is not None else None
+            items.append({"id": r["id"], "jo": j["element_id"] if j else "", "contract": (j or {}).get("contract_scope", "")[:40],
+                          "preview": " ".join((r.get("preview") or "").split())[:PREVIEW]})
+        log({"q": a.q, "strategy": a.strategy, "page": a.page, "returned": [(r["id"], r.get("rrf_score") or r.get("dense_sim") or 0) for r in page]})
+        out({"query": a.q, "channel": f"meta:{a.strategy}", "page": a.page, "page_size": PAGE, "search_calls_left": SEARCH_CAP - n_search - 1, "results": items})
     elif a.cmd == "read":
         if n_read >= READ_CAP:
             out({"error": f"read 예산 초과({READ_CAP}회)."}); return

@@ -10,6 +10,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from scoring import score
+from units import Units
 from agent_runner import PROMPT, VSEARCH_DOC
 
 TOOLS = [
@@ -20,8 +21,8 @@ TOOLS = [
             "contract": {"type": "string", "description": "특약명(쉼표 구분, 선택)"},
             "role": {"type": "string", "description": "역할코드(쉼표 구분, 선택)"},
             "subject": {"type": "string", "description": "대상어(쉼표 구분, 선택)"}}, "required": ["q"]}}},
-    {"type": "function", "function": {"name": "vsearch", "description": "임베딩(의미) 검색. 한 페이지 40건. search 와 합쳐 세션당 최대 20회.",
-        "parameters": {"type": "object", "properties": {"q": {"type": "string"}, "page": {"type": "integer", "default": 1}, "contract": {"type": "string", "description": "특약명(선택, 소프트 scope)"}}, "required": ["q"]}}},
+    {"type": "function", "function": {"name": "msearch", "description": "메타데이터(임베딩+키워드) 검색. 한 페이지 40건. search 와 합쳐 세션당 최대 20회.",
+        "parameters": {"type": "object", "properties": {"q": {"type": "string"}, "page": {"type": "integer", "default": 1}}, "required": ["q"]}}},
     {"type": "function", "function": {"name": "read", "description": "element_id 의 조(條) 전체 원문. 세션당 최대 8회.",
         "parameters": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}}},
     {"type": "function", "function": {"name": "submit", "description": "근거 element_id 순위 제출(최대 10). 1회만, 이후 종료.",
@@ -51,7 +52,7 @@ def run_one(args, run_dir, g, rep, arm, client):
         if (sess / f).exists():
             (sess / f).unlink()
     env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
-    sysmsg = PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("vec_view") else "").replace("python3 agent_tools.py ", "")
+    sysmsg = PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("meta") else "").replace("python3 agent_tools.py ", "")
     if args.protocol == "text":
         sysmsg += TEXT_PROTOCOL
     if args.no_think:
@@ -98,7 +99,7 @@ def run_one(args, run_dir, g, rep, arm, client):
                         pass
                     continue
             for cid, name, a in calls:
-                if name not in ("search", "vsearch", "read", "submit"):
+                if name not in ("search", "msearch", "read", "submit"):
                     out = json.dumps({"error": "unknown tool"})
                 else:
                     out = run_tool(env, name, a)
@@ -142,18 +143,13 @@ def main():
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
         k_core = round(a.n * len(core) / len(G))
         G = rnd.sample(core, k_core) + rnd.sample(nc, a.n - k_core)
-    J = [json.loads(l) for l in open(a.jo)]
-    m2j = {m: j for j, u in enumerate(J) for m in u["members"]}; jid = {u["element_id"]: u for u in J}
+    U = Units(a.jo)
     jobs = [(g, rep) for rep in range(a.reps) for g in G]
     print(f"run={a.run} n={len(G)} reps={a.reps} jobs={len(jobs)} model={a.model} base={a.base_url} protocol={a.protocol}", flush=True)
     rows = []
     with ThreadPoolExecutor(a.workers) as ex:
         for (g, rep), (sub, meta) in zip(jobs, ex.map(lambda gr: run_one(a, run_dir, gr[0], gr[1], arm, client), jobs)):
-            ranked_jo, seen = [], set()
-            for eid in sub.get("ranked", []):
-                j = jid.get(eid) if eid.startswith("j") else (J[m2j[eid]] if eid in m2j else None)
-                if j and j["element_id"] not in seen:
-                    seen.add(j["element_id"]); ranked_jo.append(j)
+            ranked_jo = U.resolve(sub.get("ranked", []))
             sc = score(ranked_jo, g["groups"], ks=(1, 5, 10, 20))
             row = {"qid": g["qid"], "rep": rep, "core": g["core_retrieval"] == "True", "task_type": g["task_type"],
                    "submitted": sub.get("ranked", []), "no_submit": sub.get("no_submit", False), "turns": meta["turns"],
