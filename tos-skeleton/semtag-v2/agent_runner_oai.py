@@ -54,6 +54,8 @@ def run_one(args, run_dir, g, rep, arm, client):
     sysmsg = PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("vec_view") else "").replace("python3 agent_tools.py ", "")
     if args.protocol == "text":
         sysmsg += TEXT_PROTOCOL
+    if args.no_think:
+        sysmsg = "/no_think\n" + sysmsg
     msgs = [{"role": "system", "content": "당신은 도구를 사용하는 검색 에이전트입니다."}, {"role": "user", "content": sysmsg}]
     usage = collections.Counter(); t0 = time.time(); turns = 0; err = None; transcript = []
     try:
@@ -127,6 +129,7 @@ def main():
     ap.add_argument("--protocol", default="tools", choices=("tools", "text"))
     ap.add_argument("--temperature", type=float, default=0.0)
     ap.add_argument("--max-turns", type=int, default=40)
+    ap.add_argument("--no-think", action="store_true", help="Qwen3 등 thinking 모델에 /no_think 지시(프롬프트 첫 줄)")
     a = ap.parse_args()
     from openai import OpenAI
     client = OpenAI(api_key=os.environ.get("LITELLM_API_KEY") or os.environ.get("OPENAI_API_KEY"), base_url=a.base_url)
@@ -166,7 +169,7 @@ def main():
     agg = {k: sum(sum(x[k] for x in v) / len(v) for v in byq.values()) / len(byq) for k in ("R@1", "R@5", "R@10", "R@20", "S@5", "RR@10")}
     core = [sum(x["R@5"] for x in v) / len(v) for v in byq.values() if v[0]["core"]]
     nc = [sum(x["R@5"] for x in v) / len(v) for v in byq.values() if not v[0]["core"]]
-    summary = {"run": a.run, "n_q": len(byq), "reps": a.reps, "model": a.model, "protocol": a.protocol, "arm": arm,
+    summary = {"run": a.run, "n_q": len(byq), "reps": a.reps, "model": a.model, "protocol": a.protocol, "no_think": a.no_think, "arm": arm,
                "metrics": {k: round(v, 4) for k, v in agg.items()},
                "core_R@5": round(sum(core) / max(1, len(core)), 4), "noncore_R@5": round(sum(nc) / max(1, len(nc)), 4),
                "no_submit": sum(r["no_submit"] for r in rows), "errors": sum(r["error"] for r in rows),
