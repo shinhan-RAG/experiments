@@ -1,0 +1,15 @@
+{
+  "n_chunks": 5797,
+  "doc_chars": 2757704,
+  "doc_lines": 112001,
+  "chunk_size": 600,
+  "overlap": 100,
+  "element_type": {
+    "text": 4222,
+    "formula": 255,
+    "table": 1320
+  },
+  "avg_len": 549,
+  "doc_sha256": "40a471d54b2ec8c8",
+  "doc_path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\doc\\판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md"
+}
