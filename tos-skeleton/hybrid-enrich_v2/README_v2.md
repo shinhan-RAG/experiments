@@ -13,6 +13,9 @@
 | 에이전트 도구 | `tools.py`(vector/grep/read) | `filesearch/agent_tools.py`(search/read/submit, S5 예산, 전량 로그) + 러너 2종(claude / OpenAI 호환) |
 | 채점 | 위치 기반 R@K | `filesearch/scoring.py` — gold **char span**(우주 독립) 대비 fractional evidence-group R@K·S@K·MRR (비율 채점). gold: `map_gold_spans.py`(QA 출처→span) · `map_lsh_gold.py`(lsh v4 gold→span) |
 
+## 복사에서 제외한 것
+- `exp-agentic-audit-20260818/`(PR #49 산출물: gold 감사·명세·tools_rrf2~5). 원본 `hybrid-enrich/`에만 두고 참조한다 — test gold 파생물 중복 방지, 도구는 `noah_test_0814` 브랜치 의존이라 v2 에서 실행 대상 아님.
+
 ## 데이터 경로
 - 원문·QA 는 커밋하지 않는다. `../hybrid-enrich/noah_qaset/`(250212 md · train csv)를 그대로 참조. test149 는 사용 금지.
 - 산출물은 `filesearch/out/`(gitignore). 재생성 순서는 `filesearch/README.md`.

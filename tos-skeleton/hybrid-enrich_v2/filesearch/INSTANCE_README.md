@@ -50,3 +50,12 @@ cd - && pip install -q qdrant-client && QDRANT_API_KEY=$(cat ~/qdrant/API_KEY) p
 ## 원칙(변경 금지)
 - test149 는 절대 사용하지 않는다(파일도 없음). 결과 JSON·로그에 질문 원문을 저장소에 커밋하지 않는다.
 - 예산(page 40·preview 160·search+vsearch ≤20·read ≤8·submit ≤10)·모델·프로토콜은 run 의 config.json 에 자동 기록된다 — 보고 시 함께 인용.
+
+## (2026-08-19 갱신) 저장소에서 직접 받기 — tarball 대신
+```bash
+cd ~/source/embed_exp/ralph && git clone -b feat/hybrid-enrich-v2 https://github.com/shinhan-RAG/experiments.git   # 또는 기존 clone 에서 git fetch && git checkout feat/hybrid-enrich-v2
+cd experiments/tos-skeleton/hybrid-enrich_v2/filesearch
+# out/ 은 비커밋 — 이전 tarball 의 tos-skeleton/semtag-v2/out/* 를 이 폴더의 out/ 로 복사(elements_u2*, tags_u2_*, gold_spans_*, qtags_haiku, emb/)
+#   또는 재생성: build_universe.py --clean → build_jo_universe.py → tag_rules.py → tag_old.py → map_gold_spans.py → map_lsh_gold.py(cowork 파일 필요) → (qtags 는 캐시 파일 사용)
+```
+기본 gold 는 이제 `out/gold_spans_lsh_train.jsonl`(lsh QA셋, OR 그룹·비율 채점). summary 에 `suff@5/10` 이 추가됨.
