@@ -1,0 +1,22 @@
+{
+ "arm": {
+  "lex": "count",
+  "w": {},
+  "router": "rule",
+  "expose_tags": 0
+ },
+ "args": {
+  "run": "pilot60_A1_rule_s5",
+  "arm": "{\"lex\":\"count\",\"w\":{},\"router\":\"rule\",\"expose_tags\":0}",
+  "gold": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/semtag-v2/out/gold_spans_train.jsonl",
+  "jo": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/semtag-v2/out/elements_u2jo.jsonl",
+  "elements": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/semtag-v2/out/elements_u2.jsonl",
+  "n": 60,
+  "seed": 20260818,
+  "reps": 2,
+  "workers": 6,
+  "model": "sonnet",
+  "max_turns": 60,
+  "timeout": 900
+ }
+}
