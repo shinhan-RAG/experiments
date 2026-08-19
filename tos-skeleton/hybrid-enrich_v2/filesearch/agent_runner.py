@@ -10,10 +10,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from scoring import score
+from units import Units
 
-VSEARCH_DOC = """1b) 벡터 검색: python3 agent_tools.py vsearch --q "<자연어 질의>" [--page N] [--contract "<특약명>"]
-   - 의미 유사도 기반(질문 표현이 문서 용어와 달라도 찾음). 검색 횟수는 search 와 합쳐 세션당 20회.
-   - 태그 검색(search)과 벡터 검색(vsearch)을 질문 성격에 따라 골라 쓰거나 둘 다 써서 교차 확인하십시오.
+VSEARCH_DOC = """1b) 메타데이터 검색: python3 agent_tools.py msearch --q "<자연어 질의>" [--page N]
+   - 의미 유사도(임베딩)+키워드 결합 검색. 질문 표현이 문서 용어와 달라도 찾습니다. 검색 횟수는 search 와 합쳐 세션당 20회.
+   - 태그 검색(search)과 메타데이터 검색(msearch)을 질문 성격에 따라 골라 쓰거나 둘 다 써서 교차 확인하십시오. 결과 id(c…)도 그대로 제출할 수 있습니다.
 """
 PROMPT = """당신은 보험 약관 문서 안에서 질문의 근거 조항(element)을 찾는 검색 에이전트입니다.
 도구는 아래 셸 명령 3개뿐입니다(다른 파일·명령 사용 금지). 반드시 `python3 agent_tools.py ...` 형태로 호출하십시오.
@@ -47,7 +48,7 @@ def run_one(args, run_dir, g, rep, arm):
            "--disallowedTools", "Read,Edit,Write,Grep,Glob,WebFetch,WebSearch,Agent,NotebookEdit,Task"]
     t0 = time.time()
     try:
-        r = subprocess.run(cmd, input=PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("vec_view") else ""), capture_output=True, text=True, timeout=args.timeout, cwd=str(HERE), env=env)
+        r = subprocess.run(cmd, input=PROMPT.format(question=g["q"], vsearch=VSEARCH_DOC if arm.get("meta") else ""), capture_output=True, text=True, timeout=args.timeout, cwd=str(HERE), env=env)
         try:
             cj = json.loads(r.stdout)
         except Exception:
@@ -84,19 +85,13 @@ def main():
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
         k_core = round(a.n * len(core) / len(G))
         G = rnd.sample(core, k_core) + rnd.sample(nc, a.n - k_core)
-    J = [json.loads(l) for l in open(a.jo)]
-    m2j = {m: j for j, u in enumerate(J) for m in u["members"]}
-    jid = {u["element_id"]: u for u in J}
+    U = Units(a.jo)
     jobs = [(g, rep) for rep in range(a.reps) for g in G]
     print(f"run={a.run} n={len(G)} reps={a.reps} jobs={len(jobs)} model={a.model}", flush=True)
     rows = []
     with ThreadPoolExecutor(a.workers) as ex:
         for (g, rep), (sub, cj) in zip(jobs, ex.map(lambda gr: run_one(a, run_dir, gr[0], gr[1], arm), jobs)):
-            ranked_jo, seen = [], set()
-            for eid in sub.get("ranked", []):
-                j = jid.get(eid) if eid.startswith("j") else (J[m2j[eid]] if eid in m2j else None)
-                if j and j["element_id"] not in seen:
-                    seen.add(j["element_id"]); ranked_jo.append(j)
+            ranked_jo = U.resolve(sub.get("ranked", []))
             sc = score(ranked_jo, g["groups"], ks=(1, 5, 10, 20))
             row = {"qid": g["qid"], "rep": rep, "core": g["core_retrieval"] == "True", "task_type": g["task_type"],
                    "submitted": sub.get("ranked", []), "no_submit": sub.get("no_submit", False),

@@ -11,8 +11,8 @@ import argparse, hashlib, json, os, re, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent))
-from build_element_fields_v4 import (QUOTED_RE, SUBJECT_RE, DEFINITION_RE, CONDITION_RE, VALUE_RE,  # noqa: E402
+sys.path.insert(0, str(HERE))
+from patterns import (QUOTED_RE, SUBJECT_RE, DEFINITION_RE, CONDITION_RE, VALUE_RE,  # noqa: E402
                                      ROLE_RULES, ROLE_KO, unique, clean_subjects, table_structure)
 
 VERSION = "semtag-v2-rules-1.0"

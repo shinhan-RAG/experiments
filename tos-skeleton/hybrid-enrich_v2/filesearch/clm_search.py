@@ -15,9 +15,9 @@ import argparse, collections, json, re, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent))
-from slot_filesearch import fuzzy_contains, compact, contract_core, ROLE_ALIASES  # noqa: E402
-from build_element_fields_v4 import (QUOTED_RE, SUBJECT_RE, DEFINITION_RE, VALUE_RE, ROLE_RULES,  # noqa: E402
+sys.path.insert(0, str(HERE))
+from textmatch import fuzzy_contains, compact, contract_core, ROLE_ALIASES  # noqa: E402
+from patterns import (QUOTED_RE, SUBJECT_RE, DEFINITION_RE, VALUE_RE, ROLE_RULES,  # noqa: E402
                                      clean_subjects, unique)
 
 FIELDS = ("contract", "subject", "role", "article", "table", "qualifier", "reference", "schema")

@@ -6,7 +6,7 @@
 import argparse, hashlib, json, re, sys
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
-HE = HERE.parent
+HE = HERE
 sys.path.insert(0, str(HE))
 ROLE_MAP = [
     (re.compile(r"지급하지 않|면제하지 않|면책"), "면책사유(보장 제외)"), (re.compile(r"지급사유"), "보험금 지급사유(보장 내용)"),
@@ -33,7 +33,7 @@ def main():
     ap.add_argument("--elements", default=str(HERE / "out/elements_u2.jsonl"))
     ap.add_argument("--out", default=str(HERE / "out/tags_u2_old.jsonl"))
     a = ap.parse_args()
-    aliases = json.load(open(HE / "aliases.json", encoding="utf-8")); aliases.pop("_comment", None)
+    aliases = json.load(open(HERE / "aliases.json", encoding="utf-8")); aliases.pop("_comment", None)
     E = [json.loads(l) for l in open(a.elements, encoding="utf-8")]
     cur_scope, art_label, art_title = None, "", ""
     out = []
