@@ -106,7 +106,7 @@ def main():
                 for k, v in sc.items():
                     agg[arm][(unit, k)].append(v)
                 agg[arm][(unit, "_core")].append(g["core_retrieval"] == "True")
-            files[arm].write(json.dumps({"qid": g["qid"], "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
+            files[arm].write(json.dumps({"qid": g["qid"], **sc, "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
                                          "u2_top": [e["element_id"] for e in ru[:40]], "jo_top": [u["element_id"] for u in rj[:40]]}, ensure_ascii=False) + "\n")
     for arm in arms:
         for unit in ("u2", "jo"):
