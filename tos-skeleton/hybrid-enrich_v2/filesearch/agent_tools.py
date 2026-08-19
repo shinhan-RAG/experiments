@@ -89,7 +89,7 @@ def main():
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v)); conf.pop(f, None)
         w = {f: v * conf.get(f, 1.0) for f, v in (arm.get("w") or {}).items()}
         M, L = S.match_table(slots, toks)
-        res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400)
+        res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
         page = res[PAGE * (a.page - 1): PAGE * a.page]
         items = []
         for e, sc in page:
@@ -100,10 +100,17 @@ def main():
                 t = T[e["element_id"]]; loc = t.get("locator") or {}
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
             items.append(it)
+        facets = {}
+        if arm.get("facet"):
+            # 상위 200 후보의 특약·조 분포 — 에이전트가 범위를 좁혀 재검색할 수 있게 하는 참고 정보(필터 아님)
+            import collections as _c
+            fc = _c.Counter(e["contract_scope"][:40] for e, _ in res[:200])
+            fj = _c.Counter((S._jo[S._m2j[e["element_id"]]]["title"] or S._jo[S._m2j[e["element_id"]]]["element_id"])[:30] for e, _ in res[:200])
+            facets = {"contract_top": fc.most_common(8), "article_top": fj.most_common(8)}
         log({"q": a.q, "slots": slots, "n_tokens": len(toks), "total": len(res), "page": a.page,
              "returned": [(e["element_id"], sc) for e, sc in page]})
         out({"query": a.q, "slots_used": slots, "total_candidates": len(res), "page": a.page, "page_size": PAGE,
-             "search_calls_left": SEARCH_CAP - n_search - 1, "results": items})
+             "search_calls_left": SEARCH_CAP - n_search - 1, **({"facets": facets} if facets else {}), "results": items})
     elif a.cmd == "msearch":
         # 메타데이터(청크) 검색 — vector_search.ChunkHybridSearch(BM25+Dense RRF). 이 채널은 고정이며 우리 변인이 아니다.
         if n_search >= SEARCH_CAP:

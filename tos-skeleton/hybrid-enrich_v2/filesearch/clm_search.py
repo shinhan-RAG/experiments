@@ -66,6 +66,8 @@ class Router:
         # core = 정규화 핵심명, core_nb = 대괄호 수식어([기본]·[3~100%장해형]…) 제거 후 정규화
         self.cores = [(c, contract_core(c), contract_core(re.sub(r"\[.*?\]", "", c))) for c in self.contracts]
         self.partial = True  # 부분 일치(공통 부분문자열) 허용
+        self.rev = {}        # 대상어(급여금명·질병명 등) → 특약 집합. SlotSearch 가 태그에서 채운다
+        self.rev_max = 3     # 이 수 이하의 특약에만 나오는 대상어만 특약 추론에 사용
 
     @staticmethod
     def _lcs(a, b):
@@ -92,6 +94,17 @@ class Router:
                 l = self._lcs(core_nb, cq)
                 if l >= 6 or (l >= 4 and l / len(core_nb) >= 0.6):
                     partial_hits.append((l / len(core_nb), c))
+        if not slots["contract"] and self.rev:
+            # 급여금명·질병명 → 특약 역색인(태그 subject 에서 생성). 질문에 그 대상어가 있고 특약 후보가 rev_max 이하이면 특약 슬롯 추론
+            hits = collections.Counter()
+            for term, cs in self.rev.items():
+                if len(cs) <= self.rev_max and term in cq:
+                    for c in cs:
+                        hits[c] += 1
+            if hits:
+                top = max(hits.values())
+                slots["contract"] = [c for c, n in hits.items() if n == top]
+                slots["_conf"] = {"contract": 0.75}
         if not slots["contract"] and partial_hits:
             top = max(x[0] for x in partial_hits)
             slots["contract"] = [c for r, c in partial_hits if r >= top - 1e-9]
@@ -119,6 +132,14 @@ class SlotSearch:
         self.rows = [canonical(T[e["element_id"]]) for e in self.E]
         self.body = [compact(e["text"]) for e in self.E]
         self.router = Router(r["contract"][0] for r in self.rows)
+        rev = collections.defaultdict(set)
+        for row in self.rows:
+            c = row["contract"][0]
+            for v in row["subject"]:
+                k = compact(v)
+                if len(k) >= 4:
+                    rev[k].add(c)
+        self.router.rev = {k: cs for k, cs in rev.items() if len(cs) <= self.router.rev_max}
 
     @staticmethod
     def field_match(row, field, requested):
@@ -132,8 +153,21 @@ class SlotSearch:
         L = [sum(1 for t in tokens if compact(t) in b) for b in self.body] if tokens else [0] * len(self.rows)
         return M, L
 
-    def rank(self, M, L, mode="clm", lex="binary", weights=None, limit=50, scope_filter=None):
+    def rank(self, M, L, mode="clm", lex="binary", weights=None, limit=50, scope_filter=None, rare=False, n_tokens=None, rare_cap=None):
+        """점수 = Σ_슬롯 hit·w_f·(rare 이면 희소성 계수) + 어휘항.
+        rare: 슬롯 f 의 희소성 계수 = 1 + log(N / df_f), df_f = 이 질의에서 슬롯 f 가 매치한 element 수 (설계서 2.5 희소성 검사의 질의 시점 구현).
+        lex: binary(있으면 1) / count(매치 토큰 수) / cov(매치 토큰 수 / 질의 토큰 수, 0~1)
+        동점 해소: (점수, 어휘 커버리지, 문서순)"""
+        import math
         weights = weights or {}
+        N = len(M)
+        rf = {}
+        if rare and M and M[0]:
+            for f in M[0]:
+                df = sum(1 for m in M if m.get(f))
+                rf[f] = (1.0 + math.log(N / df)) if df else 0.0
+                if rare_cap:
+                    rf[f] = min(rf[f], rare_cap)
         scored = []
         for i, m in enumerate(M):
             if scope_filter is not None and self.E[i]["contract_scope"] not in scope_filter:
@@ -141,18 +175,19 @@ class SlotSearch:
             if mode == "and":
                 if m and not all(m.values()):
                     continue
-                scored.append((0.0, i)); continue
-            score = sum(weights.get(f, 1.0) for f, hit in m.items() if hit)
+                scored.append((0.0, 0.0, i)); continue
+            score = sum(weights.get(f, 1.0) * (rf.get(f, 1.0) if rare else 1.0) for f, hit in m.items() if hit)
+            cov = (L[i] / n_tokens) if n_tokens else 0.0
             if L[i]:
-                score += 1.0 if lex == "binary" else L[i]
+                score += 1.0 if lex == "binary" else (L[i] if lex == "count" else cov * weights.get("_lex", 1.0))
             if score > 0:
-                scored.append((score, i))
-        scored.sort(key=lambda x: (-x[0], self.E[x[1]]["line_start"], self.E[x[1]]["line_end"], self.E[x[1]]["element_id"]))
-        return [(self.E[i], s) for s, i in scored[:limit]]
+                scored.append((score, cov, i))
+        scored.sort(key=lambda x: (-x[0], -x[1], self.E[x[2]]["line_start"], self.E[x[2]]["line_end"], self.E[x[2]]["element_id"]))
+        return [(self.E[i], s) for s, _, i in scored[:limit]]
 
-    def search(self, slots, tokens, mode="clm", lex="binary", weights=None, limit=50):
+    def search(self, slots, tokens, mode="clm", lex="binary", weights=None, limit=50, rare=False):
         M, L = self.match_table(slots, tokens)
-        return self.rank(M, L, mode, lex, weights, limit)
+        return self.rank(M, L, mode, lex, weights, limit, rare=rare, n_tokens=len(tokens))
 
 
 if __name__ == "__main__":
