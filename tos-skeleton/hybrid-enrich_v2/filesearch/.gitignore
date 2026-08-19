@@ -6,3 +6,4 @@ out/sessions/
 __pycache__/
 out/agent/*/sessions/
 out/.cache_*.pkl
+out/emb/
