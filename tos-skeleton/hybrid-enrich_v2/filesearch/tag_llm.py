@@ -68,7 +68,13 @@ def main():
         return re.sub(r"\s", "", s)
 
     def work(u):
-        js = call(a.model, PROMPT.format(roles=roles_doc, text=u["text"][:3500]))
+        try:
+            js = call(a.model, PROMPT.format(roles=roles_doc, text=u["text"][:3500]))
+        except Exception:
+            try:
+                js = call(a.model, PROMPT.format(roles=roles_doc, text=u["text"][:2000]))
+            except Exception:
+                js = {}
         nt = norm(u["text"])
         subj = []
         for s in (js.get("subject") or [])[:8]:

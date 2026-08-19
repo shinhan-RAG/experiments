@@ -8,3 +8,5 @@ out/agent/*.log
 out/.cache_*.pkl
 out/*.log
 !out/qtags_*.jsonl
+!out/tags_u2_*.jsonl
+!out/tagllm_cache_*.jsonl
