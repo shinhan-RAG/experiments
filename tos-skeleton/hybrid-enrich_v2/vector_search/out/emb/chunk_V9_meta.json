@@ -1,0 +1,15 @@
+{
+ "model": "dragonkue/bge-m3-ko:latest",
+ "embed_source": {
+  "source": "http://localhost:11434/v1",
+  "model": "dragonkue/bge-m3-ko:latest"
+ },
+ "view": "V9",
+ "n": 5797,
+ "dim": 1024,
+ "batch": 64,
+ "max_len": 1024,
+ "elapsed_s": 488.4,
+ "view_sha256": "48df5872f2c605ec",
+ "vec_sha256": "4200756f71bbadd6"
+}
