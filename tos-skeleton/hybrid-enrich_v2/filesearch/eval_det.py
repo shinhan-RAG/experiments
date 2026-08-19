@@ -42,7 +42,7 @@ def main():
     S.router.partial = a.partial == "1"
     J = [json.loads(l) for l in open(a.jo)]
     m2j = {m: j for j, u in enumerate(J) for m in u["members"]}
-    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"]]
+    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
     QT = {}
     if a.qtags:
         for l in open(a.qtags, encoding="utf-8"):
@@ -83,7 +83,7 @@ def main():
                 for r_ in slots["role"]:
                     ss = dict(slots); ss["role"] = [r_]
                     Mr, Lr = S.match_table(ss, toks)
-                    subs.append(S.rank(Mr, Lr, mode=mode, lex=opt["lex"], weights=w, limit=a.limit))
+                    subs.append(S.rank(Mr, Lr, mode=mode, lex=opt["lex"], weights=w, limit=a.limit, rare=opt.get("rare") == "1", n_tokens=len(toks), rare_cap=float(opt["cap"]) if opt.get("cap") else None))
                 seen_e, res = set(), []
                 for k_ in range(a.limit):
                     for sub in subs:
@@ -92,7 +92,7 @@ def main():
                 res = res[: a.limit]
             else:
                 res = S.rank(M0 if opt["tags"] == "0" else Muse, L, mode=mode, lex=opt["lex"], weights=w, limit=a.limit,
-                             scope_filter=gscopes if opt.get("oracle") == "scope" else None)
+                             scope_filter=gscopes if opt.get("oracle") == "scope" else None, rare=opt.get("rare") == "1", n_tokens=len(toks), rare_cap=float(opt["cap"]) if opt.get("cap") else None)
             if not res:
                 zero[arm] += 1
             ru = [e for e, _ in res]

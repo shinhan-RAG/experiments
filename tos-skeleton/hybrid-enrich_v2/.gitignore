@@ -1,3 +1,9 @@
-out/
 __pycache__/
 .DS_Store
+# out/ 은 공유 산출물(qa·gold·결과 요약)을 추적한다. 아래만 제외:
+out/**/sessions/
+out/**/*.npy
+out/**/*.log
+out/**/cache*.jsonl
+out/**/.cache_*.pkl
+# test 질문 문구가 든 파일은 커밋 금지 정책 유지 — lsh 업로드분은 팀 결정으로 예외

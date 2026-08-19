@@ -26,7 +26,8 @@ PROMPT = """당신은 보험 약관 문서 안에서 질문의 근거 조항(ele
 {vsearch}2) 읽기: python3 agent_tools.py read --id <element_id>   — 해당 조(條) 전체 원문. 세션당 최대 8회. 확신이 서지 않는 후보를 확인할 때 쓰십시오.
 3) 제출: python3 agent_tools.py submit --ids <id1>,<id2>,...   — 근거일 가능성이 높은 순서로 **최대 10개**. 반드시 1회 호출하고, 그 뒤에는 어떤 도구도 부르지 마십시오.
 
-원칙: 질문이 특정 특약을 가리키면 그 특약의 element 를 우선하십시오. 질문이 여러 근거(예: 정의 + 지급조건 + 청구절차)를 요구하면 서로 다른 조의 element 를 섞어 제출하십시오. 답변 문장은 쓰지 말고 제출만 하십시오.
+원칙: 질문이 특정 특약을 가리키면 그 특약의 element 를 우선하십시오. 질문이 여러 근거(예: 정의 + 지급조건 + 청구절차)를 요구하면 서로 다른 조의 element 를 섞어 제출하십시오.
+검색 결과에 facets(특약·조 분포)가 있으면 그것을 보고 범위를 좁혀(--contract, --role) 다시 검색하거나 다른 페이지를 보십시오. 제출은 가능하면 10개를 채우되 같은 조를 중복해 넣지 마십시오. 답변 문장은 쓰지 말고 제출만 하십시오.
 
 [질문]
 {question}
@@ -79,7 +80,7 @@ def main():
     arm = json.loads(a.arm)
     run_dir = HERE / "out" / "agent" / a.run; run_dir.mkdir(parents=True, exist_ok=True)
     json.dump({"arm": arm, "args": vars(a)}, open(run_dir / "config.json", "w"), ensure_ascii=False, indent=1)
-    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"]]
+    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
     if a.n > 0:  # core/비core 층화 표본(고정 시드)
         rnd = random.Random(a.seed)
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
