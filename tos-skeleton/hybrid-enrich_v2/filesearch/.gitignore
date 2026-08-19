@@ -1,3 +1,10 @@
-out/
 __pycache__/
 .DS_Store
+# 본문 파생물·캐시·세션은 비커밋. 통계/요약(json)·결과는 results/ 아래에 커밋한다
+out/*.jsonl
+out/emb/
+out/agent/*/sessions/
+out/agent/*.log
+out/.cache_*.pkl
+out/*.log
+!out/qtags_*.jsonl

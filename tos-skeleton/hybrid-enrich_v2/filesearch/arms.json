@@ -1,0 +1,70 @@
+{
+ "A_old_and": {
+  "tags": "tags_u2_old.jsonl",
+  "mode": "and",
+  "lex": "count",
+  "w": {},
+  "router": "rule"
+ },
+ "A_old_clm": {
+  "tags": "tags_u2_old.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl"
+ },
+ "A_new_and": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "and",
+  "lex": "count",
+  "w": {},
+  "router": "rule"
+ },
+ "A_new_clm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl"
+ },
+ "A_new_clm_facet": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1
+ },
+ "A_new_clm_qsonnet": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_sonnet.jsonl"
+ },
+ "C_new_clm_meta": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9"
+ }
+}

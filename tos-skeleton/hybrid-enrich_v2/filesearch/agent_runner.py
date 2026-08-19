@@ -80,7 +80,7 @@ def main():
     arm = json.loads(a.arm)
     run_dir = HERE / "out" / "agent" / a.run; run_dir.mkdir(parents=True, exist_ok=True)
     json.dump({"arm": arm, "args": vars(a)}, open(run_dir / "config.json", "w"), ensure_ascii=False, indent=1)
-    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"]]
+    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
     if a.n > 0:  # core/비core 층화 표본(고정 시드)
         rnd = random.Random(a.seed)
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]

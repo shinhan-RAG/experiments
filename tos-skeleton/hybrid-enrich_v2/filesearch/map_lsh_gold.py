@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""lsh v4 gold(element id + text) → 원문 char span → 우리 우주 독립 gold(out/gold_spans_lsh_train.jsonl).
-입력: cowork/문항별 순위 jsonl.jsonl (qid, gold ids, ranked ids) + cowork/원문 span 매핑 파일.jsonl (element_id, text).
+"""lsh gold(element id) → 원문 char span → 채점용 gold(out/gold_spans_lsh_train.jsonl).
+입력: ../out/gold_mapped_noah_v3_348_train.jsonl (lsh 공식 업로드) + span 텍스트 사전(cowork 원문 span 매핑 파일).
+span 사전에 없는 gold id 가 있는 문항은 unmapped 로 표기하고 채점 모집단에서 제외된다(수량은 출력에 기록).
 gold element 텍스트를 map_gold_spans.map_group 으로 앵커링(줄 단위, 최소매치 줄 기준). group = gold element 1개."""
 import json, sys, unicodedata, re
 from pathlib import Path
@@ -12,7 +13,7 @@ DOC = "/Users/ralph/Desktop/신한라이프/data_set/noah_qaset/판매약관_(�
 raw = unicodedata.normalize("NFC", open(DOC, encoding="utf-8").read().replace("\r\n", "\n"))
 nd, idx = norm_map(raw)
 S = {json.loads(l)["element_id"]: json.loads(l) for l in open(CO / "원문 span 매핑 파일.jsonl", encoding="utf-8")}
-R = [json.loads(l) for l in open(CO / "문항별 순위 jsonl.jsonl", encoding="utf-8")]
+R = [json.loads(l) for l in open(HERE.parent / "out" / "gold_mapped_noah_v3_348_train.jsonl", encoding="utf-8")]
 Q = {json.loads(l)["qid"]: json.loads(l) for l in open(HERE / "out/gold_spans_train.jsonl", encoding="utf-8")}
 span_cache = {}
 def span_of(eid):

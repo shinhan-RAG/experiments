@@ -42,7 +42,7 @@ def main():
     S.router.partial = a.partial == "1"
     J = [json.loads(l) for l in open(a.jo)]
     m2j = {m: j for j, u in enumerate(J) for m in u["members"]}
-    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"]]
+    G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
     QT = {}
     if a.qtags:
         for l in open(a.qtags, encoding="utf-8"):
