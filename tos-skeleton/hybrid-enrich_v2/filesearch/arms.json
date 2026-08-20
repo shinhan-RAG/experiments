@@ -76,5 +76,32 @@
   "facet": 1,
   "meta": 1,
   "meta_view": "V9"
+ },
+ "structured_rule": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "router": "rule",
+  "facet": 1
+ },
+ "structured_rule_full": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "full",
+  "router": "rule",
+  "facet": 1
+ },
+ "hybrid_final": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_sonnet.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9"
  }
 }

@@ -19,16 +19,23 @@ sys.path.insert(0, str(FS))
 sys.path.insert(0, str(HERE))
 import enhance
 PAGE, PREVIEW, SEARCH_CAP, READ_CAP, SUBMIT_MAX = 40, 160, 20, 8, 10
+GENERIC_AXES = ("identity", "topic", "function", "locator", "constraint", "relation", "structure")
 
 
-def load_search(elements, tags):
+def load_search(elements, tags, structured=False):
     """SlotSearch 를 pickle 캐시로 로드(호출당 프로세스 기동 비용 절감). 캐시는 자기 out/ 에 분리."""
     from clm_search import SlotSearch
-    key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}.pkl"
+    suffix = "_bm25f" if structured else ""
+    key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}{suffix}.pkl"
     key.parent.mkdir(exist_ok=True)
-    if key.exists() and key.stat().st_mtime > max(Path(elements).stat().st_mtime, Path(tags).stat().st_mtime):
+    deps = [Path(elements), Path(tags), FS / "clm_search.py"]
+    if structured:
+        deps += [FS / "structured_search.py", FS / "schema_adapter.py"]
+    if key.exists() and key.stat().st_mtime > max(p.stat().st_mtime for p in deps):
         return pickle.load(open(key, "rb"))
     S = SlotSearch(elements, tags)
+    if structured:
+        S.ensure_structured()
     pickle.dump(S, open(key, "wb"))
     return S
 
@@ -40,6 +47,8 @@ def main():
     s.add_argument("--scope", default="", help='계층 경로 "<특약>[/<관>[/<조>]]" — 매치 가산 부스트. --q 없이 주면 browse')
     for f in ("contract", "role", "subject", "qualifier", "schema"):
         s.add_argument(f"--{f}", default="", help="쉼표 구분, 선택")
+    for f in GENERIC_AXES:
+        s.add_argument(f"--{f}", default="", help="범용 Semantic Tag 축(쉼표 구분, BM25F arm)")
     vs = sub.add_parser("msearch"); vs.add_argument("--q", required=True); vs.add_argument("--page", type=int, default=1)
     vs.add_argument("--strategy", default="hybrid", choices=("hybrid", "bm25", "dense"))
     r = sub.add_parser("read"); r.add_argument("--id", required=True)
@@ -61,7 +70,9 @@ def main():
     def out(obj):
         print(json.dumps(obj, ensure_ascii=False))
 
-    S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")), str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")))
+    S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")),
+                    str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")),
+                    structured=arm.get("ranker") == "bm25f")
     if not hasattr(S, "_jo"):
         J = [json.loads(l) for l in open(FS / "out" / arm.get("jo", "elements_u2jo.jsonl"), encoding="utf-8")]
         S._jo = J; S._m2j = {mm: j for j, u in enumerate(J) for mm in u["members"]}
@@ -117,13 +128,22 @@ def main():
             v = [x.strip() for x in getattr(a, f).split(",") if x.strip()]
             if v:
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v)); conf.pop(f, None)
+        for f in GENERIC_AXES:
+            v = [x.strip() for x in getattr(a, f).split(",") if x.strip()]
+            if v:
+                slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v))
         alias_log = {}
         if arm.get("alias"):
             extra, alias_log = enhance.expand_query(a.q, toks)
             toks = toks + extra
         w = {f: v * conf.get(f, 1.0) for f, v in (arm.get("w") or {}).items()}
         M, L = S.match_table(slots, toks)
-        res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
+        if arm.get("ranker") == "bm25f":
+            res = S.rank_structured(slots, toks, a.q, weights=arm.get("sfw"),
+                                    profile=arm.get("profile", "full"), limit=400,
+                                    lexical_counts=L)
+        else:
+            res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
         if a.scope and arm.get("scope_boost"):
             res = enhance.apply_scope_boost(res, S, S._eidx, a.scope, float(arm["scope_boost"]))
         page = res[PAGE * (a.page - 1): PAGE * a.page]

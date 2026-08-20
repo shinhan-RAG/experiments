@@ -1,0 +1,34 @@
+{
+ "run": "s30v3_structured_full",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "full",
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {
+   "min_n": 5
+  }
+ },
+ "metrics": {
+  "R@1": 0.4417,
+  "R@5": 0.625,
+  "R@10": 0.6917,
+  "R@20": 0.6917,
+  "S@5": 0.6667,
+  "suff@5": 0.6,
+  "suff@10": 0.6667,
+  "RR@10": 0.5396
+ },
+ "core_R@5": 0.75,
+ "noncore_R@5": 0.4375,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 10.15,
+ "rep_disagreement_R@5": 0.133
+}

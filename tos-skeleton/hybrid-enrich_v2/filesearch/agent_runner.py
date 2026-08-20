@@ -44,6 +44,8 @@ def run_one(args, run_dir, g, rep, arm):
         if (sess / f).exists():
             (sess / f).unlink()
     env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
+    if os.environ.get("SEMTAG_PYBIN"):
+        env["PATH"] = os.environ["SEMTAG_PYBIN"] + ":" + env.get("PATH", "")
     cmd = ["claude", "-p", "--model", args.model, "--output-format", "json", "--max-turns", str(args.max_turns),
            "--allowedTools", "Bash(python3 agent_tools.py:*)",
            "--disallowedTools", "Read,Edit,Write,Grep,Glob,WebFetch,WebSearch,Agent,NotebookEdit,Task"]
@@ -69,6 +71,7 @@ def main():
     ap.add_argument("--gold", default=str(HERE / "out/gold_spans_lsh_train.jsonl"))
     ap.add_argument("--jo", default=str(HERE / "out/elements_u2jo.jsonl"))
     ap.add_argument("--elements", default=str(HERE / "out/elements_u2.jsonl"))
+    ap.add_argument("--qids", default="", help="고정 문항 qid 목록 json 파일(층화 표본)")
     ap.add_argument("--n", type=int, default=-1, help="문항 수(층화 표본), -1=전수")
     ap.add_argument("--seed", type=int, default=20260818)
     ap.add_argument("--reps", type=int, default=2)
@@ -81,7 +84,10 @@ def main():
     run_dir = HERE / "out" / "agent" / a.run; run_dir.mkdir(parents=True, exist_ok=True)
     json.dump({"arm": arm, "args": vars(a)}, open(run_dir / "config.json", "w"), ensure_ascii=False, indent=1)
     G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
-    if a.n > 0:  # core/비core 층화 표본(고정 시드)
+    if a.qids:
+        keep = set(json.load(open(a.qids)))
+        G = [g for g in G if g["qid"] in keep]
+    elif a.n > 0:  # core/비core 층화 표본(고정 시드)
         rnd = random.Random(a.seed)
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
         k_core = round(a.n * len(core) / len(G))

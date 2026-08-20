@@ -40,6 +40,8 @@ PROMPT = """당신은 보험 약관 문서 안에서 질문의 근거 조항(ele
 def build_extra(arm):
     """arm 플래그 조건부 프롬프트 추가 줄 — 플래그가 전부 꺼져 있으면 빈 문자열(기준선 프롬프트 동일)."""
     lines = []
+    if arm.get("ranker") == "bm25f":
+        lines.append('   - 이 arm은 단일단계 구조화 검색입니다. 필요하면 범용 축 --identity/--topic/--function/--locator/--constraint/--relation/--structure 로 검색 의도를 명시할 수 있습니다.')
     if arm.get("scope_boost"):
         lines.append('   - 계층 탐색: --scope "<특약>[/<관>[/<조>]]" 를 주면 그 범위의 결과가 가산 부스트됩니다(필터 아님). --q 없이 --scope 만 주면 그 계층의 하위 목록을 보여줍니다(특약 목록은 --scope 생략).')
     if arm.get("fallback") and arm.get("meta"):
@@ -72,6 +74,8 @@ def run_one(args, run_dir, g, rep, arm):
         if (sess / f).exists():
             (sess / f).unlink()
     env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
+    if os.environ.get("SEMTAG_PYBIN"):
+        env["PATH"] = os.environ["SEMTAG_PYBIN"] + ":" + env.get("PATH", "")
     cmd = ["claude", "-p", "--model", args.model, "--output-format", "json", "--max-turns", str(args.max_turns),
            "--allowedTools", "Bash(python3 agent_tools.py:*)",
            "--disallowedTools", "Read,Edit,Write,Grep,Glob,WebFetch,WebSearch,Agent,NotebookEdit,Task"]
@@ -97,6 +101,7 @@ def main():
     ap.add_argument("--gold", default=str(FS / "out/gold_spans_lsh_train.jsonl"))
     ap.add_argument("--jo", default=str(FS / "out/elements_u2jo.jsonl"))
     ap.add_argument("--elements", default=str(FS / "out/elements_u2.jsonl"))
+    ap.add_argument("--qids", default="", help="고정 qid 목록 json")
     ap.add_argument("--n", type=int, default=-1, help="문항 수(층화 표본), -1=전수")
     ap.add_argument("--seed", type=int, default=20260818)
     ap.add_argument("--reps", type=int, default=2)
@@ -109,7 +114,10 @@ def main():
     run_dir = HERE / "out" / "agent" / a.run; run_dir.mkdir(parents=True, exist_ok=True)
     json.dump({"arm": arm, "args": vars(a)}, open(run_dir / "config.json", "w"), ensure_ascii=False, indent=1)
     G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
-    if a.n > 0:  # core/비core 층화 표본(고정 시드)
+    if a.qids:
+        keep = set(json.load(open(a.qids)))
+        G = [g for g in G if g["qid"] in keep]
+    elif a.n > 0:  # core/비core 층화 표본(고정 시드)
         rnd = random.Random(a.seed)
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
         k_core = round(a.n * len(core) / len(G))

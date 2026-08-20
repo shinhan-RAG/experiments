@@ -71,6 +71,26 @@
   "meta_view": "V9",
   "ref_expand": 1
  },
+ "c5_structured_core": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {"min_n": 5}
+ },
+ "c5_structured_full": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "full",
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {"min_n": 5}
+ },
  "c4_all": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",
