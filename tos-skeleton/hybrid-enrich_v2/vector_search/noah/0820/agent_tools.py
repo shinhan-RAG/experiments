@@ -130,6 +130,17 @@ def main():
         w = {f: v * conf.get(f, 1.0) for f, v in (arm.get("w") or {}).items()}
         M, L = S.match_table(slots, toks)
         res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
+        # alias_cond: 태그 top 점수가 τ 미만일 때만 alias 확장 재랭킹 (silent — 프롬프트 무언급).
+        # 결정론 검증(0820): 상시 alias 는 R@5 −2.6%p 희석, 조건부 τ=5 는 전 지표 + (R@5 +0.5, R@40 +2.7).
+        if arm.get("alias_cond") and not arm.get("alias"):
+            top_sc = res[0][1] if res else 0.0
+            if not res or top_sc < float(arm["alias_cond"]):
+                extra, alog = enhance.expand_query(a.q, toks)
+                if extra:
+                    toks_c = toks + extra
+                    Mc, Lc = S.match_table(slots, toks_c)
+                    res = S.rank(Mc, Lc, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks_c))
+                    alias_log = dict(alog, _cond="fired")
         if a.scope and arm.get("scope_boost"):
             res = enhance.apply_scope_boost(res, S, S._eidx, a.scope, float(arm["scope_boost"]))
         page = res[PAGE * (a.page - 1): PAGE * a.page]

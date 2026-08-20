@@ -36,6 +36,18 @@
   "meta_view": "V9",
   "submit_ref_merge": 1
  },
+ "s4_aliascond": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {"contract": 2},
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "alias_cond": 5.0
+ },
  "s_all": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",
@@ -48,7 +60,8 @@
   "meta_view": "V9",
   "submit_pad": 1,
   "fallback_silent": {"min_n": 5, "tau": 5.0},
-  "submit_ref_merge": 1
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0
  },
  "p_active": {
   "tags": "tags_u2_rules.jsonl",
@@ -88,7 +101,8 @@
   "active_prompt": 1,
   "submit_pad": 1,
   "fallback_silent": {"min_n": 5, "tau": 5.0},
-  "submit_ref_merge": 1
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0
  },
  "think": {
   "_note": "Qwen 전용 — agent_runner_oai.py 를 --no-think 없이 실행. 도구/프롬프트는 base_c3 과 동일.",

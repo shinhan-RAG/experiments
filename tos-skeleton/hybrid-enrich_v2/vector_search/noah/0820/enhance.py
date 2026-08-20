@@ -28,7 +28,10 @@ def alias_pairs() -> dict:
     """{compact(어): [동치어 원문…]} 양방향 사전."""
     global _ALIAS
     if _ALIAS is None:
-        d = json.load(open(FS / "aliases.json", encoding="utf-8"))
+        # 0820 확장 사전 우선(aliases_0820.json = filesearch 원본 43 + 미포착 진단 기반 14).
+        # 원본 filesearch/aliases.json 은 0819 parity 보호를 위해 불변.
+        local = HERE / "aliases_0820.json"
+        d = json.load(open(local if local.exists() else FS / "aliases.json", encoding="utf-8"))
         m: dict = {}
         for head, alts in d.items():
             if head.startswith("_"):
