@@ -123,6 +123,7 @@ def main():
     ap.add_argument("--run", required=True); ap.add_argument("--arm", required=True)
     ap.add_argument("--gold", default=str(HERE / "out/gold_spans_lsh_train.jsonl"))
     ap.add_argument("--jo", default=str(HERE / "out/elements_u2jo.jsonl"))
+    ap.add_argument("--qids", default="", help="고정 문항 qid 목록 json 파일(층화 표본)")
     ap.add_argument("--n", type=int, default=-1); ap.add_argument("--seed", type=int, default=20260818)
     ap.add_argument("--reps", type=int, default=2); ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--model", default="deepseek-v4-flash")
@@ -138,7 +139,10 @@ def main():
     run_dir = HERE / "out" / "agent" / a.run; run_dir.mkdir(parents=True, exist_ok=True)
     json.dump({"arm": arm, "args": vars(a)}, open(run_dir / "config.json", "w"), ensure_ascii=False, indent=1)
     G = [g for g in (json.loads(l) for l in open(a.gold)) if g["groups"] and g.get("status", "ok") == "ok"]
-    if a.n > 0:
+    if a.qids:
+        keep = set(json.load(open(a.qids)))
+        G = [g for g in G if g["qid"] in keep]
+    elif a.n > 0:
         rnd = random.Random(a.seed)
         core = [g for g in G if g["core_retrieval"] == "True"]; nc = [g for g in G if g["core_retrieval"] != "True"]
         k_core = round(a.n * len(core) / len(G))

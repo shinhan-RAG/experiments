@@ -1,0 +1,37 @@
+{
+ "run": "s30v2_fb_rule_rules",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {
+   "min_n": 5
+  }
+ },
+ "metrics": {
+  "R@1": 0.4056,
+  "R@5": 0.6181,
+  "R@10": 0.7097,
+  "R@20": 0.7097,
+  "S@5": 0.65,
+  "suff@5": 0.6,
+  "suff@10": 0.6833,
+  "RR@10": 0.512
+ },
+ "core_R@5": 0.75,
+ "noncore_R@5": 0.4201,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 9.5,
+ "rep_disagreement_R@5": 0.167
+}

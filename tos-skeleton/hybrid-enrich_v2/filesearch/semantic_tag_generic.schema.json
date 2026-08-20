@@ -1,0 +1,57 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://shinhanlife.example/schemas/semantic-tag-generic-v1.json",
+ "title": "ShinhanLife Generic Semantic Tag v1",
+ "type": "object",
+ "required": ["schema_version", "element_id", "document", "axes", "extractor"],
+ "properties": {
+  "schema_version": {"const": "semtag.generic.v1"},
+  "element_id": {"type": "string", "minLength": 1},
+  "document": {
+   "type": "object",
+   "required": ["id", "type"],
+   "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "type": {"type": "string", "minLength": 1},
+    "version": {"type": "string"},
+    "source": {"type": "string"}
+   },
+   "additionalProperties": true
+  },
+  "axes": {
+   "type": "object",
+   "required": ["identity", "topic", "function", "locator", "table", "constraint", "relation", "structure", "extra"],
+   "properties": {
+    "identity": {"$ref": "#/$defs/stringSet"},
+    "topic": {"$ref": "#/$defs/stringSet"},
+    "function": {"$ref": "#/$defs/stringSet"},
+    "locator": {"$ref": "#/$defs/stringSet"},
+    "table": {"$ref": "#/$defs/stringSet"},
+    "constraint": {"$ref": "#/$defs/stringSet"},
+    "relation": {"$ref": "#/$defs/stringSet"},
+    "structure": {"$ref": "#/$defs/stringSet"},
+    "extra": {"$ref": "#/$defs/stringSet"}
+   },
+   "additionalProperties": false
+  },
+  "extractor": {
+   "type": "object",
+   "required": ["profile", "version"],
+   "properties": {
+    "profile": {"type": "string", "description": "예: policy.article, business_method.item"},
+    "version": {"type": "string"}
+   },
+   "additionalProperties": true
+  },
+  "field_sources": {"type": "object", "additionalProperties": true},
+  "extensions": {"type": "object", "additionalProperties": true}
+ },
+ "additionalProperties": false,
+ "$defs": {
+  "stringSet": {
+   "type": "array",
+   "items": {"type": "string", "minLength": 1},
+   "uniqueItems": true
+  }
+ }
+}

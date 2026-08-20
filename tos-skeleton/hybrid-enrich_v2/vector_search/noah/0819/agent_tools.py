@@ -19,16 +19,23 @@ sys.path.insert(0, str(FS))
 sys.path.insert(0, str(HERE))
 import enhance
 PAGE, PREVIEW, SEARCH_CAP, READ_CAP, SUBMIT_MAX = 40, 160, 20, 8, 10
+GENERIC_AXES = ("identity", "topic", "function", "locator", "constraint", "relation", "structure")
 
 
-def load_search(elements, tags):
+def load_search(elements, tags, structured=False):
     """SlotSearch 를 pickle 캐시로 로드(호출당 프로세스 기동 비용 절감). 캐시는 자기 out/ 에 분리."""
     from clm_search import SlotSearch
-    key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}.pkl"
+    suffix = "_bm25f" if structured else ""
+    key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}{suffix}.pkl"
     key.parent.mkdir(exist_ok=True)
-    if key.exists() and key.stat().st_mtime > max(Path(elements).stat().st_mtime, Path(tags).stat().st_mtime):
+    deps = [Path(elements), Path(tags), FS / "clm_search.py"]
+    if structured:
+        deps += [FS / "structured_search.py", FS / "schema_adapter.py"]
+    if key.exists() and key.stat().st_mtime > max(p.stat().st_mtime for p in deps):
         return pickle.load(open(key, "rb"))
     S = SlotSearch(elements, tags)
+    if structured:
+        S.ensure_structured()
     pickle.dump(S, open(key, "wb"))
     return S
 
@@ -40,6 +47,8 @@ def main():
     s.add_argument("--scope", default="", help='계층 경로 "<특약>[/<관>[/<조>]]" — 매치 가산 부스트. --q 없이 주면 browse')
     for f in ("contract", "role", "subject", "qualifier", "schema"):
         s.add_argument(f"--{f}", default="", help="쉼표 구분, 선택")
+    for f in GENERIC_AXES:
+        s.add_argument(f"--{f}", default="", help="범용 Semantic Tag 축(쉼표 구분, BM25F arm)")
     vs = sub.add_parser("msearch"); vs.add_argument("--q", required=True); vs.add_argument("--page", type=int, default=1)
     vs.add_argument("--strategy", default="hybrid", choices=("hybrid", "bm25", "dense"))
     r = sub.add_parser("read"); r.add_argument("--id", required=True)
@@ -61,7 +70,9 @@ def main():
     def out(obj):
         print(json.dumps(obj, ensure_ascii=False))
 
-    S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")), str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")))
+    S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")),
+                    str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")),
+                    structured=arm.get("ranker") == "bm25f")
     if not hasattr(S, "_jo"):
         J = [json.loads(l) for l in open(FS / "out" / arm.get("jo", "elements_u2jo.jsonl"), encoding="utf-8")]
         S._jo = J; S._m2j = {mm: j for j, u in enumerate(J) for mm in u["members"]}
@@ -117,35 +128,54 @@ def main():
             v = [x.strip() for x in getattr(a, f).split(",") if x.strip()]
             if v:
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v)); conf.pop(f, None)
+        for f in GENERIC_AXES:
+            v = [x.strip() for x in getattr(a, f).split(",") if x.strip()]
+            if v:
+                slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v))
         alias_log = {}
         if arm.get("alias"):
             extra, alias_log = enhance.expand_query(a.q, toks)
             toks = toks + extra
         w = {f: v * conf.get(f, 1.0) for f, v in (arm.get("w") or {}).items()}
         M, L = S.match_table(slots, toks)
-        res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
+        if arm.get("ranker") == "bm25f":
+            res = S.rank_structured(slots, toks, a.q, weights=arm.get("sfw"),
+                                    profile=arm.get("profile", "full"), limit=400,
+                                    lexical_counts=L)
+        else:
+            res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
         if a.scope and arm.get("scope_boost"):
             res = enhance.apply_scope_boost(res, S, S._eidx, a.scope, float(arm["scope_boost"]))
         page = res[PAGE * (a.page - 1): PAGE * a.page]
-        refs = enhance.load_refs() if arm.get("ref_expand") else {}
+        import re as _re
+        def _split_c(sc_):
+            m = _re.search(r"\(무배당[^)]*\)", sc_)
+            return _re.sub(r"\(무배당[^)]*\)", "", sc_).strip(), (m.group(0)[1:-1].replace("무배당", "").strip(", ") if m else "")
+        def _snip(text, tk):
+            flat = " ".join(text.split())
+            for t in tk:
+                p = flat.find(t)
+                if p >= 0:
+                    st = max(0, p - 40)
+                    return ("…" if st else "") + flat[st: st + PREVIEW]
+            return flat[:PREVIEW]
         items = []
         for e, sc in page:
             j = S._jo[S._m2j[e["element_id"]]]
+            bc, var = _split_c(e["contract_scope"])
             it = {"id": e["element_id"], "jo": j["element_id"], "score": sc,
-                  "contract": e["contract_scope"][:40], "preview": " ".join(e["text"].split())[:PREVIEW]}
+                  "contract": bc, "variant": var, "jo_title": (j.get("title") or "")[:40],
+                  "preview": _snip(e["text"], toks)}
             if T:
                 t = T[e["element_id"]]; loc = t.get("locator") or {}
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
-            if refs and len(items) < 10 and j["element_id"] in refs:
-                it["ref_jo"] = refs[j["element_id"]][:4]
             items.append(it)
-        # 자동 폴백: 태그 결과가 없거나 빈약하면 같은 호출 안에서 msearch 결과 병합/대체
         fb = arm.get("fallback") if arm.get("meta") else None
         fb_used = ""
         if fb and a.page == 1:
-            min_n = fb.get("min_n", 5); tau = fb.get("tau")
-            top_sc = res[0][1] if res else 0.0
-            if not res or len(res) < min_n or (tau is not None and top_sc < float(tau)):
+            min_n = fb.get("min_n", 5)
+            # 발화 조건: 결과가 없거나 min_n 미만일 때만 (τ 점수 조건 폐기 — 정상 질의 과발화)
+            if not res or len(res) < min_n:
                 try:
                     mitems = meta_items(a.q, PAGE)
                 except Exception as exc:  # 폴백 실패가 태그 결과까지 죽이면 안 된다
@@ -156,9 +186,14 @@ def main():
                     if not res:
                         items, fb_used = mitems, "replace"
                     else:
+                        # 하위 슬롯 치환: 태그 상위는 보존, 페이지 하위 K칸을 meta 로 확보
+                        K = fb.get("merge_k", 10)
                         have = {it["id"] for it in items}
-                        items = items + [x for x in mitems if x["id"] not in have][:max(0, PAGE - len(items))]
-                        fb_used = "append"
+                        add = [x for x in mitems if x["id"] not in have][:K]
+                        if add:
+                            items = items[: max(0, PAGE - len(add))] + add
+                            fb_used = f"merge:{len(add)}"
+                # 실제 병합 0건이면 라벨을 남기지 않는다(오신호 방지) — fb_used 는 위에서만 설정
         facets = {}
         if arm.get("facet"):
             # 상위 200 후보의 특약·조 분포 — 에이전트가 범위를 좁혀 재검색할 수 있게 하는 참고 정보(필터 아님)

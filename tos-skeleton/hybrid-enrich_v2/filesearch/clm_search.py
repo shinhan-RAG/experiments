@@ -7,6 +7,8 @@ CLM(coordination-level matching):
   정렬 = 점수 내림차순 → 문서순(line_start, line_end, element_id)
 AND(기존 slot_filesearch): 요청 슬롯 전부 매치 → 문서순.
 금지: BM25 · IDF · 임베딩 · reranker · 학습 정렬. 매치는 어떤 항이든 정확히 1점.
+위 금지는 CLM 재현 경로의 불변식이다. 실험 arm ``ranker=bm25f``는 별도 모듈에서만
+지연 로드되며 CLM 기본 동작과 점수에는 영향을 주지 않는다.
 
 질의 라우터(규칙, LLM 0회): contract(특약명 매치) / role(ROLE_RULES) / subject(질문 명사구·도메인어) / qualifier(값) / schema(표·산식 언급).
 LLM qtags 는 --qtags 로 덧씌움(qid → slots). 필드 매치 규칙(fuzzy_contains)은 hybrid-enrich/slot_filesearch.py 를 그대로 재사용.
@@ -83,6 +85,11 @@ class Router:
 
     def route(self, q):
         cq = compact(q)
+        # 별칭 정규화: 질문의 구어("보상제외기간")를 문서 표기("면책기간")로 치환한 사본도 매칭에 사용
+        if getattr(self, "alias_map", None):
+            for alt, canon in self.alias_map.items():
+                if alt in cq:
+                    cq = cq + canon  # 치환이 아니라 병기(원 표현 보존)
         slots = collections.defaultdict(list)
         partial_hits = []
         for c, core, core_nb in self.cores:
@@ -129,9 +136,15 @@ class SlotSearch:
     def __init__(self, elements_path, tags_path):
         self.E = [json.loads(l) for l in open(elements_path, encoding="utf-8")]
         T = {json.loads(l)["element_id"]: json.loads(l) for l in open(tags_path, encoding="utf-8")}
-        self.rows = [canonical(T[e["element_id"]]) for e in self.E]
+        self.tags = [T[e["element_id"]] for e in self.E]
+        self.rows = [canonical(t) for t in self.tags]
         self.body = [compact(e["text"]) for e in self.E]
         self.router = Router(r["contract"][0] for r in self.rows)
+        try:
+            _al = json.load(open(Path(__file__).resolve().parent / "aliases.json", encoding="utf-8")); _al.pop("_comment", None)
+            self.router.alias_map = {compact(a): compact(c) for c, alts in _al.items() for a in alts if len(compact(a)) >= 3}
+        except Exception:
+            self.router.alias_map = {}
         rev = collections.defaultdict(set)
         for row in self.rows:
             c = row["contract"][0]
@@ -140,6 +153,23 @@ class SlotSearch:
                 if len(k) >= 4:
                     rev[k].add(c)
         self.router.rev = {k: cs for k, cs in rev.items() if len(cs) <= self.router.rev_max}
+
+    def ensure_structured(self):
+        """BM25F arm에서만 구조 인덱스를 지연 생성한다. 기존 CLM 경로는 무변경."""
+        if not hasattr(self, "_structured"):
+            from structured_search import StructuredTagIndex
+            self._structured = StructuredTagIndex(
+                self.E, self.tags, Path(__file__).resolve().parent / "aliases.json")
+        return self._structured
+
+    def rank_structured(self, slots, tokens, raw_query, weights=None, profile="full", limit=200,
+                        lexical_counts=None):
+        """Semantic Tag 필드 단일 단계 BM25F 검색. 반환 형식은 rank()와 동일."""
+        if lexical_counts is None:
+            _, lexical_counts = self.match_table(slots, tokens)
+        idx = self.ensure_structured()
+        return [(self.E[i], score) for i, score in idx.rank(
+            raw_query, slots, lexical_counts, weights=weights, profile=profile, limit=limit)]
 
     @staticmethod
     def field_match(row, field, requested):
@@ -150,8 +180,12 @@ class SlotSearch:
         """질의 1건에 대한 element별 슬롯 매치·어휘 토큰 수를 한 번만 계산(arm 간 재사용)."""
         req = {f: v for f, v in slots.items() if f in FIELDS and v}
         M = [{f: self.field_match(row, f, v) for f, v in req.items()} for row in self.rows]
-        L = [sum(1 for t in tokens if compact(t) in b) for b in self.body] if tokens else [0] * len(self.rows)
+        L = self.lexical_counts(tokens)
         return M, L
+
+    def lexical_counts(self, tokens):
+        """원문 어휘 채널만 계산한다(BM25F-only 평가에서 fuzzy 슬롯 표 생략용)."""
+        return [sum(1 for t in tokens if compact(t) in b) for b in self.body] if tokens else [0] * len(self.rows)
 
     def rank(self, M, L, mode="clm", lex="binary", weights=None, limit=50, scope_filter=None, rare=False, n_tokens=None, rare_cap=None):
         """점수 = Σ_슬롯 hit·w_f·(rare 이면 희소성 계수) + 어휘항.
