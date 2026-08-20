@@ -1,0 +1,29 @@
+{
+ "run": "s30_new_and",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "and",
+  "lex": "count",
+  "w": {},
+  "router": "rule"
+ },
+ "metrics": {
+  "R@1": 0.3833,
+  "R@5": 0.5472,
+  "R@10": 0.5722,
+  "R@20": 0.5722,
+  "S@5": 0.6,
+  "suff@5": 0.5167,
+  "suff@10": 0.5333,
+  "RR@10": 0.4695
+ },
+ "core_R@5": 0.6944,
+ "noncore_R@5": 0.3264,
+ "no_submit": 1,
+ "errors": 0,
+ "cost_usd": 15.93,
+ "rep_disagreement_R@5": 0.2
+}

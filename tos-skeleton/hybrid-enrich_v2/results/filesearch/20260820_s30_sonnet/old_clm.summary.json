@@ -1,0 +1,32 @@
+{
+ "run": "s30_old_clm",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_old.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl"
+ },
+ "metrics": {
+  "R@1": 0.4,
+  "R@5": 0.6042,
+  "R@10": 0.6583,
+  "R@20": 0.6583,
+  "S@5": 0.6667,
+  "suff@5": 0.55,
+  "suff@10": 0.6,
+  "RR@10": 0.5057
+ },
+ "core_R@5": 0.6944,
+ "noncore_R@5": 0.4688,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 13.99,
+ "rep_disagreement_R@5": 0.167
+}
