@@ -1,12 +1,12 @@
 {
- "A_old_and": {
+ "old_and": {
   "tags": "tags_u2_old.jsonl",
   "mode": "and",
   "lex": "count",
   "w": {},
   "router": "rule"
  },
- "A_old_clm": {
+ "old_clm": {
   "tags": "tags_u2_old.jsonl",
   "mode": "clm",
   "lex": "count",
@@ -16,14 +16,14 @@
   "router": "llm",
   "qtags": "out/qtags_haiku.jsonl"
  },
- "A_new_and": {
+ "new_and": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "and",
   "lex": "count",
   "w": {},
   "router": "rule"
  },
- "A_new_clm": {
+ "new_clm": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",
   "lex": "count",
@@ -33,7 +33,17 @@
   "router": "llm",
   "qtags": "out/qtags_haiku.jsonl"
  },
- "A_new_clm_facet": {
+ "new_clm_qsonnet": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_sonnet.jsonl"
+ },
+ "new_clm_facet": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",
   "lex": "count",
@@ -44,17 +54,17 @@
   "qtags": "out/qtags_haiku.jsonl",
   "facet": 1
  },
- "A_new_clm_qsonnet": {
-  "tags": "tags_u2_rules.jsonl",
+ "new_clm_llmtags": {
+  "tags": "tags_u2_llm.jsonl",
   "mode": "clm",
   "lex": "count",
   "w": {
    "contract": 2
   },
   "router": "llm",
-  "qtags": "out/qtags_sonnet.jsonl"
+  "qtags": "out/qtags_haiku.jsonl"
  },
- "C_new_clm_meta": {
+ "hybrid_c3": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",
   "lex": "count",

@@ -73,6 +73,7 @@ def main():
         gscopes = {e["contract_scope"] for e in S.E if any(overlaps(e, gr) for gr in g["groups"])}
         for arm, (mode, opt) in zip(arms, parsed):
             w = {f: v * conf.get(f, 1.0) for f, v in opt["w"].items()} if opt.get("pconf") == "1" else opt["w"]
+            S.variant_rr = opt.get("vrr") == "1"
             Muse = M
             if opt.get("slots"):  # 라우터 슬롯 제한(예: slots=contract+role) — AND 검색기 공정 대조용
                 keep = set(opt["slots"].split("+"))
@@ -106,7 +107,7 @@ def main():
                 for k, v in sc.items():
                     agg[arm][(unit, k)].append(v)
                 agg[arm][(unit, "_core")].append(g["core_retrieval"] == "True")
-            files[arm].write(json.dumps({"qid": g["qid"], "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
+            files[arm].write(json.dumps({"qid": g["qid"], **sc, "slots": slots, "n_tokens": len(toks), "n_cand": len(res),
                                          "u2_top": [e["element_id"] for e in ru[:40]], "jo_top": [u["element_id"] for u in rj[:40]]}, ensure_ascii=False) + "\n")
     for arm in arms:
         for unit in ("u2", "jo"):

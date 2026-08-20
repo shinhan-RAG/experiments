@@ -183,6 +183,25 @@ class SlotSearch:
             if score > 0:
                 scored.append((score, cov, i))
         scored.sort(key=lambda x: (-x[0], -x[1], self.E[x[2]]["line_start"], self.E[x[2]]["line_end"], self.E[x[2]]["element_id"]))
+        if getattr(self, "variant_rr", False):
+            # 동점(점수·cov 동일) 블록 안에서만 base_contract(판본 제외 특약명) 라운드로빈 — 전역 다양화 아님
+            import itertools, re as _re
+            def base(i):
+                return _re.sub(r"\(무배당[^)]*\)", "", self.E[i]["contract_scope"]).strip()
+            out = []
+            for _, grp in itertools.groupby(scored, key=lambda x: (x[0], x[1])):
+                grp = list(grp)
+                buckets = {}
+                for it in grp:
+                    buckets.setdefault(base(it[2]), []).append(it)
+                order = sorted(buckets)
+                while any(buckets[b] for b in order):
+                    for b in order:
+                        if buckets[b]:
+                            out.append(buckets[b].pop(0))
+                if len(out) >= limit:
+                    break
+            scored = out
         return [(self.E[i], s) for s, _, i in scored[:limit]]
 
     def search(self, slots, tokens, mode="clm", lex="binary", weights=None, limit=50, rare=False):

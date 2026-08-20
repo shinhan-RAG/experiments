@@ -1,0 +1,35 @@
+{
+ "run": "s60_hybrid_final",
+ "n_q": 60,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_sonnet.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9"
+ },
+ "metrics": {
+  "R@1": 0.375,
+  "R@5": 0.6674,
+  "R@10": 0.6986,
+  "R@20": 0.6986,
+  "S@5": 0.7583,
+  "suff@5": 0.6083,
+  "suff@10": 0.6417,
+  "RR@10": 0.5521
+ },
+ "core_R@5": 0.7778,
+ "noncore_R@5": 0.5017,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 22.13,
+ "rep_disagreement_R@5": 0.133
+}
