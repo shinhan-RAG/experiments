@@ -127,25 +127,35 @@ def main():
         if a.scope and arm.get("scope_boost"):
             res = enhance.apply_scope_boost(res, S, S._eidx, a.scope, float(arm["scope_boost"]))
         page = res[PAGE * (a.page - 1): PAGE * a.page]
-        refs = enhance.load_refs() if arm.get("ref_expand") else {}
+        import re as _re
+        def _split_c(sc_):
+            m = _re.search(r"\(무배당[^)]*\)", sc_)
+            return _re.sub(r"\(무배당[^)]*\)", "", sc_).strip(), (m.group(0)[1:-1].replace("무배당", "").strip(", ") if m else "")
+        def _snip(text, tk):
+            flat = " ".join(text.split())
+            for t in tk:
+                p = flat.find(t)
+                if p >= 0:
+                    st = max(0, p - 40)
+                    return ("…" if st else "") + flat[st: st + PREVIEW]
+            return flat[:PREVIEW]
         items = []
         for e, sc in page:
             j = S._jo[S._m2j[e["element_id"]]]
+            bc, var = _split_c(e["contract_scope"])
             it = {"id": e["element_id"], "jo": j["element_id"], "score": sc,
-                  "contract": e["contract_scope"][:40], "preview": " ".join(e["text"].split())[:PREVIEW]}
+                  "contract": bc, "variant": var, "jo_title": (j.get("title") or "")[:40],
+                  "preview": _snip(e["text"], toks)}
             if T:
                 t = T[e["element_id"]]; loc = t.get("locator") or {}
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
-            if refs and len(items) < 10 and j["element_id"] in refs:
-                it["ref_jo"] = refs[j["element_id"]][:4]
             items.append(it)
-        # 자동 폴백: 태그 결과가 없거나 빈약하면 같은 호출 안에서 msearch 결과 병합/대체
         fb = arm.get("fallback") if arm.get("meta") else None
         fb_used = ""
         if fb and a.page == 1:
-            min_n = fb.get("min_n", 5); tau = fb.get("tau")
-            top_sc = res[0][1] if res else 0.0
-            if not res or len(res) < min_n or (tau is not None and top_sc < float(tau)):
+            min_n = fb.get("min_n", 5)
+            # 발화 조건: 결과가 없거나 min_n 미만일 때만 (τ 점수 조건 폐기 — 정상 질의 과발화)
+            if not res or len(res) < min_n:
                 try:
                     mitems = meta_items(a.q, PAGE)
                 except Exception as exc:  # 폴백 실패가 태그 결과까지 죽이면 안 된다
@@ -156,9 +166,14 @@ def main():
                     if not res:
                         items, fb_used = mitems, "replace"
                     else:
+                        # 하위 슬롯 치환: 태그 상위는 보존, 페이지 하위 K칸을 meta 로 확보
+                        K = fb.get("merge_k", 10)
                         have = {it["id"] for it in items}
-                        items = items + [x for x in mitems if x["id"] not in have][:max(0, PAGE - len(items))]
-                        fb_used = "append"
+                        add = [x for x in mitems if x["id"] not in have][:K]
+                        if add:
+                            items = items[: max(0, PAGE - len(add))] + add
+                            fb_used = f"merge:{len(add)}"
+                # 실제 병합 0건이면 라벨을 남기지 않는다(오신호 방지) — fb_used 는 위에서만 설정
         facets = {}
         if arm.get("facet"):
             # 상위 200 후보의 특약·조 분포 — 에이전트가 범위를 좁혀 재검색할 수 있게 하는 참고 정보(필터 아님)
