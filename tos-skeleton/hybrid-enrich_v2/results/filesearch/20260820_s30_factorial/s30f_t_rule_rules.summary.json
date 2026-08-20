@@ -1,0 +1,32 @@
+{
+ "run": "s30f_t_rule_rules",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "facet": 1,
+  "router": "rule"
+ },
+ "metrics": {
+  "R@1": 0.4333,
+  "R@5": 0.5917,
+  "R@10": 0.625,
+  "R@20": 0.625,
+  "S@5": 0.6333,
+  "suff@5": 0.5667,
+  "suff@10": 0.6,
+  "RR@10": 0.5192
+ },
+ "core_R@5": 0.6944,
+ "noncore_R@5": 0.4375,
+ "no_submit": 0,
+ "errors": 1,
+ "cost_usd": 9.13,
+ "rep_disagreement_R@5": 0.133
+}

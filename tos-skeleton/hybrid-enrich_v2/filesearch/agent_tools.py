@@ -88,14 +88,30 @@ def main():
             if v:
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v)); conf.pop(f, None)
         w = {f: v * conf.get(f, 1.0) for f, v in (arm.get("w") or {}).items()}
+        S.variant_rr = bool(arm.get("vrr"))
         M, L = S.match_table(slots, toks)
         res = S.rank(M, L, mode=arm.get("mode", "clm"), lex=arm.get("lex", "count"), weights=w, limit=400, rare=bool(arm.get("rare")), n_tokens=len(toks))
         page = res[PAGE * (a.page - 1): PAGE * a.page]
+        import re as _re
+        def split_contract(sc_):
+            m = _re.search(r"\(무배당[^)]*\)", sc_)
+            variant = (m.group(0)[1:-1].replace("무배당", "").strip(", ") if m else "")
+            return _re.sub(r"\(무배당[^)]*\)", "", sc_).strip(), variant
+        def snippet(text, toks):
+            flat = " ".join(text.split())
+            for t in toks:
+                p = flat.find(t)
+                if p >= 0:
+                    st = max(0, p - 40)
+                    return ("…" if st else "") + flat[st: st + PREVIEW]
+            return flat[:PREVIEW]
         items = []
         for e, sc in page:
             j = S._jo[S._m2j[e["element_id"]]]
+            base_c, variant = split_contract(e["contract_scope"])
             it = {"id": e["element_id"], "jo": j["element_id"], "score": sc,
-                  "contract": e["contract_scope"][:40], "preview": " ".join(e["text"].split())[:PREVIEW]}
+                  "contract": base_c, "variant": variant, "jo_title": (j.get("title") or "")[:40],
+                  "preview": snippet(e["text"], toks)}
             if T:
                 t = T[e["element_id"]]; loc = t.get("locator") or {}
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
@@ -104,7 +120,7 @@ def main():
         if arm.get("facet"):
             # 상위 200 후보의 특약·조 분포 — 에이전트가 범위를 좁혀 재검색할 수 있게 하는 참고 정보(필터 아님)
             import collections as _c
-            fc = _c.Counter(e["contract_scope"][:40] for e, _ in res[:200])
+            fc = _c.Counter(_re.sub(r"\(무배당[^)]*\)", "", e["contract_scope"]).strip() for e, _ in res[:200])
             fj = _c.Counter((S._jo[S._m2j[e["element_id"]]]["title"] or S._jo[S._m2j[e["element_id"]]]["element_id"])[:30] for e, _ in res[:200])
             facets = {"contract_top": fc.most_common(8), "article_top": fj.most_common(8)}
         log({"q": a.q, "slots": slots, "n_tokens": len(toks), "total": len(res), "page": a.page,

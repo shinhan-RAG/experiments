@@ -1,0 +1,39 @@
+{
+ "run": "s30f_fb_llm_llm",
+ "n_q": 30,
+ "reps": 2,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_llm.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "facet": 1,
+  "router": "llm",
+  "qtags": "out/qtags_sonnet.jsonl",
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {
+   "min_n": 5,
+   "tau": 5.0
+  }
+ },
+ "metrics": {
+  "R@1": 0.3667,
+  "R@5": 0.6375,
+  "R@10": 0.7139,
+  "R@20": 0.7139,
+  "S@5": 0.7,
+  "suff@5": 0.6,
+  "suff@10": 0.6667,
+  "RR@10": 0.5118
+ },
+ "core_R@5": 0.8056,
+ "noncore_R@5": 0.3854,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 8.69,
+ "rep_disagreement_R@5": 0.133
+}
