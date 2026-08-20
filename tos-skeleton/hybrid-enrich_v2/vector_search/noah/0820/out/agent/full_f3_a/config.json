@@ -1,0 +1,40 @@
+{
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "submit_pad": 1,
+  "fallback_silent": {
+   "min_n": 5,
+   "tau": 5.0
+  },
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0,
+  "fanout": 1,
+  "submit_cover": 1
+ },
+ "args": {
+  "run": "full_f3_a",
+  "arm": "f3_both",
+  "gold": "out/gold_v4_train_full_a.jsonl",
+  "jo": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2jo.jsonl",
+  "elements": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2.jsonl",
+  "n": -1,
+  "seed": 20260818,
+  "reps": 1,
+  "workers": 3,
+  "model": "sonnet",
+  "max_turns": 60,
+  "timeout": 900,
+  "claude_bin": "C:\\Users\\Atdev-pc\\AppData\\Roaming/npm/node_modules/@anthropic-ai/claude-code-win32-x64/claude.exe",
+  "pybin": "python"
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "run": "local_s3_refmerge60",
+ "n_q": 60,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "submit_ref_merge": 1
+ },
+ "metrics": {
+  "R@1": 0.4222,
+  "R@5": 0.6708,
+  "R@10": 0.6889,
+  "R@20": 0.6889,
+  "S@5": 0.7333,
+  "suff@5": 0.6167,
+  "suff@10": 0.6333,
+  "RR@10": 0.556
+ },
+ "core_R@5": 0.8333,
+ "noncore_R@5": 0.4271,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 13.8,
+ "rep_disagreement_R@5": 0.0
+}

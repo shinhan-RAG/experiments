@@ -1,0 +1,1528 @@
+{
+ "cause": {
+  "A.tag_missing": 11,
+  "B.lex_mismatch": 39,
+  "D.rank_only": 33
+ },
+ "rows": [
+  {
+   "qid": "v3-offline-0108",
+   "group": 0,
+   "eids": [
+    "e00169"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00028",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "보장개시일전 진단되면 뭐 보장해줘? 청구방법 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0108",
+   "group": 2,
+   "eids": [
+    "e07367"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07452",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "보장개시일전 진단되면 뭐 보장해줘? 청구방법 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    6
+   ]
+  },
+  {
+   "qid": "v3-offline-0319",
+   "group": 1,
+   "eids": [
+    "e05896"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "comparison",
+   "jo": "j05837",
+   "contract": "(간편)간호간병통합서비스사용입원특약(무배당, 해약환급금 미지급형)",
+   "q": "특약의 지급사유, 보장구조, 삭감, 납면사유 등 비교해줘",
+   "overlap": [
+    "지급사유",
+    "특약의"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0319",
+   "group": 2,
+   "eids": [
+    "e06185"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "comparison",
+   "jo": "j06154",
+   "contract": "(간편)중증질환자[암]산정특례대상보장특약(무배당, 갱신형)",
+   "q": "특약의 지급사유, 보장구조, 삭감, 납면사유 등 비교해줘",
+   "overlap": [
+    "지급사유"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0262",
+   "group": 0,
+   "eids": [
+    "e01569"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01461",
+   "contract": "(간편)암다빈치로봇수술특약(무배당, 갱신형)",
+   "q": "진단/입원/수술 기준 처럼 지급판정에 필요한 의학적/행정적 조건을 정리해줘",
+   "overlap": [
+    "수술"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0262",
+   "group": 1,
+   "eids": [
+    "e01598"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01490",
+   "contract": "(간편)암다빈치로봇수술특약(무배당, 갱신형)",
+   "q": "진단/입원/수술 기준 처럼 지급판정에 필요한 의학적/행정적 조건을 정리해줘",
+   "overlap": [
+    "수술"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0262",
+   "group": 2,
+   "eids": [
+    "e05606"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05565",
+   "contract": "(간편)첫날부터6대질병중환자실입원특약(무배당, 해약환급금 미지급형)",
+   "q": "진단/입원/수술 기준 처럼 지급판정에 필요한 의학적/행정적 조건을 정리해줘",
+   "overlap": [
+    "입원"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0262",
+   "group": 3,
+   "eids": [
+    "e05630"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05590",
+   "contract": "(간편)첫날부터6대질병중환자실입원특약(무배당, 해약환급금 미지급형)",
+   "q": "진단/입원/수술 기준 처럼 지급판정에 필요한 의학적/행정적 조건을 정리해줘",
+   "overlap": [
+    "입원"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0035",
+   "group": 0,
+   "eids": [
+    "e02066"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01896",
+   "contract": "(간편)표적항암약물허가치료특약(무배당, 갱신형)",
+   "q": "각 특약에서 사고 발생 시 제출해야 할 사고증명서 종류와, 그 서류들이 왜 필요한지 알려줘",
+   "overlap": [
+    "사고증명서"
+   ],
+   "tag_substance": [
+    9
+   ]
+  },
+  {
+   "qid": "v3-offline-0065",
+   "group": 0,
+   "eids": [
+    "e06587"
+   ],
+   "cause": "D.rank_only",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j06586",
+   "contract": "(간편)[50%장해납입면제형]보험료납입면제특약(무배당, 해약환급금 미지급",
+   "q": "납면특약에 가입되었어도 납면되지 않는 특약 알려줘",
+   "overlap": [
+    "않는"
+   ],
+   "tag_substance": [
+    6
+   ]
+  },
+  {
+   "qid": "v3-offline-0072",
+   "group": 0,
+   "eids": [
+    "e03711"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j03571",
+   "contract": "(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)",
+   "q": "뇌심 주요치료비 청구시 구비서류 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0257",
+   "group": 0,
+   "eids": [
+    "e00389"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00255",
+   "contract": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)",
+   "q": "주계약 및 특약별 납입면제 조건을 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0257",
+   "group": 1,
+   "eids": [
+    "e07069"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07138",
+   "contract": "(간편)[허혈심장질환납입면제형]보험료납입면제특약(무배당, 갱신형)",
+   "q": "주계약 및 특약별 납입면제 조건을 알려줘",
+   "overlap": [
+    "주계약"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0334",
+   "group": 0,
+   "eids": [
+    "e01646",
+    "e01647"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01526",
+   "contract": "(간편)암치료통합보장특약(무배당, 갱신형)",
+   "q": "항암방사선, 양성자방사선등 보장기준 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    3,
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0154",
+   "group": 1,
+   "eids": [
+    "e06634"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j06637",
+   "contract": "(간편)[일반암납입면제형]보험료납입면제특약(무배당, 해약환급금 미지급형)",
+   "q": "신한통합건강보험 원(무배당.해약환급금 미지급형)납입면제 조건과 납입면제되는 부분이 어디까지야?",
+   "overlap": [
+    "무배당",
+    "미지급형",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0095",
+   "group": 0,
+   "eids": [
+    "e02719"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "single_lookup",
+   "jo": "j02493",
+   "contract": "(간편)암직접치료상급종합병원통원특약(무배당, 해약환급금 미지급형)",
+   "q": "대학병원외래진료도보장되나요?",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0049",
+   "group": 0,
+   "eids": [
+    "e01425"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j01327",
+   "contract": "(간편)[삭감없음용]남녀특정암진단특약(무배당, 갱신형)",
+   "q": "갱신형특약이기 때문에 비갱신형특약과 다르게 약관상 반영되는부분을 정리해줘",
+   "overlap": [],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0070",
+   "group": 0,
+   "eids": [
+    "e02873"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j02655",
+   "contract": "(간편)[기본]뇌혈관질환진단특약(무배당, 갱신형)",
+   "q": "뇌경색도포함되나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0159",
+   "group": 0,
+   "eids": [
+    "e06597"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j06598",
+   "contract": "(간편)[50%장해납입면제형]보험료납입면제특약(무배당, 해약환급금 미지급",
+   "q": "신한통합건강원보험 납입면제대상계약",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0260",
+   "group": 1,
+   "eids": [
+    "e01918"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01759",
+   "contract": "(간편)항암양성자방사선치료특약(무배당, 갱신형)",
+   "q": "중입자치료가 항암방사선특약에 보장되는지 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0260",
+   "group": 2,
+   "eids": [
+    "e01945"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01785",
+   "contract": "(간편)항암양성자방사선치료특약(무배당, 갱신형)",
+   "q": "중입자치료가 항암방사선특약에 보장되는지 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0152",
+   "group": 1,
+   "eids": [
+    "e01890"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01735",
+   "contract": "(간편)항암세기조절방사선치료특약(무배당, 갱신형)",
+   "q": "신한통합건강보험 원(ONE)(무배당,해약환급금 미지급형)에서 항암방사선치료비 나올까",
+   "overlap": [
+    "무배당",
+    "미지급형",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0150",
+   "group": 0,
+   "eids": [
+    "e07476"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07531",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "신한통합건강보험 ONE 에서는 스쿠버다이빙으로 인한 후유장해도 보상 돼?",
+   "overlap": [
+    "인한"
+   ],
+   "tag_substance": [
+    9
+   ]
+  },
+  {
+   "qid": "v3-offline-0029",
+   "group": 0,
+   "eids": [
+    "e07553"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j07546",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "[허혈심장질환납입면제형]보험료납입면제특약의 납입면제 대상이 되는 허혈심장질환의 질병분류코드는 무엇인가요?",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0130",
+   "group": 0,
+   "eids": [
+    "e00323"
+   ],
+   "cause": "A.tag_missing",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j00176",
+   "contract": "(간편)정기특약(무배당, 갱신형)",
+   "q": "소액암진단특약(제자리암진단비, 경계성종양진단비) 청구시 필요한 구비서류는 무엇인가요?",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0237",
+   "group": 0,
+   "eids": [
+    "e05281"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04306",
+   "contract": "(간편)1-5종단일금액보장수술특약(무배당, 갱신형)",
+   "q": "재입원하면 다시 보장 받을수있나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0003",
+   "group": 1,
+   "eids": [
+    "e05851"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05791",
+   "contract": "(간편)간병인사용입원특약(무배당, 해약환급금 미지급형)",
+   "q": "(355간편)신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형)",
+   "overlap": [
+    "무배당",
+    "미지급형",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0201",
+   "group": 0,
+   "eids": [
+    "e01829"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01683",
+   "contract": "(간편)항암방사선치료특약(무배당, 해약환급금 미지급형)",
+   "q": "양성자치료도 항암치료에 포함되나요?",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0201",
+   "group": 1,
+   "eids": [
+    "e01944"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01732",
+   "contract": "(간편)항암세기조절방사선치료특약(무배당, 갱신형)",
+   "q": "양성자치료도 항암치료에 포함되나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0107",
+   "group": 0,
+   "eids": [
+    "e01166"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01075",
+   "contract": "(간편)[기본]일반암진단특약(무배당, 갱신형)",
+   "q": "보장개시일, 면책기간, 감액기간이 각각 언제부터 언제인지 설명해줘",
+   "overlap": [
+    "보장개시일"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0295",
+   "group": 0,
+   "eids": [
+    "e03708"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j03568",
+   "contract": "(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)",
+   "q": "통합건강보험 원에서 뇌경색증 진단시 받을 수 있는 특약은 뭐야?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0217",
+   "group": 0,
+   "eids": [
+    "e07524"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07543",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "이 약관에서 상품의 보장대상과 보장제외 대상을 한번에 요약해줘",
+   "overlap": [
+    "약관에서"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0217",
+   "group": 2,
+   "eids": [
+    "e07844"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07591",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "이 약관에서 상품의 보장대상과 보장제외 대상을 한번에 요약해줘",
+   "overlap": [
+    "약관에서"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0141",
+   "group": 0,
+   "eids": [
+    "e01664"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01545",
+   "contract": "(간편)암치료통합보장특약(무배당, 갱신형)",
+   "q": "신한통합건강보장보험 ONE 특약 설명",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0142",
+   "group": 0,
+   "eids": [
+    "e00296"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00141",
+   "contract": "(간편)정기특약(무배당, 해약환급금 미지급형)",
+   "q": "신한통합건강보장보험 ONE을 가입했는데 항암치료 특약이 여러 개 있는데 표적항암, CAR-T, 항암약물치료 ",
+   "overlap": [
+    "신한통합건강보장보험",
+    "특약이"
+   ],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0142",
+   "group": 1,
+   "eids": [
+    "e01782"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01638",
+   "contract": "(간편)암주요치료비특약(무배당, 갱신형)",
+   "q": "신한통합건강보장보험 ONE을 가입했는데 항암치료 특약이 여러 개 있는데 표적항암, CAR-T, 항암약물치료 ",
+   "overlap": [],
+   "tag_substance": [
+    6
+   ]
+  },
+  {
+   "qid": "v3-offline-0074",
+   "group": 1,
+   "eids": [
+    "e03708"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j03568",
+   "contract": "(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)",
+   "q": "뇌질환진단금은몇번받을수있나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0216",
+   "group": 0,
+   "eids": [
+    "e00166",
+    "e00167"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00025",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "이 약관에서 AI가 답변하면 안되는 고위험 영역이나 반드시 사람확인이 필요한 항목은 뭐야?",
+   "overlap": [],
+   "tag_substance": [
+    18,
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0216",
+   "group": 2,
+   "eids": [
+    "e07628"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07558",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "이 약관에서 AI가 답변하면 안되는 고위험 영역이나 반드시 사람확인이 필요한 항목은 뭐야?",
+   "overlap": [
+    "반드시",
+    "약관에서"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0345",
+   "group": 0,
+   "eids": [
+    "e05807",
+    "e05809"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05747",
+   "contract": "(간편)간병인사용입원특약(무배당, 해약환급금 미지급형)",
+   "q": "해외에서 보장되지 않는 보장급부 또는 특약에 대해 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    4,
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0345",
+   "group": 1,
+   "eids": [
+    "e05830",
+    "e05831"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05772",
+   "contract": "(간편)간병인사용입원특약(무배당, 해약환급금 미지급형)",
+   "q": "해외에서 보장되지 않는 보장급부 또는 특약에 대해 알려줘",
+   "overlap": [
+    "또는"
+   ],
+   "tag_substance": [
+    2,
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0076",
+   "group": 0,
+   "eids": [
+    "e02853"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j02628",
+   "contract": "(간편)[삭감없음용]뇌혈관질환진단특약(무배당, 해약환급금 미지급형)",
+   "q": "뇌출혈 수술안하고 약물치료만해도되나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0177",
+   "group": 0,
+   "eids": [
+    "e01176"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j01081",
+   "contract": "(간편)[기본]일반암진단특약(무배당, 갱신형)",
+   "q": "암이재발하면또받을수있나요?",
+   "overlap": [],
+   "tag_substance": [
+    6
+   ]
+  },
+  {
+   "qid": "v3-offline-0286",
+   "group": 0,
+   "eids": [
+    "e05699"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05652",
+   "contract": "(간편)3대질병간병인사용입원특약(무배당, 갱신형)",
+   "q": "통합건강보험 ONE 허혈심장질환진단특약에서 진단코드 I20.90코드 보장 받을 수 있나요",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0508",
+   "group": 0,
+   "eids": [
+    "e01724"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01591",
+   "contract": "(간편)암주요치료비특약(무배당, 갱신형)",
+   "q": "암세포가 없는 상태에서 면역력을 높이려고 약을 맞은 것도 항암약물치료에 포함되나요?",
+   "overlap": [],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0508",
+   "group": 2,
+   "eids": [
+    "e04557"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04427",
+   "contract": "(간편)[질병별]신수술특약(무배당, 해약환급금 미지급형)",
+   "q": "암세포가 없는 상태에서 면역력을 높이려고 약을 맞은 것도 항암약물치료에 포함되나요?",
+   "overlap": [
+    "없는"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0509",
+   "group": 2,
+   "eids": [
+    "e01723"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01461",
+   "contract": "(간편)암다빈치로봇수술특약(무배당, 갱신형)",
+   "q": "암수술특약에서 어떤 암의 직접 치료를 위한 수술이 암수술급여금 지급 대상인가요?",
+   "overlap": [
+    "지급"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0509",
+   "group": 3,
+   "eids": [
+    "e01752"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01622",
+   "contract": "(간편)암주요치료비특약(무배당, 갱신형)",
+   "q": "암수술특약에서 어떤 암의 직접 치료를 위한 수술이 암수술급여금 지급 대상인가요?",
+   "overlap": [
+    "위한",
+    "치료를"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0522",
+   "group": 0,
+   "eids": [
+    "e00216"
+   ],
+   "cause": "A.tag_missing",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j00068",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "주계약 보험료는 암이나 질병을 진단받으면 자동으로 납입이 면제되나요?",
+   "overlap": [
+    "주계약"
+   ],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0532",
+   "group": 0,
+   "eids": [
+    "e01877"
+   ],
+   "cause": "D.rank_only",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j01727",
+   "contract": "(간편)항암세기조절방사선치료특약(무배당, 갱신형)",
+   "q": "청약하면 승낙이 나기 전까지는 보장을 못 받나요?",
+   "overlap": [
+    "보장을"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0338",
+   "group": 0,
+   "eids": [
+    "e01771"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01630",
+   "contract": "(간편)암주요치료비특약(무배당, 갱신형)",
+   "q": "해당 상품에서 자체 납입면제사유를 가지고 있는 특약리스트를 알려줘",
+   "overlap": [
+    "해당"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0338",
+   "group": 1,
+   "eids": [
+    "e03707"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j03567",
+   "contract": "(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)",
+   "q": "해당 상품에서 자체 납입면제사유를 가지고 있는 특약리스트를 알려줘",
+   "overlap": [
+    "해당"
+   ],
+   "tag_substance": [
+    5
+   ]
+  },
+  {
+   "qid": "v3-offline-0197",
+   "group": 2,
+   "eids": [
+    "e05922"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j05872",
+   "contract": "(간편)간병인사용입원특약(무배당, 갱신형)",
+   "q": "약관에서 자주 헷갈리는 용어를 찾아서 정의해줘",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0197",
+   "group": 3,
+   "eids": [
+    "e07298"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07383",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "약관에서 자주 헷갈리는 용어를 찾아서 정의해줘",
+   "overlap": [],
+   "tag_substance": [
+    5
+   ]
+  },
+  {
+   "qid": "v3-offline-0197",
+   "group": 4,
+   "eids": [
+    "e07327"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07413",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "약관에서 자주 헷갈리는 용어를 찾아서 정의해줘",
+   "overlap": [],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0325",
+   "group": 0,
+   "eids": [
+    "e04495"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04382",
+   "contract": "(간편)[질병별]신수술특약(무배당, 해약환급금 미지급형)",
+   "q": "파킨슨병 진단받았는데 정신및 행동장해질환 관련 보장도 가능한가요?",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0325",
+   "group": 2,
+   "eids": [
+    "e07521"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07542",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "파킨슨병 진단받았는데 정신및 행동장해질환 관련 보장도 가능한가요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0166",
+   "group": 0,
+   "eids": [
+    "e02393"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j02187",
+   "contract": "(간편)급여6대질병진단검사지원특약(무배당, 갱신형)",
+   "q": "안녕하세요. 신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형) 보험으로 어깨 mri촬영시 환급이 ",
+   "overlap": [
+    "무배당",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0166",
+   "group": 1,
+   "eids": [
+    "e03785"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j03639",
+   "contract": "(간편)급여뇌심장질환특정검사지원특약(무배당, 갱신형)",
+   "q": "안녕하세요. 신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형) 보험으로 어깨 mri촬영시 환급이 ",
+   "overlap": [
+    "무배당",
+    "미지급형",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0166",
+   "group": 2,
+   "eids": [
+    "e03807"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j03663",
+   "contract": "(간편)급여뇌심장질환특정검사지원특약(무배당, 갱신형)",
+   "q": "안녕하세요. 신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형) 보험으로 어깨 mri촬영시 환급이 ",
+   "overlap": [
+    "무배당",
+    "미지급형",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    8
+   ]
+  },
+  {
+   "qid": "v3-offline-0113",
+   "group": 3,
+   "eids": [
+    "e07440"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07514",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "보험금 지급 조건을 항목별로 나눠서 알려줘",
+   "overlap": [
+    "보험금",
+    "조건을"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0157",
+   "group": 0,
+   "eids": [
+    "e07562"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07547",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "신한통합건강보험원(ONE)에서 1~5종 수술비 특약이 있는데 그렇다면 1~5종 수술분류표 보내줘",
+   "overlap": [
+    "5종",
+    "수술분류표"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0009",
+   "group": 0,
+   "eids": [
+    "e00072"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00007",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "00(ex.치매, 암)의 치료를를 보장하는 상품이 있는지 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0009",
+   "group": 1,
+   "eids": [
+    "e00115"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00013",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "00(ex.치매, 암)의 치료를를 보장하는 상품이 있는지 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0123",
+   "group": 0,
+   "eids": [
+    "e00074"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00008",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "삭감, 면책, 체증/체감 등 보장금액이 기간에 따라 달라지는 주/특 상품들 정리",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0123",
+   "group": 1,
+   "eids": [
+    "e02257"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j02068",
+   "contract": "(간편)급여암특정재활치료특약(무배당, 갱신형)",
+   "q": "삭감, 면책, 체증/체감 등 보장금액이 기간에 따라 달라지는 주/특 상품들 정리",
+   "overlap": [
+    "따라"
+   ],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0234",
+   "group": 0,
+   "eids": [
+    "e04330"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04177",
+   "contract": "(간편)1-5종수술특약(무배당, 해약환급금 미지급형)",
+   "q": "자궁근종수술 1차 진행후 3개월 후 2차 재수술한 경우 보장이 가능한가요?",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0234",
+   "group": 2,
+   "eids": [
+    "e04356"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04236",
+   "contract": "(간편)1-5종수술특약(무배당, 갱신형)",
+   "q": "자궁근종수술 1차 진행후 3개월 후 2차 재수술한 경우 보장이 가능한가요?",
+   "overlap": [],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0254",
+   "group": 0,
+   "eids": [
+    "e00148"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00017",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "주/특별 소멸사유, 무효/취소 사유, 실효사유, 납입면제 사유 등 정리",
+   "overlap": [
+    "무효"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0254",
+   "group": 1,
+   "eids": [
+    "e00333"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00184",
+   "contract": "(간편)정기특약(무배당, 갱신형)",
+   "q": "주/특별 소멸사유, 무효/취소 사유, 실효사유, 납입면제 사유 등 정리",
+   "overlap": [
+    "무효"
+   ],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0131",
+   "group": 0,
+   "eids": [
+    "e00796"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j00693",
+   "contract": "(간편)[기본]소액암진단특약(무배당, 해약환급금 미지급형)",
+   "q": "소액암진단특약의 보장대상 암은 무엇인가요?",
+   "overlap": [],
+   "tag_substance": [
+    5
+   ]
+  },
+  {
+   "qid": "v3-offline-0106",
+   "group": 0,
+   "eids": [
+    "e01243"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01145",
+   "contract": "(간편)[삭감없음용]일반암진단특약(무배당, 갱신형)",
+   "q": "보장개시일(암, 치매, 치아치료등 )이 언제부터인지 알려줘",
+   "overlap": [
+    "보장개시일"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0082",
+   "group": 1,
+   "eids": [
+    "e06879"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j06914",
+   "contract": "(간편)[50%장해납입면제형]보험료납입면제특약(무배당, 갱신형)",
+   "q": "뇌혈관질환도납입면제가되나요?",
+   "overlap": [],
+   "tag_substance": [
+    6
+   ]
+  },
+  {
+   "qid": "v3-offline-0082",
+   "group": 2,
+   "eids": [
+    "e07069"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j07138",
+   "contract": "(간편)[허혈심장질환납입면제형]보험료납입면제특약(무배당, 갱신형)",
+   "q": "뇌혈관질환도납입면제가되나요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0225",
+   "group": 0,
+   "eids": [
+    "e00282"
+   ],
+   "cause": "A.tag_missing",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00131",
+   "contract": "(간편)정기특약(무배당, 해약환급금 미지급형)",
+   "q": "인공관절 무릎수술받았는데 질병장해 청구가능해?",
+   "overlap": [],
+   "tag_substance": [
+    1
+   ]
+  },
+  {
+   "qid": "v3-offline-0170",
+   "group": 0,
+   "eids": [
+    "e01194"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": true,
+   "task_type": "single_lookup",
+   "jo": "j01095",
+   "contract": "(간편)[기본]일반암진단특약(무배당, 갱신형)",
+   "q": "암 보장개시일과 무효조건 알려줘",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0021",
+   "group": 0,
+   "eids": [
+    "e07520",
+    "e07521"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "exhaustive_list",
+   "jo": "j07542",
+   "contract": "(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)",
+   "q": "F04로 치매진단되었는데 질병장해특약에서 어떤 보장이 있어?",
+   "overlap": [],
+   "tag_substance": [
+    6,
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0303",
+   "group": 0,
+   "eids": [
+    "e00188"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00043",
+   "contract": "주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급",
+   "q": "통합건강보험원 책임준비금",
+   "overlap": [],
+   "tag_substance": [
+    3
+   ]
+  },
+  {
+   "qid": "v3-offline-0020",
+   "group": 1,
+   "eids": [
+    "e00712"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00602",
+   "contract": "(간편)[기본]일반암진단특약(무배당, 해약환급금 미지급형)",
+   "q": "7년전 암진단 받으신 고객님이 ,신한(간편가입)통합건강보험 원(ONE) 간편심사(355)형 으로 암진단특약을",
+   "overlap": [
+    "ONE",
+    "으로",
+    "진단"
+   ],
+   "tag_substance": [
+    2
+   ]
+  },
+  {
+   "qid": "v3-offline-0143",
+   "group": 0,
+   "eids": [
+    "e04280",
+    "e04330",
+    "e04281"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j04178",
+   "contract": "(간편)1-5종수술특약(무배당, 해약환급금 미지급형)",
+   "q": "신한통합건강보장보험 가입 되어 있는데 수술보장이 되는지?",
+   "overlap": [],
+   "tag_substance": [
+    9,
+    3,
+    4
+   ]
+  },
+  {
+   "qid": "v3-offline-0155",
+   "group": 0,
+   "eids": [
+    "e00796"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j00693",
+   "contract": "(간편)[기본]소액암진단특약(무배당, 해약환급금 미지급형)",
+   "q": "신한통합건강보험에 소액암이 자궁경부 제자리암도 포함되나요?",
+   "overlap": [],
+   "tag_substance": [
+    5
+   ]
+  },
+  {
+   "qid": "v3-offline-0223",
+   "group": 0,
+   "eids": [
+    "e01695"
+   ],
+   "cause": "D.rank_only",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j01571",
+   "contract": "(간편)암치료통합보장특약(무배당, 갱신형)",
+   "q": "이상품의 해약환급금, 감액, 부활 관련 규정을 쉽게 설명해줘",
+   "overlap": [
+    "감액",
+    "해약환급금"
+   ],
+   "tag_substance": [
+    8
+   ]
+  },
+  {
+   "qid": "v3-offline-0202",
+   "group": 0,
+   "eids": [
+    "e06877"
+   ],
+   "cause": "B.lex_mismatch",
+   "core": false,
+   "task_type": "multi_evidence",
+   "jo": "j06589",
+   "contract": "(간편)[50%장해납입면제형]보험료납입면제특약(무배당, 해약환급금 미지급",
+   "q": "양쪽 난소제거를 했는데 납입면제 가능한가요?",
+   "overlap": [],
+   "tag_substance": [
+    4
+   ]
+  }
+ ]
+}

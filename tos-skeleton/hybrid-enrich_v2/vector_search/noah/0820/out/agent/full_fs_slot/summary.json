@@ -1,0 +1,32 @@
+{
+ "run": "full_fs_slot",
+ "n_q": 337,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "_note": "파일서치 원본 slot 서치 방식 — contract 가중치 없음, facet 없음. msearch(V9) 는 유지.",
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "meta": 1,
+  "meta_view": "V9"
+ },
+ "metrics": {
+  "R@1": 0.4083,
+  "R@5": 0.7242,
+  "R@10": 0.7743,
+  "R@20": 0.7743,
+  "S@5": 0.822,
+  "suff@5": 0.6469,
+  "suff@10": 0.7003,
+  "RR@10": 0.6273
+ },
+ "core_R@5": 0.8241,
+ "noncore_R@5": 0.58,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 129.42,
+ "rep_disagreement_R@5": 0.0
+}

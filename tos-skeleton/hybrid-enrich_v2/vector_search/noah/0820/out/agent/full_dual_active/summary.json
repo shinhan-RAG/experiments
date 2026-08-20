@@ -1,0 +1,40 @@
+{
+ "run": "full_dual_active",
+ "n_q": 337,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "_note": "fs_slot 기반(contract 가중치 없음, facet 없음) + 행동 지시(search/msearch 병행, 재검색, 10개 distinct 조 채우기) + silent 보강 3종(submit_pad, fallback_silent, submit_ref_merge) + alias_cond. fanout/submit_cover 는 f3_both 에서 R@5 저하가 확인되어 제외.",
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "meta": 1,
+  "meta_view": "V9",
+  "active_prompt": 1,
+  "submit_pad": 1,
+  "fallback_silent": {
+   "min_n": 5,
+   "tau": 5.0
+  },
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0
+ },
+ "metrics": {
+  "R@1": 0.4161,
+  "R@5": 0.73,
+  "R@10": 0.7971,
+  "R@20": 0.7971,
+  "S@5": 0.819,
+  "suff@5": 0.6588,
+  "suff@10": 0.73,
+  "RR@10": 0.6335
+ },
+ "core_R@5": 0.8199,
+ "noncore_R@5": 0.6003,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 154.27,
+ "rep_disagreement_R@5": 0.0
+}
