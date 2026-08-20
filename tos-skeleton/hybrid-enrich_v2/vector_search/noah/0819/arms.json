@@ -45,7 +45,7 @@
   "facet": 1,
   "meta": 1,
   "meta_view": "V9",
-  "fallback": {"min_n": 5, "tau": null}
+  "fallback": {"min_n": 5, "tau": 5.0}
  },
  "c4_fbp": {
   "tags": "tags_u2_rules.jsonl",
@@ -83,7 +83,7 @@
   "meta_view": "V9",
   "alias": 1,
   "scope_boost": 3.0,
-  "fallback": {"min_n": 5, "tau": null},
+  "fallback": {"min_n": 5, "tau": 5.0},
   "ref_expand": 1
  }
 }
