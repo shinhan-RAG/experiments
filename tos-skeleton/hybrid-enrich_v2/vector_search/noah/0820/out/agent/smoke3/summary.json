@@ -1,0 +1,35 @@
+{
+ "run": "smoke3",
+ "n_q": 3,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9"
+ },
+ "metrics": {
+  "R@1": 0.6667,
+  "R@5": 0.6667,
+  "R@10": 0.6667,
+  "R@20": 0.6667,
+  "S@5": 0.6667,
+  "suff@5": 0.6667,
+  "suff@10": 0.6667,
+  "RR@10": 0.6667
+ },
+ "core_R@5": 1.0,
+ "noncore_R@5": 0.0,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 1.1,
+ "rep_disagreement_R@5": 0.0
+}

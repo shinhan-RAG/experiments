@@ -1,0 +1,9 @@
+sessions/
+*.txt
+out_*.json
+out/**/sessions/
+out/**/*.pkl
+out/**/*.npy
+out/**/*.log
+out/**/cache*.jsonl
+out/**/.cache_*.pkl

@@ -1,0 +1,5672 @@
+[
+ {
+  "qid": "v3-offline-0277",
+  "split": "train",
+  "task_type": "document_global",
+  "q": "통합건강 one 특약들 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 301,
+  "conf": "확정",
+  "missed": [
+   "(간편)[기본]고액암진단특약(무배당, 해약환급금 미지급형) | 349 (간편)[기본]소액암진단특약(무배당, 갱신형) | 369 (간편)[기본]소"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0269",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "척추 장해 장해분류표에 해당되는 조건 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 133,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0066",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "납입면제 특약 가입시 주계약외 동시에 납입면제되는 특약의 종류를 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 226,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0108",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보장개시일전 진단되면 뭐 보장해줘? 청구방법 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 163,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 4,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0284",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보장원, 소멸되는 특약이 있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 325,
+  "conf": "확정",
+  "missed": [
+   "「이 특약의 피보험자가 특약보험기간 중 사망」하거나 「주계약이 해지, 무효, 취소 또는 철회된 경우」이 특약은 그때부터 효력이 없습니다. 또한,"
+  ],
+  "status": "regold",
+  "n_cit": 13,
+  "n_groups": 5,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0319",
+  "split": "train",
+  "task_type": "comparison",
+  "q": "특약의 지급사유, 보장구조, 삭감, 납면사유 등 비교해줘",
+  "v4_sim": 1.0,
+  "v4_no": 111,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0262",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "진단/입원/수술 기준 처럼 지급판정에 필요한 의학적/행정적 조건을 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 56,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 14,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0035",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "각 특약에서 사고 발생 시 제출해야 할 사고증명서 종류와, 그 서류들이 왜 필요한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 131,
+  "conf": "확정",
+  "missed": [
+   "② 제1항 제2호의 사고증명서는 의료기관, 국민건강보험공단, 경찰서 등에서 발급한 것이어야 합니다.\n[LNone] 이 특약의 사고증명서는 \"사망"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0065",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "납면특약에 가입되었어도 납면되지 않는 특약 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 228,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0083",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환의 진단확정 기준은 어떤 근거로 체크하면 되나요? 외상성 두개내 출혈도 뇌혈관질환에 해당되는지?",
+  "v4_sim": 1.0,
+  "v4_no": 157,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0072",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌심 주요치료비 청구시 구비서류 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 209,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0151",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험 One 담보중 특정부정맥이란?",
+  "v4_sim": 1.0,
+  "v4_no": 313,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0054",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "고혈압(원발성)약물치료특약의 무효 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 4,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0006",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(뇌졸중진단특약) 뇌졸중 중 보장하지 않는 경우는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 37,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0046",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "같은날여러수술을받으면중복지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 246,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0257",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "주계약 및 특약별 납입면제 조건을 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 199,
+  "conf": "확정",
+  "missed": [
+   "2. 피보험자가 암보장개시일 이후 제2-1조의3 ... \"납입면제의 대상이 되는 암(기타피부암 및 갑상선암 제외)\"으로 진단 확정되었을 경우"
+  ],
+  "status": "regold",
+  "n_cit": 6,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0167",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "알릴의무 위반했을때 규정 찾아줘",
+  "v4_sim": 1.0,
+  "v4_no": 222,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0244",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "재해장해특약에서 기지급된 재해장해급여금이 있는 경우, 동일부위에 추가로 재해장해가 발생하면 추가보험금은 어떻게 지급하나요?",
+  "v4_sim": 1.0,
+  "v4_no": 20,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0043",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "갑상선암도일반암인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 231,
+  "conf": "확정",
+  "missed": [
+   "※ 이 특약명 “(간편)두배로진심을품은일반암진단Plus특약(무배당)”에서 “일반암”이라 함은 “「여성유방암 및 전립선암」이외의 암” 및 “중증 "
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0056",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "고혈압(원발성)약물치료특약의 지급요건은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 16,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0132",
+  "split": "train",
+  "task_type": "comparison",
+  "q": "수술 1종부터 5종까지차이가뭔가요?",
+  "v4_sim": 1.0,
+  "v4_no": 245,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0051",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "경피적수술의 의미가 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 176,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0291",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 원 특약 중  여성 12대 주요암",
+  "v4_sim": 1.0,
+  "v4_no": 293,
+  "conf": "확정",
+  "missed": [
+   "| (간편)여성암진단특약(무배당, 해약완급금 미지급형) | 유방암진단급여금 | 암(기타피부암, 갑상선암, 대장점막내암 및 비침습방광암 제외)의 ",
+   "이 특약은 제2-2조(보험금의 지급사유)에서 정하는 보장종류에 따라 \"유방암진단 보장계약\", \"난소암진단 보장계약\", \"자궁암진단 보장계약\", ",
+   "| [별첨2] 표 10-14. 특정여성생식기암 분류표 | 4,109 |"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0334",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "항암방사선, 양성자방사선등 보장기준 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 159,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0077",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌출혈로 진단되어 치료중인데 질병장해급여금은 언제 청구할수있어?",
+  "v4_sim": 1.0,
+  "v4_no": 140,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0327",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)표적항암약물허가치료특약에서 보장 가능한 약물 알려줘",
+  "v4_sim": 0.58,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0172",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암 진단되면 특약 갱신불가한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 164,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0306",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험원에서 일반암진단특약 가입시 기본과 삭감없음용 보장개시일",
+  "v4_sim": 1.0,
+  "v4_no": 296,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 8,
+  "n_groups": 7,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0004",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(3~100%) 재해장해 특약 보험금 지급 기준 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 135,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0241",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "재해로 척추골절되어 후유장해 청구하려는데 청구 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 149,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0179",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암주요치료비)는 보장기준일이 어떻게돼? 계약일기준이야? 진단일기준이야?",
+  "v4_sim": 1.0,
+  "v4_no": 212,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0168",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암 보장개시일 이전 진단되어도 유지가능한 특약알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 168,
+  "conf": "확정",
+  "missed": [
+   "암보장개시일 전일 이전에 진단 확정된 \"납입면제의 대상이 되는 암(기타피부암 및 갑상선암 제외)\"이 \"전이암\"인 경우에는 제2-9조의2(\"특약의",
+   "보장계약은 무효로 하며 ... 다만, 나머지 보장계약에 대해서는 유효한 계약으로 보며, 제2항을 적용하여 계약자가 특약의 취소를 선택할 수 있습",
+   "② 피보험자가 특약보험기간 중 암보장개시일 전일 이전에 \"납입면제의 대상이 되는 암(기타피부암 및 갑상선암 제외)\"으로 진단 확정된 경우 계약자"
+  ],
+  "status": "regold",
+  "n_cit": 9,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0154",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험 원(무배당.해약환급금 미지급형)납입면제 조건과 납입면제되는 부분이 어디까지야?",
+  "v4_sim": 1.0,
+  "v4_no": 335,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0028",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "[30일한도형]첫날부터입원특약의 보험금 지급한도는 어떻게 되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 21,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0069",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌경색 진단만받아도지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 255,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0095",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "대학병원외래진료도보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 268,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 5,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0090",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "대상포진걸리면진단금이나오나요?",
+  "v4_sim": 1.0,
+  "v4_no": 264,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0091",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "대상포진진단 특약의 보험금 지급사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 8,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0049",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "갱신형특약이기 때문에 비갱신형특약과 다르게 약관상 반영되는부분을 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 83,
+  "conf": "확정",
+  "missed": [
+   "보험료납입면제대상계약의 최종 갱신계약 보험기간 만료일이 피보험자의 100세 계약해당일 이후인 경우에는 100세 계약해당일로 합니다."
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 9,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0239",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "재해 이외의 원인이 질병/재해/질병및재해 분류표상에 어떻게 매칭할수있는지 확인해줘.",
+  "v4_sim": 1.0,
+  "v4_no": 126,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0272",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "체외충격파치료술(ESWT) 보장 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 174,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0275",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "통풍도진단만받으면되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 265,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0165",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "악성신생물 치료 목적의 수술에 해당되지 않는 경우 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 177,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0181",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암주요치료비가 무엇이야?",
+  "v4_sim": 1.0,
+  "v4_no": 219,
+  "conf": "확정",
+  "missed": [
+   "이 특약에 있어서 \"고액암 주요치료\"라 함은 「고액암」을 제거하거나 「고액암」의 증식을 억제하는 치료로서, 의학적으로 그 안전성과 유효성이 입증"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0070",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌경색도포함되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 236,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0085",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌혈관질환진단특약에서 뇌경색 포함되나요",
+  "v4_sim": 1.0,
+  "v4_no": 290,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0144",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "신한통합건강보장보험 원 주보장 감액이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 299,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0164",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "악성신생물 근치 사이버 나이프 정위적 방사선 치료가 어떤 치료야?",
+  "v4_sim": 1.0,
+  "v4_no": 180,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0159",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강원보험 납입면제대상계약",
+  "v4_sim": 1.0,
+  "v4_no": 328,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0208",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "위암 진단받았는데 납입면제 가능한지? 납입면제되면 갱신이 되는지?",
+  "v4_sim": 1.0,
+  "v4_no": 205,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0094",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "대장점막내암의 정의는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 38,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0259",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "주계약의 납입면제 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 1,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0138",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한(간편가입) 통합건강보험 원(ONE)의 장점이 뭔가요",
+  "v4_sim": 1.0,
+  "v4_no": 324,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0153",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험 원(무배당,갱신형) 상품의 뇌혈관, 허혈성심장 질환에 대해 보장되는 KCD 코드 알려주세요",
+  "v4_sim": 1.0,
+  "v4_no": 337,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"허혈심장질환\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제2025-299호, 2026. 1. 1 시행)"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0260",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "중입자치료가 항암방사선특약에 보장되는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 194,
+  "conf": "확정",
+  "missed": [
+   "비침습방광암의 직접적인 치료를 목적으로 특약보험기간 중 \"항암중입자방사선치료\"를 받았을 때에는 보험수익자에게 약정한 항암중입자방사선치료급여금(<"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0332",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "한시적 장해진단으로 지급받고 있다가 다른 부위 장해로 장해가 악화된 경우에는 어떻게 적용하나요?",
+  "v4_sim": 1.0,
+  "v4_no": 143,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0195",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "약관내용 중에 \"암의 직접적인 치료\"에 대한 정의를 별도조항으로 기술하는 약관이 있어?",
+  "v4_sim": 1.0,
+  "v4_no": 76,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0184",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암진단금 수령후 갱신가능여부알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 223,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0232",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "입원첫날부터지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 247,
+  "conf": "확정",
+  "missed": [
+   "피보험자가 질병 또는 재해로 인한 그 직접적인 치료를 목적으로 특약보험기간 중 1일 이상 계속하여 \"종합병원\"의 \"2인실 또는 3인실\"에 입원」"
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0152",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험 원(ONE)(무배당,해약환급금 미지급형)에서 항암방사선치료비 나올까",
+  "v4_sim": 1.0,
+  "v4_no": 352,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0059",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "교통사고로 추간판탈출증 장해 진단된 경우 장해보험금 청구시에 어떤 서류를 제출하나요?",
+  "v4_sim": 1.0,
+  "v4_no": 210,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0150",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험 ONE 에서는 스쿠버다이빙으로 인한 후유장해도 보상 돼?",
+  "v4_sim": 1.0,
+  "v4_no": 356,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0029",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "[허혈심장질환납입면제형]보험료납입면제특약의 납입면제 대상이 되는 허혈심장질환의 질병분류코드는 무엇인가요?",
+  "v4_sim": 0.92,
+  "v4_no": 3,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"허혈심장질환\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제2025-299호, 2026. 1. 1 시행)"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0130",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "소액암진단특약(제자리암진단비, 경계성종양진단비) 청구시 필요한 구비서류는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 42,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0346",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "허혈심장질환이심근경색보다좋은거예요?",
+  "v4_sim": 1.0,
+  "v4_no": 274,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"급성심근경색증\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제2025-299호, 2026. 1. 1 시행"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0324",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "특정질병이나 사고가 보장되는지 판단할때 필요한 핵심 조건이 뭐야?",
+  "v4_sim": 1.0,
+  "v4_no": 47,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0044",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "같은 약관 안에서 서로 충돌하거나 해석이 애매한 조항이 있는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 52,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0237",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "재입원하면 다시 보장 받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 249,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0003",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(355간편)신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형)",
+  "v4_sim": 1.0,
+  "v4_no": 333,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0104",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "물리치료도 암 재활치료에 포함되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 271,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0228",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "일반암진단시얼마를받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 230,
+  "conf": "확정",
+  "missed": [
+   "[LL26450] 특약보험가입금액의 100% (다만, 최초계약의 계약일부터 1년 미만에 지급사유가 발생한 경우 특약보험가입금액의 50%를 지급함",
+   "일반암진단급여금 | 특약보험기간 중 피보험자가 \"암\" 및 \"종종 갑상선암\" 보장개시일 이후에 \"여성유방암 및 전립선암\" 이외의 암 또는 \"종종 "
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0201",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "양성자치료도 항암치료에 포함되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 260,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0107",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보장개시일, 면책기간, 감액기간이 각각 언제부터 언제인지 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 49,
+  "conf": "확정",
+  "missed": [
+   "여성유방암, 전립선암의 경우 가입 후 90일간 보장 제외"
+  ],
+  "status": "regold",
+  "n_cit": 8,
+  "n_groups": 6,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0188",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암진단으로 급여6대질병지원금을 지급받고 1년 후 뇌혈관질환 진단이 된 경우 보장이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 186,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0330",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "표적항암치료가 해외에서 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 214,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0253",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)뇌혈관·허혈심장질환상급종합병원통원특약에서 하루에 여러 번 통원하면 통원급여금이 각각 지급되나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0018",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "6대 질병 장해 특약 납입면제이후 갱신시 보험료 납입면제 되는거야, 아님 납입해야해?",
+  "v4_sim": 1.0,
+  "v4_no": 201,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0295",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 원에서 뇌경색증 진단시 받을 수 있는 특약은 뭐야?",
+  "v4_sim": 1.0,
+  "v4_no": 300,
+  "conf": "확정",
+  "missed": [
+   "(간편)상급종합병원뇌혈관·허혈심장질환주요치료비특약(무배당, 해약환급금 미지급형) 계약일 : 2024년 10월 22일 특약보험가입금액 : 1,00",
+   "뇌경색증(163) 수술 1,000만원 지급 | 뇌경색증(163) 혈전용해치료 1,000만원 지급 | 미지급 | 뇌경색증(163) 중환자실치료 1"
+  ],
+  "status": "regold",
+  "n_cit": 9,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0041",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "갑상선암 진단금 수령후 남은 진단금 보장내용 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 195,
+  "conf": "확정",
+  "missed": [
+   "\"「여성유방암 및 전립선암」이외의 암\" 또는 \"중증 갑상선암\"으로 진단확정 되었을 때에는 보험수익자에게 일반암진단급여금(다만, 최초 1회의 진단"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0231",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "입원일당은몇일까지보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 248,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 4,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0288",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 one 보장내용알고 싶어",
+  "v4_sim": 1.0,
+  "v4_no": 298,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0027",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "[30일한도형]첫날부터입원특약은 면책기간(보상제외기간)이 있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 29,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0005",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(깁스치료특약)깁스치료에서 보장하지 않는 치료는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 36,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0022",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "FC에게 암수술 받았다고 했는데 청약서에 명시가 안되어 있는데, 보장이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 165,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0055",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "고혈압(원발성)약물치료특약의 소멸 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 5,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0292",
+  "split": "train",
+  "task_type": "comparison",
+  "q": "통합건강보험 원 특약중 일반암 진단1과 일반암 진단2 의 차이가 뭔가요?",
+  "v4_sim": 1.0,
+  "v4_no": 304,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0297",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 원은 간편가입으로 되어 있는데 표준체는 가입이 안되고 유병자만 가입이 되는가?",
+  "v4_sim": 1.0,
+  "v4_no": 358,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0256",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "주계약 납입면제 기준 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 196,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0217",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "이 약관에서 상품의 보장대상과 보장제외 대상을 한번에 요약해줘",
+  "v4_sim": 1.0,
+  "v4_no": 46,
+  "conf": "확정",
+  "missed": [
+   "특약보험기간 중 \"급여 전립선 바늘생검 조직병리진단\"을 받았을 때 : 급여 전립선 바늘생검 조직병리진단급여금 (다만, 연간 1회에 한함)\n…외 "
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 22,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0348",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "현재 납면상태인데 갱신이후 납면조건 유지되는지",
+  "v4_sim": 1.0,
+  "v4_no": 229,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0279",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강 뇌혈관질환 진단시 진단금",
+  "v4_sim": 1.0,
+  "v4_no": 284,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0141",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보장보험 ONE 특약 설명",
+  "v4_sim": 1.0,
+  "v4_no": 329,
+  "conf": "확정",
+  "missed": [
+   "② 건강보험 : 특약가입을 통해 진단, 입원, 수술 등을 보장하는 상품입니다."
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0142",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보장보험 ONE을 가입했는데 항암치료 특약이 여러 개 있는데 표적항암, CAR-T, 항암약물치료 중에서 일부를 줄이고 싶습니다. 그리고 입원비나 수술비 특약 중 중복되는 건 삭제해주세요. 대신 암 진단금. 고액암. 뇌출혈. 심근경색은 그대로 유지할게요.",
+  "v4_sim": 1.0,
+  "v4_no": 334,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 10,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0289",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "신한통합건강보장보험 원(ONE) 상품에서 소액암진단특약 보험금 지급 대상에 양성뇌종양이 포함되는가?",
+  "v4_sim": 0.8,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0073",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌전증 1회발작만으로 지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 267,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0074",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌질환진단금은몇번받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 237,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0183",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암주요치료비특약의 암주요치료 연간 보장 횟수는 어떻게 되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 25,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0019",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "6대 질병 장해특약 납입면제이후 갱신가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 200,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 6,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0097",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "류마티스 관절염진단 대상되는 코드알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 155,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0216",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "이 약관에서 AI가 답변하면 안되는 고위험 영역이나 반드시 사람확인이 필요한 항목은 뭐야?",
+  "v4_sim": 1.0,
+  "v4_no": 65,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0126",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "이 약관에서 \"상급종합병원\"이란 어떤 의료기관을 말하나요?",
+  "v4_sim": 0.19,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0246",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "전이암도보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 234,
+  "conf": "확정",
+  "missed": [
+   "[별점2] 표 5-3. 통합암(전이포함) 분류표\n[LNone] 회사는 특약보험기간 중 피보험자가 암보장개시일 이후에 \"전이암\"으로 진단확정 되었"
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0249",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "제자리암의 보장대상이 되는 질병분류 코드는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 11,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"제자리의 신생물\"로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제2025-299호, 2026. 1. 1 시행"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0345",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "해외에서 보장되지 않는 보장급부 또는 특약에 대해 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 224,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 8,
+  "n_groups": 5,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0081",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌혈관이랑뇌출혈은뭐가달라요?",
+  "v4_sim": 1.0,
+  "v4_no": 273,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"뇌혈관질환\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제 2025-299호, 2026. 1. 1 시행)"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0258",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "주계약과 특약의 관례를 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 58,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0037",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "간병인사용입원특약은 실제 간병인을 써야 하나요?",
+  "v4_sim": 0.68,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0109",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보장개시일전 진단되면 보장이 어떻게 돼? 해당특약만 소멸돼? 전체 소멸돼?",
+  "v4_sim": 1.0,
+  "v4_no": 162,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0226",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "일반병실입원도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 254,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "(간편)[30일한도영]첫날부터 입원특약(무배당, 해약환급금 미지급영) | 입원금여금 | 1회 입원당 30일 한도로 보장 (퇴원없이계속입원시180",
+   "종환자실에 입원하여 치료를 받던 중 \"종환자실 이외의 병실\"로 이전한 경우 종환자실의 퇴실일까지 제5항 및 제2-2조(보험금의 지급사유)에 따라"
+  ]
+ },
+ {
+  "qid": "v3-offline-0185",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암진단금은몇번받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 275,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0076",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌출혈 수술안하고 약물치료만해도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 256,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0240",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "재해골절 특약 치아파절 보장 가능한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 136,
+  "conf": "확정",
+  "missed": [
+   "특약보험기간 중 피보험자가 재해를 원인으로 특약보험기간 중 \"1~5등급 재해골절(치아파절 제외)\"로 진단확정 되었을 때 : 1~5등급 재해골절 "
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0067",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "납입면제는언제부터적용되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 277,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0177",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암이재발하면또받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 233,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0286",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 ONE 허혈심장질환진단특약에서 진단코드 I20.90코드 보장 받을 수 있나요",
+  "v4_sim": 0.92,
+  "v4_no": 314,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0547",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "해약환급금 미지급형 인공관절치환수술특약을 보험료 납입 중에 해지하면 환급금이 있나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0416",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암약물치료특약의 항암약물치료급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.21,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0458",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "[50%이상장해형] 6대질병장해특약에서 장해급여금을 받으려면 어떤 질병으로 인한 장해여야 하고 장해지급률은 몇 % 이상이어야 하나요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0485",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "대상포진과 통풍 중 하나만 골라서 가입할 수 있나요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0490",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보험금을 청구할 때 기본적으로 어떤 서류를 준비해야 하나요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0403",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여특정NGS유전자패널검사지원특약의 급여 특정NGS 유전자패널 검사 지원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0415",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약의 암, 대장점막내암 및 비침습방광암 주요치료급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0425",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약의 암, 대장점막내암 및 비침습방광암 주요치료급여금은 최대 몇 년간, 연간 몇 회, 최대 몇 회까지 지급되나요?",
+  "v4_sim": 0.22,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0508",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암세포가 없는 상태에서 면역력을 높이려고 약을 맞은 것도 항암약물치료에 포함되나요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0444",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)표적항암약물허가치료특약의 표적항암약물허가치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0446",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암양성자방사선치료특약의 항암양성자 방사선 치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0546",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "항암양성자방사선치료급여금의 지급 대상 암과 지급 횟수 한도는 어떻게 되나요?",
+  "v4_sim": 0.27,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0419",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환주요치료비특약의 \"뇌혈관질환 또는 허혈심장질환\" 주요치료급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.24,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0506",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "특정항암호르몬약물허가치료급여금은 어떤 경우에 지급되며, 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0402",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약의 [전문재활] 급여주요뇌심장질환특정재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0401",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약의 [단순재활] 급여주요뇌심장질환특정재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0479",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "납입면제 조건이 이미 발생한 뒤에도 납입면제특약만 따로 해지할 수 있나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0400",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약의 [기본물리] 급여주요뇌심장질환특정재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0529",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "질병수술(백내장및대장용종제외)특약은 어떤 수술을 보장하며, 동일 질병으로 여러 번 수술하면 매번 지급되나요?",
+  "v4_sim": 0.31,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0375",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]남녀특정암진단특약의 여성유방암진단급여금 지급률이 가입 경과기간에 따라 달라지나요? 구간별로 알려주세요.",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0377",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]일반암진단특약의 암진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0378",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]남녀특정암진단특약의 전립선암진단급여금 지급률이 가입 경과기간에 따라 달라지나요? 구간별로 알려주세요.",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0423",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)암수술특약의 암수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0370",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]소액암진단특약의 소액암 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0468",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 특정NGS 유전자패널 검사 지원급여금의 지급 대상 질병과 검사 목적, 연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0523",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "중증질환자[암] 산정특례대상 보장급여금은 진단만 받으면 지급되나요, 아니면 산정특례 신규 등록까지 해야 하나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0480",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환 또는 허혈심장질환으로 상급종합병원에서 주요치료를 받은 경우, 치료비는 몇 년 동안 몇 회까지 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0352",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)1-5종단일금액보장수술특약의 수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0450",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1-5종단일금액보장수술특약의 수술급여금은 연간 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0470",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여뇌심장질환 검사급여금은 연간 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0354",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)1-5종수술특약의 3종 수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0355",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)1-5종수술특약의 4종 수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0356",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)1-5종수술특약의 5종 수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0414",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)부정맥진단특약의 부정맥 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0390",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급성심근경색증진단특약의 급성심근경색증진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0449",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "1-5종단일금액보장수술특약의 수술급여금 지급 요건과 연간 지급 한도는 무엇인가요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0545",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "항암세기조절방사선치료급여금의 지급 대상 암과 지급 횟수 한도는 어떻게 되나요?",
+  "v4_sim": 0.22,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0436",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)질병수술특약의 질병수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0459",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "간병인사용입원특약에서 요양병원을 제외한 의료기관에 입원한 경우, 간병인사용 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0443",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정부정맥진단특약의 특정부정맥 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0489",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보험금을 받을 사람과 보험사가 지급 여부에 합의하지 못하면 어떻게 하나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0477",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여주요뇌심장질환특정재활치료특약의 전문재활치료 급여금은 어떤 경우에 지급되며, 하루와 연간 지급 횟수는 어떻게 제한되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0361",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[3~100%장해형]질병장해특약 가입자입니다. 질병으로 장해가 남았을 때 (3~100%) 질병장해급여금 대상이 되는 장해율 기준은 몇 %인가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0472",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "급여암특정재활치료특약에서 기본물리치료 급여금을 받을 수 있는 암의 범위와 치료 요건, 지급 횟수 한도는 무엇인가요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0476",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여주요뇌심장질환특정재활치료특약의 단순재활치료 급여금은 어떤 경우에 지급되며, 하루와 연간 지급 횟수는 어떻게 제한되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0367",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]고액암진단특약의 고액암 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0448",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)허혈심장질환진단특약의 허혈심장질환 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0551",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "허혈심장질환으로 상급종합병원에 입원한 경우, 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0509",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암수술특약에서 어떤 암의 직접 치료를 위한 수술이 암수술급여금 지급 대상인가요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0387",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)간병인사용입원특약의 간병인사용 입원 (요양병원 제외)급여금은 가입 후 2년 미만과 그 이후에 각각 얼마를 지급하나요?",
+  "v4_sim": 0.1,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0389",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급성심근경색증진단특약에서 급성심근경색증진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0391",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급성심근경색증진단특약의 급성심근경색증진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0362",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[3~100%장해형]질병장해특약의 (3~100%) 질병장해급여금은 보험가입금액과 장해지급률을 어떻게 적용해 계산하나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0488",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보험금을 대신 청구할 사람으로 누구를 지정할 수 있나요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0404",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌출혈진단특약에서 뇌출혈 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0364",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[50%이상장해형]질병장해특약 가입자입니다. 질병으로 장해가 남았을 때 (50%이상) 질병장해급여금 대상이 되는 장해율 기준은 몇 %인가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0365",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[50%이상장해형]질병장해특약의 (50%이상) 질병장해급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0385",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[삭감없음용]일반암진단특약의 암진단급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0525",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "진심을품은일반암진단Plus특약의 올페이Plus 급여금은 어떤 암으로 진단받았을 때 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 gold 비정상(status=ok, groups=0)"
+ },
+ {
+  "qid": "v3-offline-0526",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "진심을품은일반암진단특약의 올페이 급여금은 어떤 암으로 진단받았을 때 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 gold 비정상(status=ok, groups=0)"
+ },
+ {
+  "qid": "v3-offline-0475",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여주요뇌심장질환특정재활치료특약의 기본물리치료 급여금은 어떤 경우에 지급되며, 하루와 연간 지급 횟수는 어떻게 제한되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0484",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환으로 상급종합병원에 입원한 경우, 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0388",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)간병인사용입원특약의 간병인사용 입원 (요양병원 제외)급여금은 가입 후 얼마가 지나야 전액을 받을 수 있나요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0494",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보험료를 자동대출로 납입하는 상태를 계속 유지할 수 있나요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0411",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관질환진단특약에서 뇌혈관질환 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.28,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0469",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 혈관조영술 검사급여금은 어떤 목적으로 검사를 받아야 지급되며, 연간 몇 회까지 보장되나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0471",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여뇌심장질환특정검사지원특약의 검사급여금은 어떤 목적으로 검사를 받아야 지급되며, 연간 몇 회까지 보장되나요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0447",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)허혈심장질환진단특약에서 허혈심장질환 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0464",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 갑상선 바늘생검 조직병리진단급여금은 연간 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0549",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "허혈심장질환 치료를 위해 상급종합병원에 통원하면 하루와 연간 몇 회까지 통원급여금을 받을 수 있나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0500",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약에서 기타피부암 및 갑상선암 주요치료급여금은 최초 진단확정일로부터 최대 몇 년간, 몇 회까지 지급되나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0497",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "사고로 치아 이외의 부위가 골절된 경우 재해골절 치료급여금을 받을 수 있나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0409",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환입원특약의 뇌혈관질환 입원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0410",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환입원특약의 허혈심장질환 입원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0496",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약에서 '기타피부암 및 갑상선암 보험금 지급기간'은 어떻게 정해지나요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0462",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "같은 질병으로 여러 번 입원해 간병인을 사용하면 입원할 때마다 185일씩 보장되나요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0504",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "암 MRI검사 지원비는 계약일부터 1년 미만일 때와 1년 이후에 각각 얼마가 지급되나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 gold 비정상(status=ok, groups=0)"
+ },
+ {
+  "qid": "v3-offline-0380",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]허혈심장질환진단특약에서 허혈심장질환진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0379",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]뇌혈관질환진단특약에서 뇌혈관질환진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.27,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0426",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)암주요치료비특약의 암, 대장점막내암 및 비침습방광암 항암호르몬약물 치료급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.22,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0510",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암주요치료비특약 가입자가 사망하면 특약과 적립금은 어떻게 되나요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0521",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "제자리암이라는 결과를 받았는데 어떤 검사를 기준으로 진단이 확정되나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 gold 비정상(status=partial, groups=0)"
+ },
+ {
+  "qid": "v3-offline-0434",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)질병수술(8대특정수술제외)특약의 질병수술 (8대특정수술 제외)급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0435",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)질병수술(백내장및대장용종제외)특약의 질병수술 (백내장 및 대장용종 제외)급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.4,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0482",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]뇌혈관질환진단특약의 뇌혈관질환진단급여금은 계약일부터 1년 미만에 진단확정되면 절반으로 감액되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0491",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보험금을 한 번 받은 뒤에도 주계약이 계속 유지되나요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0502",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "설계사가 준 안내자료와 약관 내용이 다르면 어느 내용으로 계약된 것으로 보나요?",
+  "v4_sim": 0.09,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0486",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "보험금을 거절당한 뒤 질병 코드 기준이 바뀌어 새 기준으로는 보장 대상이 되었습니다. 기존 거절 결과도 다시 판단하나요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0463",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "고액암으로 두 번 진단받으면 진단급여금도 두 번 받을 수 있나요?",
+  "v4_sim": 0.25,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0522",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "주계약 보험료는 암이나 질병을 진단받으면 자동으로 납입이 면제되나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0532",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "청약하면 승낙이 나기 전까지는 보장을 못 받나요?",
+  "v4_sim": 0.1,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0493",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보험료를 연체했는데 별도 안내 없이 바로 계약이 해지되나요?",
+  "v4_sim": 0.19,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0518",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "약관 문구의 뜻이 애매하면 보험사에게 유리하게 풀어야 하나요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0483",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환으로 상급종합병원에 입원하면 입원급여금은 하루에 얼마씩 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0550",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "허혈심장질환으로 상급종합병원에 입원하면 입원급여금은 하루에 얼마씩 지급되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0338",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "해당 상품에서 자체 납입면제사유를 가지고 있는 특약리스트를 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 43,
+  "conf": "확정",
+  "missed": [
+   "(간편)[뇌혈관질환납입면제형]보험료납입면제특약(무배당, 갱신형) 56",
+   "2. 피보험자가 [일반암진단 보장계약]에서 \"암\" 및 \"중증 갑상선암\" 보장개시일 이후 \"「여성유방암 및 전립선암」이외의 암\" 또는 \"중증 갑상",
+   "3. 피보험자가 [남녀특정암진단 보장계약]에서 암보장개시일 이후 \"여성 유방암\" 또는 \"전립선암\"으로 최초 진단확정 되었을 경우",
+   "회사는 특약보험기간 중 피보험자가 허혈심장질환으로 진단 확정되었을 때 차회 이후의 \"보험료납입면제대상계약\"의 보험료 납입을 면제하여 드립니다.",
+   "보장개시일(\"암\"의 경우 암보장개시일) 이후 「암, 대장점막내암, 비침습방광암, 기타피부암 또는 갑상선암」으로 최초 진단확정 되었을 때에는 이 ",
+   "2. 피보험자가 암보장개시일 이후 제2-1조의3…에서 정한 \"납입면제의 대상이 되는 암(기타피부암 및 갑상선암 제외)\"으로 진단 확정되었을 경우"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 11,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0333",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "한쪽무릎 인공관절치환술 받았는데 장해급여금 청구 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 144,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0197",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "약관에서 자주 헷갈리는 용어를 찾아서 정의해줘",
+  "v4_sim": 1.0,
+  "v4_no": 54,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 4,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0325",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "파킨슨병 진단받았는데 정신및 행동장해질환 관련 보장도 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 145,
+  "conf": "확정",
+  "missed": [
+   "| 허혈발작 | G20 | | | 파킨슨병 | G21 | | | 이차성 파킨슨증 | G21 |",
+   "타) 각종 기질성 정신장해와 외상후 뇌전증에 한하여 보상한다."
+  ],
+  "status": "regold",
+  "n_cit": 7,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0316",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "통합상해보장특약에 보험금 청구 구비서류알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 208,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0166",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "안녕하세요. 신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형) 보험으로 어깨 mri촬영시 환급이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 359,
+  "conf": "확정",
+  "missed": [
+   "| (간편)암특정검사지원특약(무배당, 갑신형) | 암 MRI검사 지원비 | 암(기타피부암, 갑상선암, 대장점막내암 및 비침습방광암 제외)의 경우",
+   "\"MRI촬영\" 및 \"초음파 검사\"라 함은 의료기관에서 의사에 의하여 피보험자의 암, 기타피부암, 갑상선암, 대장점막내암, 비침습방광암, 제자리암"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0125",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "상급종합병원(국립암센터 및 원자력병원 포함)암주요치료비특약의 보장대상이 되는 의료기관은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 13,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "이 특약에 있어서 \"상급종합병원(국립암센터 및 원자력병원 포함)\"이라 함은 \"상급종합병원\", \"국립암센터\" 및 \"원자력병원\"을 말하며, 의료법 "
+  ]
+ },
+ {
+  "qid": "v3-offline-0264",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "진단특약80plus 상품들에서 감액 후 연장형 계약으로의 전환도 가능한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 74,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "계약자는 유효한 보장형 계약에 한하여, 회사가 정한 방법에 따라 보장형 계약의 보험기간 종료일 전일까지 연장형 계약으로 전환을 신청할 수 있습니",
+   "② 제1항에도 불구하고 다음 중 어느 한 가지에 해당하는 경우에는 연장형 계약으로 전환할 수 없습니다. 1. 제2-9조(특약의소멸)에서 정한 바",
+   "⑥ 연장형 계약의 각 보장계약별 보험가입금액은 보장형 계약의 각 보장계약별 보험가입금액과 동일하게 적용합니다"
+  ]
+ },
+ {
+  "qid": "v3-offline-0113",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보험금 지급 조건을 항목별로 나눠서 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 50,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0157",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험원(ONE)에서 1~5종 수술비 특약이 있는데 그렇다면 1~5종 수술분류표 보내줘",
+  "v4_sim": 1.0,
+  "v4_no": 310,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0147",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보장보험원 수술분류표 알려죠",
+  "v4_sim": 1.0,
+  "v4_no": 355,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0321",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "이 약관의 '본인일부부담금 산정특례 심장질환의 수술' 분류표에서 '부분체외순환'과 '체외순환막형산화요법'에 해당하는 수술코드는 무엇인가요?",
+  "v4_sim": 0.22,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0009",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "00(ex.치매, 암)의 치료를를 보장하는 상품이 있는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 77,
+  "conf": "확정",
+  "missed": [
+   "회사는 특약보험기간 중 피보험자가 고액암보장개시일 이후에 \"고액암\"으로 진단확정 되고, 그 \"고액암\"의 직접적인 치료를 목적으로 특약보험기간 중",
+   "그 질병의 치료를 직접적인 목적으로 \"치료 또는 수술\"을 받기 위하여 \"치료일자 또는 수술일자\"를 예약한 경우로서"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0261",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "중증 갑상선암은 갑산선암 진단 기준과 다른 건가요?",
+  "v4_sim": 1.0,
+  "v4_no": 156,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0127",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "상급종합병원암주요치료비에서 암수술받으면 종합병원암주요치료비에서도 중복보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 216,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "이 특약에 있어서 \"종합병원\"이라 함은 의료법 제3조의3(종합병원)에서 규정(<별첨1> 참조)한 종합병원을 말하며, 의료법 제3조의4(상급종합병",
+   "「암, 대장점막내암 또는 비침습방광암」의 직접적인 치료를 목적으로 상급종합병원(국립암센터 및 원자력병원 포함)에서 \"암, 대장점막내암 및 비침습"
+  ]
+ },
+ {
+  "qid": "v3-offline-0071",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌경색인데 진단급여금 보장돼? 보장되는 진단 코드 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 153,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0440",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)허혈심장질환수술특약의 허혈심장질환 수술급여금은 계약일부터 1년 미만에 지급사유가 발생한 경우와 그 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0027",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)질병수술(8대특정수술제외)특약에서 \"수술(제왕절개 제외)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0006",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여암특정재활치료특약에서 \"급여암특정재활치료(기본물리치료)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0007",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여암특정재활치료특약에서 \"급여암특정재활치료(단순재활치료)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0012",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환주요치료비특약에서 \"종합병원 중환자실치료\"의 정의는 무엇인가요?",
+  "v4_sim": 0.23,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0003",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)카티(CAR-T)항암약물허가치료특약에서 \"카티(CAR-T)항암약물허가치료 적응증\"의 정의는 무엇인가요?",
+  "v4_sim": 0.33,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0002",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)카티(CAR-T)항암약물허가치료특약에서 \"카티(CAR-T)항암약물치료제\"의 정의는 무엇인가요?",
+  "v4_sim": 0.34,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0034",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "경증이상치매보장특약에서 \"중등도이상치매상태\"의 정의는 무엇인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0025",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[9대관절척추질병]신수술특약에서 \"9대관절척추질병\"의 정의는 무엇인가요?",
+  "v4_sim": 0.25,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0035",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "중증치매보장특약에서 \"중증치매상태\"의 정의는 무엇인가요?",
+  "v4_sim": 0.3,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0020",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]신수술특약에서 \"급여수술\"의 정의는 무엇인가요?",
+  "v4_sim": 0.29,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0030",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)중증질환자[암]산정특례대상보장특약에서 \"중증질환자[암] 산정특례 신규암 등록\"의 정의는 무엇인가요?",
+  "v4_sim": 0.21,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0004",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암호르몬약물허가치료특약에서 \"특정항암호르몬치료제\"의 정의는 무엇인가요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0032",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "중증치매산정특례대상보장특약에서 \"중증치매 | 산정특례대상\"의 정의는 무엇인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0005",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암호르몬약물허가치료특약에서 \"갑상선암수술후항암호르몬치료제\"의 정의는 무엇인가요?",
+  "v4_sim": 0.28,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0009",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정순환계질환진단특약에서 \"특정순환계질환(1종~3종)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0010",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정순환계질환진단특약에서 \"특정순환계질환(2종~3종)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0021",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[질병별]신수술특약에서 \"뇌혈관질환Ⅲ\"의 정의는 무엇인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0019",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정류마티스관절염진단특약에서 \"특정 류마티스 관절염\"의 정의는 무엇인가요?",
+  "v4_sim": 0.25,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0011",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정순환계질환진단특약에서 \"특정순환계질환(3종)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.25,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0245",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "재해장해특약에서 보장제외 재해는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 34,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0271",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "청구서류 목록을 보장사유별로 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 61,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 8,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0248",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "정기특약에서 고의사고로 인한 사망시 예외적으로 보장하는 경우는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 15,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0123",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "삭감, 면책, 체증/체감 등 보장금액이 기간에 따라 달라지는 주/특 상품들 정리",
+  "v4_sim": 1.0,
+  "v4_no": 121,
+  "conf": "확정",
+  "missed": [
+   "(간편)[남녀특정암납입면제형]보험료납입면제특약(무배당, 갱신형) | 보험료납입면제대상계약의 보험료 납입 면제 | 여성유방암, 전립선암의 경우 가"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0011",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1-5종 수술특약에서 보험금을 지급하지 않는 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 31,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "회사는 다음 중 어느 한 가지로 보험금 지급사유가 발생한 때에는 보험금을 지급하지 않습니다. 1. 피보험자가 고의로 자신을 해친 경우 2. 보험"
+  ]
+ },
+ {
+  "qid": "v3-offline-0101",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "면책기간, 삭감기간, 삭감비율 등 보장별 제한사항등을 담보별 특약별로 요약해서 보여줘",
+  "v4_sim": 1.0,
+  "v4_no": 82,
+  "conf": "확정",
+  "missed": [
+   "주계약 | 사망보험금 | 간편심사형의 경우 가입 후 2년간 재해 이외의 원인으로 지급사유 발생시 2년이후에 지급하는 보험금의50%지급",
+   "입원급여금 ... 을 지급합니다. (다만, 입원일수 1일당, 1회 입원당 10일 한도)",
+   "보장형 계약의 경우 계약일부터 그 날을 포함하여 90일이 지난 날의 다음날로 하며, 연장형 계약의 경우 \"연장형 계약의 전환일\"로 합니다",
+   "사용일수는 각각 1회 입원당 185일을 최고 한도로 합니다."
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 10,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0102",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "면책기간을 특약별로 알려줘(예 : 고혈압, 당뇨, 암 등)",
+  "v4_sim": 1.0,
+  "v4_no": 227,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 9,
+  "n_groups": 7,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0234",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "자궁근종수술 1차 진행후 3개월 후 2차 재수술한 경우 보장이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 173,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0293",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 원 특정순환계질환 범위",
+  "v4_sim": 1.0,
+  "v4_no": 336,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"특정순환계질환\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제2025-299호, 2026. 1. 1 시행",
+   "| 2종 | 폐성심장병 및폐순환의 질환 | 폐색전증 | 126 |",
+   "| 3종 | 뇌출혈 | I60 |"
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0254",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "주/특별 소멸사유, 무효/취소 사유, 실효사유, 납입면제 사유 등 정리",
+  "v4_sim": 1.0,
+  "v4_no": 122,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 7,
+  "n_groups": 6,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0058",
+  "split": "train",
+  "task_type": "comparison",
+  "q": "교통사고로 척추골절되어 장해진단 받았는데 AMA 방식의 운동각도 기재된 진단서를 제출하라고 하는데 무슨 차이가 있는건지?",
+  "v4_sim": 1.0,
+  "v4_no": 150,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0062",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여암특정통증완화치료 중 '급여 신경차단술'에 해당하기 위해 충족해야 하는 조건은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 40,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0323",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "특정질병분류표에서 병명이 당뇨병인 분류코드랑, 세부내용 같이 뽑아주고 만약 주석에도 당뇨(병)이라는 말 있으면 같이 뽑아줘",
+  "v4_sim": 1.0,
+  "v4_no": 119,
+  "conf": "확정",
+  "missed": [
+   "| 1형 당뇨병 | E10 | | 2형 당뇨병 | E11 | | 영양실조-관련 당뇨병 | E12 | | 기타 명시된 당뇨병 | E13 | | 상"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0131",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "소액암진단특약의 보장대상 암은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 10,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0251",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[30일한도형]첫날부터입원특약의 보험금 지급에 관한 세부규정 상 지급기준은 무엇인가요?",
+  "v4_sim": 0.57,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0106",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "보장개시일(암, 치매, 치아치료등 )이 언제부터인지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 161,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0100",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "면역항암치료도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 258,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0169",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "암 보장개시일 이전 진단시 계약무효에 해당되는 특약 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 167,
+  "conf": "확정",
+  "missed": [
+   "피보험자가 특약보험기간 중 암보장개시일 전일 이전에 진단 확정된 \"납입면제의 대상이 되는 암(기타피부암 및 갑상선암 제외)\"이 \"전이암\"인 경우",
+   "다음에 해당되는 경우에는 [상급 종합병원(국립암센터 및 원자력병원 포함) 암, 대장점막내암 및 비침습 방광암 주요치료 보장계약]을 무효로 하며"
+  ],
+  "status": "regold",
+  "n_cit": 13,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0351",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "협심증도보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 238,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0243",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "재해장해 특약 장해금여금 수령후 장해진단 추가판정시 지급기준 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 134,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0082",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "뇌혈관질환도납입면제가되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 262,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0225",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "인공관절 무릎수술받았는데 질병장해 청구가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 139,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0328",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "표적항암약물허가치료특약의 납입면제 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 2,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0170",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암 보장개시일과 무효조건 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 166,
+  "conf": "확정",
+  "missed": [
+   "피보험자가 \"암\" 및 \"중증 갑상선암\" 보장개시일 전일 이전에 \"「여성유방암 및 전립선암」이외의 암\" 또는 \"중증 갑상선암\"으로 진단이 확정되는"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0149",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "신한통합건강보장보험이 20년 납입후 보장은 언제까지 받을 수 있니.",
+  "v4_sim": 1.0,
+  "v4_no": 351,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0265",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "진료수가코드가 뭐야?",
+  "v4_sim": 1.0,
+  "v4_no": 184,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0021",
+  "split": "train",
+  "task_type": "exhaustive_list",
+  "q": "F04로 치매진단되었는데 질병장해특약에서 어떤 보장이 있어?",
+  "v4_sim": 1.0,
+  "v4_no": 138,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 5,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0227",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "일반심사에서 간편심사로 가입 변경 가능한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 127,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0040",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "간편가입 통합건강보험원의 고액암진담금은 어떤 암일 때 해당하나요.?",
+  "v4_sim": 1.0,
+  "v4_no": 311,
+  "conf": "확정",
+  "missed": [
+   "[LL21642] ※ 고액암 : 백혈병, 뇌암, 골수암, 췌장암 등 (세부사항은 <부표2-3> 참조)",
+   "약관에서 정한 \"고액암\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제 2025-299호, 2026. 1. 1 시행) 중"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0013",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1급장해시 주계약에서 사망보장이 되는데 그러면 특약은 소멸돼? 아님 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 178,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0350",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "혈전용해치료가 뭐야? 보장제한이 있어?",
+  "v4_sim": 1.0,
+  "v4_no": 182,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0303",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험원 책임준비금",
+  "v4_sim": 1.0,
+  "v4_no": 320,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0105",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "방사선치료를여러번받아도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 259,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0020",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "7년전 암진단 받으신 고객님이 ,신한(간편가입)통합건강보험 원(ONE) 간편심사(355)형 으로 암진단특약을 가입하신후  암이 재발해 진단 받았을 경우 암진단비 지급가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 305,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 4,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0135",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "스텐트시술도진단금이나오나요?",
+  "v4_sim": 1.0,
+  "v4_no": 239,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0079",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌출혈진단특약은 보험금 감액기간이 있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 26,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0134",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "수술만하면무조건지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 242,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0143",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보장보험 가입 되어 있는데 수술보장이 되는지?",
+  "v4_sim": 1.0,
+  "v4_no": 338,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0122",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "사망으로 고혈압(원발성)약물치료특약이 소멸되는 경우, 계약자에게 지급하는 금액이 있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 6,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0178",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "암주요 치료비 연간1회의 기준에서 연간은 언제부터 언제까지야~?",
+  "v4_sim": 1.0,
+  "v4_no": 213,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0278",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "통합건강 납입면제 가입해야지 면제되나요",
+  "v4_sim": 1.0,
+  "v4_no": 280,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0311",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "통합건강원 보험료 납입면제특약 따로 넣어야하나요",
+  "v4_sim": 1.0,
+  "v4_no": 288,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0155",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보험에 소액암이 자궁경부 제자리암도 포함되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 295,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0314",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강원보험에 일반암2천,남녀특정암2천 특약가입시 유방암진단시 진단비는 얼마인가요",
+  "v4_sim": 1.0,
+  "v4_no": 287,
+  "conf": "확정",
+  "missed": [
+   "여성유방암진단급여금 | 특약보험기간 중 피보험자가 암보장개시일 이후에 \"여성유방암\"으로 진단확정 되었을 때<br>(다만, 최초 1회의 진단확정에"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0300",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "통합건강보험에 있는 통합암 특약에 갑상선암 같은 소액암도 포함되?",
+  "v4_sim": 1.0,
+  "v4_no": 303,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "소장·대장·항문암 및기타암(전이포함)(대장점막내암 포함)",
+   "\"통합암(전이포함)\"이라 함은 ... 다만, 기타피부암, 갑상선암 또는 전암(前癌) 상태(암으로 변하기 이전 상태)는 제외합니다."
+  ]
+ },
+ {
+  "qid": "v3-offline-0017",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "6대 질병 구성요소에 대해 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 128,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0290",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "통합건강보험 원 질병수술비중 대장용종은 얼마나 지급되나요",
+  "v4_sim": 1.0,
+  "v4_no": 349,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0086",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환진단특약에서 뇌출혈만 보장되나요",
+  "v4_sim": 1.0,
+  "v4_no": 289,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0092",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)대상포진·통풍진단특약의 대상포진 보장대상이 되는 질병분류 코드는 무엇인가요?",
+  "v4_sim": 0.73,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0454",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "6대질병으로 장해지급률 50% 이상의 장해가 생긴 경우, 장해급여금은 최초 한 번만 지급되나요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0445",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암세기조절방사선치료특약의 항암세기조절 방사선 치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0455",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "6대질병으로 중환자실에 입원한 경우 입원급여금을 받을 수 있는 질병 범위와 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0544",
+  "split": "train",
+  "task_type": "exhaustive_list",
+  "q": "표적항암약물허가치료급여금은 어떤 암의 직접 치료를 위해 해당 치료를 받은 경우 지급되며, 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0396",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여바늘생검조직병리진단특약의 급여 전립선 바늘생검 조직병리진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.27,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0394",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여바늘생검조직병리진단특약의 급여 갑상선 바늘생검 조직병리진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.27,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0418",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)첫날부터상급종합병원입원특약의 상급종합병원 입원급여금은 가입 후 1년 미만에 재해 이외의 원인으로 지급사유가 발생한 경우와 그 외의 경우 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0395",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여바늘생검조직병리진단특약의 급여 유방 바늘생검 조직병리진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.28,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0369",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]소액암진단특약에서 소액암 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0371",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]소액암진단특약의 소액암 진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0451",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1-5종수술특약에서 3종 수술급여금의 지급 대상이 되는 수술은 무엇인가요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0452",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1-5종수술특약에서 4종 수술급여금의 지급 대상이 되는 수술은 무엇인가요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0392",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여뇌심장질환특정검사지원특약의 급여 뇌심장질환 검사급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0393",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)급여뇌심장질환특정검사지원특약의 급여 혈관조영술 검사급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0453",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "1-5종수술특약에서 5종 수술급여금의 지급 대상이 되는 수술은 무엇인가요?",
+  "v4_sim": 0.33,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0373",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]일반암진단특약에서 암진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0376",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]일반암진단특약의 암진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0429",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)정기특약의 사망보험금은 가입 후 2년 미만과 그 이후에 각각 얼마를 지급하나요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0405",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌출혈진단특약의 뇌출혈 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0366",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]고액암진단특약에서 고액암 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0368",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]고액암진단특약의 고액암 진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0412",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관질환진단특약의 뇌혈관질환 진단급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.15,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0413",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)부정맥진단특약에서 부정맥 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0442",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)특정부정맥진단특약에서 특정부정맥 진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.16,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0465",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 갑상선 바늘생검 조직병리진단급여금의 지급 요건과 연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0531",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "질병으로 장해지급률 50% 이상의 장해가 생긴 경우, 질병장해급여금은 최초 한 번만 지급되나요?",
+  "v4_sim": 0.13,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 gold 비정상(status=ok, groups=0)"
+ },
+ {
+  "qid": "v3-offline-0478",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)항암약물치료특약[일반심사형]에서 기타피부암·갑상선암·제자리암·경계성종양의 항암약물치료급여금은 어떤 경우에 몇 회까지 지급되나요?",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0384",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[삭감없음용]일반암진단특약에서 암진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.17,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0381",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]뇌혈관질환진단특약의 뇌혈관질환진단급여금 지급액은 특약보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0357",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)혈전용해치료특약에서 급성뇌경색증혈전용해치료급여금을 받으려면 어떤 질병으로 진단받고 어떤 치료를 받아야 하나요? 지급 횟수도 알려주세요.",
+  "v4_sim": 0.11,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0372",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[삭감없음용]남녀특정암진단특약에서 여성유방암진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0374",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[삭감없음용]남녀특정암진단특약에서 전립선암진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?",
+  "v4_sim": 0.14,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0383",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]허혈심장질환진단특약의 허혈심장질환진단급여금 지급액은 특약보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.2,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0467",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 전립선 바늘생검 조직병리진단급여금의 지급 요건과 연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.32,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0466",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "급여 유방 바늘생검 조직병리진단급여금의 지급 요건과 연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.33,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0420",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)[180일한도형]첫날부터입원특약의 입원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.25,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0358",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)혈전용해치료특약의 급성뇌경색증혈전용해치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0360",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)혈전용해치료특약의 특정 급성심근경색증혈전용해치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0421",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)상급종합병원질병수술특약의 상급종합병원 질병수술급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0408",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)뇌혈관·허혈심장질환상급종합병원통원특약의 허혈심장질환 상급종합병원 통원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.12,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0457",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "NGS 유전자패널 검사를 가입 후 1년이 되기 전에 받으면 얼마를 지급하나요?",
+  "v4_sim": 0.09,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0456",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "CT나 MRI 없이도 급성뇌경색증 진단으로 인정받을 수 있나요?",
+  "v4_sim": 0.21,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0534",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "(간편)뇌혈관·허혈심장질환주요치료비특약에서 '뇌혈관질환 또는 허혈심장질환 주요치료'에는 어떤 치료가 포함되며, 주요치료급여금은 연간 몇 회까지 지급되나요?",
+  "v4_sim": 0.21,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0223",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "이상품의 해약환급금, 감액, 부활 관련 규정을 쉽게 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 60,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0337",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "항암중입자방사선치료가 암주요치료에 해당되는지 알줘",
+  "v4_sim": 1.0,
+  "v4_no": 158,
+  "conf": "확정",
+  "missed": [
+   "\"항암중입자방사선치료\"라 함은 제2-1조의5(\"항암방사선치료\"의 정의)에서 정한 \"항암방사선치료\" 중 ... 전리화된 탄소, 헬륨 등(수소 제외"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0281",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "통합건강 원의 총 특약 갯수",
+  "v4_sim": 1.0,
+  "v4_no": 286,
+  "conf": "확정",
+  "missed": [
+   "특약약관_일반사항 | 119 (간편)[10일한도형]첫날부터입원특약(무배당, 해약환급금 미지급형) | 137",
+   "| 특정척추질환보장특약(무배당, 해약환급금 미지급형) | 3,915 |",
+   "| 보험금 대리청구 지정서비스특약 | 3,945 | ... | 표준하체인수특약 | 4,007 |",
+   "(간편)[기본]소액암진단특약80Plus(무배당, 해약환급금 미지급형)",
+   "(간편)[기본]암진단특약(무배당, 갱신형)",
+   "(간편)[삭감없음용]뇌혈관·허혈심장질환진단특약(무배당, 갱신형)",
+   "(간편)[삭감없음용] 뇌혈관·허혈심장질환진단특약80Plus (무배당, 해약환급금 미지급형)",
+   "(간편)[삭감없음용]소액암진단특약80Plus(무배당, 해약환급금 미지급형)",
+   "(간편)[삼감없음용]암진단특약 (무배당, 해약환급금 미지급형)",
+   "(간편)1-5종수출특약",
+   "(간편)2대질병혈전용해치료특약",
+   "(간편)간병인사용입원특약(181-365일)(무배당, 갱신형)",
+   "(간편)간병인사용입원특약(181-365일)(무배당, 해약환급금 미지급형)",
+   "(간편)급여6대질병진단검사지원특약(무배당, 갱신형)\n…외 126개"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0298",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험가입자인데 암담보보장은 어떻게되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 354,
+  "conf": "확정",
+  "missed": [
+   "이 보험에는 보험금이 지급되지 않는 기간(면책 기간)이 설정된 담보가 있습니다. (1) 보험금 지급제한 사항 먼저기간, 감액지급 및 보장한도 등",
+   "② 건강보험 : 특약가입을 통해 진단, 입원, 수술 등을 보장하는 상품입니다."
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0064",
+  "split": "train",
+  "task_type": "not_answerable",
+  "q": "난임치료특약(기혼자형) 가입되어있는데 난입치료중이야 필요서류 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 207,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0202",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "양쪽 난소제거를 했는데 납입면제 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 204,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0274",
+  "split": "train",
+  "task_type": "multi_evidence",
+  "q": "치아파절 또는 S02 질병코드가 (간편)재해골절치료특약의 재해골절치료급여금에 해당되는지 알려줘",
+  "v4_sim": 0.53,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0028",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)상급종합병원질병수술특약에서 \"상급종합병원 수술\"의 정의는 무엇인가요?",
+  "v4_sim": 0.28,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0033",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "희귀질환자산정특례대상보장특약에서 \"희귀질환자 산정특례대상\"의 정의는 무엇인가요?",
+  "v4_sim": 0.26,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-generated-def-0029",
+  "split": "train",
+  "task_type": "single_lookup",
+  "q": "(간편)중증질환자[암]산정특례대상보장특약에서 \"중증질환자[암] 본인일부부담금 산정특례 대상 질병\"의 정의는 무엇인가요?",
+  "v4_sim": 0.19,
+  "status": "keep_v3"
+ },
+ {
+  "qid": "v3-offline-0033",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "각 납입면제 형태에 대해 납입면제특약이 아닌 상품과 보장의 포함관계를 정리",
+  "v4_sim": 1.0,
+  "v4_no": 120,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 8,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0196",
+  "split": "test",
+  "task_type": "exhaustive_list",
+  "q": "약관안에 있는 면책사유를 모두 찾아서 쉬운말로 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 48,
+  "conf": "확정",
+  "missed": [
+   "1. 피보험자가 고의로 자신을 해친 경우\n…외 59개"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0309",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강원 1~5종 수술분류표",
+  "v4_sim": 1.0,
+  "v4_no": 294,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0283",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강보장보험 원에서 고액암이란?",
+  "v4_sim": 1.0,
+  "v4_no": 326,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"고액암\"으로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제 2025-299호, 2026. 1. 1 시행) 중"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0310",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강원 고액암 분류표",
+  "v4_sim": 1.0,
+  "v4_no": 309,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0111",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "보장하고있는 암의 범위를 특약별로 정리해봐",
+  "v4_sim": 1.0,
+  "v4_no": 114,
+  "conf": "확정",
+  "missed": [
+   "[별첨2] 표 5-5. 납입면제의 대상이 되는 악성신생물(암) 분류표(기타피부암 및 갑상선암 제외) | 4,091",
+   "「암, 대장점막내암, 비침습방광암, 기타피부암 또는 갑상선암」의 직접적인 치료를 목적으로 \"비급여(전액본인부담 포함)암 주요치료\"를 받은 경우"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 11,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0117",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "보험금이 지급되지 않는 경우를 사례 중심으로 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 51,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0176",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "암의 진단확정 기준은 무엇인가요? 급성심근경색증의 진단확정 기준은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 41,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0336",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "항암방사선치료, 경계성 종양, 대장점막암 등 정의 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 151,
+  "conf": "확정",
+  "missed": [
+   "[LL22719] ① 이 특약에 있어서 \"경계성종양\"이라 함은 제9차 개정 한국표준질병·사인분류 중 <부표2-3> \"행동양식 불명 또는 미상의 ",
+   "\"대장점막내암\"이라 함은 대장의 악성신생물(암)(C18~C20)에 해당하는 질병 중에서 대장의 상피세포층에서 발생한 악성종양 세포가 기저막을 뚫"
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0194",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "약관 변경이 생겼을때 기존 가입자에게 어떤 기준이 적용되는지 설명해줘",
+  "v4_sim": 1.0,
+  "v4_no": 59,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0129",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "선진 의료적 첨단수술에 대한 인정기준 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 181,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0280",
+  "split": "test",
+  "task_type": "document_global",
+  "q": "통합건강 보험료 납입면제 특약들 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 291,
+  "conf": "확정",
+  "missed": [
+   "(간편)[남녀특정암납입면제형]보험료납입면제특약(무배당, 갱신형) | 보험료납입면제대상계약의 보험료 납입 면제 | 여성유방암, 전립선암의 경우 가",
+   "[중등도이상치매납입면제형] 보험료납입면제특약(무배당, 해약환급금 미지급형) | 보험료납입면제대상계약의 보험료 납입 면제 | 가입 후 2년간 보장",
+   "(간편)[일반암납입면제형]보험료납입면제특약(무배당, 갱신형) 90"
+  ],
+  "status": "regold",
+  "n_cit": 10,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0093",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "대장용종 제거하였는데  당시 신한(간편가입)통합건강보험 원(one) 가입가능할가요?",
+  "v4_sim": 1.0,
+  "v4_no": 297,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0187",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암진단시 납입면제 해당되는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 197,
+  "conf": "확정",
+  "missed": [
+   "특약보험료 납입기간 중 피보험자가 보장개시일 이후 \"기타피부암\" 또는 \"감상선암\"으로 최초 진단확정 되었을 때에는 [기타피부암 및 감상선암 주요"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0061",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "급여바늘생검조직병리진단특약의 지급요건은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 17,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0162",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "심근경색진단시얼마를받을수있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 240,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0287",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험 one 간편가입에 유방암수술 5년이 안된고객 가입가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 316,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0060",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "급여 갑상선 바늘생검 조직병리진단의 정의에 부합하기 위해 충족해야 하는 조건은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 39,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0238",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "재해 사고 보장 되는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 146,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0175",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암수술후재활도보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 270,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0001",
+  "split": "test",
+  "task_type": "comparison",
+  "q": "'사망', '진단', '입원', '수술', '기타치료' 등 보장의 형태로 상품을 분류하고, 형태별 약관 상에 차이가 나는 특징을 정리",
+  "v4_sim": 1.0,
+  "v4_no": 125,
+  "conf": "확정",
+  "missed": [
+   "최초 진단확정일로부터 상급종합병원(국립암센터 및 원자력병원 포함)에서의 '기타피부암 또는 갑상선암'의 주요치료를 합하여 최대 10년간, 연간 1",
+   "\"선지급 치료비\"는 예약된 \"치료일자 또는 수술일자\" 기준으로, 적용대상상품의 약관에 따라 지급될 것으로 계산된 보험금의 50%를 말합니다. 다"
+  ],
+  "status": "regold",
+  "n_cit": 7,
+  "n_groups": 4,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0190",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]남녀특정암진단특약의 보장개시일과 암보장개시일은 언제인가요?",
+  "v4_sim": 0.46,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0252",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "종합병원과 상급종합이 뭐가 다른데?",
+  "v4_sim": 1.0,
+  "v4_no": 183,
+  "conf": "확정",
+  "missed": [
+   "이 특약에 있어서 \"종합병원\"이라 함은 의료법 제3조의3(종합병원)에서 규정(<별첨1> 참조)한 종합병원을 말하며, 의료법 제3조의4(상급종합병"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0242",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "재해사고급여금에 해당되는 코드가 뭐가있어? 치아파절되었는데 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 148,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0229",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "입원급여금 면책기간 및 보장한도일 알려줘.",
+  "v4_sim": 1.0,
+  "v4_no": 189,
+  "conf": "확정",
+  "missed": [
+   "제2-2조(보험금의 지급사유)의 경우 지급일수는 1회 입원당 180일을 최고 한도로 합니다.\n[LNone] ⑤ 제2-2조(보험금의 지급사유)의 ",
+   "| (간편)[10일한도형]첫날부터 입원특약(무배당, 해약환급금 미지급형) | 입원금여금 | 1회 입원당 10일 한도로 보장 |"
+  ],
+  "status": "regold",
+  "n_cit": 8,
+  "n_groups": 5,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0136",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "신한 통합건강보장보험 원(ONE) 에 대해 알려주세요",
+  "v4_sim": 1.0,
+  "v4_no": 346,
+  "conf": "확정",
+  "missed": [
+   "② 건강보험 : 특약가입을 통해 진단, 입원, 수술 등을 보장하는 상품입니다. ③ 무배당 : 계약자에게 배당을 하지 않는 상품입니다. ④ 해약환"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0133",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "수술 보장에 횟수제한이있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 244,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0026",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "[30일한도형]첫날부터입원특약에서 동일한 질병으로 2회 이상 입원시 보장기준은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 23,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0139",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "신한(간편가입)통합건강보험 원(one)은 유병자만 가입이 가능한가?",
+  "v4_sim": 1.0,
+  "v4_no": 357,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0282",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강보장보험 원 납입면제",
+  "v4_sim": 1.0,
+  "v4_no": 350,
+  "conf": "확정",
+  "missed": [
+   "계약자 또는 피보험자나 보험수익자는 보험금 지급사유나 보험료 납입면제 사유 발생을 안 때에는 지체 없이 이를 회사에 알려야 합니다.\n[LNone"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0307",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강보험원의 5종수술은 뭐가 있지?",
+  "v4_sim": 1.0,
+  "v4_no": 318,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0173",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "암걸리면보험료를안내도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 261,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0189",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "암진단으로 방사선조사 2000Rad 조사 후 1달후 다시 4000Rad 조사를 한 경우 합산해서 적용이 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 175,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0343",
+  "split": "test",
+  "task_type": "exhaustive_list",
+  "q": "해당보장(입원,간호급여금등) 보장한도 모두 보장받으면 다시 또 언제부터 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 215,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0050",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "경증이상치매상태 진단확정 기준일이랑 보장대상 제외 원인 뽑아줘.",
+  "v4_sim": 1.0,
+  "v4_no": 117,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "다음 중 어느 한가지를 원인으로 발생한 \"경증이상치매상태\"는 보장대상에서 제외합니다. 1. 정신분열병이나 우울증과 같은 정신 질환으로 인한 인지"
+  ]
+ },
+ {
+  "qid": "v3-offline-0221",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "이 조항이 고객에게 불리하게 해석될수 있는 부분이 있는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 53,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0342",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "해당 질병이 걸렸을때 면책/취소/무효가 되는 상품들을 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 85,
+  "conf": "확정",
+  "missed": [
+   "특정신체부위·질병보장제한부 인수특약 3995\n[LNone] 피보험자가 \"암\" 및 \"중증 갑상선암\" 보장개시일 전일 이전에 ... \"중증 갑상선암"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0002",
+  "split": "test",
+  "task_type": "comparison",
+  "q": "'의료기관'이 정의된 상품에 대해 각 상품별 '의료기관'의 정의에 차이가 있는지 확인하여 정리",
+  "v4_sim": 1.0,
+  "v4_no": 124,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 4,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0031",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "가입할때 허리쪽에 장해가 있었는데 가입하고 더 심해졌어, 질별장해 청구가능할까?",
+  "v4_sim": 1.0,
+  "v4_no": 141,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0312",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강원 상품 암보장 개시일 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 281,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0032",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "가족이간병해도지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 251,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0110",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "보장만료(해약또는실효)상태에서 유지중 발생한 사고 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 137,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0273",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "치료의 정의에서 급부의 진단, 치료를 회사가 알기위한 의학적인 치료 등 용어를 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 96,
+  "conf": "확정",
+  "missed": [
+   "\"고액암 주요치료\"라 함은 「고액암」을 제거하거나 「고액암」의 증식을 억제하는 치료로서, 의학적으로 그 안전성과 유효성이 입증되어 임상적으로 통"
+  ],
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0315",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강원에서 치질 보장되나요",
+  "v4_sim": 1.0,
+  "v4_no": 283,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0007",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(일반)암이 감액기간에 발생한 경우, 보험금은 어떻게 산정되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 28,
+  "conf": "확정",
+  "missed": [
+   "계약일부터 1년 미만에 지급사유가 발생한 경우 상기 지급금액의 50%를 지급함\n[LNone] 일반암진단급여금 | 특약보험기간 중 피보험자가 \"암"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0053",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "고객이 \"이 경우 보험금 나와요?\"라고 물었을때, 판단에 필요한 추가질문은 무엇인지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 55,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0068",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "내시경 시술도 보장이 되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 243,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0124",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "상급병원 통원에 회수제한이있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 269,
+  "conf": "확정",
+  "missed": [
+   "특약보험기간 중 상급종합병원에 통원하였을 때 (통원1회당, 1일 1회에 한함)\n[LNone] \"뇌혈관질환\"의 직접적인 치료를 목적으로 특약보험기"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0320",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "특정 급부(ex. S06)등의 계약자 행동 리스크를 알려줘 \n(ex. 뇌출혈 진단(I코드)을 받았는데, 가입한 특약이 외상성뇌출혈 특약이라 S06코드로 진단서를 발급받는 등의 계약자 리스크)",
+  "v4_sim": 1.0,
+  "v4_no": 98,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0294",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강보험 원. 가입했는데 간병비는 입원만하면 무조건 나오는건가요?",
+  "v4_sim": 1.0,
+  "v4_no": 348,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0305",
+  "split": "test",
+  "task_type": "not_answerable",
+  "q": "통합건강보험원에 가입을 하려고 합니다. 당뇨약을 먹어도 가능할까요",
+  "v4_sim": 1.0,
+  "v4_no": 317,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0045",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "같은날 대장용종 하고 위용종제거를 했을경우 각각 보장가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 172,
+  "conf": "확정",
+  "missed": [
+   "| 직장의 양성 신생물 | D12.8 | | 직장용종 | K62.1 | | 결장의 용종 | K63.5 |"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0148",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "신한통합건강보장보험을 가입하여 진행중입니다 만기후 환급금액이 얼마인가요",
+  "v4_sim": 1.0,
+  "v4_no": 332,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0276",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통풍진단의 보험금 지급한도는 어떻게 되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 22,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0128",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "상품 별 보험금 받는 방법이 다른게 있다면 유형별로 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 130,
+  "conf": "확정",
+  "missed": [
+   "| 보험금 대리청구 지정서비스특약 | 3,945 |",
+   "| 사후 사망보험금 신속지급특약 | 3,951 | | 선지급서비스특약 | 3,961 |",
+   "「올페이 대상계약 총 보험료」의 200%"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 22,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0016",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "2026년 2월 기준  신한통합건강보험 원  무배당 해약환급금 미지급형 약관 부탁드려요",
+  "v4_sim": 1.0,
+  "v4_no": 302,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "원본: downloads/신한(간편가입)통합건강보험 원(ONE)(무배당, 해약환급금 미지급형)/판매약관_신한(간편가입)통합건강보험 원(ONE)(",
+   "유형: 약관 | 페이지: 4242 | 버전: current | 파서: brain-parser 0.13.0"
+  ]
+ },
+ {
+  "qid": "v3-offline-0042",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "갑상선암 진단되었는데 납입면제 가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 203,
+  "conf": "확정",
+  "missed": [
+   "[별첨2] 표 5-5. 납입면제의 대상이 되는 악성신생물(암) 분류표(기타피부암 및 갑상선암 제외)"
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0145",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "신한통합건강보장보험 원(ONE)(무배당,해약환급금 미지급형)을 납부 완료 후에 연금 전환 가능한가요?",
+  "v4_sim": 1.0,
+  "v4_no": 330,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0112",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "보험금 대리청구인 지정할 때, 피보험자의 몇 촌 이내 까지지?",
+  "v4_sim": 1.0,
+  "v4_no": 118,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0186",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암진단금은몇번지급되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 232,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0080",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "뇌혈관 질환진단은 뇌출혈만보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 235,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 3,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0331",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "한귀 청력이 완전히 소실 + 한눈 시력을 완전히 잃었는데 장해보험금 지급률이 어떻게 되는지?",
+  "v4_sim": 1.0,
+  "v4_no": 142,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0511",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암주요치료비특약에서 암·대장점막내암·비침습방광암 주요치료는 몇 년 동안 몇 회까지 보장되나요?",
+  "v4_sim": 0.21,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0431",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)중증질환자[암]산정특례대상보장특약의 중증질환자[암] 산정특례대상 보장급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.11,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0417",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약의 기타피부암 및 갑상선암 주요치료급여금 지급액은 보험가입금액의 몇 %인가요?",
+  "v4_sim": 0.28,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0474",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "급여암특정재활치료특약에서 전문재활치료 급여금을 받을 수 있는 암의 범위와 하루·연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0353",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)1-5종수술특약의 3종 수술 급여금은 가입 후 얼마가 지나야 전액을 받을 수 있나요?",
+  "v4_sim": 0.15,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0473",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "급여암특정재활치료특약에서 단순재활치료 급여금을 받을 수 있는 암의 범위와 하루·연간 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0359",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)혈전용해치료특약의 급성뇌경색증혈전용해치료급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0495",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "(간편)암주요치료비특약은 어떤 암의 치료를 보장하며, 최초 진단 후 몇 년 동안 몇 회까지 지급하나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0507",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암다빈치로봇수술특약에서 갑상선암과 전립선암을 제외한 다빈치로봇수술급여금의 지급 요건은 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0481",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "뇌혈관질환 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0422",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)암다빈치로봇수술특약의 (갑상선암 및 전립선암 제외) 다빈치로봇수술급여금 지급률이 가입 경과기간에 따라 달라지나요? 구간별로 알려주세요.",
+  "v4_sim": 0.09,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0427",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)재해골절치료특약의 재해골절 치료급여금은 수술이나 치료 1회당 보험가입금액의 몇 %를 받나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0498",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환상급종합병원입원특약에서 상급종합병원 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0548",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "허혈심장질환 입원급여금의 지급 요건과 1회 입원당 보장일수는 어떻게 되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0406",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)뇌혈관·허혈심장질환상급종합병원통원특약에서 치료를 받으러 통원했을 때 뇌혈관질환 상급종합병원 통원급여금을 받을 수 있는 병원 조건과 연간 횟수 한도는 어떻게 되나요?",
+  "v4_sim": 0.14,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0428",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)재해수술특약의 재해수술급여금은 수술이나 치료 1회당 보험가입금액의 몇 %를 받나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0430",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)정기특약의 사망보험금은 어떤 경우에 지급되나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0530",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "질병수술특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0382",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[기본]뇌혈관질환진단특약의 뇌혈관질환진단급여금은 재진단받아도 다시 받을 수 있나요, 아니면 최초 한 번만 지급되나요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0492",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "보험료를 연체해 계약이 끊겼는데, 언제까지 다시 살릴 수 있나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0424",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약의 기타피부암 및 갑상선암 주요치료 급여금은 특약보험가입금액의 몇 %가 지급되나요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0460",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "간편심사형으로 가입한 뒤 2년이 되기 전에 질병으로 사망하면 사망보험금을 전액 받나요?",
+  "v4_sim": 0.1,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0512",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "암진단특약에서 기타피부암이나 갑상선암도 일반암으로 보나요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0527",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "질병 코드가 개정됐다면 가입 당시 코드와 진단받은 날의 코드 중 어느 기준을 따르나요?",
+  "v4_sim": 0.07,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0461",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "동일한 질병으로 상급종합병원에서 퇴원한 후 180일이 지나기 전에 다시 입원한 경우 입원일수는 어떻게 계산되나요?",
+  "v4_sim": 0.12,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0247",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[질병별]신수술특약에서 계약자가 특약을 취소할 수 있는 사유와 취소 시 처리 내용은 무엇인가요?",
+  "v4_sim": 0.21,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0204",
+  "split": "test",
+  "task_type": "exhaustive_list",
+  "q": "여러 담보들도 함께 보장이 있고 면책이 있는 담보도 포함되어 있어 취소권을 부여해야 하는데, \n취소권 관련 문구가 들어가 있는지, 무효에는 어떤 문구가 있는지 확인해줘",
+  "v4_sim": 1.0,
+  "v4_no": 70,
+  "conf": "확정",
+  "missed": [
+   "약관의 중요한 내용을 설명하지 않은 때 또는 계약을 체결할 때 계약자가 청약서에 자필서명을 하지 않은 때에는 계약자는 계약이 성립한 날부터 3개"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0267",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "질병수술(백내장및대장용종제외)특약의 보장제외 질병은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 33,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0266",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "질병수술(백내장및대장용종제외)특약에서 보장제외되는 질병분류 코드는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 35,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0308",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "통합건강원  수술비 분류표 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 308,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0039",
+  "split": "test",
+  "task_type": "not_answerable",
+  "q": "간편 통합건강원 상품에서 비급여암치료 특약 항목 이름이 뭐야",
+  "v4_sim": 1.0,
+  "v4_no": 312,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "(간편)비급여(전액본인부담 포함)암주요치료비특약(무배당, 갱신형) | 비급여 암주요치료급여금",
+   "(간편)비급여(전액본인부담 포함)암주요치료비특약(무배당, 해약환급금 미지급형) 1807 ② 제1항의 \"비급여\"라 함은 「국민건강보험법」 또는 「"
+  ]
+ },
+ {
+  "qid": "v3-offline-0499",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "상급종합병원 입원급여금의 지급 요건과 1회 입원당 보장일수, 지급금액은 어떻게 되나요?",
+  "v4_sim": 0.22,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0015",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(전문재활치료 및 기타이학요법)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0026",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[21대다빈도생활질병]신수술특약에서 \"21대다빈도생활질병\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0008",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)암직접치료상급종합병원통원특약에서 \"암, 대장점막내암, 비침습방광암, 기타피부암, 갑상선암, 제자리암 또는 경계성종양의 직접적인 치료\"의 정의는 무엇인가요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0023",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[질병별]신수술특약에서 \"17대심한상해\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0031",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "중증난치질환자(중증치매제외)산정특례대상보장특약에서 \"중증난치질환자(중증치매제외) 산정특례대상\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0016",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "당뇨병(당화혈색소 6.5%이상)진단특약에서 \"당뇨병(당화혈색소 6.5%이상)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0017",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "당뇨병(당화혈색소 7.5%이상)진단특약에서 \"당뇨병(당화혈색소 7.5%이상)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0018",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "당뇨병(당화혈색소 8.5%이상)진단특약에서 \"당뇨병(당화혈색소 8.5%이상)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0001",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)남성12대주요암진단특약에서 \"남성12대주요암\"의 정의는 무엇인가요?",
+  "v4_sim": 0.3,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0270",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "첫날부터상급종합병원입원특약에서 보험금을 지급하지 않는 사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 32,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "회사는 다음 중 어느 한 가지로 보험금 지급사유가 발생한 때에는 보험금을 지급하지 않습니다. 1. 피보험자가 고의로 자신을 해친 경우 2. 보험"
+  ]
+ },
+ {
+  "qid": "v3-offline-0207",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "요양병원 입원도 보장 되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 252,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0329",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "표적항암제도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 257,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0084",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "뇌혈관질환의 질병코드 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 220,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0078",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "뇌출혈진단이 감액기간에 발생한 경우, 보험금은 어떻게 산정되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 27,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0340",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "해당 상품에서 협심증(I20)을 보장하는 특약리스트 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 45,
+  "conf": "확정",
+  "missed": [
+   "(간편)[삭감없음용]뇌혈관·허혈심장질환진단특약(무배당, 갱신형) 62",
+   "(간편)허혈심장질환진단특약(무배당, 갱신형) | 3,647",
+   "협심증(120) 진단 확정일 : 2026년 11월 1일",
+   "협심증(120) 혈전용해치료 1,000만원 지급",
+   "부검감정서(검안서 제외)상 사인이 \"<부표2-3>\" \"허혈심장질환 분류표\"에서 정한 허혈심장질환으로 확정되거나 추정되는 경우",
+   "| | 협심증 | 협심증 | 120 |",
+   "| | 협심증 | 121 |"
+  ],
+  "status": "regold",
+  "n_cit": 37,
+  "n_groups": 8,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0010",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "(간편)암주요치료비특약과 (간편)암다빈치로봇수술특약의 무효사유를 정리해줘",
+  "v4_sim": 0.23,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0180",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)암주요치료비특약의 주요치료급여금은 수술, 항암약물치료, 항암방사선치료를 각각 이용하면 각각 지급돼? 아니면 연간 1회만 지급돼?",
+  "v4_sim": 0.15,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0121",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "사망,장해,진단,입원,수술,실손에 따른 보험금 청구시 필요한 서류를 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 129,
+  "conf": "확정",
+  "missed": [
+   "| 사망 | ● (사망진단서) | | 장해 | ● (장해진단서) | | 진단 | ● | ● (검사결과지 등) | 청구서 | | 입원 | △ | "
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0063",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "깁스치료특약에서 깁스치료를 2회 이상 받은 경우 보장기준은 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 24,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0344",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "해약환급금이없는데왜가입해야하나요?",
+  "v4_sim": 1.0,
+  "v4_no": 278,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 13,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0235",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "자살할 경우 사망보험금 보장 가능한지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 225,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 2,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0119",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "보험료납입면제특약의 유형별로 납입면제의 대상이 되는 담보를 최초 1회한으로 보장하는 특약을 정리해줘",
+  "v4_sim": 1.0,
+  "v4_no": 91,
+  "conf": "확정",
+  "missed": [
+   "(간편)[뇌혈관질환납입면제형]보험료납입면제특약(무배당, 갱신형) 56",
+   "2. 피보험자가 [일반암진단 보장계약]에서 ... \"「여성유방암 및 전립선암」이외의 암\" 또는 \"중증 갑상선암\"으로 최초 진단확정 되었을 경우",
+   "\"암\", \"대장점막내암\" 또는 \"비침습방광암\"으로 최초 진단확정 되었을 때에는 … 보험료 납임을 면제합니다"
+  ],
+  "status": "regold",
+  "n_cit": 40,
+  "n_groups": 15,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0182",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "암주요치료비특약의 보험금 지급사유는 무엇인가요?",
+  "v4_sim": 1.0,
+  "v4_no": 9,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0156",
+  "split": "test",
+  "task_type": "not_answerable",
+  "q": "신한통합건강보험원 암유병자 5년후 가입시 기존 원발암 보장되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 353,
+  "conf": "확정",
+  "missed": [
+   "피보험자가 암보장개시일 전일 이전에 제2-1조의2(\"통합암(전이포함)\" 등의 정의 및 진단확정) 제1항에서 정한 \"통합암(전이포함)\" 중 어느 "
+  ],
+  "status": "regold",
+  "n_cit": 6,
+  "n_groups": 5,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0163",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "심장질환도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 263,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0171",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "암 재활치료 횟수제한이있나요?",
+  "v4_sim": 1.0,
+  "v4_no": 272,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0255",
+  "split": "test",
+  "task_type": "exhaustive_list",
+  "q": "주계약 납면시 가입한 특약모두 납입면제 가능해?",
+  "v4_sim": 1.0,
+  "v4_no": 198,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0146",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "신한통합건강보장보험원 보험 보장 내용궁금",
+  "v4_sim": 1.0,
+  "v4_no": 347,
+  "conf": "확정",
+  "missed": [
+   "② 건강보험 : 특약가입을 통해 진단, 입원, 수술 등을 보장하는 상품입니다."
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0233",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "자궁 전체기간 부담보로 가입됐는데 5년지나면 보장된다고 하는데 맞나요?",
+  "v4_sim": 1.0,
+  "v4_no": 179,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0036",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "간병인을따로안써도되나요?",
+  "v4_sim": 1.0,
+  "v4_no": 253,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0088",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "다빈도생활질병에 자궁근종이 포함돼? 보장되는 코드 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 147,
+  "conf": "확정",
+  "missed": [
+   "\"특정다빈도 7대질병[\"백내장, 대장용종, 후각특 정질환, 피부종양, 특정피부질환, 하지정맥류, 유방의 장애]",
+   "| 자궁근종 | D25 | 자궁의 평찻근종 |"
+  ],
+  "status": "regold",
+  "n_cit": 5,
+  "n_groups": 3,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0209",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "유방암인 경우 납입면제되고 갱신도 되는지, 납입면제 되고 갱신 안되는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 206,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 3,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0398",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여암특정재활치료특약의 [단순재활] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0397",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여암특정재활치료특약의 [기본물리] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0487",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "보험금을 늦게 청구해도 되나요? 청구할 수 있는 기간이 정해져 있나요?",
+  "v4_sim": 0.16,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0519",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "이 상품의 주계약은 어떤 상황에서 보험금이 나오나요?",
+  "v4_sim": 0.17,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0528",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "질병수술(8대특정수술제외)특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.21,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0501",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "상급종합병원질병수술특약의 수술급여금 지급 요건과 동일 질병당 지급 횟수는 어떻게 되나요?",
+  "v4_sim": 0.21,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0520",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "재해수술특약의 수술급여금은 어떤 경우에 지급되나요?",
+  "v4_sim": 0.19,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0533",
+  "split": "test",
+  "task_type": "exhaustive_list",
+  "q": "특정 급성심근경색증으로 혈전용해치료를 받으면 어떤 조건에서 급여금이 지급되며, 몇 회까지 받을 수 있나요?",
+  "v4_sim": 0.18,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0399",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여암특정재활치료특약의 [전문재활] 급여 암특정 재활치료급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.13,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0437",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "(간편)첫날부터6대질병중환자실입원특약의 6대질병 중환자실 입원급여금은 가입 후 1년 안에 사유가 발생한 경우와 1년 이후의 지급률이 어떻게 다른가요?",
+  "v4_sim": 0.14,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0524",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "진단받은 뒤에 질병 분류체계가 바뀌면 보험금 판단도 다시 하는지 약관에 명확하게 나와 있나요?",
+  "v4_sim": 0.1,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-offline-0075",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "뇌출혈 및 금성신근경생증, 유방암, 자궁암, 전립선암 등 분류표 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 170,
+  "conf": "확정",
+  "missed": [
+   "약관에서 정한 \"뇌출혈\"로 분류되는 질병은 제9차 개정 한국표준질병·사인분류(통계청 고시 제 2025-299호, 2026. 1. 1 시행) 중 "
+  ],
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0263",
+  "split": "test",
+  "task_type": "not_answerable",
+  "q": "진단특약(갱신형)의 갱신계약과 진단특약80plus의 연장형 계약의 차이를 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 73,
+  "conf": "확정",
+  "missed": [
+   "연장형 계약으로 전환을 신청하지 않는 경우, 이 특약은 보장형 계약의 보험기간 종료일에 소멸된다는 사실",
+   "\"연장형 계약의 전환일로부터 30일이 지난 날\"까지 연장형 계약으로의 전환을 취소할 수 있습니다"
+  ],
+  "status": "regold",
+  "n_cit": 4,
+  "n_groups": 2,
+  "c3_partial": true
+ },
+ {
+  "qid": "v3-offline-0301",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강보험원 보험가입연령",
+  "v4_sim": 1.0,
+  "v4_no": 319,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0161",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "실제간병인을써야하나요?",
+  "v4_sim": 1.0,
+  "v4_no": 250,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0349",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "현재 판매되고 있지 않은 특약명이 있다면 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 108,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 2,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0296",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "통합건강보험 원에서 뇌출혈은 i코드도 보장되나",
+  "v4_sim": 1.0,
+  "v4_no": 321,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-offline-0230",
+  "split": "test",
+  "task_type": "not_answerable",
+  "q": "입원시 입권급여금과 상급종합병원입원급여금이 합산보장 되는지 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 190,
+  "conf": "확정",
+  "status": "removed",
+  "reason": "v4 인용 근거 전부가 채점 코퍼스(250212판) 밖",
+  "missed": [
+   "제5호의 보험금 지급사유가 발생하였을 경우 제3호 및 제4호의 보험금을 더하여 지급합니다. 다만, 제2-3조(보험금 지급에 관한 세부규정) 제7",
+   "Case3) 상급종합병원에 1일 입원시 ▸ 보험금 7만원 ( 척추질환 입원급여금 3만원 + 척추질환 종합병원 입원급여금 2만원 + 척추질환 상급"
+  ]
+ },
+ {
+  "qid": "v3-offline-0222",
+  "split": "test",
+  "task_type": "multi_evidence",
+  "q": "이 판매 약관에 오타 있으면 알려줘",
+  "v4_sim": 1.0,
+  "v4_no": 107,
+  "conf": "확정",
+  "status": "regold",
+  "n_cit": 1,
+  "n_groups": 1,
+  "c3_partial": false
+ },
+ {
+  "qid": "v3-generated-def-0013",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(기본물리치료)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.2,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0014",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)급여주요뇌심장질환특정재활치료특약에서 \"급여 주요뇌심장질환 특정재활치료(단순재활치료)\"의 정의는 무엇인가요?",
+  "v4_sim": 0.21,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0024",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[질병별]신수술특약에서 \"10대양성종양\"의 정의는 무엇인가요?",
+  "v4_sim": 0.24,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ },
+ {
+  "qid": "v3-generated-def-0022",
+  "split": "test",
+  "task_type": "single_lookup",
+  "q": "(간편)[질병별]신수술특약에서 \"14대질병\"의 정의는 무엇인가요?",
+  "v4_sim": 0.27,
+  "status": "removed",
+  "reason": "v4 미수록 + v3 span gold 부재"
+ }
+]

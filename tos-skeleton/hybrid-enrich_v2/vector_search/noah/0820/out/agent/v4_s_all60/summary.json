@@ -1,0 +1,42 @@
+{
+ "run": "v4_s_all60",
+ "n_q": 60,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "submit_pad": 1,
+  "fallback_silent": {
+   "min_n": 5,
+   "tau": 5.0
+  },
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0
+ },
+ "metrics": {
+  "R@1": 0.4561,
+  "R@5": 0.7975,
+  "R@10": 0.8374,
+  "R@20": 0.8374,
+  "S@5": 0.8667,
+  "suff@5": 0.7333,
+  "suff@10": 0.75,
+  "RR@10": 0.6678
+ },
+ "core_R@5": 0.875,
+ "noncore_R@5": 0.6813,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 14.08,
+ "rep_disagreement_R@5": 0.0
+}

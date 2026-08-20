@@ -1,0 +1,35 @@
+{
+ "run": "local_base60",
+ "n_q": 60,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9"
+ },
+ "metrics": {
+  "R@1": 0.4056,
+  "R@5": 0.7028,
+  "R@10": 0.75,
+  "R@20": 0.75,
+  "S@5": 0.7667,
+  "suff@5": 0.65,
+  "suff@10": 0.6833,
+  "RR@10": 0.5649
+ },
+ "core_R@5": 0.8333,
+ "noncore_R@5": 0.5069,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 14.75,
+ "rep_disagreement_R@5": 0.0
+}

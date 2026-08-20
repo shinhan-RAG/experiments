@@ -17,6 +17,7 @@ import itertools
 import json
 import os
 import re
+import subprocess
 import sys
 import threading
 import time
@@ -34,6 +35,46 @@ OUT = HERE / "out"
 
 LLM_URL = os.environ.get("LLM_ENDPOINT", "http://localhost:8080/v1/chat/completions")
 LLM_MODEL = os.environ.get("LLM_MODEL", "Qwen/Qwen3-32B-FP8")
+
+# codex CLI 전송 계층 (gen_meta_codex_v13.py에서 포팅)
+CODEX = os.environ.get("CODEX_BIN") or str(
+    Path(os.environ.get("APPDATA", "")) / "npm" / "codex.cmd")
+CODEX_MODEL_DEFAULT = os.environ.get("CODEX_META_MODEL", "gpt-5.6-luna")
+
+TRANSPORT = "http"          # main()에서 설정
+CODEX_MODEL = CODEX_MODEL_DEFAULT
+CODEX_WORK: Path | None = None
+
+ENVELOPE_SCHEMA_V9 = {
+    "type": "object",
+    "properties": {
+        "items": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "index": {"type": "integer"},
+                    "wide": {"type": "string"},
+                    "narrow": {"type": "string"},
+                    "terms": {"type": "array", "items": {"type": "string"}},
+                },
+                "required": ["index", "wide", "narrow", "terms"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["items"],
+    "additionalProperties": False,
+}
+
+_RATE_LIMIT_RX = re.compile(
+    r"rate[ _-]?limit(?:ed|_exceeded)?\b"
+    r"|429\s+too many requests"
+    r"|quota exceeded"
+    r"|usage limit reached"
+    r"|you.{0,20}exceeded your current quota",
+    re.I,
+)
 
 WORKERS_DEFAULT = int(os.environ.get("META_WORKERS", "2"))
 BATCH_DEFAULT = int(os.environ.get("META_BATCH", "5"))
@@ -94,7 +135,10 @@ PURE_ADDENDUM_V9 = """
 
 
 def build_system() -> str:
-    return SYSTEM_V9 + PURE_ADDENDUM_V9
+    s = SYSTEM_V9 + PURE_ADDENDUM_V9
+    if TRANSPORT == "codex":                       # /no_think는 Qwen 전용 지시어
+        s = s.replace("\n\n/no_think", "")
+    return s
 
 
 # ================================================================ 항법 탐지
@@ -307,6 +351,74 @@ def call_llm(system: str, user: str, stats: Stats,
     return None, "all_retries_failed"
 
 
+def call_codex(system: str, user: str, stats: Stats,
+               retries: int = 3) -> tuple[list | None, str | None]:
+    """codex CLI(exec + --output-schema)로 배치 1건 호출. call_llm과 동일 계약."""
+    assert CODEX_WORK is not None
+    prompt = system + "\n\n" + user
+
+    for attempt in range(retries):
+        call_id = next(_call_counter)
+        o = CODEX_WORK / f"out_{call_id}.json"
+        cmd = [CODEX, "exec", "--model", CODEX_MODEL,
+               "-c", "model_reasoning_effort=low",
+               "--sandbox", "read-only", "--skip-git-repo-check", "--ephemeral",
+               "--output-schema", str(CODEX_WORK / "schema.json"),
+               "-o", str(o), "-"]
+        try:
+            r = subprocess.run(cmd, input=prompt.encode("utf-8"),
+                               capture_output=True, timeout=CALL_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            stats.add(fail=True)
+            if attempt < retries - 1:
+                continue
+            return None, "timeout"
+        except OSError as exc:
+            stats.add(fail=True)
+            return None, f"spawn:{exc}"
+
+        combined = (r.stdout.decode("utf-8", "replace") + "\n"
+                    + r.stderr.decode("utf-8", "replace"))
+        m = re.search(r"tokens used\s*\n?\s*([\d,]+)", combined)
+        tok = int(m.group(1).replace(",", "")) if m else 0
+
+        try:
+            obj = json.loads(o.read_text(encoding="utf-8"))
+        except (FileNotFoundError, json.JSONDecodeError) as exc:
+            stats.add(tokens=tok, fail=True)
+            if _RATE_LIMIT_RX.search(combined):
+                wait = min(120, 15 * (attempt + 1))
+                print(f"  [rate-limit] {wait}s 대기...", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            return None, f"output_parse:{type(exc).__name__}:{combined[-300:]}"
+        finally:
+            try:
+                o.unlink()
+            except OSError:
+                pass
+
+        items = obj.get("items")
+        if not isinstance(items, list):
+            stats.add(tokens=tok, fail=True)
+            if attempt < retries - 1:
+                continue
+            return None, "no_items_key"
+        stats.add(tokens=tok)
+        return items, None
+
+    return None, "all_retries_failed"
+
+
+def call_transport(system: str, user: str, stats: Stats) -> tuple[list | None, str | None]:
+    if TRANSPORT == "codex":
+        return call_codex(system, user, stats)
+    return call_llm(system, user, stats)
+
+
 # ================================================================ 정렬
 def align_items(items: list, n: int) -> list[dict] | None:
     if not isinstance(items, list) or len(items) != n:
@@ -332,7 +444,7 @@ def process_batch(chunks: list[dict], system: str, stats: Stats,
     user = build_batch_prompt(chunks)
 
     for attempt in range(max_retries):
-        items, err = call_llm(system, user, stats)
+        items, err = call_transport(system, user, stats)
         if err is None and items is not None:
             aligned = align_items(items, n)
             if aligned is not None:
@@ -397,7 +509,21 @@ def main() -> None:
                     help="입력 경로")
     ap.add_argument("--output", default="",
                     help="출력 경로 (기본 out/llm_meta_v9.jsonl)")
+    ap.add_argument("--transport", default="http", choices=("http", "codex"),
+                    help="LLM 전송 계층: http(OpenAI 호환) 또는 codex CLI")
+    ap.add_argument("--model", default="",
+                    help="codex 전송 시 모델명 (기본 gpt-5.6-luna)")
     args = ap.parse_args()
+
+    global TRANSPORT, CODEX_MODEL, CODEX_WORK
+    TRANSPORT = args.transport
+    if args.model:
+        CODEX_MODEL = args.model
+    if TRANSPORT == "codex":
+        CODEX_WORK = HERE / "codex_v9_work"
+        CODEX_WORK.mkdir(parents=True, exist_ok=True)
+        (CODEX_WORK / "schema.json").write_text(
+            json.dumps(ENVELOPE_SCHEMA_V9, ensure_ascii=False), encoding="utf-8")
 
     system = build_system()
 
@@ -418,7 +544,8 @@ def main() -> None:
     if args.dry_run:
         sample = non_nav[:min(args.batch_size, len(non_nav))] or chunks[:1]
         print("=" * 80)
-        print(f"[DRY-RUN] batch={len(sample)}  model={LLM_MODEL}  "
+        eff_model = CODEX_MODEL if TRANSPORT == "codex" else LLM_MODEL
+        print(f"[DRY-RUN] batch={len(sample)}  transport={TRANSPORT}  model={eff_model}  "
               f"청크 {len(chunks):,} / 항법 {len(nav_ids):,} / API대상 {len(non_nav):,}")
         print(f"endpoint={LLM_URL}")
         print("=" * 80)
@@ -456,7 +583,8 @@ def main() -> None:
 
     print(f"[gen_meta_v9] 청크 {len(chunks):,} / 항법 {len(nav_ids):,} / "
           f"캐시 {len(done):,} / API대상 {len(todo):,} -> 배치 {len(batches):,}개 "
-          f"(batch={args.batch_size}, workers={args.workers}, model={LLM_MODEL})",
+          f"(batch={args.batch_size}, workers={args.workers}, transport={TRANSPORT}, "
+          f"model={CODEX_MODEL if TRANSPORT == 'codex' else LLM_MODEL})",
           flush=True)
     print(f"출력: {output_path}")
 

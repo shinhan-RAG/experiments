@@ -1,0 +1,160 @@
+[
+ {
+  "element_id": "e00021",
+  "schema_version": "semtag-v2-rules-1.0",
+  "schema_tag": "paragraph",
+  "contract_key": "",
+  "subject_key": [],
+  "role": [
+   "claim_procedure"
+  ],
+  "locator": {
+   "article": "",
+   "article_title": "",
+   "table_headers": [],
+   "row_keys": [],
+   "section": ""
+  },
+  "qualifier": [
+   "- 신한라이프는 동의철회 등의 청구를 받은 날부터 1개월 이내에 처리를 완료하고, 고객님에게 서면, 전자우편, 휴대전화, 문자메시지, 인터넷 홈페이지, 전화 등을 통해 고지합니다",
+   "1개월"
+  ],
+  "reference": [],
+  "search_text": "[schema] paragraph | [role] claim_procedure | 보험금 청구 구비서류 절차 | [qualifier] - 신한라이프는 동의철회 등의 청구를 받은 날부터 1개월 이내에 처리를 완료하고, 고객님에게 서면, 전자우편, 휴대전화, 문자메시지, 인터넷 홈페이지, 전화 등을 통해 고지합니다 | 1개월"
+ },
+ {
+  "element_id": "e00037",
+  "schema_version": "semtag-v2-rules-1.0",
+  "schema_tag": "paragraph",
+  "contract_key": "",
+  "subject_key": [],
+  "role": [
+   "exclusion_exception"
+  ],
+  "locator": {
+   "article": "",
+   "article_title": "",
+   "table_headers": [],
+   "row_keys": [],
+   "section": ""
+  },
+  "qualifier": [
+   "5년",
+   "3개월"
+  ],
+  "reference": [],
+  "search_text": "[schema] paragraph | [role] exclusion_exception | 면책 제외 예외 부지급 | [qualifier] 5년 | 3개월"
+ },
+ {
+  "element_id": "e00058",
+  "schema_version": "semtag-v2-rules-1.0",
+  "schema_tag": "table",
+  "contract_key": "",
+  "subject_key": [
+   "해약환급금",
+   "(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)"
+  ],
+  "role": [
+   "exclusion_exception",
+   "payment_trigger",
+   "definition",
+   "criteria_rule",
+   "contract_lifecycle",
+   "claim_procedure"
+  ],
+  "locator": {
+   "article": "",
+   "article_title": "",
+   "table_headers": [
+    "약관 가이드북",
+    "21"
+   ],
+   "row_keys": [
+    "약관 요약서",
+    "주요보험용어 해설",
+    "가입부터 지급까지 쉽게 찾기",
+    "(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)"
+   ],
+   "section": ""
+  },
+  "qualifier": [],
+  "reference": [
+   "제1조",
+   "제2조",
+   "제2조의2",
+   "제3조",
+   "제4조",
+   "제5조",
+   "제6조",
+   "제7조",
+   "제8조",
+   "제9조",
+   "제10조",
+   "제11조"
+  ],
+  "search_text": "[schema] table | [subject] 해약환급금 | (간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형) | [role] exclusion_exception | payment_trigger | definition | criteria_rule | contract_lifecycle | claim_procedure | 면책 제외 예외 부지급 | 보험금 지급사유 지급조건 | 용어 정의 의미 | 진단확정 판정기준 적용기준 | 갱신 해지 소멸 무효 환급 | 보험금 청구 구비서류 절차 | [reference] 제1조 | 제2조 | 제2조의2 | 제3조 | 제4조 | 제5조 | 제6조 | 제7조 | 제8조 | 제9조 | 제10조 | 제11조"
+ },
+ {
+  "element_id": "e00061",
+  "schema_version": "semtag-v2-rules-1.0",
+  "schema_tag": "paragraph",
+  "contract_key": "",
+  "subject_key": [],
+  "role": [
+   "timing_period",
+   "contract_lifecycle"
+  ],
+  "locator": {
+   "article": "",
+   "article_title": "",
+   "table_headers": [],
+   "row_keys": [],
+   "section": ""
+  },
+  "qualifier": [
+   "1회",
+   "2회"
+  ],
+  "reference": [
+   "제23조",
+   "제24조",
+   "제25조",
+   "제26조",
+   "제27조",
+   "제28조"
+  ],
+  "search_text": "[schema] paragraph | [role] timing_period | contract_lifecycle | 보장개시 책임개시 대기기간 감액기간 보험기간 | 갱신 해지 소멸 무효 환급 | [qualifier] 1회 | 2회 | [reference] 제23조 | 제24조 | 제25조 | 제26조 | 제27조 | 제28조"
+ },
+ {
+  "element_id": "e00063",
+  "schema_version": "semtag-v2-rules-1.0",
+  "schema_tag": "paragraph",
+  "contract_key": "",
+  "subject_key": [],
+  "role": [
+   "payment_amount",
+   "contract_lifecycle",
+   "code_reference"
+  ],
+  "locator": {
+   "article": "",
+   "article_title": "",
+   "table_headers": [],
+   "row_keys": [],
+   "section": ""
+  },
+  "qualifier": [],
+  "reference": [
+   "제35조",
+   "제36조",
+   "제37조",
+   "제38조",
+   "제39조",
+   "제40조",
+   "제41조",
+   "제42조",
+   "제43조"
+  ],
+  "search_text": "[schema] paragraph | [role] payment_amount | contract_lifecycle | code_reference | 보험금 지급금액 지급률 산정 | 갱신 해지 소멸 무효 환급 | 질병분류코드 수가코드 부표 분류표 | [reference] 제35조 | 제36조 | 제37조 | 제38조 | 제39조 | 제40조 | 제41조 | 제42조 | 제43조"
+ }
+]

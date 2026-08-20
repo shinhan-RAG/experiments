@@ -1,0 +1,1063 @@
+{
+ "n": 60,
+ "k": 40,
+ "class": {
+  "③top10내(제출정책레버)": 37,
+  "①미포착(인덱스한계)": 15,
+  "②순위밖(순위레버)": 8
+ },
+ "groups": {
+  "in_tag40": 63,
+  "in_meta40": 56,
+  "in_union": 69,
+  "in_union_top10": 49,
+  "total": 101
+ },
+ "rows": [
+  {
+   "qid": "v3-generated-def-0002",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 3
+    }
+   ]
+  },
+  {
+   "qid": "v3-generated-def-0006",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 4
+    }
+   ]
+  },
+  {
+   "qid": "v3-generated-def-0012",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-generated-def-0029",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 9
+    }
+   ]
+  },
+  {
+   "qid": "v3-generated-def-0032",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 8
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0003",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0018",
+   "n_groups": 4,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0021",
+   "n_groups": 5,
+   "core": false,
+   "task_type": "exhaustive_list",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 2
+    },
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 10
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0029",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 53
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0041",
+   "n_groups": 2,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 36
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0056",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0070",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0074",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0077",
+   "n_groups": 3,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 3
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0090",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 4
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0102",
+   "n_groups": 7,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 24
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 39
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 40
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 13
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0113",
+   "n_groups": 3,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 16
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0126",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 23
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0132",
+   "n_groups": 2,
+   "core": false,
+   "task_type": "comparison",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 6
+    },
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 50
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0151",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 3
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0159",
+   "n_groups": 3,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 9
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 62
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0168",
+   "n_groups": 4,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 18
+    },
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 41
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 8
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0183",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 5
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0223",
+   "n_groups": 4,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 6
+    },
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 30
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0231",
+   "n_groups": 5,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 49
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": true,
+     "union_rank": 55
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0248",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0269",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 21
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0277",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "document_global",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0278",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0303",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0321",
+   "n_groups": 2,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 5
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 5
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0323",
+   "n_groups": 2,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0325",
+   "n_groups": 3,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 6
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0345",
+   "n_groups": 5,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 13
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0350",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 3
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0355",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0368",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 4
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0374",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 35
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0376",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 9
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0381",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 3
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0392",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0401",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0402",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0403",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0408",
+   "n_groups": 1,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 7
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0412",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0413",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 9
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0425",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0435",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 4
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0448",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0451",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0456",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0459",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 4
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0482",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0483",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0489",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 15
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0491",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "②순위밖(순위레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 30
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0502",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": false,
+     "union_rank": 1
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0508",
+   "n_groups": 3,
+   "core": false,
+   "task_type": "multi_evidence",
+   "class": "①미포착(인덱스한계)",
+   "groups": [
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    },
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 5
+    },
+    {
+     "in_tag": false,
+     "in_meta": false,
+     "union_rank": null
+    }
+   ]
+  },
+  {
+   "qid": "v3-offline-0551",
+   "n_groups": 1,
+   "core": true,
+   "task_type": "single_lookup",
+   "class": "③top10내(제출정책레버)",
+   "groups": [
+    {
+     "in_tag": true,
+     "in_meta": true,
+     "union_rank": 2
+    }
+   ]
+  }
+ ]
+}

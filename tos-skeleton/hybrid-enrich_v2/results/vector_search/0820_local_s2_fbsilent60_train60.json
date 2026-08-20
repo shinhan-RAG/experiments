@@ -1,0 +1,39 @@
+{
+ "run": "local_s2_fbsilent60",
+ "n_q": 60,
+ "reps": 1,
+ "model": "sonnet",
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback_silent": {
+   "min_n": 5,
+   "tau": 5.0
+  }
+ },
+ "metrics": {
+  "R@1": 0.3889,
+  "R@5": 0.6375,
+  "R@10": 0.7319,
+  "R@20": 0.7319,
+  "S@5": 0.7,
+  "suff@5": 0.5833,
+  "suff@10": 0.6833,
+  "RR@10": 0.537
+ },
+ "core_R@5": 0.7778,
+ "noncore_R@5": 0.4271,
+ "no_submit": 0,
+ "errors": 0,
+ "cost_usd": 11.65,
+ "rep_disagreement_R@5": 0.0
+}
