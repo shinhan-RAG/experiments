@@ -256,5 +256,20 @@
   "qtags": "out/qtags_haiku.jsonl",
   "meta": 1,
   "meta_view": "V9"
+ },
+ "dual_active": {
+  "_note": "fs_slot 기반(contract 가중치 없음, facet 없음) + 행동 지시(search/msearch 병행, 재검색, 10개 distinct 조 채우기) + silent 보강 3종(submit_pad, fallback_silent, submit_ref_merge) + alias_cond. fanout/submit_cover 는 f3_both 에서 R@5 저하가 확인되어 제외.",
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "meta": 1,
+  "meta_view": "V9",
+  "active_prompt": 1,
+  "submit_pad": 1,
+  "fallback_silent": {"min_n": 5, "tau": 5.0},
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0
  }
 }
