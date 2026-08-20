@@ -83,6 +83,11 @@ class Router:
 
     def route(self, q):
         cq = compact(q)
+        # 별칭 정규화: 질문의 구어("보상제외기간")를 문서 표기("면책기간")로 치환한 사본도 매칭에 사용
+        if getattr(self, "alias_map", None):
+            for alt, canon in self.alias_map.items():
+                if alt in cq:
+                    cq = cq + canon  # 치환이 아니라 병기(원 표현 보존)
         slots = collections.defaultdict(list)
         partial_hits = []
         for c, core, core_nb in self.cores:
@@ -132,6 +137,11 @@ class SlotSearch:
         self.rows = [canonical(T[e["element_id"]]) for e in self.E]
         self.body = [compact(e["text"]) for e in self.E]
         self.router = Router(r["contract"][0] for r in self.rows)
+        try:
+            _al = json.load(open(Path(__file__).resolve().parent / "aliases.json", encoding="utf-8")); _al.pop("_comment", None)
+            self.router.alias_map = {compact(a): compact(c) for c, alts in _al.items() for a in alts if len(compact(a)) >= 3}
+        except Exception:
+            self.router.alias_map = {}
         rev = collections.defaultdict(set)
         for row in self.rows:
             c = row["contract"][0]
