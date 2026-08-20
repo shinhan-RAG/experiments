@@ -201,5 +201,60 @@
   "scope_boost": 3.0,
   "fallback": {"min_n": 5, "tau": 5.0},
   "ref_expand": 1
+ },
+ "f1_fanout": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {"contract": 2},
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fanout": 1
+ },
+ "f2_cover": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {"contract": 2},
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "submit_pad": 1,
+  "fallback_silent": {"min_n": 5, "tau": 5.0},
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0,
+  "submit_cover": 1
+ },
+ "f3_both": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {"contract": 2},
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "submit_pad": 1,
+  "fallback_silent": {"min_n": 5, "tau": 5.0},
+  "submit_ref_merge": 1,
+  "alias_cond": 5.0,
+  "fanout": 1,
+  "submit_cover": 1
+ },
+ "fs_slot": {
+  "_note": "파일서치 원본 slot 서치 방식 — contract 가중치 없음, facet 없음. msearch(V9) 는 유지.",
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "meta": 1,
+  "meta_view": "V9"
  }
 }
