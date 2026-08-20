@@ -51,7 +51,7 @@ def occurrences(k):
     while p >= 0 and len(out) < 200:
         out.append((idx[p], idx[p + len(k) - 1] + 1)); p = nd.find(k, p + 1)
     return out
-def build_groups(spans, expand):
+def build_groups(spans, expand, expand_named=True):
     spans = sorted(spans)
     merged = []
     for c0, c1, eid in spans:
@@ -69,14 +69,16 @@ def build_groups(spans, expand):
             groups.append({"key": k, "members": [{"c0": m["c0"], "c1": m["c1"], "src": "gold"}], "lsh_eids": list(m["lsh_eids"])})
     for g in groups:
         if expand and len(g["key"]) >= 40:
-            scopes = {scope_at(m["c0"]) for m in g["members"]}
+            # 정답기준 명세 v1 §3: 특약 지정 질문 → 정답 특약 scope 안만 / 일반 질문 → 문서 전체 출현 인정
+            # 특약 지정 판정 = 질문 문자열에 특약 핵심명이 문자 그대로 존재하는가(검색기 라우터 미사용 — 순환 방지)
+            scopes = {scope_at(m["c0"]) for m in g["members"]} if expand_named else None
             added = 0
             for c0, c1 in occurrences(g["key"]):
                 if added >= MAX_OCC:
                     break
                 if any(c0 < m["c1"] and c1 > m["c0"] for m in g["members"]):
                     continue
-                if scope_at(c0) not in scopes:
+                if scopes is not None and scope_at(c0) not in scopes:
                     continue
                 g["members"].append({"c0": c0, "c1": c1, "src": "occurrence"}); added += 1
         g["c0"] = min(m["c0"] for m in g["members"]); g["c1"] = max(m["c1"] for m in g["members"])
@@ -105,6 +107,17 @@ def find_in_bracket(qid, lo, hi):
             if best:
                 break
     return best
+
+# 질문이 특약명을 문자 그대로 담고 있는지(공백 제거·핵심명 4자 이상). 사전은 element 의 contract_scope 에서만 도출(QA 미참조)
+_E_scopes = sorted({e["contract_scope"] for e in E if e["contract_scope"]})
+def _core_name(sc):
+    sc = re.sub(r"^주계약\((.*)\)$", r"\1", sc)
+    sc = re.sub(r"\(무배당[^)]*\)|\(간편\)|\[.*?\]", "", sc)
+    return re.sub(r"\s", "", sc).replace("특약", "")
+_CORES = sorted({c for c in (_core_name(s_) for s_ in _E_scopes) if len(c) >= 4}, key=len, reverse=True)
+def question_names_contract(qtext):
+    cq = re.sub(r"\s", "", qtext)
+    return any(c in cq for c in _CORES)
 
 for eid in S:
     span_of(eid)
@@ -153,7 +166,8 @@ for expand, name in ((False, "gold_spans_lsh_train.jsonl"), (True, "gold_spans_l
                         spans.append((hit[0], hit[1], eid)); recovered.append(eid); fail.remove(eid)
             if recovered:
                 r["_recovered"] = recovered
-        groups = build_groups(spans, expand) if spans else []
+        named = question_names_contract(q.get("q", ""))
+        groups = build_groups(spans, expand, expand_named=named) if spans else []
         n_fail += bool(fail)
         out.append({"qid": r["qid"], "q": q.get("q", ""), "task_type": q.get("task_type", ""), "core_retrieval": q.get("core_retrieval", ""),
                     "groups": groups, "lsh_gold": r["gold"], "unmapped": fail, "recovered": r.get("_recovered", []),
