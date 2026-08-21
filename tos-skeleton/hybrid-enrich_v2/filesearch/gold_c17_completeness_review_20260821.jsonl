@@ -1,0 +1,30 @@
+{"qid":"v3-offline-0502","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0476","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"기본물리 행 중간부터 전문재활 행까지 포함한 span을 단순재활 행으로 한정","ops":[{"op":"replace_span","group":0,"jo":"j03628","c0":1323163,"c1":1323309}]}
+{"qid":"v3-offline-0059","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0332","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0185","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"질문이 판본을 특정하지 않아 삭감없음용 동등 직접근거를 OR 추가","ops":[{"op":"add_members","group":0,"members":[{"jo":"j00641","c0":297155,"c1":297342},{"jo":"j01131","c0":449786,"c1":449967}]}]}
+{"qid":"v3-offline-0370","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0447","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"모든 판본 span에서 지급사유가 잘려 각 직접 지급문장으로 교체","ops":[{"op":"replace_group_members","group":0,"members":[{"jo":"j02830","c0":1091738,"c1":1091794},{"jo":"j02870","c0":1103523,"c1":1103578},{"jo":"j02912","c0":1114135,"c1":1114191},{"jo":"j02955","c0":1124822,"c1":1124879}]}]}
+{"qid":"v3-offline-0083","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"동일 지급규칙의 직접 sibling 판본 누락 보강","ops":[{"op":"add_members","group":0,"members":[{"jo":"j02652","c0":1043699,"c1":1044152},{"jo":"j02695","c0":1054659,"c1":1055112},{"jo":"j05718","c0":1948165,"c1":1948618}]}]}
+{"qid":"v3-offline-0362","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0549","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0352","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0550","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0463","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0410","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0467","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"전립선 항목만 남기도록 과도한 표 span 축소","ops":[{"op":"replace_span","group":0,"jo":"j02270","c0":895865,"c1":896002},{"op":"replace_span","group":0,"jo":"j02284","c0":902953,"c1":903088}]}
+{"qid":"v3-offline-0493","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0497","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0450","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"질문이 판본을 특정하지 않아 동일 답의 갱신형 OR 추가","ops":[{"op":"add_members","group":0,"members":[{"jo":"j04320","c0":1505536,"c1":1505646}]}]}
+{"qid":"v3-offline-0425","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0306","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"가입시 기본/삭감없음용 비교에 각 판본의 해약형·갱신형 직접 보장개시 근거를 OR로 완비","ops":[{"op":"replace_group_members","group":0,"members":[{"jo":"j00586","c0":275923,"c1":276134},{"jo":"j00607","c0":289016,"c1":289088},{"jo":"j01075","c0":425944,"c1":426237},{"jo":"j01095","c0":440242,"c1":440400}]},{"op":"replace_group_members","group":1,"members":[{"jo":"j00635","c0":291624,"c1":291835},{"jo":"j00656","c0":303926,"c1":303998},{"jo":"j01124","c0":442646,"c1":442939},{"jo":"j01145","c0":457058,"c1":457216}]}]}
+{"qid":"v3-offline-0488","decision":"exclude","review":"independent_sol_xhigh_retrieval_blind","reason":"underspecified_contract_identity_conflicting_direct_rules"}
+{"qid":"v3-offline-0351","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"지급 group의 네 판본을 OR로 완비하고 직접 지급문장으로 span 교체","ops":[{"op":"replace_group_members","group":0,"members":[{"jo":"j02830","c0":1091738,"c1":1091794},{"jo":"j02870","c0":1103523,"c1":1103578},{"jo":"j02912","c0":1114135,"c1":1114191},{"jo":"j02955","c0":1124822,"c1":1124879}]}]}
+{"qid":"v3-offline-0155","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"소액암 지급 group의 기본/삭감없음용·해약형/갱신형 sibling을 OR로 완비","ops":[{"op":"add_members","group":0,"members":[{"jo":"j00743","c0":327328,"c1":327519},{"jo":"j01184","c0":466995,"c1":467191},{"jo":"j01236","c0":483480,"c1":483676}]}]}
+{"qid":"v3-offline-0472","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"기본물리 항목만 남기도록 과도한 span 축소","ops":[{"op":"replace_span","group":0,"jo":"j02064","c0":822089,"c1":822298},{"op":"replace_span","group":0,"jo":"j02079","c0":830289,"c1":830500}]}
+{"qid":"v3-offline-0534","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"정의 뒤 영문 잡음과 지급 뒤 예시표 제거","ops":[{"op":"replace_span","group":0,"jo":"j03559","c0":1295321,"c1":1295611},{"op":"replace_span","group":1,"jo":"j03562","c0":1296805,"c1":1297110}]}
+{"qid":"v3-offline-0457","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0506","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"두 required claim의 잘린 문장을 완전 span으로 확장","ops":[{"op":"replace_span","group":0,"jo":"j02024","c0":807902,"c1":808089},{"op":"replace_span","group":1,"jo":"j02024","c0":808298,"c1":808692}]}
+{"qid":"v3-offline-0494","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}
+{"qid":"v3-offline-0369","decision":"fix","review":"independent_sol_xhigh_retrieval_blind","reason":"해약형 적격 진단 목록 전체 행으로 span 확장","ops":[{"op":"replace_span","group":0,"jo":"j00706","c0":318858,"c1":318988}]}
+{"qid":"v3-offline-0449","decision":"pass","review":"independent_sol_xhigh_retrieval_blind"}

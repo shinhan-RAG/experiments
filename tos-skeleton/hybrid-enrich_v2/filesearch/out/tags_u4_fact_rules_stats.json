@@ -1,0 +1,33 @@
+{
+  "version": "semtag-u4-fact-rules-1.1",
+  "n": 32046,
+  "inputs": {
+    "elements": "9d13e8d61781a4d39593795b0a30b33d41da7e1134335f04056e3d35540f5a49",
+    "tags": "040e364d5e2735d346c80dde065260362040d30f26afecc31710e0f848b8f109",
+    "jo": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+  },
+  "output_sha256": "19df8e21d9f9287394cf9d02924d5d0e2c84be7e9bf3ae9fca4f02aaacd18104",
+  "document_key": "doc:c7be42738b54844bbc9a",
+  "document_count": 1,
+  "reference_scope_key": "document_id+exact_contract_key+table_namespace+table_id",
+  "reference_key_count": 501,
+  "multi_source_reference_key_count": 77,
+  "reference_namespaces": {
+    "별첨": 277,
+    "부표": 221,
+    "표": 3
+  },
+  "counts": {
+    "anchors": 36947,
+    "reference_edges": 83,
+    "rows_with_alias": 812,
+    "rows_with_anchor": 16877,
+    "rows_with_appendix_context": 239,
+    "rows_with_reference_edge": 62
+  },
+  "invariants": {
+    "qa_or_gold_read": false,
+    "element_id_order_preserved": true,
+    "jo_membership_exact": true
+  }
+}

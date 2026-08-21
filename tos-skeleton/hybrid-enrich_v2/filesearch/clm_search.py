@@ -131,6 +131,58 @@ class Router:
         toks = [t for t in TOKEN_RE.findall(q) if t not in STOP and not re.fullmatch(r"\d+", t)]
         return {k: v for k, v in slots.items() if v}, unique(toks, 30)
 
+    @staticmethod
+    def context_backtrack(q, slots, tokens):
+        """Return an identity-free intent query only when the routed identity is contextual.
+
+        The gate uses document relations and query form, not product or disease names.  It is
+        intentionally conservative because unconditional identity relaxation already failed the
+        agent Recall gate.
+        """
+        identities = list(slots.get("contract", [])) + list(slots.get("identity", []))
+        if not identities:
+            return None
+        reasons = []
+        if len(identities) >= 3:
+            reasons.append("identity_overload")
+        if re.search(r"주계약.*특약|특약.*주계약", q):
+            reasons.append("cross_document_relation")
+        if re.search(r"(?:보험|상품)(?:으로|에서|에\s*가입|을\s*가입|를\s*가입)", q):
+            reasons.append("collection_context")
+        if "등" in q and len(re.findall(r"[,/·]", q)) >= 1:
+            reasons.append("enumerated_topics")
+        if not reasons:
+            return None
+
+        identity_text = [compact(value) for value in identities]
+        intent_tokens = [token for token in tokens
+                         if not any(compact(token) and compact(token) in value
+                                    for value in identity_text)]
+        intent_slots = {key: list(value) for key, value in slots.items()
+                        if key not in {"contract", "identity", "role", "function", "_conf"}}
+        for key in ("subject", "topic"):
+            intent_slots[key] = [value for value in intent_slots.get(key, [])
+                                 if not any(compact(value) in identity for identity in identity_text)]
+            if not intent_slots[key]:
+                intent_slots.pop(key, None)
+        intent_text = " ".join(dict.fromkeys(intent_tokens + [
+            str(value) for key in ("subject", "topic", "qualifier", "constraint", "schema", "structure")
+            for value in intent_slots.get(key, [])
+        ]))
+        roles = []
+        for pattern, role in ROLE_RULES:
+            if re.search(pattern, intent_text):
+                # Colloquial "refund" is often a benefit-coverage question.  Lifecycle intent
+                # requires an explicit lifecycle noun once product-form text has been removed.
+                if role == "contract_lifecycle" and not re.search(
+                        r"갱신|해지|소멸|무효|해약|환급금", intent_text):
+                    continue
+                roles.append(role)
+        if roles:
+            intent_slots["role"] = unique(roles)
+        return {"query": intent_text or q, "slots": intent_slots,
+                "tokens": unique(intent_tokens, 30), "reasons": reasons}
+
 
 class SlotSearch:
     def __init__(self, elements_path, tags_path):
@@ -171,6 +223,60 @@ class SlotSearch:
         return [(self.E[i], score) for i, score in idx.rank(
             raw_query, slots, lexical_counts, weights=weights, profile=profile, limit=limit)]
 
+    def rank_structured_portfolio(self, slots, tokens, raw_query, weights=None, profile="core",
+                                  mode="all", limit=400, window=40, seed_quota=20,
+                                  lexical_counts=None, process_query=None, rrf_k=60,
+                                  coverage_seed=3, coverage_per_role=1):
+        """기존 순위 일부를 보존하면서 규칙 후속질의를 첫 페이지에 교차 노출한다."""
+        if lexical_counts is None:
+            lexical_counts = self.lexical_counts(tokens)
+        idx = self.ensure_structured()
+        if mode == "context_backtrack":
+            seed = idx.rank(raw_query, slots, lexical_counts, weights=weights,
+                            profile=profile, limit=max(limit, 100))
+            plan = self.router.context_backtrack(process_query or raw_query, slots, tokens)
+            if not plan:
+                self._last_portfolio = {"mode": mode, "window": window,
+                                        "seed_quota": seed_quota, "specs": [], "trace": []}
+                return [(self.E[i], score) for i, score in seed[:limit]]
+            relaxed = idx.rank(plan["query"], plan["slots"],
+                               self.lexical_counts(plan["tokens"]), weights=weights,
+                               profile=profile, limit=max(window, 100))
+            merged, seen, trace = [], set(), []
+
+            def push(item, phase):
+                i, score_ = item
+                if i in seen:
+                    return False
+                seen.add(i); merged.append(item)
+                trace.append({"index": i, "phase": phase,
+                              "reason": ",".join(plan["reasons"])})
+                return True
+
+            for item in seed[:min(seed_quota, window, limit)]:
+                push(item, "seed")
+            for item in relaxed:
+                if len(merged) >= min(window, limit):
+                    break
+                push(item, "context_backtrack")
+            for item in seed:
+                if len(merged) >= limit:
+                    break
+                push(item, "seed_tail")
+            self._last_portfolio = {
+                "mode": mode, "window": window, "seed_quota": seed_quota,
+                "specs": [{"phase": "context_backtrack", "query": plan["query"],
+                           "reason": ",".join(plan["reasons"])}], "trace": trace}
+            return [(self.E[i], score) for i, score in merged]
+        ranked = idx.rank_portfolio(raw_query, slots, tokens, lexical_counts, weights=weights,
+                                    profile=profile, mode=mode, limit=limit,
+                                    window=window, seed_quota=seed_quota,
+                                    process_query=process_query, rrf_k=rrf_k,
+                                    coverage_seed=coverage_seed,
+                                    coverage_per_role=coverage_per_role)
+        self._last_portfolio = idx.last_portfolio
+        return [(self.E[i], score) for i, score in ranked]
+
     @staticmethod
     def field_match(row, field, requested):
         vals = [str(v) for v in row.get(field) or [] if str(v).strip()]
@@ -186,6 +292,44 @@ class SlotSearch:
     def lexical_counts(self, tokens):
         """원문 어휘 채널만 계산한다(BM25F-only 평가에서 fuzzy 슬롯 표 생략용)."""
         return [sum(1 for t in tokens if compact(t) in b) for b in self.body] if tokens else [0] * len(self.rows)
+
+    def hybrid_fallback_gate(self, slots, ranked, top_k=5, min_axis_coverage=0.5):
+        """후보 *개수*가 아니라 상위 결과의 구조 축 충족도로 메타 폴백을 판정한다.
+
+        질의별 BM25F 원점수 임계값은 질의 길이·필드 수에 민감하고, 결과 개수는 상한
+        400으로 포화된다. 그래서 라우터가 실제 요청한 범용 축이 top-k에서 한 번이라도
+        충족됐는지만 사용한다. 상품/질병 전용 어휘나 Gold label은 사용하지 않는다.
+        """
+        requested = {
+            "identity": list(slots.get("contract", [])) + list(slots.get("identity", [])),
+            "topic": list(slots.get("subject", [])) + list(slots.get("topic", [])),
+            "function": list(slots.get("role", [])) + list(slots.get("function", [])),
+            "constraint": list(slots.get("qualifier", [])) + list(slots.get("constraint", [])),
+            "structure": list(slots.get("schema", [])) + list(slots.get("structure", [])),
+        }
+        requested = {axis: list(dict.fromkeys(str(v) for v in values if str(v).strip()))
+                     for axis, values in requested.items() if values}
+        top_rows = [self.rows[self._eidx[e["element_id"]]] for e, _ in ranked[:top_k]]
+        field_map = {"identity": "contract", "topic": "subject", "function": "role",
+                     "constraint": "qualifier", "structure": "schema"}
+        hits = {
+            axis: any(self.field_match(row, field_map[axis], values) for row in top_rows)
+            for axis, values in requested.items()
+        }
+        coverage = sum(hits.values()) / max(1, len(hits))
+        reasons = []
+        if not ranked:
+            reasons.append("empty")
+        if requested.get("identity") and not hits.get("identity", False):
+            reasons.append("identity_miss")
+        if len(requested) >= 2 and coverage < min_axis_coverage:
+            reasons.append("axis_coverage")
+        if not requested and ranked:
+            reasons.append("no_routed_axis")
+        return {"fallback": bool(reasons), "reasons": reasons,
+                "requested_axes": sorted(requested),
+                "matched_axes": sorted(axis for axis, hit in hits.items() if hit),
+                "coverage": round(coverage, 4), "top_k": top_k}
 
     def rank(self, M, L, mode="clm", lex="binary", weights=None, limit=50, scope_filter=None, rare=False, n_tokens=None, rare_cap=None):
         """점수 = Σ_슬롯 hit·w_f·(rare 이면 희소성 계수) + 어휘항.
