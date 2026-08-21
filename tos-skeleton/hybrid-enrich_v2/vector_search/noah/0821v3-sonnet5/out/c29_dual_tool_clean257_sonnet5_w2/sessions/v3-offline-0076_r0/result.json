@@ -1,0 +1,31 @@
+{
+  "submission": {
+    "qid": "v3-offline-0076",
+    "ranked": [
+      "e12418",
+      "e14620",
+      "e14606",
+      "e12407",
+      "e14622",
+      "e12442",
+      "e11805"
+    ],
+    "n_search": 4,
+    "n_read": 6
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다.\n\n- **e12418** — 뇌출혈진단특약 제2-2조(보험금의 지급사유): \"뇌출혈\"로 진단 확정되면(수술 여부와 무관) 진단급여금 지급\n- **e12407** — 뇌출혈진단특약 제2-1조의2: \"뇌출혈\" 정의 및 진단확정 기준(CT/MRI 등)\n- **e11805** — 뇌혈관질환진단특약 정의(진단확정 기준, 유사 구조)\n- **e14620, e14622** — 뇌혈관질환수술특약 제2-2조(보험금의 지급사유): 실제 \"수술\"을 받아야 지급, 약물치료만으로는 지급사유 미충족\n- **e14606** — 뇌혈관질환수술특약 제2-1조의2 \"수술\"의 정의: 흡인·천자 등 비수술적 조치는 \"수술\"에서 제외됨을 명시\n- **e12442** — 뇌출혈진단특약 제2-6조(보험금 받는 방법의 변경, 제2-2조 지급사유 참조 보조 근거)\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 250.5645260810852,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

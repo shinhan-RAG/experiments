@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0005",
+    "ranked": [
+      "j06505",
+      "j06507",
+      "j06509",
+      "j06520",
+      "j06489"
+    ],
+    "n_search": 4,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**근거 조항 (관련도 순):**\n1. **j06505** — 제2-1조의2 \"깁스(Cast)치료\"의 정의: \"다만, 부목(Splint Cast)치료는 제외합니다\" — 보장 제외 대상 명시\n2. **j06507** — 제2-2조 보험금의 지급사유: \"(깁스치료 1회당, '부목(Splint Cast)치료' 제외)\"\n3. **j06509** — 제2-4조 보험금을 지급하지 않는 사유 (고의 사고 등 일반 면책 사유)\n4. **j06520** — 보험금 지급기준표 (부목치료 제외 명시)\n5. **j06489** — 제2-4조 표제부\n\n**결론:** 깁스치료특약에서 \"부목(Splint Cast)치료\"는 깁스(Cast)치료의 정의에서 명시적으로 제외되어 깁스치료급여금 보장 대상이 아닙니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 182.51534843444824,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "submission": {
+    "qid": "v3-offline-0293",
+    "ranked": [
+      "e31573",
+      "e31582",
+      "e13271",
+      "e13252",
+      "e13253",
+      "e13254"
+    ],
+    "n_search": 2,
+    "n_read": 9
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "\n",
+    "stderr": " implications of the results, including the possibility of using the SDEs to model the dynamics of nonlinear systems.\\n[별첨2] 표 84. 특정순환계질환(3종) 분류표\\n표85\\n급여 특정NGS 유전자패널 검사 분류표\\n약관에서 정한 \\\"급여 특정NGS 유전자패널 검사\\\"라 함은 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수(보건복지부 고시 제2023-28호, 2023.3.1. 시행)」에서 정한 분류번호 및 수가코드 중 다음에 적은 수가코드에 해당하는 의료행위를 말합니다.\\n| 수 가 코 드 | 급여 특정NGS 유전자패널 검사보장 코드명 |\\n| --- | --- |\\n| CB003 | 비유전성 유전자검사 Genetic Tests for Somatic Variants – (1) 고형암 Solid malignant tumor – (가) Level I |\\n| CB004 | 비유전성 유전자검사 Genetic Tests for Somatic Variants – (1) 고형암 Solid malignant tumor – (가) Level II |\\n| CB005 | 비유전성 유전자검사 Genetic Tests for Somatic Variants – (2) 혈액암 Hematologic malignancy – (가) Level I |\\n| CB006 | 비유전성 유전자검사 Genetic Tests for Somatic Variants – (2) 혈액암 Hematologic malignancy – (가) Level II |\\n주1) \\\"급여 특정NGS 유전자패널 검사\\\"는 「국민건강보험법」에서 정한 요양급여 또는 「의료급여법」에서 정한 의료급여의 절차를 거쳐 급여항목이 발생한 경우를 말합니다.\\n주2) 진료 당시의 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」에 따라 약관에서 보장하는 의료행위에 대한 보험금 지급여부가 판단된 경우, 이후 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 개정으로 의료행위 분류가 변경되더라도 약관에서 보장하는 의료행위 해당 여부를 다시 판단하지 않습니다.\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n[별첨2] 표 85. 급여 특정NGS 유전자패널 검사 분류표\\n표86\\n카티(CAR-T)항암약물치료제 해당\\n의약품명 및 성분명\", \"read_calls_left\": 7}\n\n succeeded in 4928ms:\n{\"id\": \"e13254\", \"jo\": \"j03002\", \"contract\": \"(간편)특정순환계질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13254\"], \"text\": \"제2-1조의4 \\\"특정순환계질환(3종)\\\"의 정의 및 진단확정\", \"read_calls_left\": 7}\n\n succeeded in 4840ms:\n{\"id\": \"e13271\", \"jo\": \"j03017\", \"contract\": \"(간편)특정순환계질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13269\", \"e13270\", \"e13271\", \"e13272\", \"e13273\", \"e13274\", \"e13275\", \"e13276\", \"e13277\", \"e13278\", \"e13279\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n[부표2-1] 보험금 지급기준표\\n[부표2-2] 특정순환계질환(1종~3종) 분류표\\n[부표2-2] 특정순환계질환(2종~3종) 분류표\\n[부표2-3] 특정순환계질환(3종) 분류표\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.\\n※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.\\n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다.\\n※ \\\"간편심사형\\\"과 \\\"일반심사형\\\" 모두 이 약관을 적용합니다.\", \"read_calls_left\": 7}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id j03002' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id j03000' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id j03001' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3272ms:\n{\"id\": \"j03000\", \"jo\": \"j03000\", \"contract\": \"(간편)특정순환계질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13252\"], \"text\": \"제2-1조의2 \\\"특정순환계질환(1종~3종)\\\"의 정의 및 진단확정\", \"read_calls_left\": 1}\n\n succeeded in 3369ms:\n{\"id\": \"j03002\", \"jo\": \"j03002\", \"contract\": \"(간편)특정순환계질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13254\"], \"text\": \"제2-1조의4 \\\"특정순환계질환(3종)\\\"의 정의 및 진단확정\", \"read_calls_left\": 1}\n\n succeeded in 3098ms:\n{\"id\": \"j03001\", \"jo\": \"j03001\", \"contract\": \"(간편)특정순환계질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13253\"], \"text\": \"제2-1조의3 \\\"특정순환계질환(2종~3종)\\\"의 정의 및 진단확정\", \"read_calls_left\": 1}\n\ncodex\n분류표에서 범위가 확인되었습니다: 1종은 류마티스성 심장질환·부정맥·특정 동맥혈관질환 등, 2종은 협심증·허혈성심장질환·심부전·뇌혈관질환 등, 3종은 급성심근경색증과 뇌출혈입니다. 검증된 서로 다른 조의 근거를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e31573,e31582,e13271,e13252,e13253,e13254' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3195ms:\n{\"ok\": true, \"submitted\": [\"e31573\", \"e31582\", \"e13271\", \"e13252\", \"e13253\", \"e13254\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n\ntokens used\n22,584\n",
+    "elapsed": 53.80637454986572,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

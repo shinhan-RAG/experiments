@@ -1,0 +1,15 @@
+{
+  "submission": {
+    "ranked": []
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": "no_submit",
+    "returncode": 0,
+    "stdout": "질문이 포함되지 않았습니다. \"아래 질문\"이라고 하셨지만 메시지에 검색할 질문 내용이 없습니다. 검색 대상 질문을 알려주시면 즉시 근거 조항 검색을 시작하겠습니다.\n",
+    "stderr": "",
+    "elapsed": 20.01358461380005,
+    "tools_used": [],
+    "required_tools_ok": false
+  }
+}

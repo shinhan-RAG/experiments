@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0390",
+    "ranked": [
+      "e13239",
+      "e13144",
+      "e00179",
+      "c02369",
+      "c02352"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다.\n\n**근거 조항 요약** — (간편)급성심근경색증진단특약(무배당, 해약환급금 미지급형), 부표2-1 보험금 지급기준표(제2-12조 관련) 및 제2-2조(보험금의 지급사유):\n\n- **가입(계약일) 후 1년 미만에 지급사유(급성심근경색증 진단확정) 발생**: 특약보험가입금액의 **50%** 지급\n- **가입(계약일) 후 1년 이후 발생**: 특약보험가입금액의 **100%** 지급\n- (※ 1년 미만 기준: 계약일부터 1년이 되는 시점의 계약해당일 전날까지)\n\n주계약 약관 요약표(제2편 관련)에도 \"급성심근경색증진단급여금 — 가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급\"으로 동일하게 명시되어 있습니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 159.56165027618408,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

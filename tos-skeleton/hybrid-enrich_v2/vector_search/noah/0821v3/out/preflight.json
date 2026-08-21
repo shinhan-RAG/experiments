@@ -1,0 +1,45 @@
+{
+  "artifacts": {
+    "elements_u3.jsonl": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u3.jsonl",
+      "sha256_lf": "9d13e8d61781a4d39593795b0a30b33d41da7e1134335f04056e3d35540f5a49",
+      "ok": true
+    },
+    "elements_u3jo.jsonl": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u3jo.jsonl",
+      "sha256_lf": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c",
+      "ok": true
+    },
+    "tags_u4_fact_rules.jsonl": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\tags_u4_fact_rules.jsonl",
+      "sha256_lf": "19df8e21d9f9287394cf9d02924d5d0e2c84be7e9bf3ae9fca4f02aaacd18104",
+      "ok": true
+    },
+    "gold_train_scoped_u3_reviewed_overlay_v1.jsonl": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\gold_train_scoped_u3_reviewed_overlay_v1.jsonl",
+      "sha256_lf": "d8038733c364f6441dd3d8bfc9bd3ac5bccb1b640b8458f344a96291be0936af",
+      "ok": true
+    },
+    "gold_train_scoped_u3_reviewed_overlay_v1_qids.json": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\gold_train_scoped_u3_reviewed_overlay_v1_qids.json",
+      "sha256_lf": "63d35e9f132392a659c34fd004bb60e550bcbbba38c766dd6acc074fe78752ea",
+      "ok": true
+    }
+  },
+  "dependencies": {
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\view_V9.jsonl": true,
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\chunks.jsonl": true,
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\emb\\chunk_V9.npy": true,
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\emb\\chunk_V9_ids.json": true,
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0819\\agent_tools.py": true
+  },
+  "tools": {},
+  "codex": {
+    "binary": "C:\\Users\\Atdev-pc\\AppData\\Roaming\\npm\\codex.cmd",
+    "version": "codex-cli 0.149.0",
+    "auth": "Logged in using ChatGPT",
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "workers": 4
+  }
+}

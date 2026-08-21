@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0226",
+    "ranked": [
+      "j05329",
+      "j05344",
+      "j05187",
+      "j05222",
+      "j05457"
+    ],
+    "n_search": 10,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다.\n\n- **j05329 / j05187** — \"(간편)[180일한도형]첫날부터입원특약\" 제2-1조의3(2) \"입원\"의 정의와 장소: 병실 종류와 무관하게 \"의료기관에 입실하여 의사의 관리 하에 치료에 전념하는 것\"을 입원으로 정의 → 일반병실 입원도 포함됨\n- **j05344 / j05222** — 같은 특약의 보험금 지급기준표: \"1일 이상 계속 입원\" 시 입원급여금 지급 (중환자실 등 특정 병실 요건 없음)\n- **j05457** — (참고 대조) \"첫날부터중환자실입원특약\" 제2-3조: 이 특약은 중환자실 입원을 별도로 요구하는 특약으로, 일반병실 입원과는 보장 구조가 다름을 보여주는 대조 근거\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 373.96778202056885,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

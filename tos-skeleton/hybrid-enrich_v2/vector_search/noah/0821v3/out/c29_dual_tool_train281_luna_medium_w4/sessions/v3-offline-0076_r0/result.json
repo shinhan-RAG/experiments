@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0076",
+    "ranked": [
+      "c02239",
+      "c02255",
+      "c02607"
+    ],
+    "n_search": 2,
+    "n_read": 5
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "       \n",
+    "stderr": " 경우를 포함합니다.\\n\\n1. 실종선고를 받은 경우 : 법원에서 인정한 실종기간이 끝나는 때에 사망한 것으로 봅니다.\\n\\n2. 관공서에서 수해, 화재나 그 밖의 재난을 조사하고 사망한 것으로 통보하는 경우 : 가족관계등록부에 기재된 사망연월일을 기준으로\\n\\nSHINHAN LIFE\\n\\n1310\\n\\n---\\n\\n$$ \\\\therefore $$\\n\\n합니다.\\n\\n실종선고\\n\\n어떤 사람의 생사불명의 상태가 일정기간 이상 계속 될 때 이해관계가 있는 사람의 청구에 의해 사망한 것으로 인정하고 신분이나 재산에 관한 모든 법적 관계를 확정시키는 법원의 결정\\n\\n\", \"read_calls_left\": 6, \"chunk_span\": [1075038, 1075723]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02608' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2405ms:\n{\"id\": \"c02608\", \"jo\": \"j03374\", \"contract\": \"(간편)뇌혈관질환수술특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14623\", \"e14624\", \"e14625\"], \"text\": \"으로 수술을 받았을 때 보험수익자에게 약정한 뇌혈관질환수술급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(수술 1회당)\\n\\n제2-3조 보험금 지급에 관한 세부규정\\n\\n① 특약보험료 납입기간 중 주계약의 보험료 납입이 면제된 경우 이 특약의 차회 이후 보험료 납입을 면제합니다. 다만, 주계약의 보험료 납입 면제가 \\\"보험료의 납입을 면제하는 특약\\\"에 의해 납입면제가 된 경우 그 \\\"보험료의 납입을 면제하는 특약\\\"의 약관에서 정한 바를 따르며, 이 특약이 해당 약관의 「보험료납입면제대상계약」에 해당되지 않는 경우 보험료 납입면제가 되지 않습니다.\\n\\n② 제2-2조(보험금의 지급사유)의 경우 계약일부터 1년 미만에 보험금 지급사유가 발생하였을 때에는 <부표2-1> \\\"보험금 지급기준표\\\"에서 정한바에 따라 삭감하여 지급합니다.\\n\\n제2-4조 보험금 등을 지급하지 않는 사유\\n\\n회사는 다음 중 어느 한 가지로 보험금 지급사유가 발생한 때에는 보험금을 지급하지 않습니다.\\n\\n\", \"read_calls_left\": 5, \"chunk_span\": [1245397, 1245887]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02255' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2609ms:\n{\"id\": \"c02255\", \"jo\": \"j02790\", \"contract\": \"(간편)뇌출혈진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e12509\", \"e12510\", \"e12511\", \"e12512\", \"e12513\", \"e12514\", \"e12515\", \"e12516\", \"e12517\", \"e12518\", \"e12519\", \"e12520\"], \"text\": \"ed from the provided image:\\n\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n\\nSHINHAN LIFE\\n\\n1318\\n\\n---\\n\\n보험금 지급기준표\\n\\nS\\n\\n| 구분 | 지급사유 | 지급금액 |\\n|------|----------|----------|\\n| 뇌출혈 진단급여금 | 특약보험기간 중 피보험자가 “뇌출혈”로 진단확정 되었을 때 (다만, 최초 1회에의 진단 확정에 한함) | 특약보험가입금액의 100% (다만, 계약일부터 1년 미만에 지급사유가 발생한 경우 특약보험가입금액의 50%를 지급함) |\\n\\n※ 1년 미만 : 계약일부터 1년이 되는 시점의 계약해당일의 전날까지\\n\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하거나 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 더 이상 효력이 없습니다.\\n\\n2. 특약보험기간 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자 적립액 등을 지급하지 않습니다.\\n\\n________________________________________________________\\n\\n2212152200000007661\\n\\n\", \"read_calls_left\": 4, \"chunk_span\": [1082076, 1082677]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02607' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2732ms:\n{\"id\": \"c02607\", \"jo\": \"j03373\", \"contract\": \"(간편)뇌혈관질환수술특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14618\", \"e14619\", \"e14620\", \"e14621\", \"e14622\"], \"text\": \"자방출단층술(PET)\\n\\nPositron Emission Tomography. 양전자를 방출할 때 발생하는 핵 의학적 방사능을 이용하여 인체의 단면을 촬영하는 기술\\n뇌척수액 검사\\n\\n뇌와 척수를 둘러싸 보호하고 있는 맑은 액체인 뇌척수액의 이상 유무를 알아보는 것\\n\\n제2관 보험금의 지급\\n\\n제2-2조 보험금의 지급사유\\n\\n[간편심사형]\\n\\n회사는 특약보험기간 중 피보험자가 \\\"뇌혈관질환\\\"의 직접적인 치료를 목적\\n\\n으로 수술을 받았을 때 보험수익자에게 약정한 뇌혈관질환수술급여금(<부\\n\\n표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(수술 1회당)\\n\\n[일반심사형]\\n\\nSHINHAN LIFE\\n\\n1542\\n\\n---\\n\\n회사는 특약보험기간 중 피보험자가 \\\"뇌혈관질환\\\"으로 진단확정되고, 특약보험기간 중 그 \\\"뇌혈관질환\\\"의 직접적인 치료를 목적으로 수술을 받았을 때 보험수익자에게 약정한 뇌혈관질환수술급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(수술 1회당)\\n\\n제2-3조 보험금 지급에 관한 세부규정\\n\\n\", \"read_calls_left\": 3, \"chunk_span\": [1244989, 1245497]}\n\ncodex\n검증 결과, 진단특약은 수술 여부가 아닌 “뇌출혈 진단확정”을 지급사유로 하고, 수술특약은 뇌혈관질환의 직접 치료 목적 수술을 별도로 요구합니다. 따라서 진단급여금 기준과 수술급여금 기준을 함께 근거로 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c02239,c02255,c02607' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2973ms:\n{\"ok\": true, \"submitted\": [\"c02239\", \"c02255\", \"c02607\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n       \ntokens used\n20,407\n",
+    "elapsed": 63.46280646324158,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "submission": {
+    "qid": "v3-offline-0456",
+    "ranked": [
+      "e14063"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "약관상 원칙적으로는 어렵습니다. 급성뇌경색증은 의료기관 의사가 특이적 증상과 함께 뇌 CT 또는 뇌 MRI 검사 등을 기초로 진단해야 합니다.\n\n다만 피보험자가 사망하여 CT·MRI를 시행할 수 없었던 경우에는, 급성뇌경색증으로 진단·치료받았음을 입증하는 문서화된 기록이나 증거로 진단확정의 기초를 삼을 수 있습니다.\n",
+    "stderr": "여 내려져\"}, {\"id\": \"c02496\", \"jo\": \"j03237\", \"contract\": \"(간편)혈전용해치료특약(무배당, 해약환급금 미지급형)\", \"preview\": \"약 2. 특정 급성심근경색증 혈전용해치료 보장계약: 특약보험기간 중 피보험자가 제2-2조(보험금의 지급사유)에서 정한 특정 급성심근경색증혈전용해치료급여금을 보장받기 위한 계약 ※ 각 보장계약별 보장내용, 유지, 감액 등이 다르므로 각 조항을 꼭 확 # SHINHAN LIFE 1484 -\"}]}\n\ncodex\n두 검색 채널 모두 `(간편)혈전용해치료특약`의 급성뇌경색증 정의 조항을 최우선으로 지목했습니다. 이제 해당 조항과 예외 문구를 원문으로 확인하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02493' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e14063' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02492' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3793ms:\n{\"id\": \"e14063\", \"jo\": \"j03232\", \"contract\": \"(간편)혈전용해치료특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14061\", \"e14062\", \"e14063\", \"e14064\", \"e14065\", \"e14066\"], \"text\": \"제2-1조의2 \\\"급성뇌경색증\\\"의 정의 및 진단확정\\n① 이 특약에 있어서 \\\"급성뇌경색증\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"뇌경색증 분류표\\\"에 해당하는 항목을 말합니다. 다만, 혈관성 치매 또는 외상성 두개내 출혈로 분류되는 경우에는 보장하지 않습니다.\\n② \\\"급성뇌경색증\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며, 이 진단은 특이적 증상과 함께 뇌전산화단층촬영(brain CT scan), 뇌자기공명영상(brain MRI)검사 등을 기초로 합니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 \\\"급성뇌경색증\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\\n전산화단층촬영(CT)\\nComputed Tomography. 정밀도가 높은 X선으로 인체를 360도 방향에서 전체투사하여 나온 데이터를 컴퓨터로 조합하여 인체의 단면 영상을 그려내는 촬영기술\\n자기공명영상(MRI)\\nMagnetic Resonance Imaging. 자기공명영상을 이용하여 생체의 장기나 조직, 병터를 단층상 등의 화상으로 표시하여 질환을 진단하기 위한 화상 검사법\", \"read_calls_left\": 7}\n\n succeeded in 4078ms:\n{\"id\": \"c02493\", \"jo\": \"j03232\", \"contract\": \"(간편)혈전용해치료특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14061\", \"e14062\", \"e14063\", \"e14064\", \"e14065\", \"e14066\"], \"text\": \"우에 한하여 피보험자가 \\\"급성뇌경색증\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\\n\\n전산화단층촬영(CT)\\n\\nComputed Tomography. 정밀도가 높은 X선으로 인체를 360도 방향에서 전체투사하여 나온 데이터를 컴퓨터로 조합하여 인체의 단면 영상을 그려내는 촬영기술\\n\\n자기공명영상(MRI)\\n\\nMagnetic Resonance Imaging. 자기공명영상을 이용하여 생체의 장기나 조직, 병터를 단층상 등의 화상으로 표시하여 질환을 진단하기 위한 화상 검사법\\n\\n제2-1조의3 \\\"특정 급성심근경색증\\\"의 정의 및 진단확정\\n\\n① 이 특약에 있어서 \\\"특정 급성심근경색증\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-3> \\\"특정 급성심근경색증 분류표\\\"에 해당하는 항목을 말합니다.\\n\\n② \\\"특정 급성심근경색증\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며 이 진단은 병력과 함께 심전도, 심장초음파, 관상동맥(심장동맥)촬영술, 혈액중 심장 효소검사, 핵의학 검사 등을 기초로 하여야 합니다.\\n\\n2212152200000007743\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [1191574, 1192153]}\n\n succeeded in 3883ms:\n{\"id\": \"c02492\", \"jo\": \"j03232\", \"contract\": \"(간편)혈전용해치료특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14061\", \"e14062\", \"e14063\", \"e14064\", \"e14065\", \"e14066\"], \"text\": \"is very convenient for the users.\\n\\n하는 경우 이 특약의 보장개시일은 부활(효력회복)일로 합니다.\\n\\n제2-1조의2 \\\"급성뇌경색증\\\"의 정의 및 진단확정\\n\\n① 이 특약에 있어서 \\\"급성뇌경색증\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"뇌경색증 분류표\\\"에 해당하는 항목을 말합니다. 다만, 혈관성 치매 또는 외상성 두개내 출혈로 분류되는 경우에는 보장하지 않습니다.\\n\\n② \\\"급성뇌경색증\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며, 이 진단은 특이적 증상과 함께 뇌전산화단층촬영(brain CT scan), 뇌자기공명영상(brain MRI)검사 등을 기초로 합니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 \\\"급성뇌경색증\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\\n\\n전산화단층촬영(CT)\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [1191179, 1191674]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e14063' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3902ms:\n{\"ok\": true, \"submitted\": [\"e14063\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n약관상 원칙적으로는 어렵습니다. 급성뇌경색증은 의료기관 의사가 특이적 증상과 함께 뇌 CT 또는 뇌 MRI 검사 등을 기초로 진단해야 합니다.\n\n다만 피보험자가 사망하여 CT·MRI를 시행할 수 없었던 경우에는, 급성뇌경색증으로 진단·치료받았음을 입증하는 문서화된 기록이나 증거로 진단확정의 기초를 삼을 수 있습니다.\ntokens used\n38,442\n",
+    "elapsed": 52.68605303764343,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

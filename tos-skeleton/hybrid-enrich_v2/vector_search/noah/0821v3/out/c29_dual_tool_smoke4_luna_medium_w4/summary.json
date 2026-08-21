@@ -1,0 +1,20 @@
+{
+  "run": "c29_dual_tool_smoke4_luna_medium_w4",
+  "n_q": 4,
+  "reps": 1,
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "medium",
+  "workers": 4,
+  "metrics": {
+    "R@1": 0.375,
+    "R@5": 0.5,
+    "R@10": 0.5,
+    "R@20": 0.5,
+    "suff@5": 0.5,
+    "suff@10": 0.5,
+    "RR@10": 0.5
+  },
+  "errors": 0,
+  "required_tool_violations": 0,
+  "mean_elapsed": 55.45103794336319
+}

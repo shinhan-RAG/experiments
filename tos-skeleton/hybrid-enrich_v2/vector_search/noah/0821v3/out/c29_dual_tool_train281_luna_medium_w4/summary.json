@@ -1,0 +1,20 @@
+{
+  "run": "c29_dual_tool_train281_luna_medium_w4",
+  "n_q": 281,
+  "reps": 1,
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "medium",
+  "workers": 4,
+  "metrics": {
+    "R@1": 0.3932384341637011,
+    "R@5": 0.6067615658362989,
+    "R@10": 0.6174377224199288,
+    "R@20": 0.6174377224199288,
+    "suff@5": 0.5836298932384342,
+    "suff@10": 0.594306049822064,
+    "RR@10": 0.5083375699034063
+  },
+  "errors": 0,
+  "required_tool_violations": 0,
+  "mean_elapsed": 56.444005391775924
+}

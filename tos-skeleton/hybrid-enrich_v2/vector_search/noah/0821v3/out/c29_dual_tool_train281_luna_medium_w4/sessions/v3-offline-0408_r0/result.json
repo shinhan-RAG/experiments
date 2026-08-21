@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0408",
+    "ranked": [
+      "c00084",
+      "e15204",
+      "e15100"
+    ],
+    "n_search": 2,
+    "n_read": 8
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "(간편) 허혈심장질환 상급종합병원 통원급여금은:\n\n- 가입 후 1년 미만: 약정 보험금의 50%\n- 가입 후 1년 이후: 약정 보험금의 100%\n\n입니다. 1년 미만은 계약일부터 1년이 되는 계약해당일 전날까지를 의미합니다.\n",
+    "stderr": " 시점의 계약해당일의 전날까지\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하였을 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 효력이 없습니다.\\n2. 각 상급종합병원 통원급여금의 경우 지급횟수는 상급종합병원에 통원한 날만을 기준으로 계산합니다.\\n3. 특약보험기간 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적 립액 등을 지급하지 않습니다.\\n부표2-2\\n뇌혈관질환 분류표\\nThis is a figure caption. Here is the specific details: The image shows a white polar bear holding a blue sphere with the letter \\\"S\\\" on it. The polar bear appears to be smiling, and there is a light blue spot on its face. The background of the image is white.\\n별첨2 [표 11-1] 참조\\n|  허혈심장질환 분류표\\n별첨2 [표 12-1] 참조\\n-\\n약관목차\", \"read_calls_left\": 2}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e15207' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3267ms:\n{\"id\": \"e15207\", \"jo\": \"j03518\", \"contract\": \"(간편)뇌혈관·허혈심장질환상급종합병원통원특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e15201\", \"e15202\", \"e15203\", \"e15204\", \"e15205\", \"e15206\", \"e15207\", \"e15208\", \"e15209\", \"e15210\", \"e15211\", \"e15212\", \"e15213\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n이 특약에 정하지 않은 사항에 대하여는 주계약 약관의 규정을 따릅니다.\\n보험금 지급기준표\\n| 구분 | 지급사유 | 지급금액 |\\n|------|------------|----------|\\n| 뇌혈관질환<br>상급종합병원<br>통원급여금 | 간편<br>심사형 | 특약보험기간 중 피보험자가 “뇌혈관질환”의 직접적인 치료를 목적으로 상급종합병원에 통원하였을 때 (통원 1회당, 1일 1회, 연간 30회에 한함) |\\n| | 일반<br>심사형 | 특약보험기간 중 피보험자가 “뇌혈관질환”으로 진단확정 되고, 특약보험기간 중 그 “뇌혈관질환”의 직접적인 치료를 목적으로 상급종합병원에 통원하였을 때 (통원 1회당, 1일 1회, 연간 30회에 한함) |\\n| 허혈심장질환<br>상급종합병원<br>통원급여금 | 간편<br>심사형 | 특약보험기간 중 피보험자가 “허혈심장질환”의 직접적인 치료를 목적으로 상급종합병원에 통원하였을 때 (통원 1회당, 1일 1회, 연간 30회에 한함) |\\n| | 일반<br>심사형 | 특약보험기간 중 피보험자가 “허혈심장질환”으로 진단확정 되고, 특약보험기간 중 그 “허혈심장질환”의 직접적인 치료를 목적으로 상급종합병원에 통원하였을 때 (통원 1회당, 1일 1회, 연간 30회에 한함) |\\n※ 1년 미만 : 계약일부터 1년이 되는 시점의 계약해당일의 전날까지\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하였을 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 효력이 없습니다.\\n2. 각 상급종합병원 통원급여금의 경우 지급횟수는 상급종합병원에 통원한 날만을 기준으로 계산합니다.\\n3. 특약보험기간 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적 립액 등을 지급하지 않습니다.\\n부표2-2\\n뇌혈관질환 분류표\\nThis is a figure caption. Here is the specific details: The image shows a white polar bear holding a blue sphere with the letter \\\"S\\\" on it. The polar bear appears to be smiling, and there is a light blue spot on its face. The background of the image is white.\\n별첨2 [표 11-1] 참조\\n|  허혈심장질환 분류표\\n별첨2 [표 12-1] 참조\\n-\\n약관목차\", \"read_calls_left\": 1}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00084' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2589ms:\n{\"id\": \"c00084\", \"jo\": \"j00011\", \"contract\": \"주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형))\", \"members\": [\"e00181\", \"e00182\", \"e00183\"], \"text\": \"혈심장질환수술급여금 |  |\\n| (간편)허혈심장질환수술특약(무배당, 해약환급금 미지급형) | 허혈심장질환수술급여금 | 가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급 |\\n| (간편)뇌혈관·허혈심장질환통원특약(무배당, 해약환급금 미지급형) | 뇌혈관질환통원급여금 | 가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급 |\\n|  | 허혈심장질환통원급여금 |  |\\n\\n(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)\\n\\n34\\n\\n---\\n\\n$\\\\square$\\n\\n| (간편)뇌혈관·허혈심장질환상급 종합병원통원특약(무배당, 해약환급금 미지급형) | 뇌혈관질환 상급종합병원통원급여금 | 가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급 |\\n|---|---|---|\\n| | 허혈심장질환 상급종합병원통원급여금 | |\\n| (간편)1-5종수술특약 (무배당, 해약환급금 미지급형) | 1종수술급여금 | 간편심사형의 경우 가입 후 1년간 재해 이외의 원인으로 지급사유 발생시 1년이후에 지급하는 보험금의 50% 지급 |\\n| | 2종수술급여금 | |\\n| | 3종수술급여금 | |\\n| | 4종수술급여금 | |\\n| | 5종수술급여금 | |\\n\\n\", \"read_calls_left\": 0, \"chunk_span\": [45304, 45891]}\n\ncodex\n원문 대조 결과, 대상 특약의 지급사유와 주계약 보장요약 모두 확인됐습니다. 지급률을 직접 보여주는 요약 근거와 특약 지급기준표·지급사유 조문을 함께 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c00084,e15204,e15100' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 4586ms:\n{\"ok\": true, \"submitted\": [\"c00084\", \"e15204\", \"e15100\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n(간편) 허혈심장질환 상급종합병원 통원급여금은:\n\n- 가입 후 1년 미만: 약정 보험금의 50%\n- 가입 후 1년 이후: 약정 보험금의 100%\n\n입니다. 1년 미만은 계약일부터 1년이 되는 계약해당일 전날까지를 의미합니다.\ntokens used\n24,899\n",
+    "elapsed": 79.64199113845825,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "submission": {
+    "qid": "v3-offline-0490",
+    "ranked": [
+      "e00433",
+      "e00802",
+      "e00355",
+      "e00438",
+      "e00809",
+      "e00316"
+    ],
+    "n_search": 3,
+    "n_read": 6
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다. (e00433, e00802, e00355, e00438, e00809, e00316)\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 263.4497239589691,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

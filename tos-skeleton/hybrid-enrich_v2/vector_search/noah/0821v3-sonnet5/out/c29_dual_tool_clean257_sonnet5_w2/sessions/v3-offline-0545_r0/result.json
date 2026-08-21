@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0545",
+    "ranked": [
+      "e07805",
+      "e07718",
+      "e07613",
+      "e07722",
+      "e00177",
+      "e07611",
+      "e07733",
+      "e07711"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**항암세기조절방사선치료급여금 — 지급 대상 암 및 지급 횟수 한도**\n\n- **지급 대상**: \"암\", \"기타피부암\", \"갑상선암\", \"대장점막내암\" 또는 \"비침습방광암\"으로 진단확정되고, 그 직접적인 치료 목적으로 \"항암세기조절방사선치료\"를 받은 경우 (근거: e07718 제2-2조 보험금의 지급사유, e07805 부표2-1 보험금 지급기준표)\n- **지급 횟수 한도**: **최초 1회에 한함** — 특약보험가입금액의 100% (다만 최초계약 계약일부터 1년 미만에 지급사유 발생 시 50% 지급) (근거: e07805 부표2-1)\n- 보완 근거: e07722(1년 미만 삭감 세부규정), e00177(가입 후 1년간 50% 감액지급 표), e07613/e07611(관련 정의 조항), e07733(사고증명서 관련 조항)\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 174.7704737186432,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

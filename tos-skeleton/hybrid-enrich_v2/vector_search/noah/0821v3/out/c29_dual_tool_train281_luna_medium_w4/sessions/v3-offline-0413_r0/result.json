@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0413",
+    "ranked": [
+      "e13480",
+      "e13484",
+      "e13640",
+      "e13723"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "\n",
+    "stderr": "서 핵심 근거가 확인됐습니다. 이제 진단확정 기준과 지급 횟수 제한을 각각 원문으로 읽어 검증하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13480' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13484' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13723' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3843ms:\n{\"id\": \"e13484\", \"jo\": \"j03066\", \"contract\": \"(간편)부정맥진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13483\", \"e13484\"], \"text\": \"제2-2조 보험금의 지급사유\\n회사는 특약보험기간 중 피보험자가 \\\"부정맥\\\"으로 진단확정 되었을 경우에는 보험수익자에게 약정한 부정맥진단급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(다만, 최초 1회의 진단확정에 한함)\", \"read_calls_left\": 7}\n\n succeeded in 3848ms:\n{\"id\": \"e13723\", \"jo\": \"j03121\", \"contract\": \"(간편)부정맥진단특약(무배당, 갱신형)\", \"members\": [\"e13718\", \"e13719\", \"e13720\", \"e13721\", \"e13722\", \"e13723\", \"e13724\", \"e13725\", \"e13726\", \"e13727\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n이 특약에 정하지 않은 사항에 대하여는 주계약 약관의 규정을 따릅니다.\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n보험금 지급기준표\\n| 구분 | 지급사유 | 지급금액 |\\n|------|---------|----------|\\n| 부정맥 진단급여금 | 특약보험기간 중 피보험자가 부정맥으로 진단확정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% (다만, 최초계약의 계약일부터 1년 미만에 지급사유가 발생한 경우 특약보험가입금액의 50%를 지급함) |\\n※ 1년 미만 : 최초계약의 계약일부터 1년이 되는 시점의 계약해당일의 전날까지\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하거나 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 더 이상 효력이 없습니다. 다만, 특약보험기간 중 피보험자가 사망한 경우에는 산출방법에서 정하는 바에 따라 회사가 적립한 사망당시의 계약자적립액을 계약자에게 지급합니다.\\n|\\n부정맥 분류표\\n별첨2 [표 109] 참조\\n_____________________________________________________________\\n_____________________________________________________________\\n$\\\\square$\\n약 관 목 차\", \"read_calls_left\": 7}\n\n succeeded in 3948ms:\n{\"id\": \"e13480\", \"jo\": \"j03064\", \"contract\": \"(간편)부정맥진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13478\", \"e13479\", \"e13480\", \"e13481\"], \"text\": \"제2-1조의2 \\\"부정맥\\\"의 정의 및 진단확정\\n① 이 특약에 있어서 \\\"부정맥\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"부정맥 분류표\\\"에 해당하는 항목을 말합니다.\\n② \\\"부정맥\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며, 이 진단은 병력과 함께 심전도검사, 심장초음파, 관상동맥\\n(심장동맥)촬영술, 혈액 중 심근 효소검사 등을 기초로 하여야합니다. 또한, 회사가 「부정맥」의 조사나 확인을 위하여 필요하다고 인정하는 경우 검사결과, 진료기록부의 사본 제출을 요청할 수 있습니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 “부정맥”으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\", \"read_calls_left\": 7}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13640' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2650ms:\n{\"id\": \"e13640\", \"jo\": \"j03106\", \"contract\": \"(간편)부정맥진단특약(무배당, 갱신형)\", \"members\": [\"e13638\", \"e13639\", \"e13640\"], \"text\": \"제2-1조의3 \\\"부정맥\\\"의 정의 및 진단확정\\n① 이 특약에 있어서 \\\"부정맥\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"부정맥 분류표\\\"에 해당하는 항목을 말합니다.\\n② \\\"부정맥\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며, 이 진단은 병력과 함께 심전도검사, 심장초음파, 관상동맥(심장동맥)촬영술, 혈액 중 심근 효소검사 등을 기초로 하여야합니다.또한, 회사가 「부정맥」의 조사나 확인을 위하여 필요하다고 인정하는 경우 검사결과, 진료기록부의 사본 제출을 요청할 수 있습니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 \\\"부정맥\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\", \"read_calls_left\": 4}\n\ncodex\n원문 대조가 끝났습니다. 부정맥의 정의·진단 방법과 보험금 지급의 최초 1회 제한을 확인했으며, 해약환급금 미지급형과 갱신형의 중복 조를 피한 ID로 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e13480,e13484,e13640,e13723' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3562ms:\n{\"ok\": true, \"submitted\": [\"e13480\", \"e13484\", \"e13640\", \"e13723\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n\ntokens used\n19,985\n",
+    "elapsed": 59.14901041984558,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

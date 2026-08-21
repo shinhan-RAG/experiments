@@ -1,0 +1,31 @@
+{
+  "submission": {
+    "qid": "v3-offline-0476",
+    "ranked": [
+      "e15525",
+      "e15531",
+      "e15618",
+      "e15507",
+      "e15508",
+      "e15510",
+      "e00196"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다.\n\n**답변 근거:**\n- **지급사유** (제2-2조, e15525): 특약보험기간 중 피보험자가 주요뇌심장질환(뇌졸중·급성심근경색증)으로 진단확정되고, 그 치료를 목적으로 「급여 주요뇌심장질환 특정재활치료(단순재활치료)」를 받았을 때 [단순재활]급여주요뇌심장질환특정재활치료급여금 지급\n- **횟수 제한** (제2-3조 ④, e15531 / 부표2-1, e15618): **1일 1회 한도, 연간 30회 한도**로 보장\n- **단순재활치료의 정의** (제2-1조의5, e15507·e15508·e15510): 뇌졸중 또는 급성심근경색증 자체 또는 그 치료로 인한 구조적 손상·기능적 장해 치료를 위해 병원/의원 의사가 필요하다고 인정한 경우로서, 건강보험 행위 급여·비급여 목록표상 정한 특정 수가코드에 해당하는 의료행위\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 135.05028820037842,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

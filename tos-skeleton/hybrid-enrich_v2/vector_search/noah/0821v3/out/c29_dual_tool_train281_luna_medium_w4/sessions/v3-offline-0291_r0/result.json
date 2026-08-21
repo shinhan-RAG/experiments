@@ -1,0 +1,27 @@
+{
+  "submission": {
+    "qid": "v3-offline-0291",
+    "ranked": [
+      "c00864",
+      "c00849"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "\n",
+    "stderr": "owerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00849' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00864' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3227ms:\n{\"id\": \"c00849\", \"jo\": \"j01028\", \"contract\": \"(간편)여성12대주요암진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e04581\", \"e04582\", \"e04583\", \"e04584\", \"e04585\", \"e04586\", \"e04587\"], \"text\": \"어서 \\\"여성12대주요암\\\"이라 함은 제2-1조의2(\\\"암\\\" 등의 정의 및 진단확정) 제1항에서 정한 \\\"암\\\" 중 <부표2-3> \\\"여성12대주요암 분류표\\\"에 해당하는 항목을 말합니다.\\n\\n② \\\"여성12대주요암\\\"의 진단확정은 병리과 또는 진단검사의학과 전문의 자격증을 가진 자에 의하여 내려져야 하며, 이 진단은 조직(fixed tissue) 검사, 미세바늘흡인검사(fine needle aspiration biopsy) 또는 혈액(hemic system)검사에 대한 현미경 소견을 기초로 하여야 하며, 이 경우 \\\"여성12대주요암\\\"의 진단확정 시점은 상기 검사에 의한 결과보고 시점으로 합니다.\\n\\n④ 제3항에 따른 진단이 가능하지 않을 때에는 피보험자가 \\\"여성12대주요 암\\\"으로 진단 또는 치료를 받고 있음을 증명할 만한 문서화된 기록 또는 증거가 있어야 합니다.\\n\\n___\\n\\n2212152200000007255\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [415645, 416094]}\n\n succeeded in 3267ms:\n{\"id\": \"c00865\", \"jo\": \"j01045\", \"contract\": \"(간편)여성12대주요암진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e04681\", \"e04682\", \"e04683\", \"e04684\", \"e04685\", \"e04686\", \"e04687\", \"e04688\", \"e04689\", \"e04690\", \"e04691\", \"e04692\", \"e04693\"], \"text\": \"계약해당일의 전날까지\\n※ 여성12대주요암 : 위암, 간암, 폐암, 담낭암, 담도암, 후두암, 식도암, 구강암, 자궁암, 난소암, 뼈암, 심장암 (세부사항은 <부표2-3> 참조)\\n\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하거나 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 효력이 없습니다.\\n2. 특약보험기간 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적립액 등을 지급하지 않습니다.\\n3. \\\"여성12대주요암보장개시일\\\"은 계약일[부활(효력회복)일]부터 그날을 포함하여 90일이 지난날의 다음 날로 합니다.\\n\\n2212152200000007260\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [423754, 424123]}\n\n succeeded in 3252ms:\n{\"id\": \"c00864\", \"jo\": \"j01045\", \"contract\": \"(간편)여성12대주요암진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e04681\", \"e04682\", \"e04683\", \"e04684\", \"e04685\", \"e04686\", \"e04687\", \"e04688\", \"e04689\", \"e04690\", \"e04691\", \"e04692\", \"e04693\"], \"text\": \"ed image:\\n\\n|  |  |\\n| --- | --- |\\n|  |  |\\n|  |  |\\n|  |\\n\\nSHINHAN LIFE\\n\\n516\\n\\n---\\n\\n부표2-1\\n\\n보험금 지급기준표\\n\\nS\\n\\n| 구분 | 지급사유 | 지급금액 |\\n|------|---------|----------|\\n| 여성12대주요암진단급여금 | 특약보험기간 중 피보험자가 여성12대주요암보장개시일 이후에 \\\"여성12대주요암\\\"으로 진단 확정되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% (다만, 계약일부터 1년 미만에 지급사유가 발생한 경우 \\\"특약보험가입금액의 50%\\\"를 지급함) |\\n\\n※ 1년미만 : 계약일부터 1년이 되는 시점의 계약해당일의 전날까지\\n※ 여성12대주요암 : 위암, 간암, 폐암, 담낭암, 담도암, 후두암, 식도암, 구강암, 자궁암, 난소암, 뼈암, 심장암 (세부사항은 <부표2-3> 참조)\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [423407, 423854]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00866' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2856ms:\n{\"id\": \"c00866\", \"jo\": \"j01045\", \"contract\": \"(간편)여성12대주요암진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e04681\", \"e04682\", \"e04683\", \"e04684\", \"e04685\", \"e04686\", \"e04687\", \"e04688\", \"e04689\", \"e04690\", \"e04691\", \"e04692\", \"e04693\"], \"text\": \"(간편)여성12대주요암진단특약(무배당, 해약환급금 미지급형)\\n\\n$$ 5 1 7 $$\\n\\n---\\n\\n부표2-2\\n\\n# 대상이 되는 악성신생물(암) 분류표\\n\\n(기타피부암, 갑상선암, 대장점막내암 및 비침습방광암 제외)\\n\\nS\\n\\n별첨2 [표 5-1] 참조\\n\\n여성12대주요암 분류표\\n\\nS\\n\\n별첨2 [표 10-4] 참조\\n\\n$ \\\\underline{ \\\\text{CHINESE LIFE}} $\\n\\nSHINHAN LIFE\\n\\n518\\n\\n---\\n\\n(간편)[기본]일반암진단특약\\n(무배당, 갱신형)\\n\\n(27,100),(287,941)\\n\\n(367,100),(632,941)\\n\\n(712,100),(975,941)\\n\\n2212152200000007261\\n\\n\", \"read_calls_left\": 4, \"chunk_span\": [424123, 424467]}\n\ncodex\n원문에서 12개 암 목록과 지급 기준을 확인했고, 정의 조항도 별도 근거로 검증했습니다. 동일 조항의 중복 ID는 제외하고 두 근거를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c00864,c00849' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3010ms:\n{\"ok\": true, \"submitted\": [\"c00864\", \"c00849\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n\ntokens used\n32,493\n",
+    "elapsed": 58.70363092422485,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

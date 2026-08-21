@@ -1,0 +1,26 @@
+{
+  "submission": {
+    "qid": "v3-offline-0403",
+    "ranked": [
+      "e10240",
+      "c01849"
+    ],
+    "n_search": 3,
+    "n_read": 1
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**근거 조항**: 제2-12조 주계약 약관 규정의 준용 — 부표2-1 보험금 지급기준표 (`e10240` / `c01849`, jo j02236)\n\n**답변**: 급여 특정NGS 유전자패널 검사지원급여금의 지급률은\n- 최초계약 계약일부터 **1년 이후** 지급사유 발생 시: 특약보험가입금액의 **1%**\n- 최초계약 계약일부터 **1년 미만**에 지급사유 발생 시: 특약보험가입금액의 **0.5%** (1%의 절반)\n\n(단, 연간 1회 한도)\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 119.61776423454285,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

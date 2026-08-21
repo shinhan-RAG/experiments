@@ -1,0 +1,9 @@
+프로젝트를 파악했습니다. 이 디렉터리는 C29 dual-tool hybrid 검색 에이전트 실험 환경으로, 257개 보험 약관 질문에 대해 Claude Sonnet 5가 근거를 찾는 평가 파이프라인입니다.
+
+사용 가능한 도구 4가지:
+- **search** — C29 semantic-tag 파일서치 (CLM 어휘/슬롯 + BM25F fact 하이브리드)
+- **msearch** — V9 메타데이터 BM25+dense RRF 하이브리드 검색
+- **read** — element/jo ID로 원문 확인
+- **submit** — 최종 근거 ID 제출
+
+구체적인 질문이나 작업을 알려주시면 바로 진행하겠습니다.

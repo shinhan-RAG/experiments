@@ -1,0 +1,15 @@
+{
+  "submission": {
+    "ranked": []
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": "no_submit",
+    "returncode": 0,
+    "stdout": "메시지에 검색할 **질문**이 포함되어 있지 않습니다.\n\n이 메시지는 `agent_runner.py:33`의 프롬프트 템플릿 첫 줄과 동일한데, `{question}` 자리에 들어갈 실제 질문이 빠져 있습니다. 두 가지 가능성이 있습니다:\n\n1. **특정 질문에 대해 에이전트 역할을 수행**하길 원하시면 — 검색할 보험 약관 질문을 알려주세요.\n2. **257문항 전체 실험을 실행**하길 원하시면 — `run_experiment.ps1` 또는 `python agent_runner.py`를 실행하면 됩니다. 실행할까요?\n\n어떤 쪽인지 알려주세요.\n",
+    "stderr": "",
+    "elapsed": 60.11584806442261,
+    "tools_used": [],
+    "required_tools_ok": false
+  }
+}

@@ -1,0 +1,17 @@
+아래 질문의 근거 조항을 검색하고 제출하십시오. 즉시 검색을 시작하십시오.
+
+사용 가능 명령:
+  python agent_tools.py search --q "..." [--page N] [--contract "..."] [--role "..."] [--subject "..."] [--qualifier "..."] [--schema "..."]
+  python agent_tools.py msearch --q "..." [--page N]
+  python agent_tools.py read --id <element_id_or_jo_id>
+  python agent_tools.py submit --ids <id1>,<id2>,...
+
+규칙:
+1. search를 원 질문으로 최소 1회 실행하십시오 (C29 semantic-tag 파일서치).
+2. msearch를 최소 1회 실행하십시오 (V9 BM25+dense 하이브리드 검색).
+3. 유력 후보를 read로 검증하십시오. 여러 근거가 필요하면 모두 덮으십시오.
+4. 관련도 순으로 최대 10개를 submit하십시오.
+5. submit 성공 후 즉시 종료하십시오.
+6. Gold, 평가 파일, 소스 코드를 열람하지 마십시오.
+
+질문: 암이재발하면또받을수있나요?

@@ -1,0 +1,30 @@
+{
+  "submission": {
+    "qid": "v3-offline-0074",
+    "ranked": [
+      "e12058",
+      "e11761",
+      "e12215",
+      "e11776",
+      "e11813",
+      "e12072"
+    ],
+    "n_search": 7,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**결론:** 뇌질환진단금(뇌혈관질환진단급여금)은 **최초 1회**에 한해 지급됩니다. 특약보험기간 중 피보험자가 뇌혈관질환으로 진단확정 되었을 때 지급하되, 최초 1회의 진단확정에 한함이라고 명시되어 있어 재진단 시에도 추가 지급되지 않습니다. (간편)[기본]/[삭감없음용] 뇌혈관질환진단특약의 갱신형·해약환급금 미지급형 4개 변형 조항 모두에서 동일하게 확인되었습니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 281.51595997810364,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

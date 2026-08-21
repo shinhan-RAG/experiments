@@ -1,0 +1,34 @@
+{
+  "submission": {
+    "qid": "v3-offline-0277",
+    "ranked": [
+      "e00064",
+      "e00065",
+      "e00066",
+      "e00067",
+      "e00068",
+      "e00069",
+      "e00070",
+      "e00071",
+      "e00072",
+      "e00073"
+    ],
+    "n_search": 6,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다. (간편)신한통합건강보장보험 원(ONE)의 특약 목차(약관 목차 페이지)를 근거로 e00064~e00073(총 10개) 요소를 관련도 순으로 제출했습니다.\n",
+    "stderr": "",
+    "elapsed": 130.72778916358948,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

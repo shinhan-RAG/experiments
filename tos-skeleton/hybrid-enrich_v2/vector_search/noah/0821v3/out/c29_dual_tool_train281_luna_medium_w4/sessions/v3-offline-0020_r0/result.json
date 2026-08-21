@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0020",
+    "ranked": [
+      "c00613",
+      "c00641",
+      "c00629"
+    ],
+    "n_search": 5,
+    "n_read": 8
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "결론적으로, 355형은 `(간편)[기본]소액암진단특약`입니다.\n\n- 일반암 전체가 아니라 기타피부암·중증이외 갑상선암·제자리암·경계성종양·대장점막내암·비침습방광암만 보장합니다.\n- 각 질병별 암진단급여금은 최초 1회만 지급합니다.\n- 따라서 7년 전 암과 동일하거나 인과관계 있는 암의 재발·전이라면 암진단비 지급이 어렵습니다.\n- 재발암이 소액암 대상이 아닌 일반암이면 355형에서 보장되지 않습니다.\n\n다만 과거 암의 종류, 이 특약에서 과거 진단비를 이미 지급받았는지, 재발암의 분류코드에 따라 최종 판단이 달라집니다.\n",
+    "stderr": "의 진단확정에 한함) | 특\"}, {\"id\": \"e03969\", \"jo\": \"j00883\", \"score\": 0.03125, \"contract\": \"(간편)[기본]고액암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\"}, {\"id\": \"e04074\", \"jo\": \"j00898\", \"score\": 0.03030303, \"contract\": \"(간편)[기본]고액암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"…가 고액암보장개시일 이후에 \\\"고액암\\\"으로 진단 확정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% (다만, 계약일부터 1년 미만에 지급사유가 발생한 경우 \\\"특약보험가입금액의 50%\\\"를 지급함) |\"}, {\"id\": \"e04182\", \"jo\": \"j00932\", \"score\": 0.02941176, \"contract\": \"(간편)[삭감없음용]고액암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\"}, {\"id\": \"e04279\", \"jo\": \"j00947\", \"score\": 0.02857143, \"contract\": \"(간편)[삭감없음용]고액암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"…가 고액암보장개시일 이후에 \\\"고액암\\\"으로 진단 확정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% |\"}, {\"id\": \"e04389\", \"jo\": \"j00981\", \"score\": 0.02777778, \"contract\": \"(간편)남성12대주요암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\"}, {\"id\": \"e04590\", \"jo\": \"j01030\", \"score\": 0.02702703, \"contract\": \"(간편)여성12대주요암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\"}, {\"id\": \"e04686\", \"jo\": \"j01045\", \"score\": 0.02631579, \"contract\": \"(간편)여성12대주요암진단특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"…암보장개시일 이후에 \\\"여성12대주요암\\\"으로 진단 확정되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% (다만, 계약일부터 1년 미만에 지급사유가 발생한 경우 \\\"특약보험가입금액의 50%\\\"를 지급함) |\"}, {\"id\": \"e04807\", \"jo\": \"j01081\", \"score\": 0.02564103, \"contract\": \"(간편)[기본]일반암진단특약\", \"variant\": \"갱신형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(다만, 최초 1회의 진단확정에 한함)\"}, {\"id\": \"e05022\", \"jo\": \"j01131\", \"score\": 0.025, \"contract\": \"(간편)[삭감없음용]일반암진단특약\", \"variant\": \"갱신형\", \"jo_title\": \"제2-2조 보험금의 지급사유\", \"preview\": \"…급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.(다만, 최초 1회의 진단확정에 한함)\"}]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00629' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00641' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c00613' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e03175' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 4406ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 4518ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 4477ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 4461ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\ncodex\n355형이 해당 특약의 약관 페이지와 일치하는지, 지급기준·지급제한·재발 관련 후보를 확인했습니다. 이제 서로 다른 근거 조항만 묶어 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c00613,c00641,c00629' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2491ms:\n{\"ok\": true, \"submitted\": [\"c00613\", \"c00641\", \"c00629\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n결론적으로, 355형은 `(간편)[기본]소액암진단특약`입니다.\n\n- 일반암 전체가 아니라 기타피부암·중증이외 갑상선암·제자리암·경계성종양·대장점막내암·비침습방광암만 보장합니다.\n- 각 질병별 암진단급여금은 최초 1회만 지급합니다.\n- 따라서 7년 전 암과 동일하거나 인과관계 있는 암의 재발·전이라면 암진단비 지급이 어렵습니다.\n- 재발암이 소액암 대상이 아닌 일반암이면 355형에서 보장되지 않습니다.\n\n다만 과거 암의 종류, 이 특약에서 과거 진단비를 이미 지급받았는지, 재발암의 분류코드에 따라 최종 판단이 달라집니다.\ntokens used\n49,671\n",
+    "elapsed": 106.90878415107727,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

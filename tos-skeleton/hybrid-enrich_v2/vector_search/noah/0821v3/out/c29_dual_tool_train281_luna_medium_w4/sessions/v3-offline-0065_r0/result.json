@@ -1,0 +1,27 @@
+{
+  "submission": {
+    "qid": "v3-offline-0065",
+    "ranked": [
+      "e28038",
+      "e26952"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": " (간편)보험료납입면제특약 가입 시에도 다음 특약은 보험료 납입면제 대상에서 제외됩니다.\n\n- 다른 사유로 보험료 납입면제를 하는 특약\n- 납입면제 사유 중 하나를 납입면제 사유로 하는 주계약 및 부가특약\n- 납입면제 사유 발생 시 소멸되는 주계약 및 부가특약\n- 계약 중도에 추가한 특약(중도부가특약)\n",
+    "stderr": "n---\\n\\nThe main feature of the system is that the data is stored in a database, which is a collection of objects. The database is organized in a hierarchical structure, where each object represents a specific data item. This hierarchical structure allows for easy access to and manipulation of the data.\\n\\n제2-8조(특약내용의 변경 등)에 따라 변경될 수 있습니다.\\n\\n가. 제2-2조의2(보험료 납입면제사유) 이외의 사유로 보험료납입을 면제하는 특약(다만, 이 특약의 보험종목 중에 한합니다)\\n\\n나. 제2-2조의2(보험료 납입면제사유)의 사유 중 어느 한 가지를 보험료납입면제사유로 하는 주계약 및 부가특약(다만, 이 특약은 제외합니다)\\n\\n다. 제2-2조의2(보험료 납입면제사유)에 따른 보험료납입면제사유 발생 시 소멸되는 주계약 및 부가특약\\n\\n라. 중도부가특약\\n\\n제2관 보험금의 지급\\n\\n제2-2조 보험금의 지급사유\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [2291892, 2292577]}\n\n succeeded in 4123ms:\n{\"id\": \"e28038\", \"jo\": \"j06914\", \"contract\": \"(간편)[50%장해납입면제형]보험료납입면제특약(무배당, 갱신형)\", \"members\": [\"e28028\", \"e28029\", \"e28030\", \"e28031\", \"e28032\", \"e28033\", \"e28034\", \"e28035\", \"e28036\", \"e28037\", \"e28038\", \"e28039\", \"e28040\", \"e28041\", \"e28042\", \"e28043\"], \"text\": \"제2-1조의3 개별 용어의 정의\\n제1-2조(용어의 정의) 외에 이 특약에서 사용되는 용어의 정의는, 특약의 다른 조항에서 달리 정의되지 않는 한 다음과 같습니다.\\n1. 장해 : <부표2-2> \\\"장해분류표\\\"에서 정한 기준에 따른 장해상태를 말합니다.\\n2. 보험료납입면제대상계약 : 다음을 보험료납입면제대상계약으로 하며, \\\"이 특약의 보험기간 및 보험료 납입기간\\\"과 \\\"각 '보험료납입면제대상계약'의 보험료 납입기간\\\"이 동일한 경우에 한합니다.\\n[최초계약의 경우]\\n가. 최초계약을 체결하는 시점의 갱신형 주계약(전환형 계약 제외)\\n나. 최초계약을 체결하는 시점의 주계약에 부가된 갱신형 특약(이 특약 포함)\\n[갱신계약의 경우]\\n다. 갱신계약을 체결하는 시점에 유지중인 갱신형 주계약(전환형 계약 제외)\\n라. 갱신계약을 체결하는 시점에 유지중인 주계약에 부가된 갱신형 특약(이 특약 포함)\\n다만, 다음의 경우는 「보험료납입면제대상계약」에 포함되지 않으며,\\nThe main feature of the system is that the data is stored in a database, which is a collection of objects. The database is organized in a hierarchical structure, where each object represents a specific data item. This hierarchical structure allows for easy access to and manipulation of the data.\\n제2-8조(특약내용의 변경 등)에 따라 변경될 수 있습니다.\\n가. 제2-2조의2(보험료 납입면제사유) 이외의 사유로 보험료납입을 면제하는 특약(다만, 이 특약의 보험종목 중에 한합니다)\\n나. 제2-2조의2(보험료 납입면제사유)의 사유 중 어느 한 가지를 보험료납입면제사유로 하는 주계약 및 부가특약(다만, 이 특약은 제외합니다)\\n다. 제2-2조의2(보험료 납입면제사유)에 따른 보험료납입면제사유 발생 시 소멸되는 주계약 및 부가특약\\n라. 중도부가특약\", \"read_calls_left\": 7}\n\ncodex\n원문 검증 결과, 납면 대상에서 빠지는 유형은 네 가지로 명시되어 있습니다. 갱신형과 해약환급금 미지급형 조항이 같은 내용을 뒷받침하므로, 서로 다른 조의 대표 근거를 제출하겠습니다. 제출 전 다른 납면특약 조항에서도 동일한지 한 번 더 확인합니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c04944' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2630ms:\n{\"id\": \"c04944\", \"jo\": \"j06987\", \"contract\": \"(간편)[일반암납입면제형]보험료납입면제특약(무배당, 갱신형)\", \"members\": [\"e28312\", \"e28313\", \"e28314\", \"e28315\", \"e28316\", \"e28317\", \"e28318\", \"e28319\", \"e28320\", \"e28321\", \"e28322\", \"e28323\", \"e28324\", \"e28325\", \"e28326\", \"e28327\", \"e28328\"], \"text\": \" 수 있습니다.\\n\\n⑥ 제2항부터 제5항에 따라 「보험료납입면제대상계약」의 변경이 있는 경우, 계약자는 변경된 「보험료납입면제대상계약」에 따라 산출된 보험료를 납입하여야 합니다.\\n\\n⑦ 계약자는 특약의 보험기간 중 보험료 납입면제 사유가 발생한 후에는 특약의 내용을 변경할 수 없습니다.\\n\\n제2-9조 특약의 소멸\\n\\n① 다음 각 호의 사유가 발생한 경우 이 특약은 그때부터 효력이 없습니다.\\n\\n1. 주계약이 해지, 무효, 취소 또는 철회된 경우.\\n\\n다만, 주계약의 보험금 지급으로 인하여 주계약이 소멸하는 경우 또는 이 특약의 보험료 납입이 완료된 이후에 주계약의 보험료를 납입하지 않아 주계약이 해지되었으나 해약환급금을 받지 않은 경우(보험계약대출 등에 따라 해약환급금이 차감되었으나 받지 않은 경우 또는 해약환급금이 없는 경우를 포함합니다)에는 이 특약은 소멸되지 않습니다.\\n\\n2. 이 특약의 피보험자가 특약보험기간 중 사망하였을 경우\\n\\n3. 제2-2조의2(보험료 납입면제사유)에서 정하는 보험료납입면제사유\\n\\n# SHINHAN LIFE\\n\\n3000\\n\\n---\\n\\n이외의 사유로 보험료납입면제사유가 발생하는 경우\\n\\n② 이 특약의 피보험자가 특약보험기간 중 사망한 경우에는 이 특약의 산출방법서에서 정하는 바에 따라 회사가 적립한 사망 당시의 계약자적립액을 계약자에게 지급하며, 제1항에 따라 이 특약은 그때부터 효력이 없습니다.\\n\\n\", \"read_calls_left\": 4, \"chunk_span\": [2314204, 2314888]}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e28038,e26952' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2583ms:\n{\"ok\": true, \"submitted\": [\"e28038\", \"e26952\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n (간편)보험료납입면제특약 가입 시에도 다음 특약은 보험료 납입면제 대상에서 제외됩니다.\n\n- 다른 사유로 보험료 납입면제를 하는 특약\n- 납입면제 사유 중 하나를 납입면제 사유로 하는 주계약 및 부가특약\n- 납입면제 사유 발생 시 소멸되는 주계약 및 부가특약\n- 계약 중도에 추가한 특약(중도부가특약)\ntokens used\n32,474\n",
+    "elapsed": 52.032625675201416,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

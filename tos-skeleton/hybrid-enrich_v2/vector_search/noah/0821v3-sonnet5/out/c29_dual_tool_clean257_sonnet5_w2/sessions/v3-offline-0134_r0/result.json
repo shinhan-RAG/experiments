@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0134",
+    "ranked": [
+      "e17551",
+      "e17503",
+      "e17559",
+      "e17553",
+      "e00220",
+      "e19713",
+      "e21075",
+      "e06338"
+    ],
+    "n_search": 5,
+    "n_read": 5
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료: e17551, e17503, e17559, e17553, e00220, e19713, e21075, e06338\n",
+    "stderr": "",
+    "elapsed": 106.81614756584167,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}
