@@ -23,6 +23,11 @@ def main():
     parser.add_argument("--base", required=True)
     parser.add_argument("--retry", required=True, nargs="+")
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--allow-protocol-errors", action="store_true",
+        help=("retain recovered agent protocol mistakes as ITT behavior; "
+              "fatal infrastructure errors must still be zero"),
+    )
     args = parser.parse_args()
     base = load_jsonl(args.base)
     retry = [row for path in args.retry for row in load_jsonl(path)]
@@ -34,9 +39,12 @@ def main():
     if not set(retry_by_key) <= {key(row) for row in base}:
         raise ValueError("retry contains a key absent from base")
     output_rows = [retry_by_key.get(key(row), row) for row in base]
-    if any(row.get("errors") or row.get("protocol_errors") for row in output_rows):
+    if any(row.get("errors") or
+           (row.get("protocol_errors") and not args.allow_protocol_errors)
+           for row in output_rows):
         bad = [key(row) for row in output_rows
-               if row.get("errors") or row.get("protocol_errors")]
+               if row.get("errors") or
+               (row.get("protocol_errors") and not args.allow_protocol_errors)]
         raise ValueError(f"merged output still contains invalid rows: {bad}")
     output = Path(args.output)
     output.write_text(
@@ -48,6 +56,10 @@ def main():
         "retry": [{"path": str(Path(path).resolve()), "sha256": sha256(path)}
                   for path in args.retry],
         "replaced_keys": [list(item) for item in sorted(retry_by_key)],
+        "protocol_error_policy": (
+            "retained_as_agent_itt_behavior" if args.allow_protocol_errors
+            else "must_be_zero"
+        ),
         "n": len(output_rows),
         "output": str(output.resolve()),
         "output_sha256": sha256(output),
