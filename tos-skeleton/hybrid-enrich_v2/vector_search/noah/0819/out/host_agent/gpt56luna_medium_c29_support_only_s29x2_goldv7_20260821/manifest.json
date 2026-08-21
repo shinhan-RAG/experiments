@@ -1,0 +1,650 @@
+{
+  "args": {
+    "run": "gpt56luna_medium_c29_support_only_s29x2_goldv7_20260821",
+    "arms": [
+      "c26_scope_fact_tag_ensemble_hybrid",
+      "c29_membership_dual_evidence_hybrid"
+    ],
+    "qids": "qids_c17_reviewed_final_s29_v3.json",
+    "gold": "../../../filesearch/out/gold_c17_reviewed_final_s29_v7.jsonl",
+    "reps": 2,
+    "rep_start": 0,
+    "workers": 4,
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "timeout": 180,
+    "max_actions": 4,
+    "seed": 20260845
+  },
+  "arms": {
+    "c26_scope_fact_tag_ensemble_hybrid": {
+      "elements": "elements_u3.jsonl",
+      "tags": "tags_u4_fact_rules.jsonl",
+      "jo": "elements_u3jo.jsonl",
+      "ranker": "bm25f",
+      "profile": "core",
+      "sfw": {
+        "identity_container": 0.7,
+        "evidence": 2.4,
+        "_hierarchy": 1.0
+      },
+      "baseline_sfw": {},
+      "tag_ensemble": "quota",
+      "ensemble_lex": "count",
+      "ensemble_clm_w": {
+        "contract": 2.0,
+        "role": 0.5,
+        "subject": 1.5
+      },
+      "ensemble_rrf_k": 60,
+      "ensemble_clm_quota": 17,
+      "ensemble_fact_quota": 8,
+      "preserve_jo_top": 5,
+      "router": "rule",
+      "facet": 1,
+      "meta": 1,
+      "meta_view": "V9",
+      "search_only": true,
+      "audit_payload": true,
+      "score_view": "rank",
+      "fallback": {
+        "gate": "axis_coverage",
+        "top_k": 5,
+        "min_axis_coverage": 0.5,
+        "merge_k": 10,
+        "first_only": true,
+        "force_first": true
+      }
+    },
+    "c29_membership_dual_evidence_hybrid": {
+      "elements": "elements_u3.jsonl",
+      "tags": "tags_u4_fact_rules.jsonl",
+      "jo": "elements_u3jo.jsonl",
+      "ranker": "bm25f",
+      "profile": "core",
+      "sfw": {
+        "identity_container": 0.7,
+        "evidence": 2.4,
+        "_hierarchy": 1.0
+      },
+      "baseline_sfw": {},
+      "tag_ensemble": "quota",
+      "ensemble_lex": "count",
+      "ensemble_clm_w": {
+        "contract": 2.0,
+        "role": 0.5,
+        "subject": 1.5
+      },
+      "ensemble_rrf_k": 60,
+      "ensemble_clm_quota": 17,
+      "ensemble_fact_quota": 8,
+      "ensemble_support_clm_quota": 15,
+      "ensemble_support_fact_quota": 7,
+      "ensemble_unit_quota": 3,
+      "ensemble_unit_gate": "membership_or_code",
+      "ensemble_unit_require_support": true,
+      "ensemble_unit_sfw": {
+        "identity_container": 0.0,
+        "identity_full": 0.0,
+        "identity_base": 0.0,
+        "variant": 0.0,
+        "topic": 0.0,
+        "function": 0.0,
+        "locator": 0.0,
+        "table": 0.0,
+        "constraint": 0.0,
+        "relation": 0.0,
+        "structure": 0.0,
+        "evidence": 0.0,
+        "evidence_unit": 1.0,
+        "extra": 0.0,
+        "_evidence_unit_rare": 8
+      },
+      "ensemble_membership_support_quota": 3,
+      "ensemble_membership_support_sfw": {
+        "identity_container": 0.0,
+        "identity_full": 0.0,
+        "identity_base": 1.0,
+        "variant": 0.0,
+        "topic": 0.0,
+        "function": 0.0,
+        "locator": 0.0,
+        "table": 0.0,
+        "constraint": 0.0,
+        "relation": 0.0,
+        "structure": 0.0,
+        "evidence": 0.0,
+        "evidence_unit": 1.0,
+        "extra": 0.0
+      },
+      "preserve_jo_top": 5,
+      "router": "rule",
+      "facet": 1,
+      "meta": 1,
+      "meta_view": "V9",
+      "search_only": true,
+      "audit_payload": true,
+      "score_view": "rank",
+      "fallback": {
+        "gate": "axis_coverage",
+        "top_k": 5,
+        "min_axis_coverage": 0.5,
+        "merge_k": 10,
+        "first_only": true,
+        "force_first": true
+      }
+    }
+  },
+  "arm_order_policy": "balanced_rotation_by_qid_and_rep_v1",
+  "runner_sha256": "22c0cfbafa57e9e4ccdf71cb8d967941cafb0462f8b49d2972e27d3e333edaad",
+  "action_schema_sha256": "cb4b99d7dc41d6e5f48c15138ac0236dee380d0ca99c2149d522efef6718b543",
+  "system_prompt_sha256": "6a1b741cfc184cde13e2883cec3207f5e2b3de602177c4c4dff3cb3ba2c93d5b",
+  "agent_tools_sha256": "909b693bd8d4949fb29655c058b3949f628ded620ee6a6b360afbcc1346bfed5",
+  "arms_sha256": "8a3d74270bb0f7c115415273462abaff1a080ba50e1ee0a2a8ee4825653039de",
+  "clm_search_sha256": "ca459f76171a69dc50ab9c0dd30c8e83c5042ffbab7855e68d917851460b9da2",
+  "structured_search_sha256": "eb452efa628142a14370c380558eee92cf4fb0a66d7ac41a072a6f10f576fd34",
+  "schema_adapter_sha256": "7ed48b500e8b4fea3e587b63dffbaf602b2206d7b81c8d7b76f3ff2355fe27c0",
+  "textmatch_sha256": "e3a1bd008f5e9c13c71cb4160ef2165087911b7989a9f9727af65b87c2040a06",
+  "patterns_sha256": "6b1f01704f977b2a2f4cef5f33db0c8727d3a85e569ff9e417981dd9fcd601ff",
+  "scoring_sha256": "fcef1acb7dfb6f29c1b0af7f7b50e91a2e5e73062774284870bf64d52a5866b7",
+  "units_sha256": "74a998973da31d33ad9b8b0d8fbde60f83e365ac5cb6069373fc127affd81ce5",
+  "gold": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_c17_reviewed_final_s29_v7.jsonl",
+  "gold_sha256": "53835dd9fddf960f63a7013c9699bdf1b23e8a045cac6773502328879ad59ada",
+  "qids_sha256": "e189f0d54b659cbeffb64c18f9a5bbbf2b665762bf58a75f0f60152c85e42e45",
+  "arm_data": {
+    "c26_scope_fact_tag_ensemble_hybrid": {
+      "elements": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3.jsonl",
+        "sha256": "9d13e8d61781a4d39593795b0a30b33d41da7e1134335f04056e3d35540f5a49"
+      },
+      "tags": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/tags_u4_fact_rules.jsonl",
+        "sha256": "19df8e21d9f9287394cf9d02924d5d0e2c84be7e9bf3ae9fca4f02aaacd18104"
+      },
+      "jo": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+        "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+      }
+    },
+    "c29_membership_dual_evidence_hybrid": {
+      "elements": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3.jsonl",
+        "sha256": "9d13e8d61781a4d39593795b0a30b33d41da7e1134335f04056e3d35540f5a49"
+      },
+      "tags": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/tags_u4_fact_rules.jsonl",
+        "sha256": "19df8e21d9f9287394cf9d02924d5d0e2c84be7e9bf3ae9fca4f02aaacd18104"
+      },
+      "jo": {
+        "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+        "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+      }
+    }
+  },
+  "arm_orders": [
+    {
+      "qid": "v3-offline-0449",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0369",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0447",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0447",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0370",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0362",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0457",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0425",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0362",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0352",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0083",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0497",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0155",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0502",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0410",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0506",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0059",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0463",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0494",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0155",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0449",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0185",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0502",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0497",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0550",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0351",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0550",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0549",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0332",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0410",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0457",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0472",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0493",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0351",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0450",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0352",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0476",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0306",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0370",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0332",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0476",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0506",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0306",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0494",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0472",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0467",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0534",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0549",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0534",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0463",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0467",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0369",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0059",
+      "rep": 1,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0425",
+      "rep": 0,
+      "arms": [
+        "c26_scope_fact_tag_ensemble_hybrid",
+        "c29_membership_dual_evidence_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0493",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0185",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0083",
+      "rep": 0,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0450",
+      "rep": 1,
+      "arms": [
+        "c29_membership_dual_evidence_hybrid",
+        "c26_scope_fact_tag_ensemble_hybrid"
+      ]
+    }
+  ]
+}

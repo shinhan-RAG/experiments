@@ -1,0 +1,47 @@
+{
+  "base": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/out/host_agent/gpt56luna_medium_c29_support_only_s29x2_goldv7_20260821/results.jsonl",
+    "sha256": "14164d853afc15bc13aea297165ad65a330d74ef476100fbeba679b279b8fd0a"
+  },
+  "retry": [
+    {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/out/host_agent/gpt56luna_medium_c29_full_retry_r1_goldv7_20260821/results.jsonl",
+      "sha256": "b126ccef100cdcf7800c087d2c260411bf324615a4146861a476db4d45e9579d"
+    }
+  ],
+  "replaced_keys": [
+    [
+      "v3-offline-0185",
+      1,
+      "c26_scope_fact_tag_ensemble_hybrid"
+    ],
+    [
+      "v3-offline-0185",
+      1,
+      "c29_membership_dual_evidence_hybrid"
+    ],
+    [
+      "v3-offline-0332",
+      1,
+      "c26_scope_fact_tag_ensemble_hybrid"
+    ],
+    [
+      "v3-offline-0332",
+      1,
+      "c29_membership_dual_evidence_hybrid"
+    ],
+    [
+      "v3-offline-0449",
+      1,
+      "c26_scope_fact_tag_ensemble_hybrid"
+    ],
+    [
+      "v3-offline-0449",
+      1,
+      "c29_membership_dual_evidence_hybrid"
+    ]
+  ],
+  "n": 116,
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/out/host_agent/gpt56luna_medium_c29_support_only_s29x2_goldv7_20260821/results_clean.jsonl",
+  "output_sha256": "5de5886197d89390ba73bd2542b96ed43fa9f4c2aae85687fdb515ea78ed4f74"
+}
