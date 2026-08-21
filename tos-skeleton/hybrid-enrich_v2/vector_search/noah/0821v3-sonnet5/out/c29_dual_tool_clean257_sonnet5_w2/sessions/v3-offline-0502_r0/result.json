@@ -1,0 +1,25 @@
+{
+  "submission": {
+    "qid": "v3-offline-0502",
+    "ranked": [
+      "e00696"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료: `e00696` (제39조 설명서 교부 및 보험안내자료 등의 효력 ③항) — \"보험설계사 등이 모집과정에서 사용한 회사 제작의 보험안내자료 내용이 이 약관의 내용과 다른 경우에는 계약자에게 유리한 내용으로 계약이 성립된 것으로 봅니다.\"\n",
+    "stderr": "",
+    "elapsed": 83.77375292778015,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

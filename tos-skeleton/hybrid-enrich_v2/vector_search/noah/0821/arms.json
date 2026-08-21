@@ -1,0 +1,42 @@
+{
+  "baseline_fs_slot": {
+    "tag_weights": {"clm": 1.0, "sparse": 0.0},
+    "collapse_jo": false,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_no_collapse": {
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": false,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_equal": {
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_struct": {
+    "tag_weights": {"clm": 2.0, "sparse": 1.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_lexical": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  }
+}

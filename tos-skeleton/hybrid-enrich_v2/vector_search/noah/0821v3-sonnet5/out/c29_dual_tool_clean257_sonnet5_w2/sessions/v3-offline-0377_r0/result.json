@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0377",
+    "ranked": [
+      "e02857",
+      "e04890",
+      "e02765",
+      "e04074",
+      "e00175"
+    ],
+    "n_search": 8,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**근거 조항 (부표2-1 보험금 지급기준표, 제2-12조/제2-3조):**\n\n- **1년 미만(가입일로부터 1년이 되는 계약해당일 전날까지)**: 암진단급여금 = 특약보험가입금액의 **50%**\n- **1년 이후(1년 경과 시점부터)**: 암진단급여금 = 특약보험가입금액의 **100%**\n\n이 기준은 (간편)[기본]일반암진단특약의 해약환급금 미지급형(e02857)·갱신형(e04890) 부표2-1 지급기준표와, 제2-3조 보험금 지급에 관한 세부규정(e02765)의 삭감지급 조항에서 동일하게 확인됩니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 324.4016664028168,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0217",
+    "ranked": [
+      "c00123",
+      "c00008",
+      "e00163",
+      "e00165",
+      "c01929",
+      "c00787",
+      "c05795"
+    ],
+    "n_search": 3,
+    "n_read": 8
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "-vesm.\n",
+    "stderr": "지 않는 경우, 소멸시효가 완성되어 보험금 등을 지급받지 못합니다.\"}, {\"id\": \"e21623\", \"jo\": \"j05222\", \"score\": 0.02941176, \"contract\": \"(간편)[180일한도형]첫날부터입원특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"… 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적립액 등을 지급하지 않습니다. 3. “간편심사형”의 경우 계약일부터 1년 미만에 재해 이외의 원인으로 “입원 급여금” 지급사유가 발생하고 계속 입원 중에 1년 이상이 될 경우에는 계약일부터 1년 이상이 된 날부터 삭감하지 않습\"}, {\"id\": \"e21775\", \"jo\": \"j05262\", \"score\": 0.02857143, \"contract\": \"(간편)[30일한도형]첫날부터입원특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"… 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적립액 등을 지급하지 않습니다. 3. “간편심사형”의 경우 계약일부터 1년 미만에 재해 이외의 원인으로 “입원 급여금” 지급사유가 발생하고 계속 입원 중에 1년 이상이 될 경우에는 계약일부터 1년 이상이 된 날부터 삭감하지 않습\"}, {\"id\": \"e21928\", \"jo\": \"j05302\", \"score\": 0.02777778, \"contract\": \"(간편)[10일한도형]첫날부터입원특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"… 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적립액 등을 지급하지 않습니다. 3. “간편심사형”의 경우 계약일부터 1년 미만에 재해 이외의 원인으로 “입원 급여금” 지급사유가 발생하고 계속 입원 중에 1년 이상이 될 경우에는 계약일부터 1년 이상이 된 날부터 삭감하지 않습\"}, {\"id\": \"e22578\", \"jo\": \"j05470\", \"score\": 0.02702703, \"contract\": \"(간편)첫날부터중환자실입원특약\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"제2-12조 주계약 약관 규정의 준용\", \"preview\": \"… 중 피보험자의 사망으로 이 특약이 소멸하는 경우에는 계약자적립액 등을 지급하지 않습니다. 3. \\\"간편심사형\\\"의 경우 계약일부터 1년 미만에 재해 이외의 원인으로 \\\"입원급여금\\\" 지급사유가 발생하고 계속 입원 중에 1년 이상이 될 경우에는 계약일부터 1년 이상이 된 날부터 삭감하지 않습니\"}, {\"id\": \"e00078\", \"jo\": \"j00003\", \"score\": 0.02631579, \"contract\": \"주계약((간편)신한통합건강보장보험 원(ONE))\", \"variant\": \"해약환급금 미지급형\", \"jo_title\": \"\", \"preview\": \"… 내용 중 법 관련 인용 조문 | 3,207 | | [별첨2] 표 1. 재해분류표 | 3,239 | | [별첨2] 표 3. 장해분류표 | 3,241 | | [별첨2] 표 4. 질병 및 재해 분류표 | 3,269 | | [별첨2] 표 5-1. 대상이 되는 악성신생물(암) 분류표(기타피부암\"}, {\"id\": \"e29851\", \"jo\": \"j07417\", \"score\": 0.02564103, \"contract\": \"(간편)[소액암진단형]보험료납입보조특약\", \"variant\": \"갱신형\", \"jo_title\": \"제3조 보험금의 지급사유\", \"preview\": \"…보장특약\\\"에서 지급할 사망보험금의 일부를 지급합니다. 다만, 피보험자가 재해분류표(<부표1> 참조)에서 정한 \\\"재해\\\"를 직접적인 원인으로 사망한 경우에 지급되는 사망보험금은 이 특약의 보험금 지급 대상에서 제외합니다.\"}, {\"id\": \"e31451\", \"jo\": \"j07562\", \"score\": 0.025, \"contract\": \"(간편)[소액암진단형]보험료납입보조특약\", \"variant\": \"갱신형\", \"jo_title\": \"## II. 악성신생물 치료 목적의 수술\", \"preview\": \"… 의사, 치과의사 또는 한의사의 자격을 가진 자가 피보험자의 질병 또는 재해로 인한 직접적인 치료를 목적으로 필요하다고 인정한 경우로서 의료기관에서 의사의 관리하에 <1∼5종 수술분류표>에 정한 행위를 말합니다. \\\"수술\\\"은 기구를 사용하여 생체에 절단(切斷, 특정부위를 잘라내는 것), \"}]}\n\n2026-08-21T09:27:18.276107Z ERROR codex_core::tools::router: error=exec_command failed for `\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e00421'`: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessWithLogonW failed: 267\\\")\" }\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e00078' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e31322' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e00421' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3515ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 3565ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 3507ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\ncodex\n검증된 근거는 주계약의 질병 보장 성격, 상품 전체 면책기간 표(암·치매·고혈압·당뇨 등), 암 입원·고액암 진단의 지급 조건, 질병·재해 분류 기준입니다. 동일 조 중복을 제외해 이 근거들을 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c00123,c00008,e00163,e00165,c01929,c00787,c05795' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2588ms:\n{\"ok\": true, \"submitted\": [\"c00123\", \"c00008\", \"e00163\", \"e00165\", \"c01929\", \"c00787\", \"c05795\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n-vesm.\ntokens used\n48,962\n",
+    "elapsed": 76.54659295082092,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

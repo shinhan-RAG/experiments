@@ -1,0 +1,33 @@
+{
+  "submission": {
+    "qid": "v3-offline-0055",
+    "ranked": [
+      "e15917",
+      "e16081",
+      "e15915",
+      "e16078",
+      "e15829",
+      "e15980",
+      "e16010",
+      "e15933",
+      "e16099"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료. 근거 조항: **제2-9조(특약의 소멸)** — 고혈압(원발성)약물치료특약 해약환급금 미지급형(e15915/e15917/e15829, jo j03712) 및 갱신형(e16078/e16081, jo j03756) 두 변형 모두에서, 아래 사유 발생 시 특약이 그때부터 효력을 상실(소멸):\n\n1. 주계약이 해지·무효·취소·철회된 경우 (단, 주계약 보험금 지급으로 소멸하거나 특약 보험료 납입완료 후 주계약 미납으로 해지되었으나 해약환급금 미수령 시는 소멸 제외)\n2. 특약보험기간 중 피보험자가 사망한 경우\n3. 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우\n\n보조 근거로 제2-1조의2(특약의 보험기간 및 갱신, e16010: \"제2-9조에 따라 특약이 소멸된 경우\" 갱신 제외 사유)와 제2-10조(계약자의 임의해지, e15933/e16099)도 함께 제출했습니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 157.0818476676941,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

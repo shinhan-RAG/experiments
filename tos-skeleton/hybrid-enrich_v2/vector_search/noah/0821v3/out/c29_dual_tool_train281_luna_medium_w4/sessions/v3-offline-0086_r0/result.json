@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0086",
+    "ranked": [
+      "e12122",
+      "e11672",
+      "c02239"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "아니요. 뇌혈관질환진단특약은 뇌출혈만 보장하는 것이 아니라, 약관의 ‘뇌혈관질환 분류표’에 해당하는 질환을 보장합니다. 다만 혈관성 치매와 외상성 두개내 출혈은 제외됩니다.\n\n뇌출혈만 보장하는 상품은 별도의 ‘뇌출혈진단특약’입니다.\n",
+    "stderr": "도가 높은 X선으로 인체를 360도 방향에서 전체투사하여 나온 데이터를 컴퓨터로 조합하여 인체의 단면 영상을 그려내는 촬영기술\\n자기공명영상(MRI)\\nMagnetic Resonance Imaging. 자기공명영상을 이용하여 생체의 장기나 조직, 병터를 단층상 등의 화상으로 표시하여 질환을 진단하기 위한 화상 검사법\\n뇌혈관조영술\\n뇌 속 혈관의 병변이나 변화를 알아보기 위해 X선에 반응하여 희게 촬영되는 물질(조영제)을 뇌 혈관에 투여한 뒤 촬영하는 기술\\n단일광자방출 전산화단층술(SPECT)\\nSingle Photon Emission Computed Tomography. γ선을 방출하는 방사성 동위원소를 체내에 투여하여 그 분포상태의 단면상을 컴퓨터로 재구성하는 촬영법\\n양전자방출단층술(PET)\\nPositron Emission Tomography. 양전자를 방출할 때 발생하는 핵 의학적 방사능을 이용하여 인체의 단면을 촬영하는 기술\\n뇌척수액 검사\\n뇌와 척수를 둘러싸 보호하고 있는 맑은 액체인 뇌척수액의 이상 유무를 알아보는 것\", \"read_calls_left\": 7}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e12215' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2721ms:\n{\"id\": \"e12215\", \"jo\": \"j02710\", \"contract\": \"(간편)[삭감없음용]뇌혈관질환진단특약(무배당, 갱신형)\", \"members\": [\"e12211\", \"e12212\", \"e12213\", \"e12214\", \"e12215\", \"e12216\", \"e12217\", \"e12218\", \"e12219\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n이 특약에 정하지 않은 사항에 대하여는 주계약 약관의 규정을 따릅니다.\\nThe following is a list of all the tables in the image:\\n$$1 2 8 6$$\\n| 구분 | 지급사유 | 지급금액 |\\n|------|---------|----------|\\n| 뇌혈관질환 진단급여금 | 특약보험기간 중 피보험자가 뇌혈관질환으로 진단확정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 100% |\\n주) 「이 특약의 피보험자가 특약보험기간 중 사망하거나 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 더 이상 효력이 없습니다. 다만, 특약보험기간 중 피보험자가 사망한 경우에는 산출방법서에서 정하는 바에 따라 회사가 적립한 사망당시의 계약자적립액을 계약자에게 지급합니다.\\n$$1 2 8 7$$\\n부표2-2\\n뇌혈관질환 분류표\\n별첨2 [표 11-1] 참조\\n_____________________________________________________________\\n_____________________________________________________________\\n-\\n$ \\\\underline{ \\\\text{1.  } } $\\n$\\\\square$\\n약 관 목 차\", \"read_calls_left\": 6}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e11672' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2976ms:\n{\"id\": \"e11672\", \"jo\": \"j02572\", \"contract\": \"(간편)[기본]뇌혈관질환진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e11671\", \"e11672\"], \"text\": \"제2-2조 보험금의 지급사유\\n회사는 특약보험기간 중 피보험자가 \\\"뇌혈관질환\\\"으로 진단확정 되었을 경우에는 보험수익자에게 약정한 뇌혈관질환진단급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\", \"read_calls_left\": 5}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02239' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2702ms:\n{\"id\": \"c02239\", \"jo\": \"j02778\", \"contract\": \"(간편)뇌출혈진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e12419\", \"e12420\", \"e12421\", \"e12422\", \"e12423\", \"e12424\", \"e12425\", \"e12426\", \"e12427\", \"e12428\", \"e12429\", \"e12430\", \"e12431\", \"e12432\"], \"text\": \"(간편)뇌출혈진단특약(무배당, 해약환급금 미지급형)\\n\\n1309\\n\\n---\\n\\n제2관 보험금의 지급\\n\\n제2-2조 보험금의 지급사유\\n\\n회사는 특약보험기간 중 피보험자가 \\\"뇌출혈\\\"으로 진단 확정되었을 때에는 보험수익자에게 약정한 뇌출혈진단급여금(<부표2-1> \\\"보험금 지급기준표 참조)을 지급합니다. (다만, 최초 1회의 진단확정에 한함)\\n\\n제2-3조 보험금 지급에 관한 세부규정\\n\\n① 특약보험료 납입기간 중 주계약의 보험료 납입이 면제된 경우 이 특약의 차회 이후 보험료 납입을 면제합니다. 다만, 주계약의 보험료 납입면제가 \\\"보험료의 납입을 면제하는 특약\\\"에 의해 납입면제가 된 경우 그 \\\"보험료의 납입을 면제하는 특약\\\"의 약관에서 정한 바를 따르며, 이 특약이 해당 약관의 「보험료납입면제대상계약」에 해당되지 않는 경우 보험료 납입면제가 되지 않습니다.\\n\\n② 제2-2조(보험금의 지급사유)의 경우 계약일부터 1년 미만에 보험금 지급사유가 발생하였을 때에는 <부표2-1> \\\"보험금 지급기준표\\\"에서 정한바에 따라 삭감하여 지급합니다.\\n\\n\", \"read_calls_left\": 4, \"chunk_span\": [1074618, 1075138]}\n\ncodex\n원문 확인 결과, 뇌혈관질환진단특약은 뇌출혈만을 대상으로 하지 않고 약관의 ‘뇌혈관질환 분류표’ 해당 질환을 대상으로 합니다. ‘뇌출혈’ 진단 시 지급하는 별도 특약도 확인했으므로, 중복 조항을 제외한 세 근거를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e12122,e11672,c02239' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3054ms:\n{\"ok\": true, \"submitted\": [\"e12122\", \"e11672\", \"c02239\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n아니요. 뇌혈관질환진단특약은 뇌출혈만 보장하는 것이 아니라, 약관의 ‘뇌혈관질환 분류표’에 해당하는 질환을 보장합니다. 다만 혈관성 치매와 외상성 두개내 출혈은 제외됩니다.\n\n뇌출혈만 보장하는 상품은 별도의 ‘뇌출혈진단특약’입니다.\ntokens used\n21,835\n",
+    "elapsed": 67.44668102264404,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

@@ -87,9 +87,33 @@ python agent_runner_oai.py --run c4all_1rep --arm c4_all --protocol text --no-th
 # 4) 최종 확증: base vs 최고 arm ×3 reps → filesearch/stats.py 페어드 검정
 # 5) test 149 (최종 1회): cowork "원문 span 매핑 파일.jsonl" 필요
 python build_gold_spans_test.py --spanmap <원문_span_매핑_파일.jsonl> --validate   # train 대조 게이트
-python build_gold_spans_test.py --spanmap <...>                                    # out/gold_spans_lsh_test.jsonl
-python agent_runner_oai.py --run final_test --arm <최고arm> --gold out/gold_spans_lsh_test.jsonl --reps 1
+python build_gold_spans_test.py --spanmap <...>                                    # out/gold_spans_lsh_test_v2.jsonl
+python agent_runner_oai.py --run final_test --arm <최고arm> --gold out/gold_spans_lsh_test_v2.jsonl --reps 1
 ```
+
+### 0821 최종 확증 절차 (v2 gold)
+
+최종 성능은 train을 다시 사용하지 않고 test 149로 1회만 측정한다. 먼저 동료의
+`원문 span 매핑 파일.jsonl`을 확보하고 아래 순서로 gold를 동결한다.
+
+```bash
+# 1) span 사전이 train v2와 같은 element 우주인지 검증(겹침 99% 미만이면 실패)
+python build_gold_spans_test.py --spanmap <원문_span_매핑_파일.jsonl> --validate
+
+# 2) test strict gold + SHA-256 manifest 생성
+#    gold 보유 문항의 partial mapping, 예상 empty 11건 변경, 미도달 group,
+#    submit 10개로 충족 불가능한 문항이 하나라도 있으면 실패
+python build_gold_spans_test.py --spanmap <원문_span_매핑_파일.jsonl>
+
+# 3) train 주지표(R@10/suff@10)로 확정한 dual_active를 test에 1회 실행
+python agent_runner.py --run final_test_v2 --arm dual_active \
+  --gold out/gold_spans_lsh_test_v2.jsonl --reps 1 --model sonnet
+```
+
+생성물은 `out/gold_spans_lsh_test_v2.jsonl`과
+`out/gold_spans_lsh_test_v2.manifest.json`이다. manifest의 `frozen_denominator`,
+입력·코퍼스·조 index 해시를 최종 결과 보고서에 그대로 기록한다. `--allow-partial`은
+미매핑 감사용 초안에만 허용하며 최종 실험에는 사용하지 않는다.
 
 Windows 로컬 실행 시 `PYTHONUTF8=1` 필요.
 

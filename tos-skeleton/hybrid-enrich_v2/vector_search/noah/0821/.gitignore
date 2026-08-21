@@ -1,0 +1,6 @@
+__pycache__/
+out/agent/
+out/tool_smoke/
+out/tag_index/*.pkl
+out/tag_index/*.npy
+out/det/*.jsonl

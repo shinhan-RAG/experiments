@@ -1,0 +1,31 @@
+{
+  "submission": {
+    "qid": "v3-offline-0082",
+    "ranked": [
+      "c04999",
+      "c04816",
+      "c02722",
+      "c04997",
+      "e12133",
+      "e11816",
+      "c02173"
+    ],
+    "n_search": 3,
+    "n_read": 6
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다. (세션 종료 지시에 따라 추가 도구 호출 없이 마칩니다.)\n",
+    "stderr": "",
+    "elapsed": 119.01189947128296,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

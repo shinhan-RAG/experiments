@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0253",
+    "ranked": [
+      "e15111",
+      "e15204",
+      "c02680",
+      "c02681"
+    ],
+    "n_search": 3,
+    "n_read": 1
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**결론: 하루에 2회 이상 통원해도 통원급여금은 1회만 지급됩니다 (각각 지급되지 않음).**\n\n근거 조항 (제출한 evidence, 관련도 순):\n- **e15111 (제2-3조 ⑥항, j03505)** — 핵심 근거: \"'뇌혈관질환'의 직접적인 치료를 목적으로 하루에 2회 이상 상급종합병원에서 통원 치료시 1회에 한하여 해당 '뇌혈관질환상급종합병원통원급여금'을 지급합니다. 또한, '허혈심장질환'의 직접적인 치료를 목적으로 하루에 2회 이상 상급종합병원에서 통원 치료시 1회에 한하여 해당 '허혈심장질환상급종합병원통원급여금'을 지급합니다.\"\n- **e15204 (부표2-1 보험금 지급기준표, j03518)** — \"통원 1회당, 1일 1회, 연간 30회에 한함\" 지급조건 명시\n- **c02680, c02681 (제2-2조 보험금의 지급사유, j03504)** — 통원급여금 지급사유 정의 (간편심사형/일반심사형)\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 88.46066308021545,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

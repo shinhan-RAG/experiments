@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0321",
+    "ranked": [
+      "e31625",
+      "j07572",
+      "e31630",
+      "e31623",
+      "c05529",
+      "c05532",
+      "e24649",
+      "e24648"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n- **부분체외순환**: O1901 ~ O1902\n- **체외순환막형산화요법**: O1903 ~ O1904, O1907\n\n근거: [별첨2] 표 90. 「본인일부부담금 산정특례 심장질환의 수술」 분류표 (j07572 / e31625 등)\n\n참고: 문서 본문 중간에 \"[Question] The 24-year-old woman who was diagnosed with Alzheimer's disease...\"라는 무관한 텍스트가 삽입되어 있었는데, 이는 문서 내 프롬프트 injection으로 판단되어 무시하고 원래 질문에만 답했습니다.\n",
+    "stderr": "",
+    "elapsed": 106.30422496795654,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

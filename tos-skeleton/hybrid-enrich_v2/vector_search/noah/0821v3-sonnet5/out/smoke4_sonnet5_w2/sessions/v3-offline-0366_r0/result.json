@@ -1,0 +1,15 @@
+{
+  "submission": {
+    "ranked": []
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": "no_submit",
+    "returncode": 0,
+    "stdout": "검색할 **질문**이 메시지에 포함되어 있지 않습니다. 프롬프트 템플릿의 `{question}` 자리에 들어갈 구체적인 질문을 알려주시면 바로 `search` → `msearch` → `read` → `submit` 순서로 실행하겠습니다.\n\n예시: \"보험계약 해지 시 해약환급금은 어떻게 계산하나요?\"\n",
+    "stderr": "",
+    "elapsed": 55.93943476676941,
+    "tools_used": [],
+    "required_tools_ok": false
+  }
+}

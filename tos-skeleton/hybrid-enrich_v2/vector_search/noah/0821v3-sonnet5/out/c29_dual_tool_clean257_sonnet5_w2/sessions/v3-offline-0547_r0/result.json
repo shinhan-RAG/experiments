@@ -1,0 +1,31 @@
+{
+  "submission": {
+    "qid": "v3-offline-0547",
+    "ranked": [
+      "e26882",
+      "e26881",
+      "e26879",
+      "e26883",
+      "e26884",
+      "e26862",
+      "e26890"
+    ],
+    "n_search": 2,
+    "n_read": 2
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료. 근거: (간편)급여인공관절치환수술특약(무배당, 해약환급금 미지급형) 제2-11조(해약환급금) — 보험료 납입기간 중 해지 시 해약환급금 없음(e26882, e26881, e26879, e26883, e26884, e26890) 및 제2-9조(특약의 소멸) 관련 규정(e26862). 결론: 보험료 납입 중 해지하면 해약환급금은 없습니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 151.92860865592957,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

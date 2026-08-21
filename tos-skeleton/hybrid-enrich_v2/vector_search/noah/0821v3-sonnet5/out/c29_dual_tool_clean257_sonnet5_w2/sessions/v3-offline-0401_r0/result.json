@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0401",
+    "ranked": [
+      "e15618",
+      "c02774",
+      "e15530",
+      "e15525",
+      "e15513",
+      "c02759",
+      "c02775",
+      "e15535"
+    ],
+    "n_search": 2,
+    "n_read": 2
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**근거 요약**: (간편)급여주요뇌심장질환특정재활치료특약 제2-12조 준용 부표2-1 「보험금 지급기준표」(e15618/c02774)에 따르면, [단순재활] 급여주요뇌심장질환특정재활치료급여금은 특약보험가입금액의 **0.5%**이나, \"간편심사형\"에 한하여 **최초계약의 계약일부터 1년 미만**에 지급사유가 발생한 경우에는 **특약보험가입금액의 0.25%**(1년 이후 지급률의 절반)를 지급합니다. 이는 제2-3조 보험금 지급에 관한 세부규정(e15530) 제③항에서도 \"간편심사형에 한하여 최초계약의 계약일부터 1년 미만에 보험금 지급사유가 발생하였을 때에는 부표2-1에서 정한 바에 따라 삭감하여 지급\"한다고 재확인됩니다.\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 137.32145071029663,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

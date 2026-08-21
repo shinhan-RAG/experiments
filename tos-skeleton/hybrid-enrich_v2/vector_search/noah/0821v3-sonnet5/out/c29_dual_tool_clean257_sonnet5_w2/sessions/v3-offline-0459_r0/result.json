@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0459",
+    "ranked": [
+      "j05778",
+      "j05779",
+      "j05877",
+      "j05878"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료.\n\n**근거 조항**: (간편)간병인사용입원특약(무배당, 해약환급금 미지급형/갱신형) 제2-2조(보험금의 지급사유), 제2-3조(보험금 지급에 관한 세부규정)\n\n**요지**: 요양병원을 제외한 병원급 의료기관 또는 의원급 의료기관에 1일 이상 계속 입원하며 간병인을 사용하여 실질적으로 간병서비스를 이용한 경우 \"간병인사용입원(요양병원 제외)급여금\"을 지급하며, 간병인 사용일수 1일당, 1회 입원당 사용일수 180일을 최고 한도로 합니다(갱신형의 경우 갱신 전후 계속되는 입원의 총 사용일을 기준으로 1회 입원당 180일 한도).\n",
+    "stderr": "SessionEnd hook [node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-lifecycle-hook.mjs\" SessionEnd] failed: Hook cancelled\n",
+    "elapsed": 172.43530821800232,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

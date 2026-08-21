@@ -1,0 +1,32 @@
+{
+  "submission": {
+    "qid": "v3-offline-0279",
+    "ranked": [
+      "e11672",
+      "e11814",
+      "e11976",
+      "e12131",
+      "e11761",
+      "e12058",
+      "e11902",
+      "e12215"
+    ],
+    "n_search": 2,
+    "n_read": 2
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료. \"통합건강 뇌혈관질환 진단시 진단금\"에 대한 근거 조항 8건을 제출했습니다 (제2-2조 보험금의 지급사유 4종, 제2-12조 보험금 지급기준표 4종 — [기본]/[삭감없음용] × 갱신형/해약환급금 미지급형).\n",
+    "stderr": "",
+    "elapsed": 136.14264249801636,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

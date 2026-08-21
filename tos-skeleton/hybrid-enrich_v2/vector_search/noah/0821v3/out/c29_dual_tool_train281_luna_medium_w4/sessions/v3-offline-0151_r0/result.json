@@ -1,0 +1,26 @@
+{
+  "submission": {
+    "qid": "v3-offline-0151",
+    "ranked": [
+      "e13915"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "특정부정맥이란 제8차 개정 한국표준질병·사인분류 중 약관의 「특정부정맥 분류표」에 해당하는 항목을 말합니다.\n\n진단은 의사가 심전도검사, 심장초음파, 관상동맥촬영술, 혈액 중 심근효소검사 등을 기초로 확정해야 합니다.\n",
+    "stderr": "납입을 연체하여 해지된 특약의 부활(효력회복)]에 따라 이 특약을 \"}, {\"id\": \"c00077\", \"jo\": \"j00009\", \"contract\": \"주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급\", \"preview\": \") | 항암방사선치료 급여금 | 가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급 | | (간편)항암약물치료특약 | 항암약물치료 급여금 | 가입 후 1년간 1년이후에 | (간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형) 32 --- The main featur\"}, {\"id\": \"c05645\", \"jo\": \"j07590\", \"contract\": \"(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)\", \"preview\": \"질병을 말합니다. | 대상 질병명 | 분류코드 | | --- | --- | | 발작성 빈맥 | I47 | | 심방세동 및 조동 | I48 | | 기타 심장부정맥 | I49 | 주) 1. 제9차 개정 이후 이 약관에서 정한 \\\"부정맥\\\"의 해당 여부는 피보험자가 진단확정 받은 시점에 시행되고\"}]}\n\ncodex\n두 검색 채널 모두 특약의 정의 조항을 지목했습니다. 갱신형과 해약환급금 미지급형의 정의 조항, 그리고 분류표 근거를 읽어 문구와 적용 범위를 확인하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13784' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e13915' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c02487' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3840ms:\n{\"id\": \"e13784\", \"jo\": \"j03148\", \"contract\": \"(간편)특정부정맥진단특약(무배당, 갱신형)\", \"members\": [\"e13783\", \"e13784\", \"e13785\"], \"text\": \"제2-1조의3 \\\"특정부정맥\\\"의 정의 및 진단확정\\n① 이 특약에 있어서 \\\"특정부정맥\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"특정부정맥 분류표\\\"에 해당하는 항목을 말합니다.\\n② \\\"특정부정맥\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며, 이 진단은 증상·병력과 함께 심전도검사, 심장초음파, 관상동맥(심장동맥)촬영술, 혈액 중 심근 효소검사 등을 기초로 하여야 합니다. 또한, 회사가 「특정부정맥」의 조사나 확인을 위하여 필요하다고 인정하는 경우 검사결과, 진료기록부의 사본 제출을 요청할 수 있습니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 \\\"특정부정맥\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\", \"read_calls_left\": 7}\n\n succeeded in 3845ms:\n{\"id\": \"e13915\", \"jo\": \"j03188\", \"contract\": \"(간편)특정부정맥진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e13914\", \"e13915\", \"e13916\"], \"text\": \"제2-1조의2 \\\"특정부정맥\\\"의 정의 및 진단확정\\n① 이 특약에 있어서 \\\"특정부정맥\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-2> \\\"특정부정맥 분류표\\\"에 해당하는 항목을 말합니다.\\n② “특정부정맥”의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여\\n내려져야 하며, 이 진단은 증상·병력과 함께 심전도검사, 심장초음파, 관상동맥(심장동맥)촬영술, 혈액 중 심근 효소검사 등을 기초로 하여야 합니다. 또한, 회사가 「특정부정맥」의 조사나 확인을 위하여 필요하다고 인정하는 경우 검사결과, 진료기록부의 사본 제출을 요청할 수 있습니다. 그러나 피보험자가 사망하여 상기 검사방법을 진단의 기초로 할 수 없는 경우에 한하여 피보험자가 \\\"특정부정맥\\\"으로 진단 또는 치료를 받고 있었음을 증명할 수 있는 문서화된 기록 또는 증거를 진단확정의 기초로 할 수 있습니다.\", \"read_calls_left\": 7}\n\n succeeded in 4038ms:\n{\"id\": \"c02487\", \"jo\": \"j03203\", \"contract\": \"(간편)특정부정맥진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e14002\", \"e14003\", \"e14004\", \"e14005\", \"e14006\", \"e14007\", \"e14008\", \"e14009\", \"e14010\", \"e14011\", \"e14012\", \"e14013\"], \"text\": \"(간편)특정부정맥진단특약(무배당, 해약환급금 미지급형)\\n\\n1477\\n\\n---\\n\\n| 부표2-2 |\\n\\n특정부정맥 분류표\\n\\nThis is a figure caption. Here is the specific details: The image shows a white polar bear holding a blue sphere with the letter \\\"S\\\" on it. The polar bear appears to be smiling, and there is a light blue spot on its face. The background of the image is white.\\n\\n별첨2 [표 143] 참조\\n\\n$ \\\\underline{ \\\\text{The text in the image cannot be extracted.}} $\\n\\nSHINHAN LIFE\\n\\n1478\\n\\n---\\n\\n(간편)혈전용해치료특약\\n(무배당, 해약환급금 미지급형)\\n\\n(73,98),(927,950)\\n\\n(80,83),(934,958)\\n\\n-\\n\\n2212152200000007741\\n\\n\", \"read_calls_left\": 7, \"chunk_span\": [1188912, 1189441]}\n\ncodex\n두 상품 형태의 약관 문구가 동일하게 확인됐고, 특정부정맥은 약관상 별도 분류표에 해당하는 항목으로 정의됩니다. 정의·진단확정 조항을 대표 근거로 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e13915' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2797ms:\n{\"ok\": true, \"submitted\": [\"e13915\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n특정부정맥이란 제8차 개정 한국표준질병·사인분류 중 약관의 「특정부정맥 분류표」에 해당하는 항목을 말합니다.\n\n진단은 의사가 심전도검사, 심장초음파, 관상동맥촬영술, 혈액 중 심근효소검사 등을 기초로 확정해야 합니다.\ntokens used\n15,781\n",
+    "elapsed": 46.13202238082886,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

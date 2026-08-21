@@ -1,0 +1,26 @@
+{
+  "submission": {
+    "qid": "v3-generated-def-0012",
+    "ranked": [
+      "e15302"
+    ],
+    "n_search": 2,
+    "n_read": 1
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "“종합병원 중환자실치료”란, 뇌혈관질환 또는 허혈심장질환의 직접 치료를 위해 자택 등에서 치료가 곤란하여 종합병원의 중환자실에 입실하고, 의사의 관리 아래 치료에 전념하는 것을 말합니다.\n\n여기서 중환자실은 의료법상 시설기준과 규격에 부합하는 입원치료실을 의미합니다.\n",
+    "stderr": "ntract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"preview\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형) 1623 --- ② 제1항에 따라 특약이 해지된 경우에는 보험증권의 뒷면에 기재하여 드립니다. 제2-11조 해약환급금 ① 이 약관에 따른 해약환급금은 이 특약의 산출방법서에 따라 계산합니다. ② 해약환급금의 지급사유가 발생한 경우\"}, {\"id\": \"c02738\", \"jo\": \"j03578\", \"contract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"preview\": \"\\\\text{The text in the image cannot be extracted.}} $ SHINHAN LIFE 1624 --- 부표2-1 보험금 지급기준표 S | 구분 | 지급사유 | 지급금액 | |------|---------|----------| | \\\"뇌혈관질환 또는 허혈심장\"}, {\"id\": \"c00018\", \"jo\": \"j00002\", \"contract\": \"주계약((간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급\", \"preview\": \") | 1,587 | | (간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형) | 1,605 | | (간편)급여주요뇌심장질환특정재활치료특약(무배당, 갱신형) | 1,629 | | (간편)급여뇌심장질환특정검사지원특약(무배당, 갱신형) | 1,651 | | 고혈압(원발성)약물치료특약(무\"}, {\"id\": \"c05198\", \"jo\": \"j07458\", \"contract\": \"(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)\", \"preview\": \"의 대상이 되는 사람을 말하며, 이 특약의 피보험자는 \\\"주계약 및 사망보장특약\\\"의 피보험자로 합니다. 2. 보험수익자 : 이 특약의 보험수익자는 피보험자와 동일인으로 합니다. 3. 종합병원 : 의료법 제3조(의료기관)에서 규정한 국내의 종합병원을 말합니다. 4. 보험기간 : 이 특약에 \"}, {\"id\": \"c04089\", \"jo\": \"j05652\", \"contract\": \"(간편)3대질병간병인사용입원특약(무배당, 갱신형)\", \"preview\": \"(간편)3대질병간병인사용입원특약(무배당, 갱신형) 2477 --- | 촬영되는 물질(조영제)을 뇌 혈관에 투여한 뒤 촬영하는 기술 단일광자방출 전산화단층술(SPECT) Single Photon Emission Computed Tomography. γ선을 방출하는 방사성 동위원소를 체내에\"}, {\"id\": \"c02726\", \"jo\": \"j03566\", \"contract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"preview\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형) 1617 --- 심신상실 의식은 있으나 심신장애의 정도가 심해 자신의 행위 결과를 합리적으로 판단할 능력을 갖지 못한 상태 제2-4조의2 보험료 납입을 면제하지 않는 사유 회사는 다음 중 어느 한 가지로 보험료 납입면제 사유가 발\"}, {\"id\": \"c02718\", \"jo\": \"j03560\", \"contract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"preview\": \"etic energy of all the particles in the molecule is the sum of the kinetic energy of each particle. Therefore, the total kinetic energy of the molecule is given\"}, {\"id\": \"c02733\", \"jo\": \"j03573\", \"contract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"preview\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형) 1621 --- ① 다음 각 호의 사유가 발생한 경우 이 특약은 그때부터 효력이 없습니다. 1. 주계약이 해지, 무효, 취소 또는 철회된 경우. 다만, 주계약의 보험금 지급으로 인하여 주계약이 소멸하는 경우 또 는 이 특약의 보험\"}]}\n\ncodex\n검색 결과상 해당 정의 조항은 제2-1조의7이며, 핵심 문장과 중환자실의 시설 기준을 함께 확인하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e15302 && python agent_tools.py read --id e15303' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n exited 1 in 72ms:\n��ġ ��:2 ����:40\n+ python agent_tools.py read --id e15302 && python agent_tools.py read  ...\n+                                        ~~\n'&&' ��ū�� �� �������� �ùٸ� �� ���� ��ȣ�� �ƴմϴ�.\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\n    + FullyQualifiedErrorId : InvalidEndOfLine\n \n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e15302' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2657ms:\n{\"id\": \"e15302\", \"jo\": \"j03558\", \"contract\": \"(간편)뇌혈관·허혈심장질환주요치료비특약(무배당, 갱신형)\", \"members\": [\"e15301\", \"e15302\", \"e15303\"], \"text\": \"제2-1조의7 \\\"종합병원 중환자실치료\\\"의 정의\\n① 이 특약에 있어서 \\\"종합병원 중환자실치료\\\"라 함은 의사에 의하여 \\\"뇌혈관질환 또는 허혈심장질환\\\"으로 인한 직접적인 치료를 목적으로 필요하다고 인정된 경우로서 자택 등에서의 치료가 곤란하여 제2-1조의9(\\\"종합병원\\\"의 정의)에서 정한 \\\"종합병원\\\"의 중환자실(Intensive Care Unit, 집중치료실 또는 집중강화치료실)\\\"(이하 \\\"중환자실\\\"이라 합니다)에 입실하여 의사의 관리 하에 치료에 전념하는 것을 말합니다.\\n② 이 특약에 있어서 \\\"중환자실\\\"이라 함은 의료법 제36조(준수사항) 제1호 및 동법 시행규칙 제34조(의료기관의 시설기준 및 규격)에 따른 중환자실의 시설기준과 시설규격(<부표2-4> 참조)에 부합하는 입원치료실을 말합니다.\", \"read_calls_left\": 7}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e15302' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2379ms:\n{\"ok\": true, \"submitted\": [\"e15302\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n“종합병원 중환자실치료”란, 뇌혈관질환 또는 허혈심장질환의 직접 치료를 위해 자택 등에서 치료가 곤란하여 종합병원의 중환자실에 입실하고, 의사의 관리 아래 치료에 전념하는 것을 말합니다.\n\n여기서 중환자실은 의료법상 시설기준과 규격에 부합하는 입원치료실을 의미합니다.\ntokens used\n19,628\n",
+    "elapsed": 53.25875639915466,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

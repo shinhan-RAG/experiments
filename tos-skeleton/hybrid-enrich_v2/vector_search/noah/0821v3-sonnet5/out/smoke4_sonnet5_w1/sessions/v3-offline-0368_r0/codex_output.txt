@@ -1,0 +1,7 @@
+프로젝트 구조를 파악했습니다. C29 semantic-tag filesearch + V9 BM25+dense 하이브리드 검색을 사용하는 보험 약관 근거 검색 에이전트 실험 프레임워크(`agent_runner.py`)이며, Claude Sonnet 5 모델로 257개 질문에 대해 평가하는 구조입니다.
+
+어떤 작업을 도와드릴까요? 예를 들어:
+- 실험 코드 수정/개선
+- smoke 또는 full 실험 실행
+- 결과 분석
+- 검색 파라미터(arms.json) 튜닝

@@ -1,0 +1,20 @@
+{
+  "run": "c29_dual_tool_smoke1_sandboxfix",
+  "n_q": 1,
+  "reps": 1,
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "medium",
+  "workers": 4,
+  "metrics": {
+    "R@1": 0.0,
+    "R@5": 0.0,
+    "R@10": 0.0,
+    "R@20": 0.0,
+    "suff@5": 0.0,
+    "suff@10": 0.0,
+    "RR@10": 0.0
+  },
+  "errors": 0,
+  "required_tool_violations": 0,
+  "mean_elapsed": 98.55355525016785
+}

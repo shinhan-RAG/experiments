@@ -1,0 +1,52 @@
+{
+  "slot_meta_agent": {
+    "_note": "태그는 CLM 슬롯 검색만 사용하고, 자연어 메타 검색은 고정 V9 BM25+dense hybrid만 사용한다.",
+    "tag_weights": {"clm": 1.0, "sparse": 0.0},
+    "collapse_jo": false,
+    "router": "rules",
+    "meta": 1,
+    "meta_view": "V9",
+    "meta_strategy": "hybrid",
+    "require_meta_before_submit": true
+  },
+  "baseline_fs_slot": {
+    "tag_weights": {"clm": 1.0, "sparse": 0.0},
+    "collapse_jo": false,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_no_collapse": {
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": false,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_equal": {
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_struct": {
+    "tag_weights": {"clm": 2.0, "sparse": 1.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  },
+  "tag_sparse_lexical": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9"
+  }
+}

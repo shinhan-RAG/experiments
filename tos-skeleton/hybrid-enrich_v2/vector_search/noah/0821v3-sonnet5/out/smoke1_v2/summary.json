@@ -1,0 +1,19 @@
+{
+  "run": "smoke1_v2",
+  "n_q": 1,
+  "reps": 1,
+  "model": "claude-sonnet-5",
+  "workers": 1,
+  "metrics": {
+    "R@1": 1.0,
+    "R@5": 1.0,
+    "R@10": 1.0,
+    "R@20": 1.0,
+    "suff@5": 1.0,
+    "suff@10": 1.0,
+    "RR@10": 1.0
+  },
+  "errors": 0,
+  "required_tool_violations": 0,
+  "mean_elapsed": 183.04117226600647
+}

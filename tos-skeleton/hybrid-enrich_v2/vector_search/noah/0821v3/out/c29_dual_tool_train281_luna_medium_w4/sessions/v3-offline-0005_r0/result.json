@@ -1,0 +1,27 @@
+{
+  "submission": {
+    "qid": "v3-offline-0005",
+    "ranked": [
+      "e26651",
+      "e26661"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "(깁스치료특약)에서 보장하지 않는 치료는 **부목(Splint Cast)치료**입니다.  \n부목은 석고붕대나 섬유유리붕대를 신체 한쪽 또는 양쪽 면에 대는 치료를 말하며, 깁스치료급여금 지급 대상에서 제외됩니다.\n",
+    "stderr": "ing a limb after an injury.\\n\\\"깁스치료급여금\\\"을\\n지급하는\\n\\\"깁스(Cast)치료\\\"\\nJ\\n\\\"깁스치료급여금\\\"을 지급하지 않는 \\\"부목(Splint Cast)치료\\\"\\n※ 위의 [“깁스(Cast)치료” 및 “부목(Splint Cast)치료” 예시]는 “깁스(Cast)치료”와 “부목(Splint Cast)치료”에 대한 이해를 위한 것이 입니다. 실제 “깁스치료급여금”은 제1-5조(보험금 등의 청구) 제1항 제1호에 의한 청구서 및 제2-5조(사고증명서) 제1항에 의한 사고증명서에 따라 지급됩니다.\", \"read_calls_left\": 7}\n\n succeeded in 3679ms:\n{\"id\": \"e26656\", \"jo\": \"j06505\", \"contract\": \"(간편)깁스치료특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e26649\", \"e26650\", \"e26651\", \"e26652\", \"e26653\", \"e26654\", \"e26655\", \"e26656\"], \"text\": \"제2-1조의2 \\\"깁스(Cast)치료\\\"의 정의\\n① 이 특약에 있어서 \\\"깁스(Cast)치료\\\"라 함은 의사가 직접적인 치료를 목적으로 \\\"깁스(Cast)치료\\\"가 필요하다고 인정한 경우로서 병원에서 의사의 관리 하에 석고붕대 또는 섬유유리붕대(Fiberglass Cast)를 병변이 있는 벽, 관절부위의 둘레 모두에 착용시켜(Circular Cast) 감은 다음\\n굳어지게 하여 치료효과를 가져오는 치료법을 말합니다. 다만, 부목(Splint Cast)치료는 제외합니다.\\n② 제1항에서 \\\"부목(Splint Cast)치료\\\"라 함은 석고붕대 또는 섬유유리붕대(Fiberglass Cast)를 고정할 부분의 일측면 또는 양측면에 착용시키고 대주는 치료법을 말합니다.\\n\\\"깁스(Cast)치료\\\" 및 \\\"부목(Splint Cast)치료\\\" 예시\\nThe leg is positioned in a way that the cast covers the entire lower half of the leg, from the ankle to the toes. The cast is secured with a bandage, which is visible at the top of the leg, indicating that it is being applied to protect the injured area. The bandage is also depicted in a lighter shade, possibly to differentiate it from the darker cast.\\nThe foot of the leg is visible at the end of the cast, showing the toes. The toes are clearly visible, and the cast appears to be well-tightened, ensuring that the injured area remains covered. The toes are shown in a light color, which contrasts with the dark gray cast, making the cast more visible and easily identifiable.\\nOverall, the image provides a clear and detailed view of a leg in a cast, highlighting the importance of the cast in providing support and protection during medical procedures. The design and materials of the cast suggest it is a durable and effective solution for immobilizing a limb after an injury.\\n\\\"깁스치료급여금\\\"을\\n지급하는\\n\\\"깁스(Cast)치료\\\"\\nJ\\n\\\"깁스치료급여금\\\"을 지급하지 않는 \\\"부목(Splint Cast)치료\\\"\\n※ 위의 [“깁스(Cast)치료” 및 “부목(Splint Cast)치료” 예시]는 “깁스(Cast)치료”와 “부목(Splint Cast)치료”에 대한 이해를 위한 것이 입니다. 실제 “깁스치료급여금”은 제1-5조(보험금 등의 청구) 제1항 제1호에 의한 청구서 및 제2-5조(사고증명서) 제1항에 의한 사고증명서에 따라 지급됩니다.\", \"read_calls_left\": 7}\n\n succeeded in 3451ms:\n{\"id\": \"e26661\", \"jo\": \"j06507\", \"contract\": \"(간편)깁스치료특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e26658\", \"e26659\", \"e26660\", \"e26661\", \"e26662\"], \"text\": \"제2-2조 보험금의 지급사유\\n특약보험기간 중 피보험자에게 발생한 재해 또는 재해 이외의 원인에 따른 치료를 직접적인 목적으로 \\\"깁스치료\\\"를 받은 경우 보험수익자에 계약정한 깁스치료급여금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.\\n$$ \\\\left\\\\{\\\\begin{array}{l}2 x+1=3 y+1\\\\\\\\ 3 x+2 y=4\\\\end{array}\\\\right. $$\\n(깁스치료 1회당, \\\"부목(Splint Cast)치료\\\"제외)\\nThe main feature of the system is that it can be used to calculate the energy of a molecule. The energy of a molecule is the sum of the kinetic energy of all the particles in the molecule. The kinetic energy of a particle is given by the formula $E = \\\\frac{1}{2} m v^2$, where $m$ is the mass of the particle and $v$ is its velocity. In the case of a molecule, the kinetic energy is the sum of the kinetic energies of all the atoms in the molecule. The kinetic energy of an atom is given by the formula $E = \\\\frac{1}{2} m v^2$, where $m$ is the mass of the atom and $v$ is its velocity. Therefore, the total kinetic energy of a molecule is the sum of the kinetic energies of all the atoms in the molecule.\", \"read_calls_left\": 7}\n\ncodex\n검증 결과, 약관은 보장 대상인 원형 깁스(Circular Cast)와 달리 부목(Splint Cast)을 명시적으로 제외하고 있으며, 지급사유 조항도 이를 반복 확인합니다. 서로 다른 조의 핵심 근거 2개를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e26651,e26661' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2466ms:\n{\"ok\": true, \"submitted\": [\"e26651\", \"e26661\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n(깁스치료특약)에서 보장하지 않는 치료는 **부목(Splint Cast)치료**입니다.  \n부목은 석고붕대나 섬유유리붕대를 신체 한쪽 또는 양쪽 면에 대는 치료를 말하며, 깁스치료급여금 지급 대상에서 제외됩니다.\ntokens used\n31,584\n",
+    "elapsed": 46.213268756866455,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

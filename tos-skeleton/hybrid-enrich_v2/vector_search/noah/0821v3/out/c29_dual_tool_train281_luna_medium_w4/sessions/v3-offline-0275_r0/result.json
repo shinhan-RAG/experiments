@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0275",
+    "ranked": [
+      "c03025",
+      "e17264",
+      "e17348",
+      "e17287"
+    ],
+    "n_search": 2,
+    "n_read": 6
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "통풍 진단만으로 자동 지급되는 것은 아닙니다.\n\n- 의료기관 의사의 진단이어야 합니다.\n- 혈청 요산검사, 관절액·편광현미경 검사, 혈액검사 또는 초음파·CT·X선 등 약관에서 정한 검사·영상 소견을 근거로 해야 합니다.\n- 보장기간 중 최초 1회만 지급되며, 일반적으로 진단서와 진료기록 등 증빙서류가 필요합니다.\n",
+    "stderr": "정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 10% (다만, 최초계약의 계약일부 터 1년 미만에 지급사유가 발생한 경우 \\\"특약보험가입금액의 5%\\\"를 지급함) |\\n[통풍 보장계약]\\n| 구분 | 지급사유 | 지급금액 |\\n| --- | --- | --- |\\n| 통풍 진단급여금 | 특약보험기간 중 피보험자가 \\\"통풍\\\"으로 진단확정 되었을 때 (다만, 최초 1회의 진단확정에 한함) | 특약보험가입금액의 10%(다만, 최초계약의 계약일부터 1년 미만에 지급사유가 발생한 경우 \\\"특약보험가입금액의 5%\\\"를 지급함) |\\n부표2-2\\n# 대상포진 분류표\\n별첨2 [표 42] 참조\\n|부표2-3|\\n통풍 분류표\\n별첨2 [표 44] 참조\\n$ \\\\underline{ \\\\text{The text in the image cannot be completed.}} $\\n-\\n$\\\\square$\\n약 관 목 차\", \"read_calls_left\": 6}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e17287' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2660ms:\n{\"id\": \"e17287\", \"jo\": \"j04099\", \"contract\": \"(간편)대상포진·통풍진단특약(무배당, 갱신형)\", \"members\": [\"e17286\", \"e17287\", \"e17288\"], \"text\": \"제2-5조 사고증명서\\n① 제1-5조(보험금 등의 청구) 제2호에서 말하는 이 특약의 사고증명서는 \\\"사망진단서, 진단서(병명 및 분류코드 기입), 진료기록부(검사기록지 포함), 각종사고 증명서류 등\\\"을 말합니다.\\n② 제1항의 사고증명서는 의료기관, 국민건강보험공단, 경찰서 등에서 발급한 것이어야 합니다.\", \"read_calls_left\": 5}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id j04069' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2789ms:\n{\"id\": \"j04069\", \"jo\": \"j04069\", \"contract\": \"(간편)대상포진·통풍진단특약(무배당, 갱신형)\", \"members\": [\"e17195\"], \"text\": \"제2-1조의4 \\\"통풍\\\"의 정의 및 진단확정\", \"read_calls_left\": 4}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e17264' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2982ms:\n{\"id\": \"e17264\", \"jo\": \"j04096\", \"contract\": \"(간편)대상포진·통풍진단특약(무배당, 갱신형)\", \"members\": [\"e17259\", \"e17260\", \"e17261\", \"e17262\", \"e17263\", \"e17264\"], \"text\": \"제2-2조 보험금의 지급사유\\n회사는 피보험자에게 다음 중 어느 하나의 사유가 발생한 경우에는 보험수익자에게 약정한 보험금(<부표2-1> \\\"보험금 지급기준표\\\" 참조)을 지급합니다.\\n[대상포진 보장계약]\\n특약보험기간 중 피보험자가 \\\"대상포진\\\"으로 진단확정 되었을 때\\n: 대상포진진단급여금(다만, 최초 1회의 진단확정에 한함)\\n[통풍 보장계약]\\n특약보험기간 중 피보험자가 \\\"통풍\\\"으로 진단확정 되었을 때\\n: 통풍진단급여금(다만, 최초 1회의 진단확정에 한함)\", \"read_calls_left\": 3}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c03025' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2787ms:\n{\"id\": \"c03025\", \"jo\": \"j04047\", \"contract\": \"(간편)대상포진·통풍진단특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e17075\", \"e17076\", \"e17077\", \"e17078\"], \"text\": \"합니다.\\n\\n② \\\"대상포진\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의한 문서화된 기록 또는 검사결과를 기초로 하여야 합니다.\\n\\n제2-1조의3 \\\"통풍\\\"의 정의 및 진단확정\\n\\n① 이 특약에 있어서 \\\"통풍\\\"이라 함은 제8차 개정 한국표준질병·사인분류 중 <부표2-3> \\\"통풍 분류표\\\"에 해당하는 항목을 말합니다.\\n\\n② \\\"통풍\\\"의 진단확정은 의료기관의 의사(치과의사 제외)에 의하여 내려져야 하며 임상학적 기준을 근거로 혈청 요산 검사, 관절액 채취 및 편광현미경 검사, 기타 혈액 검사 등의 검사 소견 및 초음파, 이중에너지컴퓨터 단층촬영, 방사선 검사 등의 영상 소견을 기초로 하여야 합니다.\\n\\n제2-1조의4 보장계약 등의 정의\\n\\n이 특약은 제2-2조(보험금의 지급사유)에서 정하는 보장종류에 따라 \\\"대상 포진 보장계약\\\", \\\"통풍 보장계약\\\"으로 이루어집니다. 계약자는 각 보장계약을 동시에 체결하여야 하며, 각각의 보장계약의 보험가입금액은 동일하여야 합니다. (이하 각 보장계약을 합하여 \\\"특약\\\"이라 합니다)\\n\\n1. 대상포진 보장계약: 특약보험기간 중 피보험자가 제2-2조(보험금의 지급사유)에서 정한 대상포진진단급여금을 보장받기 위한 계약\\n\\n2. 통풍 보장계약: 특약보험기간 중 피보험자가 제2-2조(보험금의 지급사유)에서 정한 통풍진단급여금을 보장받기 위한 계약\\n\\n\", \"read_calls_left\": 2, \"chunk_span\": [1431631, 1432287]}\n\ncodex\n원문 확인 결과, 단순히 “통풍”이라고 진단받았다는 사실만으로는 부족할 수 있습니다. 의사의 진단과 약관이 정한 검사·영상 소견이 필요하며, 지급은 특약기간 중 최초 1회에 한합니다. 관련 근거 4건을 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c03025,e17264,e17348,e17287' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2831ms:\n{\"ok\": true, \"submitted\": [\"c03025\", \"e17264\", \"e17348\", \"e17287\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n통풍 진단만으로 자동 지급되는 것은 아닙니다.\n\n- 의료기관 의사의 진단이어야 합니다.\n- 혈청 요산검사, 관절액·편광현미경 검사, 혈액검사 또는 초음파·CT·X선 등 약관에서 정한 검사·영상 소견을 근거로 해야 합니다.\n- 보장기간 중 최초 1회만 지급되며, 일반적으로 진단서와 진료기록 등 증빙서류가 필요합니다.\ntokens used\n24,428\n",
+    "elapsed": 67.0838394165039,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

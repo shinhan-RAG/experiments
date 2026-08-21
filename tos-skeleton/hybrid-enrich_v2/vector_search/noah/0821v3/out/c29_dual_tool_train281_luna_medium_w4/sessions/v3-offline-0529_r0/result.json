@@ -1,0 +1,27 @@
+{
+  "submission": {
+    "qid": "v3-offline-0529",
+    "ranked": [
+      "e20926",
+      "e20932"
+    ],
+    "n_search": 2,
+    "n_read": 4
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "보장 대상은 **백내장 및 대장용종을 제외한 질병**으로, 해당 질병의 직접적인 치료를 목적으로 수술받은 경우입니다. 보장 질병은 약관의 「질병분류표Ⅱ」에 정해져 있습니다.\n\n동일 질병으로 여러 번 수술해도 **원칙적으로 1회만 지급**됩니다. 다만 최초 수술 후 **365일이 지난 뒤** 같은 질병으로 다시 수술하면 다른 질병으로 보아 추가 지급됩니다. 동일 질병 여부는 한국표준질병·사인분류의 **3자리 분류번호**로 판단합니다.\n",
+    "stderr": "v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e20926' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e20932' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id e20906' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3886ms:\n{\"id\": \"e20941\", \"jo\": \"j05046\", \"contract\": \"(간편)질병수술(백내장및대장용종제외)특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e20939\", \"e20940\", \"e20941\"], \"text\": \"제2-5조 사고증명서\\n① 제1-5조(보험금 등의 청구) 제2호에서 말하는 이 특약의 사고증명서는 \\\"사망진단서, 수술증명서, 진단서(병명 및 분류코드 기입), 진료기록부 (검사기록지 포함), 각종사고 증명서류 등\\\"을 말합니다.\\n② 제1항의 사고증명서는 의료기관, 국민건강보험공단, 경찰서 등에서 발급한 것이어야 합니다.\", \"read_calls_left\": 7}\n\n succeeded in 3722ms:\n{\"id\": \"e20926\", \"jo\": \"j05043\", \"contract\": \"(간편)질병수술(백내장및대장용종제외)특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e20925\", \"e20926\", \"e20927\"], \"text\": \"제2-2조 보험금의 지급사유\\n회사는 특약보험기간 중 피보험자가 질병(백내장 및 대장용종 제외)으로 인한 그 직접적인 치료를 목적으로 수술을 받았을 때 보험수익자에게 약정한 질병수술(백내장 및 대장용종 제외)급여금(<부표2-1> \\\"보험금 지급기준 표\\\" 참조)을 지급합니다. (다만, 동일 질병당 1회에 한함)\\n※ 상기 질병(백내장 및 대장용종 제외)은 \\\"질병분류표Ⅱ(백내장 및 대장용 종 제외)\\\"(<부표2-2> 참조)에서 정하는 질병을 말합니다.\", \"read_calls_left\": 7}\n\n succeeded in 3897ms:\n{\"id\": \"e20932\", \"jo\": \"j05044\", \"contract\": \"(간편)질병수술(백내장및대장용종제외)특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e20928\", \"e20929\", \"e20930\", \"e20931\", \"e20932\", \"e20933\"], \"text\": \"제2-3조 보험금 지급에 관한 세부규정\\n① 특약보험료 납입기간 중 주계약의 보험료 납입이 면제된 경우 이 특약의 차회 이후 보험료 납입을 면제합니다. 다만, 주계약의 보험료 납입면제가 \\\"보험료의 납입을 면제하는 특약\\\"에 의해 납입면제가 된 경우 그 \\\"보험료의 납입을 면제하는 특약\\\"의 약관에서 정한 바를 따르며, 이 특약이 해당 약관의 「보험료납입면제대상계약」에 해당되지 않는 경우 보험료 납입면제가 되지 않습니다.\\nThe main feature of the new model is that it can be used to calculate the energy of a molecule. The model can also be used to calculate the energy of a molecule in a liquid.\\n② 제2-2조(보험금의 지급사유)의 경우 계약일부터 1년 미만에 보험금 지급사유가 발생하였을 때에는 <부표2-1> \\\"보험금 지급기준표\\\"에서 정한바에 따라 삭감하여 지급합니다.\\n③ 제2-2조(보험금의 지급사유)의 경우, 동일한 질병을 직접적인 원인으로 두 종류 이상의 수술을 받은 경우에는 1회의 질병수술(백내장 및 대장 용종 제외)급여금만 지급합니다. 다만, 보험금 지급사유에 해당하는 수술을 받고 365일이 경과한 후 동일한 질병으로 새로운 수술을 받은 경우에는 다른 질병으로 간주하고 제2-2조(보험금의 지급사유)에 따라 보험금을 지급합니다. 이 때, 동일한 질병이란 한국표준질병·사인분류상의 분류번호(3자리)가 같은 질병을 말합니다.\\n제3항에 대한 보험금 지급 예시\\n보험금 지급\\n보험금 미지급\\n보험금 지급\\n⇒ 요관의 결석(N20.1)으로 수술(①) 후 365일 경과 이전 \\\"동일한 질병[한국 표준질병·사인분류상의 분류번호(3자리), N20(신장 및 요관의 결석)]\\\"으로 인한 수술 시(②) 보험금 미지급\\n⇒ \\\"①\\\" 수술 후 365일이 경과한 후 동일한 질병(N20)으로 수술(③)하여 다른 질병으로 간주하고 보험금 지급\\n※ 동일한 질병이란 한국표준질병·사인분류상의 분류번호(3자리)가 같은 질병을 말합니다.\", \"read_calls_left\": 7}\n\n succeeded in 3963ms:\n{\"id\": \"e20906\", \"jo\": \"j05036\", \"contract\": \"(간편)질병수술(백내장및대장용종제외)특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e20904\", \"e20905\", \"e20906\", \"e20907\", \"e20908\", \"e20909\", \"e20910\", \"e20911\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n[부표2-1] 보험금 지급기준표\\n[부표2-2] 질병분류표 II (백내장 및 대장용종 제외)\\n※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.\\n※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.\\n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다.\\n※ \\\"간편심사형\\\"과 \\\"일반심사형\\\" 모두 이 약관을 적용합니다.\", \"read_calls_left\": 7}\n\ncodex\n두 검색 채널에서 동일 특약의 지급사유와 지급횟수 제한이 일치했고, 약관 원문에서 365일 예외까지 확인했습니다. 이제 해당 근거 ID를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e20926,e20932' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2267ms:\n{\"ok\": true, \"submitted\": [\"e20926\", \"e20932\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n보장 대상은 **백내장 및 대장용종을 제외한 질병**으로, 해당 질병의 직접적인 치료를 목적으로 수술받은 경우입니다. 보장 질병은 약관의 「질병분류표Ⅱ」에 정해져 있습니다.\n\n동일 질병으로 여러 번 수술해도 **원칙적으로 1회만 지급**됩니다. 다만 최초 수술 후 **365일이 지난 뒤** 같은 질병으로 다시 수술하면 다른 질병으로 보아 추가 지급됩니다. 동일 질병 여부는 한국표준질병·사인분류의 **3자리 분류번호**로 판단합니다.\ntokens used\n33,190\n",
+    "elapsed": 49.299962520599365,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

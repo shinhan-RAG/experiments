@@ -1,0 +1,34 @@
+{
+  "submission": {
+    "qid": "v3-offline-0147",
+    "ranked": [
+      "e00221",
+      "e17552",
+      "e17539",
+      "e00080",
+      "c03227",
+      "e00093",
+      "e00101",
+      "e00092",
+      "e17726",
+      "c03177"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "claude-sonnet-5",
+    "error": null,
+    "returncode": 0,
+    "stdout": "제출 완료했습니다 (e00221, e17552, e17539, e00080, c03227, e00093, e00101, e00092, e17726, c03177).\n",
+    "stderr": "",
+    "elapsed": 90.45798921585083,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

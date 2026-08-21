@@ -1,0 +1,28 @@
+{
+  "submission": {
+    "qid": "v3-offline-0157",
+    "ranked": [
+      "e17522",
+      "e17544",
+      "e17552"
+    ],
+    "n_search": 2,
+    "n_read": 11
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "확인된 근거를 제출했습니다.\n\n- `e17522`: 부표2-2 「1~5종 수술분류표」\n- `e17544`: 1종~5종 보장계약의 정의\n- `e17552`: 해당 분류표 수술 시 수술급여금 지급 근거\n",
+    "stderr": "n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다. ※ “간편심사형”과 “일반심사형” 모두 이 약관을 적용합니다.\\n※ 이 특약은 제2-1조의3(보장계약 등의 정의)에서 정한 총5개의 보장계약으로 구성되어 있습니다.\", \"read_calls_left\": 4}\n\n succeeded in 5941ms:\n{\"id\": \"e17525\", \"jo\": \"j04171\", \"contract\": \"(간편)1-5종수술특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e17520\", \"e17521\", \"e17522\", \"e17523\", \"e17524\", \"e17525\", \"e17526\", \"e17527\", \"e17528\", \"e17529\", \"e17530\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n[부표2-1] 보험금 지급기준표\\n[부표2-2] 1~5종 수술분류표\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n(간편)1-5종수술특약\\n(무배당, 해약환급금 미지급형)\\n※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.\\n※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.\\n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다. ※ “간편심사형”과 “일반심사형” 모두 이 약관을 적용합니다.\\n※ 이 특약은 제2-1조의3(보장계약 등의 정의)에서 정한 총5개의 보장계약으로 구성되어 있습니다.\", \"read_calls_left\": 4}\n\n succeeded in 5911ms:\n{\"id\": \"e17526\", \"jo\": \"j04171\", \"contract\": \"(간편)1-5종수술특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e17520\", \"e17521\", \"e17522\", \"e17523\", \"e17524\", \"e17525\", \"e17526\", \"e17527\", \"e17528\", \"e17529\", \"e17530\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n[부표2-1] 보험금 지급기준표\\n[부표2-2] 1~5종 수술분류표\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n(간편)1-5종수술특약\\n(무배당, 해약환급금 미지급형)\\n※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.\\n※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.\\n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다. ※ “간편심사형”과 “일반심사형” 모두 이 약관을 적용합니다.\\n※ 이 특약은 제2-1조의3(보장계약 등의 정의)에서 정한 총5개의 보장계약으로 구성되어 있습니다.\", \"read_calls_left\": 4}\n\n succeeded in 5943ms:\n{\"id\": \"e17524\", \"jo\": \"j04171\", \"contract\": \"(간편)1-5종수술특약(무배당, 해약환급금 미지급형)\", \"members\": [\"e17520\", \"e17521\", \"e17522\", \"e17523\", \"e17524\", \"e17525\", \"e17526\", \"e17527\", \"e17528\", \"e17529\", \"e17530\"], \"text\": \"제2-12조 주계약 약관 규정의 준용\\n[부표2-1] 보험금 지급기준표\\n[부표2-2] 1~5종 수술분류표\\nThe following is a markdown table extracted from the provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n(간편)1-5종수술특약\\n(무배당, 해약환급금 미지급형)\\n※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.\\n※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.\\n- 일반심사형의 경우: “(간편)” 부분이 없습니다.\\n- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다. ※ “간편심사형”과 “일반심사형” 모두 이 약관을 적용합니다.\\n※ 이 특약은 제2-1조의3(보장계약 등의 정의)에서 정한 총5개의 보장계약으로 구성되어 있습니다.\", \"read_calls_left\": 4}\n\ncodex\n해당 특약 부표는 OCR 추출상 표 본문이 비어 있고, 동일한 ‘1~5종 수술분류표’가 다른 약관 부록 요소에서 행 단위로 더 잘 추출된 후보가 확인됩니다. 그 표 본문 후보를 추가 검증하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'python agent_tools.py read --id e31431' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'python agent_tools.py read --id e31449' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'python agent_tools.py read --id e31436' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3202ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 3261ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\n succeeded in 3329ms:\n{\"error\": \"read 예산 초과(8회).\"}\n\ncodex\n검증된 근거는 (1) 부표2-2가 1~5종 수술분류표라는 점, (2) 특약이 1종~5종 보장계약으로 구성된다는 점, (3) 질병·재해 직접 치료 목적의 해당 수술 시 지급된다는 점입니다. 표 이미지의 세부 행은 현재 추출 결과에서 비어 있어, 확인된 근거 ID 3개를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'python agent_tools.py submit --ids e17522,e17544,e17552' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 2653ms:\n{\"ok\": true, \"submitted\": [\"e17522\", \"e17544\", \"e17552\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n확인된 근거를 제출했습니다.\n\n- `e17522`: 부표2-2 「1~5종 수술분류표」\n- `e17544`: 1종~5종 보장계약의 정의\n- `e17552`: 해당 분류표 수술 시 수술급여금 지급 근거\ntokens used\n37,245\n",
+    "elapsed": 72.3813636302948,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

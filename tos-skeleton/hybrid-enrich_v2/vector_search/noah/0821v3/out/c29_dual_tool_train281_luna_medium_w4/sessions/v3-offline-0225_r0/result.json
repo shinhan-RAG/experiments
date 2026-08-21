@@ -1,0 +1,29 @@
+{
+  "submission": {
+    "qid": "v3-offline-0225",
+    "ranked": [
+      "c00427",
+      "c00434",
+      "c05370",
+      "c04700"
+    ],
+    "n_search": 2,
+    "n_read": 6
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "청구 가능성이 있습니다. 다만 수술만으로 확정되는 것은 아니며, 다음을 확인해야 합니다.\n\n- 가입한 특약이 질병장해 3% 이상형인지, 50% 이상형인지\n- 무릎 인공관절 삽입이 약관상 장해로 인정되는지\n- 질병이 보험기간 중 발생했는지\n- 장해진단서와 장해지급률이 기준을 충족하는지\n\n약관상 인공관절 삽입은 다리 관절의 ‘심한 장해’ 판단 요소에 포함될 수 있습니다. 별도로 인공관절치환수술 특약에 가입했다면 수술급여금 대상일 가능성도 있습니다. 근거 4건을 제출했습니다.\n",
+    "stderr": "}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c05370' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c05369' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3393ms:\n{\"id\": \"c05370\", \"jo\": \"j07549\", \"contract\": \"(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)\", \"members\": [\"e31145\", \"e31146\", \"e31147\", \"e31148\", \"e31149\", \"e31150\", \"e31151\", \"e31152\", \"e31153\", \"e31154\", \"e31155\", \"e31156\", \"e31157\", \"e31158\", \"e31159\", \"e31160\", \"e31161\", \"e31162\", \"e31163\", \"e31164\", \"e31165\", \"e31166\", \"e31167\", \"e31168\", \"e31169\", \"e31170\", \"e31171\", \"e31172\", \"e31173\", \"e31174\", \"e31175\", \"e31176\", \"e31177\", \"e31178\", \"e31179\", \"e31180\", \"e31181\", \"e31182\", \"e31183\", \"e31184\", \"e31185\", \"e31186\", \"e31187\", \"e31188\", \"e31189\", \"e31190\", \"e31191\", \"e31192\", \"e31193\", \"e31194\", \"e31195\", \"e31196\", \"e31197\", \"e31198\"], \"text\": \"\\n\\n7) 관절 하나의 기능을 완전히 잃었을 때'라 함은 아래의 경우 중 하나에 해당하는 때를 말한다. 가) 완전 강직(관절군음)\\n\\n# SHINHAN LIFE\\n\\n3256\\n\\n---\\n\\nThe main feature of the system is that the data is stored in a database, which is a collection of objects. Each object represents a record of a particular data set. The data set is organized in a hierarchical structure, where each level represents a different category or type of data. This hierarchical structure allows for easy access to specific records based on their categories.\\n\\n나) 근전도 검사상 완전손상(complete injury) 소견이 있으면서 도수근력검사(MMT)에서 근력이 '0등급(zero)'인 경우\\n\\n8) '관절 하나의 기능에 심한 장해를 남긴 때'라 함은 아래의 경우 중 하나에 해당하는 때를 말한다.\\n\\n가) 해당 관절의 운동범위 합계가 정상 운동범위의 1/4 이하로 제한된 경우\\n\\n나) 인공관절이나 인공골두를 삽입한 경우\\n\\n\", \"read_calls_left\": 3, \"chunk_span\": [2529438, 2530127]}\n\n succeeded in 3362ms:\n{\"id\": \"c05369\", \"jo\": \"j07549\", \"contract\": \"(간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)\", \"members\": [\"e31145\", \"e31146\", \"e31147\", \"e31148\", \"e31149\", \"e31150\", \"e31151\", \"e31152\", \"e31153\", \"e31154\", \"e31155\", \"e31156\", \"e31157\", \"e31158\", \"e31159\", \"e31160\", \"e31161\", \"e31162\", \"e31163\", \"e31164\", \"e31165\", \"e31166\", \"e31167\", \"e31168\", \"e31169\", \"e31170\", \"e31171\", \"e31172\", \"e31173\", \"e31174\", \"e31175\", \"e31176\", \"e31177\", \"e31178\", \"e31179\", \"e31180\", \"e31181\", \"e31182\", \"e31183\", \"e31184\", \"e31185\", \"e31186\", \"e31187\", \"e31188\", \"e31189\", \"e31190\", \"e31191\", \"e31192\", \"e31193\", \"e31194\", \"e31195\", \"e31196\", \"e31197\", \"e31198\"], \"text\": \"다리'라 함은 엉덩이관절(고관절)부터 발목관절(족관절)까지를 말한다.\\n\\n4) '다리의 3대 관절'이라 함은 엉덩이관절(고관절), 무릎관절(슬관절), 발목관절(족관절)을 말한다.\\n\\n5) '한 다리의 발목이상을 잃었을 때'라 함은 발목관절(족관절)부터(발목관절 포함) 심장에 가까운 쪽에서 절단된 때를 말하며, 무릎관절(슬관절)의 상부에서 절단된 경우도 포함한다.\\n\\n6) 다리의 관절기능장해 평가는 다리의 3대 관절의 관절운동범위 제한 및 무릎관절(슬관절)의 동요성 등으로 평가한다.\\n\\n가) 각 관절의 운동범위 측정은 장해평가시점의 「산업재해보상보험법 시행규칙」 제47조 제1항 및 제3항(<별첨1> 참조)의 정상인의 신체 각 관절에 대한 평균 운동가능영역을 기준으로 정상각도 및 측정방법 등을 따른다.\\n\\n나) 관절기능장해가 신경손상으로 인한 경우에는 운동범위 측정이 아닌 근력 및 근전도 검사를 기준으로 평가한다.\\n\\n7) 관절 하나의 기능을 완전히 잃었을 때'라 함은 아래의 경우 중 하나에 해당하는 때를 말한다. 가) 완전 강직(관절군음)\\n\\n# SHINHAN LIFE\\n\\n3256\\n\\n---\\n\\n\", \"read_calls_left\": 3, \"chunk_span\": [2528984, 2529538]}\n\ncodex\n검증 결과, 무릎 인공관절 삽입은 장해분류표상 ‘한 다리 관절의 심한 장해’ 판단 요소로 확인되지만, 지급 여부는 가입한 질병장해형(3% 이상형인지 50% 이상형인지), 질병 원인 및 특약기간·장해 판정에 달려 있습니다. 확인한 서로 다른 조의 근거를 제출하겠습니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids c00427,c00434,c05370,c04700' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3092ms:\n{\"ok\": true, \"submitted\": [\"c00427\", \"c00434\", \"c05370\", \"c04700\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n청구 가능성이 있습니다. 다만 수술만으로 확정되는 것은 아니며, 다음을 확인해야 합니다.\n\n- 가입한 특약이 질병장해 3% 이상형인지, 50% 이상형인지\n- 무릎 인공관절 삽입이 약관상 장해로 인정되는지\n- 질병이 보험기간 중 발생했는지\n- 장해진단서와 장해지급률이 기준을 충족하는지\n\n약관상 인공관절 삽입은 다리 관절의 ‘심한 장해’ 판단 요소에 포함될 수 있습니다. 별도로 인공관절치환수술 특약에 가입했다면 수술급여금 대상일 가능성도 있습니다. 근거 4건을 제출했습니다.\ntokens used\n36,098\n",
+    "elapsed": 61.964542865753174,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}

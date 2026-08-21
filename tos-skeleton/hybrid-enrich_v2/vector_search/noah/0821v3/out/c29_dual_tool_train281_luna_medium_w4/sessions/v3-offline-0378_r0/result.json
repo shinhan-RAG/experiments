@@ -1,0 +1,27 @@
+{
+  "submission": {
+    "qid": "v3-offline-0378",
+    "ranked": [
+      "e03670",
+      "e05750"
+    ],
+    "n_search": 2,
+    "n_read": 3
+  },
+  "codex": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "error": null,
+    "returncode": 0,
+    "stdout": "네. 가입 경과기간에 따라 달라집니다.\n\n- 계약일부터 2년 미만: 특약보험가입금액의 50%\n- 계약일부터 2년 이상 4년 미만: 75%\n- 계약일부터 4년 이상: 100%\n- 갱신계약: 100%\n\n위 기준은 전립선암 최초 1회 진단확정 시 적용됩니다.\n",
+    "stderr": " provided image:\\n|  |  |\\n| --- | --- |\\n| 1310 |\\n보험금 지급기준표\\n| 구분 | 지급사유 | 지급금액 |\\n| --- | --- | --- |\\n| 여성유방암진단급여금 | 특약보험기간 중 피보험자가 암보장개시일 이후에 \\\"여성유방암\\\"으로 진단확정 되었을 때(다만, 최초 1회의진단확정에 한함) | - 최초계약의 계약일부터 2년 미만:특약보험가입금액의 50% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% - 최초계약의 계약일부터 2년 미만:특약보험가입금액의 50% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% |\\n| 전립선암진단급여금 | 특약보험기간 중 피보험자가 암보장개시일 이후에 \\\"전립선암\\\"으로 진단확정되었을 때(다만, 최초 1회의진단확정에 한함) | - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 50% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% |\\n※ 2년 미만 : 최초계약 계약일부터 2년이 되는 시점의 계약해당일의 전날까지\\n※ 2년 이상 4년 미만 : 최초계약 계약일부터 2년이 되는 시점의 계약해당일부터 4년이 되는 시점의 계약해당일의 전날까지\\n주) 1. 「이 특약의 피보험자가 특약보험기간 중 사망하거나 이 특약의 보험금 지급사유가 더 이상 발생할 수 없는 경우」 또는 「주계약이 해지, 무효, 취소 또는 철회된 경우」 이 특약은 그때부터 효력이 없습니다. 다만, 특약보험기간 중 피보험자가 사망한 경우에는 산출방법서에서 정하는 바에 따라 회사가 적립한 사망당시의 계약자적립액을 계약자에게 지급합니다.\\n2. 암보장개시일은 최초계약의 계약일부터 그날을 포함하여 90일이 지난날의 다음 날로 하며 갱신계약의 경우 갱신일로 합니다. 다만, 부활(효력회복)계약의 경우 최초계약 및 갱신계약의 부활(효력회복)일부터 그날을 포함하여 90일이 지난날의 다음 날로 합니다.\\n3. 이 특약의 \\\"암\\\"은 「기타피부암, 갑상선암, 대장점막내암 및 비침습방광암」을 제외한 \\\"암\\\"을 말합니다.\\n부표2-2\\n대상이 되는 악성신생물(암) 분류표\\n(기타피부암, 갑상선암, 대장점막내암 및 비침습방광암 제외)\\n별첨2 [표 5-1] 참조\\n부표2-3\\n유방암 분류표\\n별첨2 [표 8-1] 참조\\n# 부표2-4\\n전립선암 분류표\\nThis is a figure caption. Here is a figure with its specific measurements: This is a line diagram showing the relationship between the variables $x$ and $y$. The x-axis represents the variable $x$, while the y-axis represents the variable $y$. The line connecting the points $(0,0)$ and $(1,1)$ indicates a linear relationship between $x$ and $y$. The slope of the line is $\\\\frac{1}{2}$, which means that for every unit increase in $x$, $y$ increases by $\\\\frac{1}{2}$ units.\\n별첨2 [표 8-2] 참조\\nThe 2018–19 season was the 11th in a row for the Toronto Raptors, and the 12th in a row for the franchise. The Raptors have been home to the franchise for 126 games since 1981, and the franchise has won 36 of those games. The Raptors have won 14 of their last 20 games, and the franchise has won 10 of their last 20 games.\", \"read_calls_left\": 7}\n\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py read --id c01042' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 3163ms:\n{\"id\": \"c01042\", \"jo\": \"j01297\", \"contract\": \"(간편)[기본]남녀특정암진단특약(무배당, 갱신형)\", \"members\": [\"e05745\", \"e05746\", \"e05747\", \"e05748\", \"e05749\", \"e05750\", \"e05751\", \"e05752\", \"e05753\", \"e05754\", \"e05755\", \"e05756\", \"e05757\", \"e05758\", \"e05759\", \"e05760\"], \"text\": \" - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% |\\n| 전립선암진단급여금 | 특약보험기간 중 피보험자가 암보장개시일 이후에 \\\"전립선암\\\"으로 진단확정되었을 때(다만, 최초 1회의진단확정에 한함) | - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 50% - 최초계약의 계약일부터 2년 이상 4년 미만:특약보험가입금액의 75% - 최초계약의 계약일부터 4년 이상:특약보험가입금액의 100% - 갱신계약:특약보험가입금액의 100% |\\n\\n※ 2년 미만 : 최초계약 계약일부터 2년이 되는 시점의 계약해당일의 전날까지\\n※ 2년 이상 4년 미만 : 최초계약 계약일부터 2년이 되는 시점의 계약해당일부터 4년이 되는 시점의 계약해당일의 전날까지\\n\\n\", \"read_calls_left\": 5, \"chunk_span\": [506175, 506707]}\n\ncodex\n원문 검증 결과, 비갱신형은 2년 미만·2~4년·4년 이상이 각각 50%·75%·100%이고, 갱신형은 최초계약 동일 구간과 갱신계약 100% 조건이 확인됩니다. 이 두 조의 근거를 제출합니다.\nexec\n\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'python agent_tools.py submit --ids e03670,e05750' in C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v3\n succeeded in 4259ms:\n{\"ok\": true, \"submitted\": [\"e03670\", \"e05750\"], \"note\": \"세션 종료. 더 이상 도구를 호출하지 마십시오.\"}\n\ncodex\n네. 가입 경과기간에 따라 달라집니다.\n\n- 계약일부터 2년 미만: 특약보험가입금액의 50%\n- 계약일부터 2년 이상 4년 미만: 75%\n- 계약일부터 4년 이상: 100%\n- 갱신계약: 100%\n\n위 기준은 전립선암 최초 1회 진단확정 시 적용됩니다.\ntokens used\n33,001\n",
+    "elapsed": 55.49846935272217,
+    "tools_used": [
+      "msearch",
+      "read",
+      "search",
+      "submit"
+    ],
+    "required_tools_ok": true
+  }
+}
