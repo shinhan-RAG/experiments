@@ -1,0 +1,114 @@
+{
+  "policy": "preserve scoped-train order; replace reviewed-scope rows; drop reviewed exclusions",
+  "quality_scope": {
+    "retrieval_blind_human_reviewed": 29,
+    "scoped_not_completeness_reviewed": 252,
+    "excluded_after_review": [
+      "v3-offline-0488"
+    ],
+    "zero_group_unscorable": [
+      "v3-offline-0066",
+      "v3-offline-0284",
+      "v3-offline-0257",
+      "v3-offline-0167",
+      "v3-offline-0244",
+      "v3-offline-0043",
+      "v3-offline-0077",
+      "v3-offline-0327",
+      "v3-offline-0172",
+      "v3-offline-0241",
+      "v3-offline-0028",
+      "v3-offline-0095",
+      "v3-offline-0239",
+      "v3-offline-0181",
+      "v3-offline-0070",
+      "v3-offline-0144",
+      "v3-offline-0159",
+      "v3-offline-0195",
+      "v3-offline-0184",
+      "v3-offline-0324",
+      "v3-offline-0330",
+      "v3-offline-0295",
+      "v3-offline-0348",
+      "v3-offline-0073",
+      "v3-offline-0183",
+      "v3-offline-0019",
+      "v3-offline-0246",
+      "v3-offline-0258",
+      "v3-offline-0067",
+      "v3-offline-0489",
+      "v3-offline-0525",
+      "v3-offline-0526",
+      "v3-offline-0496",
+      "v3-offline-0462",
+      "v3-offline-0504",
+      "v3-offline-0510",
+      "v3-offline-0521",
+      "v3-offline-0486",
+      "v3-offline-0518",
+      "v3-offline-0316",
+      "v3-offline-0125",
+      "v3-offline-0264",
+      "v3-offline-0127",
+      "v3-generated-def-0002",
+      "v3-generated-def-0020",
+      "v3-generated-def-0004",
+      "v3-generated-def-0005",
+      "v3-generated-def-0011",
+      "v3-offline-0062",
+      "v3-offline-0251",
+      "v3-offline-0243",
+      "v3-offline-0328",
+      "v3-offline-0149",
+      "v3-offline-0040",
+      "v3-offline-0013",
+      "v3-offline-0105",
+      "v3-offline-0135",
+      "v3-offline-0079",
+      "v3-offline-0178",
+      "v3-offline-0300",
+      "v3-offline-0017",
+      "v3-offline-0531",
+      "v3-offline-0337",
+      "v3-offline-0281",
+      "v3-offline-0064"
+    ]
+  },
+  "inputs": {
+    "base": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_spans_lsh_train_scoped_u3_known_reviewed_v1.jsonl",
+      "sha256": "b611bc5a464a016ed0db64f078830a1208f0d2df05aa61db47b8cc0cae1317f0"
+    },
+    "reviewed": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_c17_reviewed_final_s29_v7.jsonl",
+      "sha256": "53835dd9fddf960f63a7013c9699bdf1b23e8a045cac6773502328879ad59ada"
+    },
+    "reviewed_qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/qids_c17_reviewed_final_s30_v1.json",
+      "sha256": "3fa4e548f7332734dfdd41e4987cf02af273a823a57211352e55b3091b92919e"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/build_reviewed_train_overlay.py",
+    "sha256": "44f3bdc02448b6c35bd4d163d4cac7896510eae70e23eb4d6e21adbe73926269"
+  },
+  "python": "3.9.6",
+  "counts": {
+    "base": 347,
+    "reviewed_scope": 30,
+    "replaced": 29,
+    "excluded": 1,
+    "zero_group_unscorable": 65,
+    "output": 281
+  },
+  "outputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v1.jsonl",
+      "sha256": "d8038733c364f6441dd3d8bfc9bd3ac5bccb1b640b8458f344a96291be0936af"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v1_qids.json",
+      "sha256": "63d35e9f132392a659c34fd004bb60e550bcbbba38c766dd6acc074fe78752ea"
+    }
+  }
+}

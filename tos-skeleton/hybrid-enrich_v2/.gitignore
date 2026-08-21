@@ -7,3 +7,15 @@ out/**/*.log
 out/**/cache*.jsonl
 out/**/.cache_*.pkl
 # test 질문 문구가 든 파일은 커밋 금지 정책 유지 — lsh 업로드분은 팀 결정으로 예외
+
+# filesearch 실험의 재생성 있는 중간 산출물. 최종 clean 결과만 -f로 선별 추적한다.
+filesearch/out/agent/
+filesearch/out/artifacts/
+filesearch/out/sessions_smoke/
+vector_search/noah/0819/out/agent/
+vector_search/noah/0819/out/first_search/
+vector_search/noah/0819/out/frozen/
+vector_search/noah/0819/out/.cache_*.pkl
+vector_search/noah/0819/out/host_agent/*/sessions/
+vector_search/noah/0819/out/host_agent/*/results.jsonl
+vector_search/noah/0819/out/host_agent/*/summary.json

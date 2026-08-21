@@ -1,0 +1,38 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_c17_reviewed_final_s29_v6.jsonl",
+      "sha256": "c5bb2c74c858f96b8f068b2cc730bd364399b359f58ac908aa9b2416cde24553"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/gold_c29_q0155_payment_table_review_20260821.jsonl",
+      "sha256": "1000ccb7bf16257111689f172d29ff680620eb57e5381b70cb962149e097aff6"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_c17_reviewed_final_s29_v7.jsonl",
+  "output_sha256": "53835dd9fddf960f63a7013c9699bdf1b23e8a045cac6773502328879ad59ada",
+  "n_input": 29,
+  "n_output": 29,
+  "counts": {
+    "pass": 0,
+    "fix": 1,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0155",
+      "decision": "fix",
+      "groups": 2,
+      "members": 9
+    }
+  ]
+}

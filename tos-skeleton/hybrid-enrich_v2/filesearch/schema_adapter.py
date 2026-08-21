@@ -3,7 +3,8 @@
 검색기는 특정 태그 스키마의 key를 직접 소비하지 않는다. 문서 유형별 태거는 value
 extractor/plugin으로 교체할 수 있고, 검색기는 아래의 안정된 내부 축만 사용한다.
 
-identity  문서·상품·계약·엔티티 소속/식별자
+container 문서·파일·상품처럼 하위 section을 포함하는 상위 식별자
+identity  특약·조직·section·엔티티의 직접 소속/식별자
 topic     대상·주제·제목
 function  정의/조건/절차/지급 등 문단 기능
 locator   장·절·조·항·페이지·breadcrumb
@@ -12,6 +13,7 @@ constraint 값·조건·날짜·금액·범위·코드
 relation  참조·인용·링크·관련 항목
 structure 문서/요소/스키마 유형
 extra     처음 보는 필드의 scalar 값(저가중 폴백; 유실 방지)
+evidence  문장·표 행에서 추출한 답변 근거/값/범용 표면형
 """
 from __future__ import annotations
 
@@ -19,12 +21,15 @@ from collections import defaultdict
 from typing import Any
 
 
-AXES = ("identity", "topic", "function", "locator", "table",
-        "constraint", "relation", "structure", "extra")
+AXES = ("container", "identity", "topic", "function", "locator", "table",
+        "constraint", "relation", "structure", "evidence", "extra")
 
 # terminal key 별칭. 새 태거는 adapt_tag(key_aliases=...)로 별칭을 추가할 수 있다.
 KEY_AXIS = {
+    "document_key": "container", "document_scope": "container",
+    "container_key": "container", "container_identity": "container",
     "contract_key": "identity", "contract_scope": "identity", "scope": "identity",
+    "section_key": "identity", "section_identity": "identity",
     "product": "identity", "product_name": "identity", "entity": "identity",
     "entity_id": "identity", "document_id": "identity", "document_name": "identity",
     "owner": "identity", "organization": "identity", "category": "identity",
@@ -40,6 +45,7 @@ KEY_AXIS = {
     "clause": "locator", "item": "locator", "page": "locator", "page_number": "locator",
     "heading": "locator", "article_label": "locator",
     "table": "table", "table_headers": "table", "column_headers": "table",
+    "appendix_key": "evidence", "table_key": "evidence",
     "columns": "table", "row_keys": "table", "row_labels": "table",
     "cells": "table", "formula_context": "table", "variables": "table",
     "qualifier": "constraint", "qualifiers": "constraint", "values": "constraint",
@@ -53,11 +59,21 @@ KEY_AXIS = {
     "schema_tag": "structure", "schema_version": "structure",
     "element_type": "structure", "document_type": "structure", "doc_type": "structure",
     "mime_type": "structure", "type": "structure",
+    "evidence_anchor": "evidence", "answer_kernel": "evidence",
+    "answer_value": "evidence", "answer_values": "evidence",
+    "benefit_alias": "evidence", "benefit_aliases": "evidence",
+    "enumerated_item": "evidence", "enumerated_items": "evidence",
+    "linked_identity": "evidence", "reference_identity": "evidence",
+    "fact_role": "evidence", "fact_roles": "evidence",
+    "explicit_table_reference": "evidence", "explicit_table_references": "evidence",
+    "parent_jo": "evidence", "parent_unit": "evidence",
 }
 
 IGNORED_KEYS = {
     "element_id", "id", "field_sources", "search_text", "text", "body", "content",
     "char_start", "char_end", "line_start", "line_end", "members", "is_toc",
+    "fact_tag_version",
+    "reference_source_element_ids", "reference_target_element_id",
 }
 
 

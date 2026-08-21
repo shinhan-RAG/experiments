@@ -1,0 +1,51 @@
+{
+  "algorithm": "exact (char_start,char_end,text) reuse; SHA-256 ID for novel rows",
+  "searchable_fields_changed": false,
+  "row_order_changed": false,
+  "reference": {
+    "elements": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u2.jsonl",
+      "sha256": "37b3240b016ac45327d190a8852545a3c2a0a08c971bb3e4b2909d43baab96af"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u2jo.jsonl",
+      "sha256": "4aedc3fa1ff243ad32cabacfe55852db38ef8e1c42d8aa5bf7a8fe7ca2a848ba"
+    }
+  },
+  "rebuilt": {
+    "elements": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3.jsonl",
+      "sha256": "9d13e8d61781a4d39593795b0a30b33d41da7e1134335f04056e3d35540f5a49"
+    },
+    "tags": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/tags_u3_rules.jsonl",
+      "sha256": "040e364d5e2735d346c80dde065260362040d30f26afecc31710e0f848b8f109"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "counts": {
+    "elements": 32046,
+    "elements_reused": 31942,
+    "elements_novel": 104,
+    "jo": 7612,
+    "jo_reused": 7317,
+    "jo_novel": 295
+  },
+  "outputs": {
+    "elements": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3_stable.jsonl",
+      "sha256": "cdc3327a039137364f317e4c8d1f0ddcaf600bb74a68f04d5fe0a971228c3248"
+    },
+    "tags": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/tags_u3_rules_stable.jsonl",
+      "sha256": "2e5fa5b12b66f312695bb52985a7532f285617d6b81bba5afd91fc8702a3ceb0"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo_stable.jsonl",
+      "sha256": "5de670154648b165f64f13b78f16cf6cb184943b051d8980b9999f8220333cfb"
+    }
+  }
+}

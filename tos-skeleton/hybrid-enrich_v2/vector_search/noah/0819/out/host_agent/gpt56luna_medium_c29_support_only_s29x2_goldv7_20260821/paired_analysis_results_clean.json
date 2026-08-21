@@ -1,0 +1,858 @@
+{
+  "run": "gpt56luna_medium_c29_support_only_s29x2_goldv7_20260821",
+  "results": "results_clean.jsonl",
+  "n_qids": 29,
+  "reps": 2,
+  "baseline": "c26_scope_fact_tag_ensemble_hybrid",
+  "candidate": "c29_membership_dual_evidence_hybrid",
+  "fatal_errors": {
+    "c26_scope_fact_tag_ensemble_hybrid": 0,
+    "c29_membership_dual_evidence_hybrid": 0
+  },
+  "protocol_errors": {
+    "c26_scope_fact_tag_ensemble_hybrid": 0,
+    "c29_membership_dual_evidence_hybrid": 0
+  },
+  "empty_submissions": {
+    "c26_scope_fact_tag_ensemble_hybrid": 0,
+    "c29_membership_dual_evidence_hybrid": 2
+  },
+  "metrics": {
+    "R@1": {
+      "baseline": 0.5948275862068966,
+      "candidate": 0.6120689655172413,
+      "delta": 0.017241379310344827,
+      "qid_bootstrap_ci95": [
+        -0.06896551724137931,
+        0.10344827586206896
+      ],
+      "wins": [
+        "v3-offline-0059",
+        "v3-offline-0369",
+        "v3-offline-0467",
+        "v3-offline-0497"
+      ],
+      "losses": [
+        "v3-offline-0494",
+        "v3-offline-0502",
+        "v3-offline-0549"
+      ],
+      "ties": 22,
+      "hard_improvements": [],
+      "hard_regressions": [],
+      "qid_means": {
+        "v3-offline-0059": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0083": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0155": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0185": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0306": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0332": {
+          "baseline": 0.0,
+          "candidate": 0.0,
+          "delta": 0.0
+        },
+        "v3-offline-0351": {
+          "baseline": 0.25,
+          "candidate": 0.25,
+          "delta": 0.0
+        },
+        "v3-offline-0352": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0362": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0369": {
+          "baseline": 0.0,
+          "candidate": 0.5,
+          "delta": 0.5
+        },
+        "v3-offline-0370": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0410": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0425": {
+          "baseline": 0.0,
+          "candidate": 0.0,
+          "delta": 0.0
+        },
+        "v3-offline-0447": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0449": {
+          "baseline": 0.0,
+          "candidate": 0.0,
+          "delta": 0.0
+        },
+        "v3-offline-0450": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0457": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0463": {
+          "baseline": 0.0,
+          "candidate": 0.0,
+          "delta": 0.0
+        },
+        "v3-offline-0467": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0472": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0476": {
+          "baseline": 0.0,
+          "candidate": 0.0,
+          "delta": 0.0
+        },
+        "v3-offline-0493": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0494": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0497": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0502": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0506": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0534": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0549": {
+          "baseline": 0.5,
+          "candidate": 0.0,
+          "delta": -0.5
+        },
+        "v3-offline-0550": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "R@5": {
+      "baseline": 0.9137931034482759,
+      "candidate": 0.9224137931034483,
+      "delta": 0.008620689655172414,
+      "qid_bootstrap_ci95": [
+        -0.0603448275862069,
+        0.07758620689655173
+      ],
+      "wins": [
+        "v3-offline-0155",
+        "v3-offline-0351",
+        "v3-offline-0369"
+      ],
+      "losses": [
+        "v3-offline-0494",
+        "v3-offline-0502"
+      ],
+      "ties": 24,
+      "hard_improvements": [],
+      "hard_regressions": [],
+      "qid_means": {
+        "v3-offline-0059": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0083": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0155": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0185": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0306": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0332": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0351": {
+          "baseline": 0.5,
+          "candidate": 0.75,
+          "delta": 0.25
+        },
+        "v3-offline-0352": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0362": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0369": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0370": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0410": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0425": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0447": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0449": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0450": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0457": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0463": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0467": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0472": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0476": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0493": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0494": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0497": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0502": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0506": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0534": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0549": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0550": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "R@10": {
+      "baseline": 0.9827586206896551,
+      "candidate": 0.9482758620689655,
+      "delta": -0.034482758620689655,
+      "qid_bootstrap_ci95": [
+        -0.08620689655172414,
+        0.0
+      ],
+      "wins": [],
+      "losses": [
+        "v3-offline-0494",
+        "v3-offline-0502"
+      ],
+      "ties": 27,
+      "hard_improvements": [],
+      "hard_regressions": [],
+      "qid_means": {
+        "v3-offline-0059": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0083": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0155": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0185": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0306": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0332": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0351": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0352": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0362": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0369": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0370": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0410": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0425": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0447": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0449": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0450": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0457": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0463": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0467": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0472": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0476": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0493": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0494": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0497": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0502": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0506": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0534": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0549": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0550": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "suff@5": {
+      "baseline": 0.8793103448275862,
+      "candidate": 0.9137931034482759,
+      "delta": 0.034482758620689655,
+      "qid_bootstrap_ci95": [
+        -0.05172413793103448,
+        0.13793103448275862
+      ],
+      "wins": [
+        "v3-offline-0155",
+        "v3-offline-0351",
+        "v3-offline-0369"
+      ],
+      "losses": [
+        "v3-offline-0494",
+        "v3-offline-0502"
+      ],
+      "ties": 24,
+      "hard_improvements": [
+        "v3-offline-0155"
+      ],
+      "hard_regressions": [],
+      "qid_means": {
+        "v3-offline-0059": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0083": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0155": {
+          "baseline": 0.0,
+          "candidate": 1.0,
+          "delta": 1.0
+        },
+        "v3-offline-0185": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0306": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0332": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0351": {
+          "baseline": 0.0,
+          "candidate": 0.5,
+          "delta": 0.5
+        },
+        "v3-offline-0352": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0362": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0369": {
+          "baseline": 0.5,
+          "candidate": 1.0,
+          "delta": 0.5
+        },
+        "v3-offline-0370": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0410": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0425": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0447": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0449": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0450": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0457": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0463": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0467": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0472": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0476": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0493": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0494": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0497": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0502": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0506": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0534": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0549": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0550": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "suff@10": {
+      "baseline": 0.9827586206896551,
+      "candidate": 0.9482758620689655,
+      "delta": -0.034482758620689655,
+      "qid_bootstrap_ci95": [
+        -0.08620689655172414,
+        0.0
+      ],
+      "wins": [],
+      "losses": [
+        "v3-offline-0494",
+        "v3-offline-0502"
+      ],
+      "ties": 27,
+      "hard_improvements": [],
+      "hard_regressions": [],
+      "qid_means": {
+        "v3-offline-0059": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0083": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0155": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0185": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0306": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0332": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0351": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0352": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0362": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0369": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0370": {
+          "baseline": 0.5,
+          "candidate": 0.5,
+          "delta": 0.0
+        },
+        "v3-offline-0410": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0425": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0447": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0449": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0450": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0457": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0463": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0467": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0472": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0476": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0493": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0494": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0497": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0502": {
+          "baseline": 1.0,
+          "candidate": 0.5,
+          "delta": -0.5
+        },
+        "v3-offline-0506": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0534": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0549": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        },
+        "v3-offline-0550": {
+          "baseline": 1.0,
+          "candidate": 1.0,
+          "delta": 0.0
+        }
+      }
+    }
+  }
+}

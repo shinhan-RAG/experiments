@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "action": {"type": "string", "enum": ["submit", "search", "read"]},
+    "q": {"type": "string"},
+    "id": {"type": "string"},
+    "ids": {"type": "array", "items": {"type": "string"}, "maxItems": 10}
+  },
+  "required": ["action", "q", "id", "ids"],
+  "additionalProperties": false
+}

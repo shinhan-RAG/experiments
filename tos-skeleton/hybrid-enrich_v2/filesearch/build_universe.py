@@ -12,9 +12,14 @@ QA·gold 파일은 열지 않는다.
 import argparse, bisect, collections, hashlib, json, os, re, unicodedata
 
 MAX_ELEM_CHARS = 4000
-RULE_VERSION = "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212 + formula-singleline-fix"
+RULE_VERSION = "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212 + formula-singleline-fix + rider-prefix-neutral"
 
-RIDER = re.compile(r"^\(간편\).{0,60}특약\(무배당[^)]*\)\s*$")
+# Product families do not consistently prefix rider headings with ``(간편)``.
+# The prior rule silently attached valid non-prefixed riders to the preceding
+# contract.  The semantic boundary is the rider suffix plus the parenthesised
+# product attributes; a leading product-family marker is optional.  Table rows
+# are excluded by the caller before this expression is evaluated.
+RIDER = re.compile(r"^(?!.*\|).{1,100}특약\s*\(\s*무배당[^)]*\)\s*$")
 MAINS = [
     re.compile(r"^신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^)]*\)\s*$"),          # 260507판 표기
     re.compile(r"^\(간편\)신한통합건강보장보험\s*원\(ONE\)\(무배당[^)]*\)\s*$"),        # 250212판 표기
