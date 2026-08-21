@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_spans_lsh_train_scoped_u3_v1.jsonl",
+      "sha256": "fbca071d6038defe41d9617227432fb5598ad6262d422f6595b36e43266197f3"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/gold_known_adjudication_20260821.jsonl",
+      "sha256": "65c26f421104f3d9134387b8e8855e01cc07152f42481cef3394bc183423eba6"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_adjudication.py",
+    "sha256": "d966f2aba20cd70f9d33fb8683015bc878fcec83657c835c82985fa2b37ce691"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_spans_lsh_train_scoped_u3_known_reviewed_v1.jsonl",
+  "output_sha256": "b611bc5a464a016ed0db64f078830a1208f0d2df05aa61db47b8cc0cae1317f0",
+  "n_input": 348,
+  "n_output": 347,
+  "audit": [
+    {
+      "qid": "v3-offline-0054",
+      "decision": "replace_groups",
+      "groups": 1
+    },
+    {
+      "qid": "v3-offline-0056",
+      "decision": "replace_groups",
+      "groups": 1
+    },
+    {
+      "qid": "v3-offline-0018",
+      "decision": "exclude",
+      "reason": "질문은 비갱신 6대질병장해특약을 지칭하지만 official Gold는 다른 갱신형 질병장해특약이며, 질문 대상에는 갱신 후 보험료 조항이 없어 benchmark 문항 자체가 모순됨"
+    }
+  ]
+}

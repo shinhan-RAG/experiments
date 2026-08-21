@@ -1,0 +1,28 @@
+{
+  "base": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/out/host_agent/gpt56luna_medium_c29_evaluabletrain281x1_overlayv1_20260821/results.jsonl",
+    "sha256": "12fc47e57953e33204efb62d5ae53b5b2838d72e9387f263a71dd3fbe66e40f1"
+  },
+  "retry": [
+    {
+      "path": "/private/tmp/c29_retry_errors2.jsonl",
+      "sha256": "720b234c38d038e1da8cf3a40d06c4c1ea400649a00a7bdf3b97c0f7bbf64551"
+    }
+  ],
+  "replaced_keys": [
+    [
+      "v3-offline-0286",
+      0,
+      "c29_membership_dual_evidence_hybrid"
+    ],
+    [
+      "v3-offline-0454",
+      0,
+      "c29_membership_dual_evidence_hybrid"
+    ]
+  ],
+  "protocol_error_policy": "retained_as_agent_itt_behavior",
+  "n": 281,
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/vector_search/noah/0819/out/host_agent/gpt56luna_medium_c29_evaluabletrain281x1_overlayv1_20260821/results_itt.jsonl",
+  "output_sha256": "ee2aacf64498f2501294f400e575f03b09c911394a4ba51fc895578414cd067d"
+}

@@ -477,3 +477,37 @@ scope를 overlay한다. v7에서 제외된 `0488` 하나와 원 scoped Gold에�
 281문항이다. 29문항은 retrieval-blind completeness review, 나머지 252문항은
 scoped Gold이지만 같은 수준의 전수 사람 감사를 받지 않았다. 두 층과 65개 격리
 qid 전부를 overlay manifest에 고정한다.
+
+## C29 evaluable train 281문항 agent 실험 (2026-08-21)
+
+zero-group 65문항과 `0488`을 제외한 281문항을 C29 단일 arm,
+Luna-medium, 1 rep, workers 8, max-actions 4로 실행했다. 최초 run의
+인프라/도구 오류 2 cell만 동일 조건의 재실행 cell 전체로 교체했다.
+중간에 보이지 않은 ID를 요청했지만 호스트가 회복해 최종 submit을 받은
+protocol mistake는 성공할 때까지 재실행하지 않고 agent ITT 행동으로
+보존했다.
+
+| 대상 | n | R@1 | R@5 | R@10 | suff@5 | suff@10 |
+|---|---:|---:|---:|---:|---:|---:|
+| 전체 evaluable train | 281 | .3867 | **.6314** | .6874 | .6050 | .6584 |
+| completeness reviewed | 29 | .7414 | **.9828** | .9828 | .9655 | .9655 |
+| scoped, completeness 미검토 | 252 | .3459 | **.5909** | .6534 | .5635 | .6230 |
+
+전체 R@5의 qid bootstrap 95% CI는 `[.5765,.6859]`, suff@5는
+`[.5480,.6619]`이다. 최종 artifact의 fatal error는 0, 회복된 protocol mistake는
+14 cell/25 events, empty submit은 7 cell이다. R@5 분포는 만점 170,
+부분점수 16, 0점 95문항이다.
+
+난이도 차이가 크다. `single_lookup` 172문항의 R@5/suff@5는 `.7500/.7500`,
+`multi_evidence` 102문항은 `.4551/.3922`였다. comparison 4문항 R@5 `.25`,
+document-global 1문항 `.0`, exhaustive-list 2문항 `.5`다. 따라서 29문항
+`.9224` 실험은 전체 train 난이도를 대표하지 않으며, 281문항
+`.6314`도 252문항의 Gold completeness 미검토를 검색기 실패와 분리하지
+못한 개발 지표다.
+
+최초 검색 40에서 Gold가 하나도 노출되지 않은 qid가 56개였고,
+모든 agent 재검색의 union으로도 Gold 충분성을 만족하지 못한 qid가
+57개였다. 이는 현 C29 후보·Gold 정의로 agent R@5 `.95`를 달성할 수
+없음을 뜻한다. 다음 단계는 검색 결과를 보지 않은 전체 Gold completeness
+감사와, 별도 holdout에서 multi-evidence/cross-reference 회수를 늘리는
+범용 그래프 검색 가설을 분리해 검증하는 것이다.
