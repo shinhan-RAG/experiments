@@ -1,0 +1,60 @@
+{
+  "run": "gpt56luna_medium_c29_evaluabletrain281x1_overlayv1_20260821",
+  "policy": "replace fatal-infrastructure cells; retain recovered protocol mistakes and empty submissions as agent ITT behavior",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "medium",
+  "n_q": 281,
+  "reps": 1,
+  "arm": "c29_membership_dual_evidence_hybrid",
+  "metrics": {
+    "R@1": 0.3867141162514828,
+    "R@5": 0.6313760379596678,
+    "R@10": 0.6874258600237249,
+    "suff@5": 0.604982206405694,
+    "suff@10": 0.6583629893238434
+  },
+  "qid_bootstrap_95ci": {
+    "R@1": [0.33214709371293005, 0.44246737841043887],
+    "R@5": [0.5765124555160143, 0.6859430604982207],
+    "R@10": [0.6340450771055753, 0.7396204033214708],
+    "suff@5": [0.5480427046263345, 0.6619217081850534],
+    "suff@10": [0.6014234875444839, 0.7117437722419929]
+  },
+  "quality_slices": {
+    "retrieval_blind_completeness_reviewed_29": {
+      "R@1": 0.7413793103448276,
+      "R@5": 0.9827586206896551,
+      "R@10": 0.9827586206896551,
+      "suff@5": 0.9655172413793104,
+      "suff@10": 0.9655172413793104
+    },
+    "scoped_not_completeness_reviewed_252": {
+      "R@1": 0.3458994708994709,
+      "R@5": 0.5909391534391535,
+      "R@10": 0.6534391534391535,
+      "suff@5": 0.5634920634920635,
+      "suff@10": 0.623015873015873
+    }
+  },
+  "task_slices": {
+    "single_lookup_172": {"R@5": 0.75, "suff@5": 0.75},
+    "multi_evidence_102": {"R@5": 0.4550653594771242, "suff@5": 0.39215686274509803},
+    "comparison_4": {"R@5": 0.25, "suff@5": 0.0},
+    "document_global_1": {"R@5": 0.0, "suff@5": 0.0},
+    "exhaustive_list_2": {"R@5": 0.5, "suff@5": 0.5}
+  },
+  "diagnostics": {
+    "fatal_errors": 0,
+    "protocol_error_cells": 14,
+    "protocol_error_events": 25,
+    "empty_submissions": 7,
+    "R@5_full": 170,
+    "R@5_partial": 16,
+    "R@5_zero": 95
+  },
+  "limitations": [
+    "252/281 rows have scoped Gold but no retrieval-blind completeness review",
+    "one replicate does not estimate agent stochastic variance",
+    "the current corpus artifact represents one source document, not the target 110k-document collection"
+  ]
+}

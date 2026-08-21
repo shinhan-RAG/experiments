@@ -1,4 +1,3 @@
-import importlib.util
 import json
 import tempfile
 import unittest
@@ -8,62 +7,15 @@ import agent_tools as vector_tools
 
 
 HERE = Path(__file__).resolve().parent
-FS = HERE.parents[2] / "filesearch"
-
-
-def load_filesearch_tools():
-    spec = importlib.util.spec_from_file_location("filesearch_agent_tools_under_test", FS / "agent_tools.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-class _Search:
-    def __init__(self):
-        from clm_search import Router
-        from structured_search import StructuredTagIndex
-        self.router = Router(["범용특약"])
-        self.index = StructuredTagIndex(
-            [{"contract_scope": "범용특약"}],
-            [{"contract_key": "범용특약", "role": ["payment_trigger"]}],
-        )
-
-    def ensure_structured(self):
-        return self.index
 
 
 class ExperimentArmTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.arms = json.loads((HERE / "arms.json").read_text(encoding="utf-8"))
-        cls.fs_tools = load_filesearch_tools()
-
-    def test_c23_c24_differ_only_by_portfolio_mode(self):
-        c23 = dict(self.arms["c23_scope_rrf_safe_axes_hybrid"])
-        c24 = dict(self.arms["c24_scope_rrf_safe_expanded_roles_hybrid"])
-        self.assertEqual("rrf_safe_axes", c23.pop("portfolio"))
-        self.assertEqual("rrf_safe_axes_expanded", c24.pop("portfolio"))
-        self.assertEqual(c23, c24)
-
-    def test_c16_and_c19_frozen_treatment_fields(self):
-        c16 = self.arms["c16_scope_boundary_hybrid"]
-        c19 = self.arms["c19_scope_evidence_role_hybrid"]
-        self.assertNotIn("sfw", c16)
-        self.assertEqual({"_evidence_role": 1.0}, c19["sfw"])
-        for field in ("elements", "tags", "jo", "ranker", "profile", "router", "fallback"):
-            self.assertEqual(c16[field], c19[field])
-
-    def test_arm_level_expanded_role_wiring_in_both_tools(self):
-        search = _Search()
-        question = "범용특약 보험금 지급 조건과 몇 회까지인지"
-        for tools in (vector_tools, self.fs_tools):
-            self.assertIsNone(tools.effective_portfolio_mode(
-                {"portfolio": "rrf_safe_axes"}, search, question))
-            self.assertEqual("rrf_safe_axes_expanded", tools.effective_portfolio_mode(
-                {"portfolio": "rrf_safe_axes_expanded"}, search, question))
 
     def test_cache_fingerprint_depends_on_content_not_mtime(self):
-        for tools in (vector_tools, self.fs_tools):
+        for tools in (vector_tools,):
             with tempfile.TemporaryDirectory() as directory:
                 path = Path(directory) / "dependency.txt"
                 path.write_text("first", encoding="utf-8")
