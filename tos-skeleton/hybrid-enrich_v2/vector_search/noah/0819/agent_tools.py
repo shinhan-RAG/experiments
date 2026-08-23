@@ -46,11 +46,14 @@ REFERENCE_FOLLOW_RE = re.compile(
 _SHARED_SEGMENT_CACHE = {}
 
 
-def _table_jos(search, min_pipes=20):
-    """마크다운 표를 포함한 JO id 집합(파이프 밀도 신호). 검색 인스턴스에 캐시."""
+def _table_jos(search, min_pipes=60):
+    """부표·분류표류 표 JO id 집합(파이프 밀도 + 표 명칭 키워드). 검색 인스턴스에 캐시."""
     cached = getattr(search, "_table_jo_ids", None)
     if cached is None:
-        cached = {u["element_id"] for u in search._jo if u.get("text", "").count("|") > min_pipes}
+        key = re.compile(r"분류표|부표|별첨|지급기준표|장해분류")
+        cached = {u["element_id"] for u in search._jo
+                  if u.get("text", "").count("|") > min_pipes
+                  and key.search((u.get("title") or "") + u.get("text", "")[:400])}
         search._table_jo_ids = cached
     return cached
 
@@ -999,6 +1002,8 @@ def effective_portfolio_mode(arm, search, current_query):
                     "rrf_safe_axes_expanded"}:
         return mode
     original = original_question(current_query)
+    if arm.get("table_note"):
+        table_note_fired = reference_follow_enabled(original, "table_code_or_document")
     original_slots, _ = search.router.route(original)
     if mode in {"evidence", "rrf_evidence", "rrf_axes", "rrf_safe_axes",
                 "rrf_safe_axes_expanded"}:
@@ -1153,7 +1158,7 @@ def main():
         identity_expand_info, reference_follow_info = {}, {}
         follow_ids, expand_contracts = set(), set()
         table_note_fired = bool(arm.get("table_note")) and reference_follow_enabled(
-            original, "table_code_or_document")
+            original_question(a.q), "table_code_or_document")
         if arm.get("identity_expand"):
             config = arm["identity_expand"]
             added, identity_expand_info = identity_expansion_candidates(
