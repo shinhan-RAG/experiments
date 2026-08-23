@@ -46,6 +46,15 @@ REFERENCE_FOLLOW_RE = re.compile(
 _SHARED_SEGMENT_CACHE = {}
 
 
+def _table_jos(search, min_pipes=20):
+    """마크다운 표를 포함한 JO id 집합(파이프 밀도 신호). 검색 인스턴스에 캐시."""
+    cached = getattr(search, "_table_jo_ids", None)
+    if cached is None:
+        cached = {u["element_id"] for u in search._jo if u.get("text", "").count("|") > min_pipes}
+        search._table_jo_ids = cached
+    return cached
+
+
 def reference_follow_enabled(raw_query, gate="table_code_or_document"):
     """참조 팔로우 발화 조건 — 표/코드/서류 표면형이 질문에 있을 때만."""
     if not gate:
@@ -1143,6 +1152,8 @@ def main():
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v))
         identity_expand_info, reference_follow_info = {}, {}
         follow_ids, expand_contracts = set(), set()
+        table_note_fired = bool(arm.get("table_note")) and reference_follow_enabled(
+            original, "table_code_or_document")
         if arm.get("identity_expand"):
             config = arm["identity_expand"]
             added, identity_expand_info = identity_expansion_candidates(
@@ -1302,6 +1313,8 @@ def main():
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
             if e["element_id"] in follow_ids:
                 it["note"] = "참조표 후보: 질문 특약의 조가 인용하는 표/조 원문"
+            elif arm.get("table_note") and table_note_fired and S._m2j.get(e["element_id"]) is not None                     and S._jo[S._m2j[e["element_id"]]]["element_id"] in _table_jos(S):
+                it["note"] = "표 포함 후보(부표·분류표·지급기준표류 원문)"
             items.append(it)
         fb = arm.get("fallback") if arm.get("meta") else None
         fb_used = ""
