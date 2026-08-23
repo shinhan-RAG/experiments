@@ -71,6 +71,11 @@ def main():
 
     zero_group_unscorable = [row["qid"] for row in output_rows if not row.get("groups")]
     output_rows = [row for row in output_rows if row.get("groups")]
+    completeness_reviewed = [
+        row["qid"] for row in output_rows
+        if row.get("status") == "retrieval_blind_completeness_reviewed"
+        or row.get("completeness_review")
+    ]
 
     output = Path(args.output)
     output_qids = Path(args.output_qids)
@@ -82,8 +87,9 @@ def main():
     manifest = {
         "policy": "preserve scoped-train order; replace reviewed-scope rows; drop reviewed exclusions",
         "quality_scope": {
-            "retrieval_blind_human_reviewed": len(replaced),
-            "scoped_not_completeness_reviewed": len(output_rows) - len(replaced),
+            "retrieval_blind_reviewed_total": len(completeness_reviewed),
+            "newly_replaced_in_this_overlay": len(replaced),
+            "scoped_not_completeness_reviewed": len(output_rows) - len(completeness_reviewed),
             "excluded_after_review": excluded,
             "zero_group_unscorable": zero_group_unscorable,
         },

@@ -2,7 +2,7 @@
 """결정론 평가(LLM 0회): 라우터+SlotSearch 를 gold span 에 대해 채점. arm 은 --arms 로 지정.
 
 arm 문법(세미콜론 구분): <mode>[:lex=<binary|count>][:tags=<0|1>][:w=<field>=<num>,...][:oracle=scope]
-  구조화 단일단계: clm:ranker=bm25f[:profile=full|core|no_identity_split|no_variant|no_locator|no_extra]
+  구조화 단일단계: clm:ranker=bm25f[:profile=...][:portfolio=focus|relax|relax_gated|identity|role|evidence|facet|all][:seed=20]
   예) clm:lex=binary  |  clm:lex=count  |  and  |  clm:tags=0(어휘채널만=A0)  |  clm:w=contract=3
 채점: 원 단위(u2) 와 조 map-back(u2jo) 둘 다. Recall@K = fractional evidence-group, Success@K, MRR@10.
 문항별 순위를 out/det_ranks_<arm>.jsonl 로 남긴다(paired 검정용).
@@ -88,9 +88,16 @@ def main():
                 keep = set(opt["slots"].split("+"))
                 Muse = [{f: v for f, v in m.items() if f in keep} for m in M]
             if opt.get("ranker") == "bm25f":
-                res = S.rank_structured(slots, toks, g["q"], weights=w,
-                                        profile=opt.get("profile", "full"), limit=a.limit,
-                                        lexical_counts=L)
+                if opt.get("portfolio"):
+                    res = S.rank_structured_portfolio(
+                        slots, toks, g["q"], weights=w, profile=opt.get("profile", "core"),
+                        mode=opt["portfolio"], limit=a.limit,
+                        window=int(opt.get("window", 40)), seed_quota=int(opt.get("seed", 20)),
+                        lexical_counts=L)
+                else:
+                    res = S.rank_structured(slots, toks, g["q"], weights=w,
+                                            profile=opt.get("profile", "full"), limit=a.limit,
+                                            lexical_counts=L)
             elif opt.get("decomp") == "role" and len(slots.get("role", [])) >= 2:
                 # A4: 역할별 하위질의 → 라운드로빈 interleave (multi-evidence 겨냥)
                 subs = []

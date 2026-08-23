@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-"""noah v3 QA(csv) 의 `출처` 인용문 → 원문 char span (우주 독립 gold).
+"""noah v3 QA(csv)의 `출처` 인용문 → 원문 char span (검색 독립 Gold).
 
 hybrid-enrich/build_gold_noah_v3.py 의 규칙을 따른다: 공백 제거·NFC 정규화 후 exact substring,
 실패 시 앞 60% 재시도. 인용문은 줄 단위로 분리해 각 줄 = evidence group 후보로 두되,
 같은 문항의 연속 줄이 원문에서도 인접(간격 ≤ 400자)하면 하나의 group 으로 병합한다.
 
-출력(out/gold_spans_<split>.jsonl, 비커밋): qid, q, task_type, core_retrieval, groups=[{spans:[[c0,c1],…], quote}], unmapped=[…]
-train 만 사용한다. test csv 는 열지 않는다.
+출력: qid, q, task_type, core_retrieval, groups=[{c0,c1,...}], unmapped=[...]
+train/test 어느 split에도 동일하게 적용하며, 선택한 입력 경로·내용 hash와 생성기 hash를
+manifest에 고정한다. 검색 결과·Gold JO·실험 산출물은 읽지 않는다.
 """
-import argparse, csv, json, os, re, unicodedata
+import argparse, csv, hashlib, json, os, re, sys, unicodedata
+from pathlib import Path
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def norm_map(raw):
@@ -69,14 +75,16 @@ def map_group(nd, idx, lines):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--doc", required=True)
-    ap.add_argument("--qa", required=True, help="정답셋_348_train_v3_retrieval_250212.csv")
+    ap.add_argument("--qa", required=True, help="official QA CSV for the selected split")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "out", "gold_spans_train.jsonl"))
     a = ap.parse_args()
     raw = unicodedata.normalize("NFC", open(a.doc, encoding="utf-8").read().replace("\r\n", "\n"))
     nd, idx = norm_map(raw)
     rows = list(csv.DictReader(open(a.qa, encoding="utf-8-sig")))
     n_ok = n_partial = n_un = 0
-    with open(a.out, "w", encoding="utf-8") as f:
+    output = Path(a.out)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
         for r in rows:
             src = (r["출처"] or "").replace("\r", "")
             blocks = [b for b in re.split(r"\n-{3,}\n|^-{3,}\n|\n-{3,}$", src) if b.strip()]
@@ -97,7 +105,22 @@ def main():
                 "qid": r["qid"], "q": r["질문"], "task_type": r["task_type"], "core_retrieval": r["core_retrieval"],
                 "신뢰도": r["신뢰도"], "groups": groups, "unmapped": unmapped, "n_blocks": n_blocks, "status": status,
             }, ensure_ascii=False) + "\n")
-    print(json.dumps({"n": len(rows), "ok": n_ok, "partial": n_partial, "unmapped": n_un}, ensure_ascii=False))
+    counts = {"n": len(rows), "ok": n_ok, "partial": n_partial, "unmapped": n_un}
+    manifest = {
+        "policy": "retrieval-blind official source quote to raw character span",
+        "retrieval_blind": True,
+        "inputs": {
+            "document": {"path": str(Path(a.doc).resolve()), "sha256": sha256(a.doc)},
+            "official_csv": {"path": str(Path(a.qa).resolve()), "sha256": sha256(a.qa)},
+        },
+        "generator": {"path": str(Path(__file__).resolve()), "sha256": sha256(__file__)},
+        "python": sys.version,
+        "counts": counts,
+        "output": {"path": str(output.resolve()), "sha256": sha256(output)},
+    }
+    output.with_suffix(output.suffix + ".manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(counts | {"output_sha256": sha256(output)}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

@@ -40,10 +40,13 @@ def run_one(args, run_dir, g, rep, arm):
     if done.exists() and (sess / "submit.json").exists():
         return json.load(open(sess / "submit.json")), json.load(open(done))
     sess.mkdir(parents=True, exist_ok=True)
+    json.dump({"qid": g["qid"], "question": g["q"]}, open(sess / "question.json", "w"),
+              ensure_ascii=False)
     for f in ("calls.jsonl", "submit.json"):
         if (sess / f).exists():
             (sess / f).unlink()
-    env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
+    env = dict(os.environ, SEMTAG_SESSION=str(sess), SEMTAG_QID=g["qid"],
+               SEMTAG_QUESTION=g["q"], SEMTAG_ARM=json.dumps(arm, ensure_ascii=False))
     if os.environ.get("SEMTAG_PYBIN"):
         env["PATH"] = os.environ["SEMTAG_PYBIN"] + ":" + env.get("PATH", "")
     cmd = ["claude", "-p", "--model", args.model, "--output-format", "json", "--max-turns", str(args.max_turns),
