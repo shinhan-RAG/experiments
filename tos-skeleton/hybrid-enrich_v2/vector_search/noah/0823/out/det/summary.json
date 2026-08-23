@@ -1,0 +1,47 @@
+{
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_train_full.jsonl",
+  "n": 337,
+  "selection_metric": "jo fractional R@5",
+  "full_train_screen": false,
+  "tie_break": [
+    "suff@10",
+    "R@10",
+    "equal-weight simplicity"
+  ],
+  "selected_arm": "host_retrieve",
+  "arms": {
+    "baseline": {
+      "R@1": 0.2638,
+      "R@5": 0.58678,
+      "R@10": 0.66102,
+      "R@20": 0.735941,
+      "R@40": 0.797024,
+      "suff@5": 0.534125,
+      "suff@10": 0.605341,
+      "RR@10": 0.453693
+    },
+    "host_retrieve": {
+      "R@1": 0.2638,
+      "R@5": 0.58678,
+      "R@10": 0.66102,
+      "R@20": 0.735941,
+      "R@40": 0.797024,
+      "suff@5": 0.534125,
+      "suff@10": 0.605341,
+      "RR@10": 0.453693
+    }
+  },
+  "union": {
+    "host_retrieve": {
+      "R@1": 0.181256,
+      "R@5": 0.529675,
+      "R@10": 0.667697,
+      "R@20": 0.759693,
+      "R@40": 0.827524,
+      "suff@5": 0.47181,
+      "suff@10": 0.602374,
+      "RR@10": 0.374277
+    }
+  },
+  "oracle_path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0823\\out\\det\\oracle.jsonl"
+}

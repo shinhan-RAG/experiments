@@ -1,0 +1,55 @@
+{
+  "baseline": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9",
+    "mode": "agentic",
+    "search_cap": 20,
+    "read_cap": 8,
+    "submit_max": 10,
+    "_desc": "0821 tag_sparse_lexical 재현 (control)"
+  },
+  "expanded_inclusive": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9",
+    "mode": "agentic",
+    "search_cap": 30,
+    "read_cap": 20,
+    "submit_max": 10,
+    "_desc": "캡 확장 + inclusive 프롬프트"
+  },
+  "host_retrieve": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9",
+    "mode": "host_retrieve",
+    "host_top_k": 80,
+    "read_cap": 30,
+    "submit_max": 10,
+    "_desc": "호스트 사전 검색(tag+meta RRF union top-80) + 에이전트 rerank/submit"
+  },
+  "host_retrieve_greedy": {
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9",
+    "mode": "host_retrieve",
+    "host_top_k": 80,
+    "read_cap": 40,
+    "submit_max": 10,
+    "greedy": true,
+    "_desc": "호스트 사전 검색 top-80 + 최대 포함 정책"
+  }
+}
