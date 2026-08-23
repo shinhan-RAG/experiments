@@ -10,8 +10,14 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
+
+
+# Gold group keys are built the same way everywhere (map_lsh_gold.KEY): the
+# whitespace-stripped leading characters of the first member span.
+GROUP_KEY_CHARS = 160
 
 
 def load_jsonl(path):
@@ -34,6 +40,39 @@ def checked_member(requested, jo, qid):
         "src": "retrieval_blind_completeness_review",
         "evidence_role": requested.get("evidence_role", "reviewed_direct_evidence"),
     }
+
+
+def group_key(members, jo):
+    """Key of a new required group: first member span, whitespace removed."""
+    if not members:
+        raise ValueError("empty Gold group")
+    first = members[0]
+    unit = jo[first["jo"]]
+    text = unit.get("text")
+    if text is None:
+        raise ValueError(f"JO without text, cannot key group: {first['jo']}")
+    start = int(unit["char_start"])
+    span = text[int(first["c0"]) - start:int(first["c1"]) - start]
+    return re.sub(r"\s", "", span)[:GROUP_KEY_CHARS]
+
+
+def existing_group_keys(groups, jo):
+    """Keys that a new required group must not collide with.
+
+    Stored keys can predate a coordinate remap, so the recomputed key of every
+    current group is compared as well; a collision on either means the claim
+    belongs in that group as an OR member rather than in a new AND group.
+    """
+    keys = set()
+    for group in groups:
+        stored = group.get("key")
+        if stored:
+            keys.add(stored)
+        try:
+            keys.add(group_key(group.get("members") or [], jo))
+        except (KeyError, ValueError):
+            continue
+    return keys
 
 
 def refresh_group(group):
@@ -114,6 +153,28 @@ def main():
         if status == "fix":
             for op in decision["ops"]:
                 kind = op["op"]
+                if kind == "add_required_group":
+                    requested = op.get("members") or []
+                    if not requested:
+                        raise ValueError(f"add_required_group without members: {qid}")
+                    members = [checked_member(item, jo, qid) for item in requested]
+                    if len({member["jo"] for member in members}) != len(members):
+                        raise ValueError(f"duplicate JO member in new group: {qid}")
+                    key = group_key(members, jo)
+                    if key in existing_group_keys(row["groups"], jo):
+                        raise ValueError(f"duplicate required group key: {qid} {key!r}")
+                    signature = tuple(sorted((member["jo"], member["c0"], member["c1"])
+                                             for member in members))
+                    if any(signature == tuple(sorted(
+                            (item["jo"], int(item["c0"]), int(item["c1"]))
+                            for item in existing["members"]))
+                           for existing in row["groups"]):
+                        raise ValueError(f"duplicate required group members: {qid}")
+                    new_group = {"key": key, "members": members,
+                                 "policy": "retrieval_blind_completeness_review_new_required_group"}
+                    refresh_group(new_group)
+                    row["groups"].append(new_group)
+                    continue
                 group = row["groups"][int(op["group"])]
                 if kind == "add_members":
                     existing = {member["jo"] for member in group["members"]}

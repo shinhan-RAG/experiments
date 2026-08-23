@@ -9,10 +9,47 @@ from finalize_gold_audit_batch import validate_decision
 class FinalizeGoldAuditTest(unittest.TestCase):
     def setUp(self):
         self.gold = {
-            "q": {"qid": "q", "groups": [{"members": [{"jo": "j1", "c0": 0, "c1": 5}]}]}
+            "q": {"qid": "q", "groups": [{"key": "abcde",
+                                          "members": [{"jo": "j1", "c0": 0, "c1": 5}]}]}
         }
-        self.jo = {"j1": {"element_id": "j1", "char_start": 0, "char_end": 10},
-                   "j2": {"element_id": "j2", "char_start": 20, "char_end": 30}}
+        self.jo = {"j1": {"element_id": "j1", "char_start": 0, "char_end": 10,
+                          "text": "abcdefghij"},
+                   "j2": {"element_id": "j2", "char_start": 20, "char_end": 30,
+                          "text": "klmnopqrst"}}
+
+    def test_valid_add_required_group(self):
+        decision = {"qid": "q", "decision": "fix", "ops": [{
+            "op": "add_required_group", "group": None, "jo": None, "c0": None, "c1": None,
+            "members": [{"jo": "j2", "c0": 20, "c1": 25, "evidence_role": "direct"}],
+            "evidence_role": None,
+        }]}
+        validate_decision(decision, self.gold, self.jo)
+
+    def test_add_required_group_rejects_empty_members(self):
+        decision = {"qid": "q", "decision": "fix", "ops": [{
+            "op": "add_required_group", "group": None, "jo": None, "c0": None, "c1": None,
+            "members": [], "evidence_role": None,
+        }]}
+        with self.assertRaisesRegex(ValueError, "empty member operation"):
+            validate_decision(decision, self.gold, self.jo)
+
+    def test_add_required_group_rejects_existing_key(self):
+        decision = {"qid": "q", "decision": "fix", "ops": [{
+            "op": "add_required_group", "group": None, "jo": None, "c0": None, "c1": None,
+            "members": [{"jo": "j1", "c0": 0, "c1": 5, "evidence_role": "direct"}],
+            "evidence_role": None,
+        }]}
+        with self.assertRaisesRegex(ValueError, "duplicate required group key"):
+            validate_decision(decision, self.gold, self.jo)
+
+    def test_add_required_group_rejected_on_exclude_row(self):
+        decision = {"qid": "q", "decision": "exclude", "ops": [{
+            "op": "add_required_group", "group": None, "jo": None, "c0": None, "c1": None,
+            "members": [{"jo": "j2", "c0": 20, "c1": 25, "evidence_role": "direct"}],
+            "evidence_role": None,
+        }]}
+        with self.assertRaisesRegex(ValueError, "must have no operations"):
+            validate_decision(decision, self.gold, self.jo)
 
     def test_valid_replace_span(self):
         decision = {"qid": "q", "decision": "fix", "ops": [{

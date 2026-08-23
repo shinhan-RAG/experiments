@@ -12,7 +12,10 @@ import json
 from pathlib import Path
 
 
-ALLOWED_OPS = {"add_members", "replace_group_members", "replace_span"}
+from apply_gold_completeness_ledger import existing_group_keys, group_key
+
+ALLOWED_OPS = {"add_members", "replace_group_members", "replace_span",
+               "add_required_group"}
 
 
 def load_json(path):
@@ -67,11 +70,30 @@ def validate_decision(decision, gold, jo):
         return
 
     final_group_members = [list(group["members"]) for group in gold[qid]["groups"]]
+    final_group_keys = existing_group_keys(gold[qid]["groups"], jo)
     for op_index, op in enumerate(ops):
         label = f"{qid} op={op_index}"
         kind = op["op"]
         if kind not in ALLOWED_OPS:
             raise ValueError(f"unknown operation {kind}: {label}")
+        if kind == "add_required_group":
+            # A brand new required AND group: its members are the OR set. It has
+            # no target group index, and it must not restate an existing group
+            # (that claim belongs in the existing group as an OR member).
+            members = op.get("members") or []
+            if not members:
+                raise ValueError(f"empty member operation: {label}")
+            for member_index, member in enumerate(members):
+                validate_member(member, jo, f"{label} member={member_index}")
+            ids = [member["jo"] for member in members]
+            if len(ids) != len(set(ids)):
+                raise ValueError(f"duplicate JO in operation: {label}")
+            key = group_key(members, jo)
+            if key in final_group_keys:
+                raise ValueError(f"duplicate required group key {key!r}: {label}")
+            final_group_keys.add(key)
+            final_group_members.append(list(members))
+            continue
         group_index = op["group"]
         if not isinstance(group_index, int) or not 0 <= group_index < len(final_group_members):
             raise ValueError(f"invalid group {group_index}: {label}")

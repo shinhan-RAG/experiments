@@ -22,9 +22,30 @@
               "type": "object",
               "required": ["op", "group", "jo", "c0", "c1", "members", "evidence_role"],
               "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {"required": ["op"],
+                         "properties": {"op": {"const": "add_required_group"}}},
+                  "then": {"properties": {"group": {"type": "null"},
+                                          "members": {"minItems": 1}}}
+                },
+                {
+                  "if": {"required": ["op"],
+                         "properties": {"op": {"enum": ["add_members",
+                                                        "replace_group_members"]}}},
+                  "then": {"properties": {"group": {"type": "integer", "minimum": 0},
+                                          "members": {"minItems": 1}}}
+                },
+                {
+                  "if": {"required": ["op"],
+                         "properties": {"op": {"const": "replace_span"}}},
+                  "then": {"properties": {"group": {"type": "integer", "minimum": 0}}}
+                }
+              ],
               "properties": {
-                "op": {"enum": ["add_members", "replace_group_members", "replace_span"]},
-                "group": {"type": "integer", "minimum": 0},
+                "op": {"enum": ["add_members", "replace_group_members", "replace_span",
+                                "add_required_group"]},
+                "group": {"type": ["integer", "null"], "minimum": 0},
                 "jo": {"type": ["string", "null"]},
                 "c0": {"type": ["integer", "null"]},
                 "c1": {"type": ["integer", "null"]},

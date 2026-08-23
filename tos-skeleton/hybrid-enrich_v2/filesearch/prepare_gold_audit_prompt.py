@@ -54,9 +54,10 @@ def render(qids, gold, jo, review_audit=None, known_error="", official=OFFICIAL)
 원문 후보는 `rg`로 JO 파일을 검색해 직접 대조한다. 문자열 유사성만으로 동등성을 선언하지
 말고, 질문이 요구한 claim을 실제 문장이 지지할 때만 추가한다. 결과는 제공된 JSON Schema를
 정확히 따른다. `pass`와 `exclude`는 `ops=[]`; `fix`는 현재 적용기가 지원하는
-`add_members`, `replace_group_members`, `replace_span`만 사용한다. 새 required AND group이
-필요한 경우 현재 적용기가 표현하지 못하므로 `exclude`하고 필요한 최종 group 구조를
-evidence_notes에 명시한다.
+`add_members`, `replace_group_members`, `replace_span`, `add_required_group`만 사용한다.
+독립 claim에 대한 새 required AND group이 필요하면 `add_required_group`으로 추가한다
+(`group`은 null, `members`는 그 group의 OR member 목록이며 비울 수 없다). 새 group이 기존
+group과 같은 근거를 다시 쓰는 것이면 새 group이 아니라 기존 group의 OR member로 넣는다.
 
 모든 operation object에는 `jo`, `c0`, `c1`, `members`, `evidence_role`을 반드시 포함한다.
 사용하지 않는 scalar 필드는 JSON null, 사용하지 않는 members는 []로 둔다. 각 절대 좌표는
