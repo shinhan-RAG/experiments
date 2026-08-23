@@ -1,0 +1,40 @@
+{
+  "policy": "Select the validator-clean Sol review for every qid. Both audits were retrieval-blind, but the review independently checked compound-claim completeness, sibling alternatives, exact JO boundaries, and the distinction between a classification table and a separate payment/definition claim. Exclusions quarantine incomplete Gold rows; they are not search-result-based removals.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0153",
+      "selected_source": "review",
+      "reason": "The review confirms that brain and ischemic-heart code tables are separate required claims and supplies bounded source coordinates for both."
+    },
+    {
+      "qid": "v3-offline-0097",
+      "selected_source": "review",
+      "reason": "Both audits require the same corrected JO; the review's validated span directly binds the disease family to all three codes."
+    },
+    {
+      "qid": "v3-offline-0289",
+      "selected_source": "review",
+      "reason": "The primary accepted the existing member, while the review finds seven additional direct equivalent rider variants and payment-table siblings required by the meeting OR policy."
+    },
+    {
+      "qid": "v3-offline-0265",
+      "selected_source": "review",
+      "reason": "The review separates code meaning, code-change policy, and claim-document notation, and identifies an unsupported attribution claim."
+    },
+    {
+      "qid": "v3-offline-0169",
+      "selected_source": "review",
+      "reason": "Both audits find a missing independent da Vinci rider invalidity claim; the review records the corresponding source JO."
+    },
+    {
+      "qid": "v3-offline-0071",
+      "selected_source": "review",
+      "reason": "The review rejects the OCR-confused 163 replacement and requires both a payment-trigger group and the exact I63 classification row."
+    },
+    {
+      "qid": "v3-offline-0321",
+      "selected_source": "review",
+      "reason": "The review distinguishes the requested surgery definition from the two code rows and requires them as separate AND claims."
+    }
+  ]
+}

@@ -1,0 +1,269 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean corrected Sol review throughout. The original Luna audit has a duplicate-JO operation at q0225; the original Sol q0225 fix also produced duplicate required groups and is preserved alongside an explicit correction to exclude. No retrieval, agent, arm, or score artifact was consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_luna.json",
+      "sha256": "a5f2d9640c5f9b2ac3164e1467eadeeda471da73e87acd6906a419fd603b201c"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_sol_corrected.json",
+      "sha256": "792e6041f60f7995af89990a3da83af558afcd0fbf354406c6e330fc2bc22e6d"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_resolution.json",
+      "sha256": "d5c68a171c7244eb147b2f21fd232bf5c3f88502586908f59574bb467725308b"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_qids.json",
+      "sha256": "c742ef231f804dbe4417224bc498fc832ba15d26c569c350cd0a27fe96ade65c"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v7.jsonl",
+      "sha256": "e7b3088e1cf6608ae09d7c46117fabcdfe809b2087681dd69a1bfae74751ba83"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 20,
+    "decision_agreements": 3,
+    "decision_disagreements": 17,
+    "primary_validation_errors": 1,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 17,
+    "exclude": 3
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0225",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "duplicate added JO ['j07549']: v3-offline-0225 op=0",
+      "review_validation_error": "",
+      "reason": "The two same-JO facts must be merged with the payment-trigger group, which the current operation schema cannot express; exclude until a valid two-group Gold is authored."
+    },
+    {
+      "qid": "v3-offline-0274",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use both the S02/S02.5 classification row and the directly supporting payment note."
+    },
+    {
+      "qid": "v3-offline-0452",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use complete payment rows from directly equivalent unspecified variants."
+    },
+    {
+      "qid": "v3-offline-0391",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Keep the minimal row containing both benefit identity and first-once limitation."
+    },
+    {
+      "qid": "v3-offline-0005",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Isolate the cast exclusion and its directly required definition."
+    },
+    {
+      "qid": "v3-offline-0420",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete row containing both the normal and first-year reduced rates."
+    },
+    {
+      "qid": "v3-offline-0401",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only the simple-rehabilitation row with both requested rates."
+    },
+    {
+      "qid": "v3-offline-0357",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete thrombolysis-benefit row."
+    },
+    {
+      "qid": "v3-generated-def-0012",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Keep only the directly requested ICU-treatment definition paragraph."
+    },
+    {
+      "qid": "v3-offline-0385",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete scope-correct no-reduction payment row."
+    },
+    {
+      "qid": "v3-offline-0046",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the minimal simultaneous-surgery rule from directly equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0132",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Correct the evidence to complete JO-bounded contract components."
+    },
+    {
+      "qid": "v3-offline-0142",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "A missing independent required claim needs a new AND group not representable by the current ledger operations."
+    },
+    {
+      "qid": "v3-offline-0154",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Two missing independent claims require new AND groups."
+    },
+    {
+      "qid": "v3-offline-0403",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete single benefit row."
+    },
+    {
+      "qid": "v3-offline-0011",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the minimal exclusion clause across directly equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0365",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use complete direct payment rows across equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0376",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use complete cancer-benefit rows across equivalent variants."
+    },
+    {
+      "qid": "v3-generated-def-0003",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Keep only the directly requested general definition paragraph."
+    },
+    {
+      "qid": "v3-offline-0471",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete test-benefit row containing purpose and annual limit."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_final.jsonl",
+    "sha256": "6460c9c5bb1ebdba250e86c801fc09dd58d4ae95ad8e633624398756df9ff12a"
+  }
+}

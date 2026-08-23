@@ -1,0 +1,25 @@
+{
+  "policy": "Retrieval-blind adjudication after an invalid Luna primary audit and a validator-clean Sol cross-review. The primary duplicated qids 0404, 0500, and 0415 and omitted 0107, so no primary decision is selected. All selected review decisions were independently checked against the frozen Gold and JO coordinates; no retrieval or agent result was consulted.",
+  "resolutions": [
+    {"qid":"v3-offline-0404","selected_source":"review","reason":"Use the validator-clean direct payment-row span; the primary audit is structurally invalid."},
+    {"qid":"v3-offline-0500","selected_source":"review","reason":"Use the complete directly supporting payment row and exclude unrelated notes; the primary audit is structurally invalid."},
+    {"qid":"v3-offline-0271","selected_source":"review","reason":"The current Gold omits independently required claim-document evidence and cannot support the complete official answer."},
+    {"qid":"v3-offline-0415","selected_source":"review","reason":"The review preserves only direct evidence for the requested high-cancer payment condition; the primary audit is structurally invalid."},
+    {"qid":"v3-offline-0027","selected_source":"review","reason":"The official absence claim cannot be verified by a finite positive evidence span."},
+    {"qid":"v3-offline-0035","selected_source":"review","reason":"The current evidence does not directly establish every independent condition in the official answer."},
+    {"qid":"v3-offline-0279","selected_source":"review","reason":"The review's direct-evidence decision is validator-clean and avoids unsupported inference."},
+    {"qid":"v3-offline-0366","selected_source":"review","reason":"The selected direct equivalent rider variants match the question scope and answer claim."},
+    {"qid":"v3-generated-def-0007","selected_source":"review","reason":"The reviewed span isolates the requested definition without unrelated neighboring material."},
+    {"qid":"v3-generated-def-0027","selected_source":"review","reason":"The reviewed operation retains only directly supporting definition evidence."},
+    {"qid":"v3-offline-0107","selected_source":"review","reason":"The primary omitted this qid; only the cross-review provides a complete validator-clean decision."},
+    {"qid":"v3-offline-0106","selected_source":"review","reason":"The current Gold cannot directly prove all distinct conditions in the official answer."},
+    {"qid":"v3-offline-0150","selected_source":"review","reason":"The colloquial scenario requires a semantic inference not directly stated in the current evidence, so it is not treated as complete Gold."},
+    {"qid":"v3-offline-0372","selected_source":"review","reason":"The reviewed direct variants support the complete requested payment condition without scope leakage."},
+    {"qid":"v3-offline-0338","selected_source":"review","reason":"The current Gold omits multiple required rider families from the official list answer."},
+    {"qid":"v3-offline-0465","selected_source":"review","reason":"The reviewed direct evidence and group structure match the independent claims in the official answer."},
+    {"qid":"v3-generated-def-0034","selected_source":"review","reason":"The review isolates the requested definition and rejects unrelated adjacent material."},
+    {"qid":"v3-offline-0037","selected_source":"review","reason":"The reviewed equivalent rider variants directly support the requested benefit condition."},
+    {"qid":"v3-offline-0102","selected_source":"review","reason":"Four distinct waiting-period and underwriting claims require separate AND groups that the current Gold does not contain."},
+    {"qid":"v3-generated-def-0025","selected_source":"review","reason":"The reviewed OR variants directly define the same nine-disease category and preserve question scope."}
+  ]
+}

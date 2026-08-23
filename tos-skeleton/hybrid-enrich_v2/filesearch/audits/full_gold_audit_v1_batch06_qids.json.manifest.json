@@ -1,0 +1,28 @@
+{
+  "policy": "sha256(seed|qid) ordering over retrieval-blind unreviewed Gold rows",
+  "seed": "full-gold-audit-v1-batch06-20260822",
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v7.jsonl",
+      "sha256": "e7b3088e1cf6608ae09d7c46117fabcdfe809b2087681dd69a1bfae74751ba83"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/select_gold_audit_batch.py",
+    "sha256": "173cbaa0b2707258c02fcc1413774cc346b2fd66b59554bbc672055575384977"
+  },
+  "counts": {
+    "gold": 254,
+    "unreviewed": 177,
+    "selected": 20
+  },
+  "selected_task_types": {
+    "comparison": 1,
+    "multi_evidence": 5,
+    "single_lookup": 14
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_qids.json",
+    "sha256": "c742ef231f804dbe4417224bc498fc832ba15d26c569c350cd0a27fe96ade65c"
+  }
+}

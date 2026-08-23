@@ -1,0 +1,269 @@
+{
+  "policy": "Retrieval-blind adjudication after an invalid Luna primary audit and a validator-clean Sol cross-review. The primary duplicated qids 0404, 0500, and 0415 and omitted 0107, so no primary decision is selected. All selected review decisions were independently checked against the frozen Gold and JO coordinates; no retrieval or agent result was consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_luna.json",
+      "sha256": "910ef0b52c483aad288b8ea7a508e9a6c16a7d6b93d03b67b2645a99b1f433d1"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_sol_medium.json",
+      "sha256": "e218af5e200ef35203b3c32268511a976f7654f4a9b2a0436731fe83c8064a8a"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_resolution.json",
+      "sha256": "bd6e04fdc49378068b78400c2cf78c257649b0780d3b886783c9149fd9f61326"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_qids.json",
+      "sha256": "c673e20b7f86c4f029600153b567bb40613ebda08541bb0fc391a7516d4d0481"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v5.jsonl",
+      "sha256": "83e5c203aca53d5609e06acac1ecfeb214ad3c49d56c1f8c4d0f626a70a07398"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 20,
+    "decision_agreements": 14,
+    "decision_disagreements": 6,
+    "primary_validation_errors": 4,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 12,
+    "exclude": 8
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0404",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "duplicate qid in primary audit: v3-offline-0404",
+      "review_validation_error": "",
+      "reason": "Use the validator-clean direct payment-row span; the primary audit is structurally invalid."
+    },
+    {
+      "qid": "v3-offline-0500",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "duplicate qid in primary audit: v3-offline-0500",
+      "review_validation_error": "",
+      "reason": "Use the complete directly supporting payment row and exclude unrelated notes; the primary audit is structurally invalid."
+    },
+    {
+      "qid": "v3-offline-0271",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The current Gold omits independently required claim-document evidence and cannot support the complete official answer."
+    },
+    {
+      "qid": "v3-offline-0415",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "duplicate qid in primary audit: v3-offline-0415",
+      "review_validation_error": "",
+      "reason": "The review preserves only direct evidence for the requested high-cancer payment condition; the primary audit is structurally invalid."
+    },
+    {
+      "qid": "v3-offline-0027",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The official absence claim cannot be verified by a finite positive evidence span."
+    },
+    {
+      "qid": "v3-offline-0035",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The current evidence does not directly establish every independent condition in the official answer."
+    },
+    {
+      "qid": "v3-offline-0279",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review's direct-evidence decision is validator-clean and avoids unsupported inference."
+    },
+    {
+      "qid": "v3-offline-0366",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The selected direct equivalent rider variants match the question scope and answer claim."
+    },
+    {
+      "qid": "v3-generated-def-0007",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed span isolates the requested definition without unrelated neighboring material."
+    },
+    {
+      "qid": "v3-generated-def-0027",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed operation retains only directly supporting definition evidence."
+    },
+    {
+      "qid": "v3-offline-0107",
+      "primary_decision": "invalid",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "unknown decision invalid: v3-offline-0107",
+      "review_validation_error": "",
+      "reason": "The primary omitted this qid; only the cross-review provides a complete validator-clean decision."
+    },
+    {
+      "qid": "v3-offline-0106",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The current Gold cannot directly prove all distinct conditions in the official answer."
+    },
+    {
+      "qid": "v3-offline-0150",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The colloquial scenario requires a semantic inference not directly stated in the current evidence, so it is not treated as complete Gold."
+    },
+    {
+      "qid": "v3-offline-0372",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed direct variants support the complete requested payment condition without scope leakage."
+    },
+    {
+      "qid": "v3-offline-0338",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The current Gold omits multiple required rider families from the official list answer."
+    },
+    {
+      "qid": "v3-offline-0465",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed direct evidence and group structure match the independent claims in the official answer."
+    },
+    {
+      "qid": "v3-generated-def-0034",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review isolates the requested definition and rejects unrelated adjacent material."
+    },
+    {
+      "qid": "v3-offline-0037",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed equivalent rider variants directly support the requested benefit condition."
+    },
+    {
+      "qid": "v3-offline-0102",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Four distinct waiting-period and underwriting claims require separate AND groups that the current Gold does not contain."
+    },
+    {
+      "qid": "v3-generated-def-0025",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed OR variants directly define the same nine-disease category and preserve question scope."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_final.jsonl",
+    "sha256": "42661dd9c42676b0aa9c530d4cd9edd74eb6d0099f1d0f2d27e08359567f2e10"
+  }
+}

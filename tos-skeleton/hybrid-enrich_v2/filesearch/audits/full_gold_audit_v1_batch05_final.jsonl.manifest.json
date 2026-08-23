@@ -1,0 +1,269 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean Sol review throughout: it verified minimal JO coordinates and decomposed missing independent claims, while the Luna audit marked 15 items pass without span operations and missed the two source-proven incomplete cases 0051 and 0157. No retrieval, agent, arm, or score artifact was consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_luna.json",
+      "sha256": "8114dc9ddfb5999ed2536cd497a8d5f01f57a197bf49f9e063a884af9c5e3375"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_sol_medium.json",
+      "sha256": "912a0fd52b2ef8c81c9612061f7103e519a7af7743090be72aa51d458fc8ee69"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_resolution.json",
+      "sha256": "44d2cd7d8e43d8546522ec34f589c0b566fbb2055b6b59ffcdbcba886cb5dca8"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_qids.json",
+      "sha256": "34ee189fdd6add0538cd2ef1c0f434b993eaeb2884a9bdb62da49336630dda15"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v6.jsonl",
+      "sha256": "3f5aeec9a11c497accb77802901747882e6ed8c634a5b385408b555287b15382"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 20,
+    "decision_agreements": 5,
+    "decision_disagreements": 15,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 13,
+    "exclude": 7
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0384",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete minimal payment row rather than an over-wide span."
+    },
+    {
+      "qid": "v3-offline-0423",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the minimal row containing every requested payment condition."
+    },
+    {
+      "qid": "v3-offline-0393",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed span directly and minimally supports the official answer."
+    },
+    {
+      "qid": "v3-generated-def-0029",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed definition span is complete and excludes unrelated neighboring text."
+    },
+    {
+      "qid": "v3-offline-0197",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits find required direct evidence missing from the current Gold."
+    },
+    {
+      "qid": "v3-offline-0360",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete minimal payment row and preserve all requested conditions."
+    },
+    {
+      "qid": "v3-offline-0459",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed operation isolates the directly supporting benefit evidence."
+    },
+    {
+      "qid": "v3-offline-0262",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits find the current groups unable to prove the full official claim."
+    },
+    {
+      "qid": "v3-offline-0092",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed direct span is complete and scope-correct."
+    },
+    {
+      "qid": "v3-offline-0546",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed direct span preserves all requested conditions without adjacent material."
+    },
+    {
+      "qid": "v3-offline-0373",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed operation uses the minimal directly sufficient JO evidence."
+    },
+    {
+      "qid": "v3-offline-0303",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits reject the current evidence because the official claim is not directly supported."
+    },
+    {
+      "qid": "v3-offline-0108",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits require independent claims that cannot be represented by the current Gold groups."
+    },
+    {
+      "qid": "v3-offline-0395",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed payment-row span directly supports the answer and is validator-clean."
+    },
+    {
+      "qid": "v3-offline-0051",
+      "primary_decision": "pass",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Official source requires three independent facts—percutaneous method, item 88 application, and the laparoscopic/thoracoscopic exception—but current Gold contains only the general surgery definition."
+    },
+    {
+      "qid": "v3-offline-0006",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed evidence isolates the directly requested contract effect."
+    },
+    {
+      "qid": "v3-offline-0355",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The reviewed operation preserves the complete direct condition with minimal coordinates."
+    },
+    {
+      "qid": "v3-offline-0346",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits find the current Gold incomplete for the official multi-claim answer."
+    },
+    {
+      "qid": "v3-offline-0157",
+      "primary_decision": "pass",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Official answer requires three distinct classification sections and examples; current two groups contain only a partial first table and a mixed tail span."
+    },
+    {
+      "qid": "v3-offline-0523",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the minimal direct registration-payment row and retain the independent definition group."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_final.jsonl",
+    "sha256": "d95f05c54a05b7e95cd2bbe0d3c3687c637def12977467cad0d759546d6e87e4"
+  }
+}

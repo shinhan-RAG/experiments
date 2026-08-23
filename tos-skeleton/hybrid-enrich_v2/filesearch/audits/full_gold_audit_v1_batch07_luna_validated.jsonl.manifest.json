@@ -1,0 +1,35 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_luna.json",
+      "sha256": "f0870f8a1af438ed7c8ffefa0c73e08d4620649430bf19fd55902af924098a4f"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_qids.json",
+      "sha256": "4fbb69dd330cd80664bdfe024277f907379f11fd8d37a6038c35379066d39ae3"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v8.jsonl",
+      "sha256": "2a3268d508f182d3426f068ec4389043c0ddea54ee1e1910acb1d68a67df7c9a"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "c8330a44b1ce76092447a00c35edfab2f5f705d0bf6dc0f091dcdd7a62cc6c79"
+  },
+  "counts": {
+    "qids": 10,
+    "pass": 1,
+    "fix": 6,
+    "exclude": 3
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_luna_validated.jsonl",
+    "sha256": "945123aabd4a0bcd4b1a768adcc166ade201a9f7c816a86df02ba727fd553599"
+  }
+}

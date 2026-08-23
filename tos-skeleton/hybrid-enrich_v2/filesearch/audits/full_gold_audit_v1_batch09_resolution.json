@@ -1,0 +1,55 @@
+{
+  "policy": "Select only validator-clean retrieval-blind decisions. The Luna primary audit is structurally invalid because it duplicates qids and omits required batch positions; the Sol review independently checked official Q/A, source spans, JO scope, sibling alternatives, and exact coordinates.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0041",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review supplies a validator-clean OR family of direct payment-clause and payment-table siblings."
+    },
+    {
+      "qid": "v3-offline-0446",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review replaces the truncated span with the complete direct payment-table row."
+    },
+    {
+      "qid": "v3-offline-0143",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review quarantines an unrepresentable duplicate-AND Gold structure and an out-of-JO span."
+    },
+    {
+      "qid": "v3-generated-def-0032",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review gives a validator-clean minimal definition span."
+    },
+    {
+      "qid": "v3-offline-0286",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review identifies a rider mismatch and missing classification evidence requiring new AND groups, so the row is quarantined."
+    },
+    {
+      "qid": "v3-offline-0104",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review identifies missing basic-physical-therapy evidence and an unrepresentable group rewrite, so the row is quarantined."
+    },
+    {
+      "qid": "v3-offline-0131",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review supplies validator-clean direct sibling alternatives for the requested covered-condition list."
+    },
+    {
+      "qid": "v3-generated-def-0019",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review narrows the span to the exact official definition claim."
+    },
+    {
+      "qid": "v3-offline-0069",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review finds multiple missing independent claims and quarantines the row until a complete AND structure can be represented."
+    },
+    {
+      "qid": "v3-offline-0411",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review replaces an incomplete span and enumerates all direct equivalent rider variants."
+    }
+  ]
+}

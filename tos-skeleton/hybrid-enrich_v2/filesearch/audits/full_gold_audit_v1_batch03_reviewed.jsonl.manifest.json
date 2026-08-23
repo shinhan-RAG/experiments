@@ -1,0 +1,149 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v4.jsonl",
+      "sha256": "f6882896b70df7c1db679dc5a8e5697feb7313a34dbd43fa1c8b59f6f84e4853"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_final.jsonl",
+      "sha256": "a33b111d7d6b6a7fee90f38316de19ec79a7ee36646cbe81cebf346080e4db37"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_qids.json",
+      "sha256": "d05009b8230f5da5fbb000813aaf29b1df430fa1d7f5728867504807e15d2dd5"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_reviewed.jsonl",
+  "output_sha256": "30fd0237957912226790a088c00849580ae7eac38ec9be966b4405fc008b4a75",
+  "n_input": 20,
+  "n_output": 13,
+  "counts": {
+    "pass": 8,
+    "fix": 5,
+    "exclude": 7
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0056",
+      "decision": "exclude",
+      "reason": "현재 단일 group은 진단확정, 보장개시일 이후, 직접치료 목적의 누적 180일 치료 및 최초 1회 지급만 지지한다. 공식 정답의 의약품 분류번호 214(혈압강하제) 처방이라는 독립 claim은 현재 member에 포함되지 않아 새 필수 AND group이 필요하다."
+    },
+    {
+      "qid": "v3-offline-0356",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0260",
+      "decision": "exclude",
+      "reason": "j01730은 IMRT에서 입자방사선 치료를 제외한다는 claim을, j01782는 양성자치료 정의를 직접 지지한다. 그러나 중입자치료 보장 내용이 확인되지 않는다는 결론은 부재 주장이고, group 1의 j01756은 제목뿐이어서 직접근거가 아니다."
+    },
+    {
+      "qid": "v3-offline-0529",
+      "decision": "exclude",
+      "reason": "현재 j05001은 수술의 정의와 제외 항목만 지지한다. 동일 질병의 복수 수술은 1회만 지급한다는 제한, 365일 경과 후 새 수술의 예외, 동일 질병의 3자리 분류번호 기준은 별도의 독립 claim이다."
+    },
+    {
+      "qid": "v3-offline-0269",
+      "decision": "exclude",
+      "reason": "현재 span은 척추 부위와 기형장해의 일반 판정방법 일부만 포함한다. 공식 정답의 심한·뚜렷한·약간의 운동장해, 심한·약간의 기형 수치조건 및 추간판탈출증 신경장해 세 단계가 빠져 있다."
+    },
+    {
+      "qid": "v3-offline-0434",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0491",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0361",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0292",
+      "decision": "exclude",
+      "reason": "현재 표 span은 갱신형 및 해약환급금 미지급형 일반암진단특약과 두 특약의 90일 보장 제외를 직접 지지한다. 그러나 공식 정답의 '일반암 진단1·2라는 특약은 없다'는 결론은 문서 내 부재 주장으로 직접근거가 될 수 없다."
+    },
+    {
+      "qid": "v3-offline-0396",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0354",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0436",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0421",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0058",
+      "decision": "exclude",
+      "reason": "현재 j07547은 척추의 압박률·Cobb 각도 판정 일부만 지지하고, j07548 member는 팔의 관절장해 문단이다. 공식 정답의 AMA식 운동가능영역 비교, 척주 예외 및 진단서 기재 차이를 직접 지지하지 않는다."
+    },
+    {
+      "qid": "v3-offline-0130",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0141",
+      "decision": "exclude",
+      "reason": "현재 j01543 span은 선택 가입, 보험금이 지급된 보장계약의 효력 소멸 및 나머지 보장계약의 보험료 납입을 지지한다. 공식 정답의 제1편 일반사항·제2편 개별사항 구성과 제1-1조부터 제1-13조까지라는 독립 claim은 포함하지 않는다."
+    },
+    {
+      "qid": "v3-generated-def-0033",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0126",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0177",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0010",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}

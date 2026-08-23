@@ -1,0 +1,39 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_sol_review.json",
+      "sha256": "0d9b21dd032e8f25c189daafc5c7641b2f560eb3a0037dd6a642dcbd0fd14b20"
+    },
+    "prior_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_luna.json",
+      "sha256": "81c6420425c17dba9ee261d8f939a6d170ff5a02af646baff20627346581486f"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_qids.json",
+      "sha256": "0f6d983270dde85ffed4617feb428924059cea7c0cf84a07bc90080897fa698d"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_test_source_to_u3jo_provisional_v1.jsonl",
+      "sha256": "7576fed0bd908cc188764f2be570d8baccceb03ad995813dc24289cf737a2b76"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "2db39c8eff5094f69fe3495203953f0f4b556ae19abb20166dc0f4a99293c78e"
+  },
+  "counts": {
+    "qids": 12,
+    "pass": 6,
+    "fix": 4,
+    "exclude": 2
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_sol_validated.jsonl",
+    "sha256": "2f5d4915851eac383021af1c4cc92ee4878384e5337e55cc33bb5a55772c5e50"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v5.jsonl",
+      "sha256": "83e5c203aca53d5609e06acac1ecfeb214ad3c49d56c1f8c4d0f626a70a07398"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_final.jsonl",
+      "sha256": "42661dd9c42676b0aa9c530d4cd9edd74eb6d0099f1d0f2d27e08359567f2e10"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_qids.json",
+      "sha256": "c673e20b7f86c4f029600153b567bb40613ebda08541bb0fc391a7516d4d0481"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch04_reviewed.jsonl",
+  "output_sha256": "eca86963920cad9082496e8aadb9b9421c2b1c185d300f5925ee4fabc7ce278e",
+  "n_input": 20,
+  "n_output": 12,
+  "counts": {
+    "pass": 0,
+    "fix": 12,
+    "exclude": 8
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0404",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0500",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0271",
+      "decision": "exclude",
+      "reason": "현재 Gold의 일반 청구 조항은 중증치매·경증이상치매 특약의 치매상태 관련 서류를 직접 명시하지 않고, 간병인사용입원특약의 별도 사고증명서도 빠져 있다. 새 required AND group들이 필요하다."
+    },
+    {
+      "qid": "v3-offline-0415",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0027",
+      "decision": "exclude",
+      "reason": "현재 span은 지급 규정만 제시하며 면책기간의 부존재를 명시하지 않는다. 약관에 규정이 확인되지 않는다는 판단은 직접근거 span으로 만들 수 없다."
+    },
+    {
+      "qid": "v3-offline-0035",
+      "decision": "exclude",
+      "reason": "서로 다른 두 특약의 독립 claim에 각각 required AND group이 필요하나 현재는 한 특약만 포함한다."
+    },
+    {
+      "qid": "v3-offline-0279",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0366",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0007",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0027",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0107",
+      "decision": "exclude",
+      "reason": "현재 JO는 기본형 판본이고 공식 답변은 삭감없음용 판본을 기준으로 하며, 감액기간 규정이 확인되지 않는다는 부재 판단도 직접근거가 아니다."
+    },
+    {
+      "qid": "v3-offline-0106",
+      "decision": "exclude",
+      "reason": "치아치료 규정의 부존재는 JO span으로 입증할 수 없고, 현재 치매 근거도 동등 판본을 별도 AND group으로 중복 배치한 구조다."
+    },
+    {
+      "qid": "v3-offline-0150",
+      "decision": "exclude",
+      "reason": "현재 span은 재해분류표일 뿐 스쿠버다이빙이나 해당 후유장해 보험금의 지급을 명시하지 않는다. 제외 목록에 없다는 사실로 보상을 단정하는 것은 부재에 기초한 추론이다."
+    },
+    {
+      "qid": "v3-offline-0372",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0338",
+      "decision": "exclude",
+      "reason": "현재 Gold에는 납입면제 전용 특약들의 명칭·판본과 주계약 관련 설명을 직접 지지하는 required group들이 없다."
+    },
+    {
+      "qid": "v3-offline-0465",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0034",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0037",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0102",
+      "decision": "exclude",
+      "reason": "현재 하나의 group에서 서로 다른 고혈압·당뇨 특약을 OR member로 묶어 AND/OR 구조도 잘못되었다. 새 required AND group들이 필요하다."
+    },
+    {
+      "qid": "v3-generated-def-0025",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

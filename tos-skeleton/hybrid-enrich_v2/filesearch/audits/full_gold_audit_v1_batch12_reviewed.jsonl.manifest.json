@@ -1,0 +1,151 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v14.jsonl",
+      "sha256": "dce3531d6a675bc32f201d52ee8478719dd2cb4e2fa601b852ee656a216f272b"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_adjudicated.jsonl",
+      "sha256": "2193f7103941768ddd497d1fd14438fb64b111aebd43ecf7e03cb544830a52cb"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_qids.json",
+      "sha256": "4d55da45b19b45ca95456b57d84583fe6a843390fe83517e365dae706cf7bc6b"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_reviewed.jsonl",
+  "output_sha256": "3f53caf201a27c04e1fdd1282f86d4623e067e8358c1c2ee9ea0e8a8d72bd578",
+  "n_input": 20,
+  "n_output": 15,
+  "counts": {
+    "pass": 5,
+    "fix": 10,
+    "exclude": 5
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0392",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0402",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0065",
+      "decision": "fix",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0237",
+      "decision": "fix",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0468",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0325",
+      "decision": "exclude",
+      "reason": "제목 전용 span + 필수 AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0383",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0123",
+      "decision": "exclude",
+      "reason": "면책기간 span 부족 + 삭감지급 도해 AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0378",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0475",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0076",
+      "decision": "exclude",
+      "reason": "대조 claim용 필수 AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0298",
+      "decision": "exclude",
+      "reason": "총론 지급제한 claim용 필수 AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0368",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0082",
+      "decision": "exclude",
+      "reason": "근거 특약 불일치 + 필수 AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0165",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0278",
+      "decision": "fix",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0256",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0466",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0375",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0003",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    }
+  ]
+}

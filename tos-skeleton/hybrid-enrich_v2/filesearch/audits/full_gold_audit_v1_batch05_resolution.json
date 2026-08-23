@@ -1,0 +1,25 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean Sol review throughout: it verified minimal JO coordinates and decomposed missing independent claims, while the Luna audit marked 15 items pass without span operations and missed the two source-proven incomplete cases 0051 and 0157. No retrieval, agent, arm, or score artifact was consulted.",
+  "resolutions": [
+    {"qid":"v3-offline-0384","selected_source":"review","reason":"Use the complete minimal payment row rather than an over-wide span."},
+    {"qid":"v3-offline-0423","selected_source":"review","reason":"Use the minimal row containing every requested payment condition."},
+    {"qid":"v3-offline-0393","selected_source":"review","reason":"The reviewed span directly and minimally supports the official answer."},
+    {"qid":"v3-generated-def-0029","selected_source":"review","reason":"The reviewed definition span is complete and excludes unrelated neighboring text."},
+    {"qid":"v3-offline-0197","selected_source":"review","reason":"Both audits find required direct evidence missing from the current Gold."},
+    {"qid":"v3-offline-0360","selected_source":"review","reason":"Use the complete minimal payment row and preserve all requested conditions."},
+    {"qid":"v3-offline-0459","selected_source":"review","reason":"The reviewed operation isolates the directly supporting benefit evidence."},
+    {"qid":"v3-offline-0262","selected_source":"review","reason":"Both audits find the current groups unable to prove the full official claim."},
+    {"qid":"v3-offline-0092","selected_source":"review","reason":"The reviewed direct span is complete and scope-correct."},
+    {"qid":"v3-offline-0546","selected_source":"review","reason":"The reviewed direct span preserves all requested conditions without adjacent material."},
+    {"qid":"v3-offline-0373","selected_source":"review","reason":"The reviewed operation uses the minimal directly sufficient JO evidence."},
+    {"qid":"v3-offline-0303","selected_source":"review","reason":"Both audits reject the current evidence because the official claim is not directly supported."},
+    {"qid":"v3-offline-0108","selected_source":"review","reason":"Both audits require independent claims that cannot be represented by the current Gold groups."},
+    {"qid":"v3-offline-0395","selected_source":"review","reason":"The reviewed payment-row span directly supports the answer and is validator-clean."},
+    {"qid":"v3-offline-0051","selected_source":"review","reason":"Official source requires three independent facts—percutaneous method, item 88 application, and the laparoscopic/thoracoscopic exception—but current Gold contains only the general surgery definition."},
+    {"qid":"v3-offline-0006","selected_source":"review","reason":"The reviewed evidence isolates the directly requested contract effect."},
+    {"qid":"v3-offline-0355","selected_source":"review","reason":"The reviewed operation preserves the complete direct condition with minimal coordinates."},
+    {"qid":"v3-offline-0346","selected_source":"review","reason":"Both audits find the current Gold incomplete for the official multi-claim answer."},
+    {"qid":"v3-offline-0157","selected_source":"review","reason":"Official answer requires three distinct classification sections and examples; current two groups contain only a partial first table and a mixed tail span."},
+    {"qid":"v3-offline-0523","selected_source":"review","reason":"Use the minimal direct registration-payment row and retain the independent definition group."}
+  ]
+}

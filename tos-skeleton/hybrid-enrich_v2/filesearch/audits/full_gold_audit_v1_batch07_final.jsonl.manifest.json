@@ -1,0 +1,159 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent validator-clean audits. Select the Sol review throughout because it directly verified complete JO ranges for 0249 and 0290 and correctly identified the missing required group in 0021. No retrieval, agent, arm, or score artifact was consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_luna.json",
+      "sha256": "f0870f8a1af438ed7c8ffefa0c73e08d4620649430bf19fd55902af924098a4f"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_sol_medium.json",
+      "sha256": "6f1961502574747a0b08593dec8b91f40177d5f87b76e816153bf25bdd31adce"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_resolution.json",
+      "sha256": "900448e189d2ce63ad29980e8171029b256a95a9dec1438cd42aea837bd075ee"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_qids.json",
+      "sha256": "4fbb69dd330cd80664bdfe024277f907379f11fd8d37a6038c35379066d39ae3"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v8.jsonl",
+      "sha256": "2a3268d508f182d3426f068ec4389043c0ddea54ee1e1910acb1d68a67df7c9a"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 10,
+    "decision_agreements": 6,
+    "decision_disagreements": 4,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 8,
+    "exclude": 2
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0240",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the minimal S02 classification row with explicit S02.5 exclusion."
+    },
+    {
+      "qid": "v3-offline-0435",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use complete payment rows across directly equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0379",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only complete [기본] payment rows from directly equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0249",
+      "primary_decision": "exclude",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The same JO directly contains the classification version, full code list, and both exclusions, so a complete span repair is possible."
+    },
+    {
+      "qid": "v3-offline-0021",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The official answer requires a new independent AND group that the current ledger operation set cannot create."
+    },
+    {
+      "qid": "v3-offline-0388",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the complete non-nursing-hospital benefit row."
+    },
+    {
+      "qid": "v3-offline-0074",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use complete first-once payment rows from all directly equivalent variants."
+    },
+    {
+      "qid": "v3-offline-0319",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The comparison scope is ambiguous and multiple new required groups would be needed."
+    },
+    {
+      "qid": "v3-offline-0464",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only the complete thyroid needle-biopsy benefit row."
+    },
+    {
+      "qid": "v3-offline-0290",
+      "primary_decision": "exclude",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The same JO directly links nonpayment to the complete colon-polyp code list, so one complete span repair is sufficient."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_final.jsonl",
+    "sha256": "442185e35113dce0ef9e16f27f6b54441e4c3f6655beebb665463316a08b469e"
+  }
+}

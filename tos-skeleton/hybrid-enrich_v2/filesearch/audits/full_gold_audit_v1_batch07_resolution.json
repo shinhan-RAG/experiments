@@ -1,0 +1,15 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent validator-clean audits. Select the Sol review throughout because it directly verified complete JO ranges for 0249 and 0290 and correctly identified the missing required group in 0021. No retrieval, agent, arm, or score artifact was consulted.",
+  "resolutions": [
+    {"qid":"v3-offline-0240","selected_source":"review","reason":"Use the minimal S02 classification row with explicit S02.5 exclusion."},
+    {"qid":"v3-offline-0435","selected_source":"review","reason":"Use complete payment rows across directly equivalent variants."},
+    {"qid":"v3-offline-0379","selected_source":"review","reason":"Use only complete [기본] payment rows from directly equivalent variants."},
+    {"qid":"v3-offline-0249","selected_source":"review","reason":"The same JO directly contains the classification version, full code list, and both exclusions, so a complete span repair is possible."},
+    {"qid":"v3-offline-0021","selected_source":"review","reason":"The official answer requires a new independent AND group that the current ledger operation set cannot create."},
+    {"qid":"v3-offline-0388","selected_source":"review","reason":"Use the complete non-nursing-hospital benefit row."},
+    {"qid":"v3-offline-0074","selected_source":"review","reason":"Use complete first-once payment rows from all directly equivalent variants."},
+    {"qid":"v3-offline-0319","selected_source":"review","reason":"The comparison scope is ambiguous and multiple new required groups would be needed."},
+    {"qid":"v3-offline-0464","selected_source":"review","reason":"Use only the complete thyroid needle-biopsy benefit row."},
+    {"qid":"v3-offline-0290","selected_source":"review","reason":"The same JO directly links nonpayment to the complete colon-polyp code list, so one complete span repair is sufficient."}
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "policy": "Select only validator-clean retrieval-blind decisions. The Luna primary audit duplicated v3-offline-0444 and omitted v3-offline-0440, so it is structurally invalid. The Sol review independently rechecked all ten qids against official Q/A, source text, JO scope, sibling alternatives, and exact coordinates.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0044",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review identifies two required positive AND claims plus an unevaluable absence claim and quarantines the row."
+    },
+    {
+      "qid": "v3-offline-0442",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review supplies the validator-clean family of direct payment-clause and payment-table alternatives."
+    },
+    {
+      "qid": "v3-generated-def-0006",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review narrows the existing JO to the minimal complete definition span."
+    },
+    {
+      "qid": "v3-offline-0152",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review corrects the rider mismatch with direct 항암방사선치료 지급사유 and table siblings."
+    },
+    {
+      "qid": "v3-offline-0151",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review supplies both unspecified direct rider variants with minimal definition spans."
+    },
+    {
+      "qid": "v3-generated-def-0028",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review supplies both direct rider variants and removes unrelated trailing material."
+    },
+    {
+      "qid": "v3-offline-0444",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review isolates the exact 100 percent versus first-year 50 percent payment-rate cell."
+    },
+    {
+      "qid": "v3-offline-0547",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review isolates the direct no-refund-during-payment-period sentence."
+    },
+    {
+      "qid": "v3-offline-0440",
+      "selected_source": "review",
+      "reason": "Primary audit omitted this qid; review supplies the complete direct payment-rate and first-year-definition span."
+    },
+    {
+      "qid": "v3-offline-0333",
+      "selected_source": "review",
+      "reason": "Primary audit is structurally invalid; review identifies two required AND claim families and quarantines the row until the structure can be represented."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v1.jsonl",
+      "sha256": "d8038733c364f6441dd3d8bfc9bd3ac5bccb1b640b8458f344a96291be0936af"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch01_final.jsonl",
+      "sha256": "128dd9e0f68f57b369ff68f85915724d4963e80c86aa7109a3be04bf6cb2c8b0"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch01_qids.json",
+      "sha256": "a5be4e280867f9706eb453798abc7096bc55ad146c3b497cb8a8f9a3683d6513"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch01_reviewed.jsonl",
+  "output_sha256": "ac680716d90c88ae1c1c8e6db36f5aac607dbfbcd3061a7e79e4b220f3d8ad0b",
+  "n_input": 5,
+  "n_output": 5,
+  "counts": {
+    "pass": 1,
+    "fix": 4,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0055",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0201",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0134",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0109",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0387",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}

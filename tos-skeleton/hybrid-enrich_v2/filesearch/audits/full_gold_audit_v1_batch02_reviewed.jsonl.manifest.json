@@ -1,0 +1,91 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v3.jsonl",
+      "sha256": "04faaa77585186fd34ee7c596b2c66909ca4d5b7ccb68845fe75979dc73cb830"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_final.jsonl",
+      "sha256": "4239d8e88eb66a2460bec42bfbc6fe51e8fbd9131fee23ccb987c53b0803c75e"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_qids.json",
+      "sha256": "b14b603ee46eea975d2309ed1242efafee01b9de140bf589dbe10f79bac2f75f"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_reviewed.jsonl",
+  "output_sha256": "9505188e8a598db03521aa90684822b49b7c101c2e12d13abb30f5053c00baa7",
+  "n_input": 10,
+  "n_output": 5,
+  "counts": {
+    "pass": 1,
+    "fix": 4,
+    "exclude": 5
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0389",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0323",
+      "decision": "exclude",
+      "reason": "주석을 기존 group의 member로 추가하면 표와 주석이 OR가 되므로 정확한 교정이 불가능하다."
+    },
+    {
+      "qid": "v3-offline-0085",
+      "decision": "exclude",
+      "reason": "분류표 행과 정의·제외 조건은 독립 required group이어야 하며 현재 operation으로 새 AND group을 만들 수 없다."
+    },
+    {
+      "qid": "v3-offline-0004",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0418",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0390",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0484",
+      "decision": "exclude",
+      "reason": "질문 scope만으로 일반심사형 행을 유일 Gold로 강제할 수 없고, 현재 span은 서로 다른 두 유형과 허혈심장질환 행까지 섞어 포함한다."
+    },
+    {
+      "qid": "v3-offline-0254",
+      "decision": "exclude",
+      "reason": "여러 특약에 공통될 수 있는 조항을 특정 정기특약 하나로 한정할 수 없으며, 질문이 열거한 범주와 공식 답의 선택적 범위도 일치하지 않아 안정적인 최종 Gold scope를 정할 수 없다."
+    },
+    {
+      "qid": "v3-offline-0113",
+      "decision": "exclude",
+      "reason": "누락된 두 항목은 새 required group이어야 하고, 질문 scope 없이 주계약·특약 일반사항·특정 보장제한 특약의 조항을 혼합한 유일 Gold를 강제하기도 어렵다."
+    },
+    {
+      "qid": "v3-offline-0367",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}

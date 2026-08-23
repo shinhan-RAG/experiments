@@ -1,0 +1,159 @@
+{
+  "policy": "Select only validator-clean retrieval-blind decisions. The Luna primary audit is structurally invalid because it duplicates qids and omits required batch positions; the Sol review independently checked official Q/A, source spans, JO scope, sibling alternatives, and exact coordinates.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_luna.json",
+      "sha256": "e38d1ce0c0d20967a937a86a726c7daa6e8aa8e1f7df936ea2a2e3c79df8f126"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_sol_medium.json",
+      "sha256": "8d8224ae23d3520582fcc1abee0dbb82cecbb11960d7cc74306346c363fc7f8a"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_resolution.json",
+      "sha256": "bbe6b3cc446fef365e9ce92cc344778c289362cdbd9d2d3e9818a9719278fb3d"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_qids.json",
+      "sha256": "3ad3a59404e8e48cb9b031b3dd95dba59c95ce160c355a3a71d33704e90fda2f"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v11.jsonl",
+      "sha256": "03d3551a77ae8d32f84d96c707680053f5de799c08a04054ac805a6249ab8c16"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 10,
+    "decision_agreements": 8,
+    "decision_disagreements": 2,
+    "primary_validation_errors": 2,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 6,
+    "exclude": 4
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0041",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review supplies a validator-clean OR family of direct payment-clause and payment-table siblings."
+    },
+    {
+      "qid": "v3-offline-0446",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "duplicate qid in primary audit: v3-offline-0446",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review replaces the truncated span with the complete direct payment-table row."
+    },
+    {
+      "qid": "v3-offline-0143",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review quarantines an unrepresentable duplicate-AND Gold structure and an out-of-JO span."
+    },
+    {
+      "qid": "v3-generated-def-0032",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "duplicate qid in primary audit: v3-generated-def-0032",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review gives a validator-clean minimal definition span."
+    },
+    {
+      "qid": "v3-offline-0286",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review identifies a rider mismatch and missing classification evidence requiring new AND groups, so the row is quarantined."
+    },
+    {
+      "qid": "v3-offline-0104",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review identifies missing basic-physical-therapy evidence and an unrepresentable group rewrite, so the row is quarantined."
+    },
+    {
+      "qid": "v3-offline-0131",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review supplies validator-clean direct sibling alternatives for the requested covered-condition list."
+    },
+    {
+      "qid": "v3-generated-def-0019",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review narrows the span to the exact official definition claim."
+    },
+    {
+      "qid": "v3-offline-0069",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review finds multiple missing independent claims and quarantines the row until a complete AND structure can be represented."
+    },
+    {
+      "qid": "v3-offline-0411",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary audit is structurally invalid; review replaces an incomplete span and enumerates all direct equivalent rider variants."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_adjudicated.jsonl",
+    "sha256": "fe19d02deb1ce884e323f3ff0fcab4d4bcc6b566d171f10382c8d59f8ae4210b"
+  }
+}

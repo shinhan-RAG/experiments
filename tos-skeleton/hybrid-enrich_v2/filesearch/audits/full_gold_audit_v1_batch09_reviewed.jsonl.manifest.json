@@ -1,0 +1,92 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v11.jsonl",
+      "sha256": "03d3551a77ae8d32f84d96c707680053f5de799c08a04054ac805a6249ab8c16"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_adjudicated.jsonl",
+      "sha256": "fe19d02deb1ce884e323f3ff0fcab4d4bcc6b566d171f10382c8d59f8ae4210b"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_qids.json",
+      "sha256": "3ad3a59404e8e48cb9b031b3dd95dba59c95ce160c355a3a71d33704e90fda2f"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch09_reviewed.jsonl",
+  "output_sha256": "11ff1dd56794d8ed2c9a6817d64f49d6c61a5844a7f51dd79c2feb4349e5fcb4",
+  "n_input": 10,
+  "n_output": 6,
+  "counts": {
+    "pass": 0,
+    "fix": 6,
+    "exclude": 4
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0041",
+      "decision": "fix",
+      "groups": 1,
+      "members": 8
+    },
+    {
+      "qid": "v3-offline-0446",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0143",
+      "decision": "exclude",
+      "reason": "현재 두 group은 동일한 1~5종수술 지급 claim의 해약환급금 미지급형과 갱신형을 AND로 강제한다. 또한 group 0의 j04179 span 끝좌표 1465164는 해당 JO의 char_end 1464326을 초과하여 j04180까지 잘못 합쳐져 있다."
+    },
+    {
+      "qid": "v3-generated-def-0032",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0286",
+      "decision": "exclude",
+      "reason": "현재 j05653은 허혈심장질환진단특약이 아니라 3대질병간병인사용입원특약의 JO이다. 또한 허혈심장질환 정의만으로는 협심증 I20과 그 하위 코드 I20.90이 대상이라는 핵심 claim을 직접 지지하지 못한다."
+    },
+    {
+      "qid": "v3-offline-0104",
+      "decision": "exclude",
+      "reason": "현재 group 0은 제목뿐이고, group 1의 j02052에는 질문과 무관한 본문이 포함되어 있다. group 2와 3은 단순재활치료 및 전문재활치료만 지지하며 공식 정답의 핵심인 기본물리치료 정의와 수가코드를 지지하지 않는다."
+    },
+    {
+      "qid": "v3-offline-0131",
+      "decision": "fix",
+      "groups": 1,
+      "members": 8
+    },
+    {
+      "qid": "v3-generated-def-0019",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0069",
+      "decision": "exclude",
+      "reason": "현재 j02654는 뇌혈관질환 진단확정 시 최초 1회 지급한다는 claim만 지지한다. 공식 정답의 분류표 기준, 혈관성 치매·외상성 두개내 출혈 예외, 의사 진단 및 검사기초, 뇌경색증 I63 해당 claim이 빠져 있다."
+    },
+    {
+      "qid": "v3-offline-0411",
+      "decision": "fix",
+      "groups": 1,
+      "members": 8
+    }
+  ]
+}
