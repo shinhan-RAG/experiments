@@ -89,11 +89,12 @@ def tool_call(sess, qid, question, arm, action, value=""):
 
 
 def model_action(provider, model, reasoning_effort, prompt, output, timeout,
-                 max_call_budget_usd):
+                 max_call_budget_usd=0.25, system_prompt=None):
+    sysp = system_prompt or SYSTEM
     if provider == "claude":
         command = ["claude", "-p", "--model", model,
                    "--effort", reasoning_effort or "medium", "--tools", "",
-                   "--system-prompt", SYSTEM,
+                   "--system-prompt", sysp,
                    "--json-schema", SCHEMA.read_text(encoding="utf-8"),
                    "--output-format", "json", "--no-session-persistence",
                    "--max-budget-usd", str(max_call_budget_usd), prompt]
@@ -115,7 +116,7 @@ def model_action(provider, model, reasoning_effort, prompt, output, timeout,
                "--output-last-message", str(output), "--json", "-"]
     if reasoning_effort:
         command[4:4] = ["--config", f'model_reasoning_effort="{reasoning_effort}"']
-    proc = subprocess.run(command, input=SYSTEM + "\n" + prompt, text=True, capture_output=True,
+    proc = subprocess.run(command, input=sysp + "\n" + prompt, text=True, capture_output=True,
                           timeout=timeout, cwd=str(HERE), env=os.environ.copy())
     action = json.loads(output.read_text(encoding="utf-8")) if output.exists() else None
     return action, proc
@@ -302,6 +303,7 @@ def main():
         qid, rep, arm_name = job
         arm = arms[arm_name]
         question = gold[qid]["q"]
+        system_prompt = SYSTEM + (("\n" + arm["prompt_addendum"]) if arm.get("prompt_addendum") else "")
         sess = run_dir / "sessions" / f"{qid}_{arm_name}_r{rep}"
         if args.resume and (sess / "result.json").exists():
             prev = json.loads((sess / "result.json").read_text(encoding="utf-8"))
@@ -335,7 +337,8 @@ def main():
             try:
                 action, proc = model_action(
                     args.provider, args.model, args.reasoning_effort, prompt, output,
-                    args.timeout, args.max_call_budget_usd)
+                    args.timeout, system_prompt=system_prompt,
+                    max_call_budget_usd=args.max_call_budget_usd)
             except Exception as exc:
                 trace.append({"action": "model_error", "error": f"{type(exc).__name__}:{exc}"})
                 fatal_errors += 1; break
