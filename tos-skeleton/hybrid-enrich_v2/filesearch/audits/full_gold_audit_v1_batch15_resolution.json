@@ -1,0 +1,120 @@
+{
+ "policy": "Both audits are retrieval-blind and validator-clean. Select the independent review for every qid: it re-verified each primary fix (table header restoration, minimal-sufficient spans, version-OR wording identity) against source text, and on v3-offline-0478 additionally added a missing OR member (same-rider 제2-2조 j01838) that independently supports the claim.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0345",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0478",
+   "selected_source": "review",
+   "reason": "Review confirmed the primary fix and added a missing OR member (j01838, same-rider payment clause) that independently supports the claim."
+  },
+  {
+   "qid": "v3-offline-0456",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0358",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0288",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0477",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0443",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0166",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0248",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0022",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0029",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0253",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0009",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0371",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0414",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0522",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0261",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0551",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-generated-def-0009",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0374",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0448",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0232",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  },
+  {
+   "qid": "v3-offline-0480",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and version wording against source text."
+  }
+ ]
+}
