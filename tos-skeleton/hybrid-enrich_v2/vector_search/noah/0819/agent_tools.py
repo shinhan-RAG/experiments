@@ -221,6 +221,108 @@ def reference_follow_ranking(search, slots, stats, limit=5, max_hops=2):
     return ranked, audit
 
 
+# R6 검색기 개선(기본 off) — 규칙×규칙. 상품명·질병명·조제목 하드코딩 없음.
+# (c) intent_role_subquery: 특약 표면형이 없는 구어 의도 질문 대응.
+#     발화 조건은 (i) 규칙 라우터가 contract(identity)를 하나도 못 잡음 ∧
+#     (ii) 질문이 filesearch 의 일반어 ROLE_RULES 중 하나 이상에 매치.
+#     발화하면 매치된 role 마다 "그 role 의 ROLE_RULES 패턴에 매치하는 JO 조제목에서
+#     빈도로 뽑은 최빈 명사구"를 원 질문 토큰에 얹은 보조 BM25F 질의를 만들어
+#     기존 quota 앙상블 뒤 tail quota 로만 추가한다(상위 보존, 미발화 시 결과 불변).
+#     어휘는 전부 elements_u3jo 제목에서 계산하며 코드에 제목 리터럴이 없다.
+JO_TITLE_LOCATOR_RE = re.compile(
+    r"^\s*(?:#+\s*)?제\s*[0-9０-９\-–—]+\s*(?:편|장|절|관|조)(?:\s*의\s*[0-9０-９]+)?\s*")
+JO_TITLE_QUOTE_RE = re.compile(r"[\"“”‘’'「」『』]")
+JO_TITLE_TAIL_RE = re.compile(r"에\s*(?:대한|관한)\s")
+
+
+def role_rules():
+    """filesearch 의 기존 일반어 role 규칙(신규 사전 없음)."""
+    from patterns import ROLE_RULES
+    return list(ROLE_RULES)
+
+
+def jo_title_phrase(title):
+    """JO 제목에서 조·관 위치표기와 인용부호를 걷어낸 명사구."""
+    text = JO_TITLE_QUOTE_RE.sub(" ", JO_TITLE_LOCATOR_RE.sub("", str(title or "")))
+    text = JO_TITLE_TAIL_RE.split(text)[0]
+    text = re.sub(r"^[#\s]+", "", text)
+    return re.sub(r"\s+", " ", text).strip(" ,.·")
+
+
+def role_title_vocabulary(search, top_k=4, min_count=2, min_len=2, max_len=20):
+    """role → 그 role 패턴에 매치하는 JO 제목의 최빈 명사구(문서에서만 도출·캐시)."""
+    import collections as _c
+    cache = getattr(search, "_role_title_vocab", None)
+    if cache is None:
+        cache = search._role_title_vocab = {}
+    key = (int(top_k), int(min_count), int(min_len), int(max_len))
+    if key in cache:
+        return cache[key]
+    counters = _c.defaultdict(_c.Counter)
+    rules = [(re.compile(pattern), role) for pattern, role in role_rules()]
+    for unit in search._jo:
+        phrase = jo_title_phrase(unit.get("title"))
+        if not (min_len <= len(phrase) <= max_len):
+            continue
+        for pattern, role in rules:
+            if pattern.search(phrase):
+                counters[role][phrase] += 1
+    vocabulary = {}
+    for role, counter in counters.items():
+        picked = [phrase for phrase, n
+                  in sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))
+                  if n >= min_count][:top_k]
+        if picked:
+            vocabulary[role] = picked
+    cache[key] = vocabulary
+    return vocabulary
+
+
+def intent_role_gate(raw_query, slots, max_roles=2):
+    """발화 조건 — 라우터가 특약을 하나도 못 잡았고, 질문이 role 규칙에 매치할 때만."""
+    if list(slots.get("contract", [])) or list(slots.get("identity", [])):
+        return []
+    text = str(raw_query)
+    roles = []
+    for pattern, role in role_rules():
+        if role not in roles and re.search(pattern, text):
+            roles.append(role)
+    return roles[: max(0, int(max_roles))]
+
+
+def intent_role_rankings(search, raw_query, slots, tokens, roles, vocabulary,
+                         weights=None, profile="core"):
+    """매치된 role 마다 '원 질문 토큰 + role 조제목 어휘' 보조 BM25F ranking 을 만든다."""
+    from clm_search import TOKEN_RE, STOP
+    from patterns import unique
+    rankings, audit = [], []
+    for role in roles:
+        phrases = list(vocabulary.get(role) or [])
+        if not phrases:
+            continue
+        extra = [token for phrase in phrases for token in TOKEN_RE.findall(phrase)
+                 if token not in STOP and not re.fullmatch(r"\d+", token)]
+        # 원 질문 토큰은 그대로 두고, 조제목 어휘 토큰만 정규화해 덧붙인다.
+        sub_tokens = list(dict.fromkeys(list(tokens)))
+        sub_tokens += [token for token in unique(extra, 30) if token not in sub_tokens]
+        sub_tokens = sub_tokens[:60]
+        sub_slots = {key: list(value) for key, value in slots.items() if key != "_conf"}
+        sub_slots["role"] = list(dict.fromkeys(list(sub_slots.get("role", [])) + [role]))
+        sub_slots["subject"] = list(dict.fromkeys(
+            list(sub_slots.get("subject", [])) + phrases))
+        sub_query = " ".join([str(raw_query)] + phrases)
+        _, sub_lexical = search.match_table(sub_slots, sub_tokens)
+        ranked = search.rank_structured(sub_slots, sub_tokens, sub_query, weights=weights,
+                                        profile=profile, limit=400,
+                                        lexical_counts=sub_lexical)
+        if not ranked:
+            continue
+        rankings.append(ranked)
+        audit.append({"role": role, "vocabulary": phrases,
+                      "sub_tokens": sub_tokens[:20], "candidates": len(ranked)})
+    return rankings, audit
+
+
 def reference_bundle_enabled(raw_query, gate="membership_or_code"):
     """Only expose explicit reference paths for questions that need them."""
     if not gate:
@@ -1155,7 +1257,7 @@ def main():
             v = [x.strip() for x in getattr(a, f).split(",") if x.strip()]
             if v:
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v))
-        identity_expand_info, reference_follow_info = {}, {}
+        identity_expand_info, reference_follow_info, intent_role_info = {}, {}, {}
         follow_ids, expand_contracts = set(), set()
         table_note_fired = bool(arm.get("table_note")) and reference_follow_enabled(
             original_question(a.q), "table_code_or_document")
@@ -1261,6 +1363,41 @@ def main():
                             "fired": bool(follow_ranked),
                             "quota": int(follow.get("quota", 5)),
                             **follow_audit,
+                        }
+                    if arm.get("intent_role"):
+                        intent_cfg = arm["intent_role"]
+                        intent_roles = intent_role_gate(
+                            original, slots,
+                            max_roles=int(intent_cfg.get("max_roles", 2)))
+                        intent_vocab = (role_title_vocabulary(
+                            S, top_k=int(intent_cfg.get("vocab_top_k", 4)),
+                            min_count=int(intent_cfg.get("vocab_min_count", 2)))
+                            if intent_roles else {})
+                        intent_rankings, intent_audit = ([], [])
+                        if intent_roles:
+                            intent_rankings, intent_audit = intent_role_rankings(
+                                S, original, slots, toks, intent_roles, intent_vocab,
+                                weights=arm.get("sfw"),
+                                profile=arm.get("profile", "core"))
+                        per_role = int(intent_cfg.get("per_role_quota", 4))
+                        remaining = int(intent_cfg.get("total_quota", 8))
+                        used = []
+                        for ranked, row in zip(intent_rankings, intent_audit):
+                            quota = min(per_role, remaining)
+                            if quota <= 0:
+                                break
+                            rankings.append(ranked)
+                            quotas.append(quota)
+                            remaining -= quota
+                            used.append({**row, "quota": quota})
+                        intent_role_info = {
+                            "mode": "tail_quota_after_existing_rankings",
+                            "gate": "no_routed_identity_and_role_rule_match",
+                            "roles": intent_roles,
+                            "fired": bool(used),
+                            "per_role_quota": per_role,
+                            "total_quota": int(intent_cfg.get("total_quota", 8)),
+                            "subqueries": used,
                         }
                     res = unique_jo_quota(
                         rankings, member_to_jo, quotas, limit=400)
@@ -1679,6 +1816,7 @@ def main():
              **({"explicit_identity": identity_audit} if identity_audit else {}),
              **({"identity_expand": identity_expand_info} if identity_expand_info else {}),
              **({"reference_follow": reference_follow_info} if reference_follow_info else {}),
+             **({"intent_role_subquery": intent_role_info} if intent_role_info else {}),
              **({"locator_coverage": coverage_audit} if coverage_audit else {}),
              **({"evidence_role": role_audit} if role_audit else {}),
              **({"display_results": items} if arm.get("audit_payload") else {}),
@@ -1704,6 +1842,7 @@ def main():
              **({"explicit_identity": identity_audit} if identity_audit else {}),
              **({"identity_expand": identity_expand_info} if identity_expand_info else {}),
              **({"reference_follow": reference_follow_info} if reference_follow_info else {}),
+             **({"intent_role_subquery": intent_role_info} if intent_role_info else {}),
              **({"locator_coverage": coverage_audit} if coverage_audit else {}),
              **({"evidence_role": role_audit} if role_audit else {}),
              **({"facets": facets} if facets else {}), "results": items})

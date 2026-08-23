@@ -702,6 +702,102 @@ class ExperimentArmTest(unittest.TestCase):
         self.assertIn('if arm.get("reference_follow"):', source)
         self.assertIn('rankings.append(follow_ranked)', source)
 
+    # --- R6: intent role sub-query (기본 off) ---
+
+    def test_r6_arm_differs_from_r1v_only_by_intent_role(self):
+        base = copy.deepcopy(self.arms["r1v_verify_identity_reference_hybrid"])
+        challenger = copy.deepcopy(self.arms["r6_intent_role_hybrid"])
+        intent = challenger.pop("intent_role")
+        self.assertEqual(base, challenger)
+        self.assertNotIn("intent_role", base)
+        self.assertEqual({"per_role_quota": 4, "total_quota": 8, "max_roles": 2}, intent)
+
+    def test_intent_role_gate_is_fail_closed(self):
+        # 특약을 라우팅한 질문은 role 규칙에 매치해도 발화하지 않는다.
+        self.assertEqual([], vector_tools.intent_role_gate(
+            "보험금은 어떻게 청구하나요",
+            {"contract": ["(간편)[기본]뇌혈관질환진단특약(무배당, 갱신형)"]}))
+        self.assertEqual([], vector_tools.intent_role_gate(
+            "보험금은 어떻게 청구하나요", {"identity": ["(간편)정기특약(무배당, 갱신형)"]}))
+        # 특약이 없어도 role 규칙에 하나도 매치하지 않으면 발화하지 않는다.
+        self.assertEqual([], vector_tools.intent_role_gate("암이재발하면또받을수있나요?", {}))
+        # 두 조건이 모두 성립할 때만 발화하고, max_roles 로 상한을 둔다.
+        self.assertEqual(["claim_procedure"], vector_tools.intent_role_gate(
+            "보험금은 어떻게 청구하나요", {}))
+        roles = vector_tools.intent_role_gate(
+            "보장개시 전에 진단되면 특약이 소멸되나요", {}, max_roles=2)
+        self.assertEqual(["timing_period", "contract_lifecycle"], roles)
+        self.assertEqual(1, len(vector_tools.intent_role_gate(
+            "보장개시 전에 진단되면 특약이 소멸되나요", {}, max_roles=1)))
+        self.assertEqual([], vector_tools.intent_role_gate(
+            "보험금은 어떻게 청구하나요", {}, max_roles=0))
+
+    def test_intent_role_vocabulary_is_derived_from_jo_titles(self):
+        class _Search:
+            _jo = [{"element_id": "j1", "title": "제2-2조 보험금의 지급사유"},
+                   {"element_id": "j2", "title": "제2-2조 보험금의 지급사유"},
+                   {"element_id": "j3", "title": "제2-1조 특약의 보장개시"},
+                   {"element_id": "j4", "title": "제2-1조 특약의 보장개시"},
+                   {"element_id": "j5", "title": "제2-9조의2 “특약의 무효”에 대한 특칙"},
+                   {"element_id": "j6", "title": "제2-9조의2 “특약의 무효”에 대한 특칙"},
+                   {"element_id": "j7", "title": "제2-3조 단발성 제목"}]
+
+        search = _Search()
+        vocabulary = vector_tools.role_title_vocabulary(search, top_k=4, min_count=2)
+        self.assertEqual(["보험금의 지급사유"], vocabulary["payment_trigger"])
+        self.assertEqual(["특약의 보장개시"], vocabulary["timing_period"])
+        self.assertEqual(["특약의 무효"], vocabulary["contract_lifecycle"])
+        # 조제목이 없는 role 은 어휘가 없다(하드코딩된 기본 어휘 금지).
+        self.assertNotIn("claim_procedure", vocabulary)
+        # 위 어휘는 전부 위 제목에서 나온 것이며 코드에는 제목 리터럴이 없다.
+        source = (HERE / "agent_tools.py").read_text(encoding="utf-8")
+        for phrase in ("보험금의 지급사유", "특약의 보장개시", "특약의 무효",
+                       "보험금의 청구"):
+            self.assertNotIn(phrase, source)
+        # 같은 검색 인스턴스에서 재계산 없이 캐시된 동일 객체를 돌려준다.
+        self.assertIs(vocabulary, vector_tools.role_title_vocabulary(
+            search, top_k=4, min_count=2))
+
+    def test_intent_role_subquery_uses_question_tokens_plus_role_vocabulary(self):
+        captured = {}
+
+        class _Search:
+            def match_table(self, slots, tokens):
+                return None, [0]
+
+            def rank_structured(self, slots, tokens, raw_query, weights=None,
+                                profile="core", limit=400, lexical_counts=None):
+                captured["slots"] = slots
+                captured["tokens"] = tokens
+                captured["query"] = raw_query
+                return [({"element_id": "e1"}, 1.0)]
+
+        rankings, audit = vector_tools.intent_role_rankings(
+            _Search(), "보험금은 어떻게 청구하나요", {}, ["보험금", "청구"],
+            ["claim_procedure"], {"claim_procedure": ["보험금 등의 청구"]})
+        self.assertEqual(1, len(rankings))
+        self.assertEqual(["claim_procedure"], [row["role"] for row in audit])
+        self.assertEqual(["보험금 등의 청구"], audit[0]["vocabulary"])
+        self.assertEqual(["claim_procedure"], captured["slots"]["role"])
+        # 원 질문 토큰이 보존되고 조제목 어휘 토큰이 더해진다.
+        self.assertEqual(["보험금", "청구"], captured["tokens"][:2])
+        self.assertIn("보험금은 어떻게 청구하나요", captured["query"])
+        self.assertIn("보험금 등의 청구", captured["query"])
+        # 어휘가 없는 role 은 보조 질의를 만들지 않는다.
+        self.assertEqual(([], []), vector_tools.intent_role_rankings(
+            _Search(), "보험금은 어떻게 청구하나요", {}, ["보험금"],
+            ["claim_procedure"], {}))
+
+    def test_r6_option_is_wired_behind_the_arm_flag_in_tail_quota(self):
+        source = (HERE / "agent_tools.py").read_text(encoding="utf-8")
+        self.assertIn('if arm.get("intent_role"):', source)
+        self.assertIn('intent_role_subquery', source)
+        # tail quota: 기존 quota 앙상블 뒤에 붙고 unique_jo_quota 를 재사용한다.
+        self.assertLess(source.index('if arm.get("intent_role"):'),
+                        source.index("res = unique_jo_quota("))
+        self.assertLess(source.index('if arm.get("reference_follow"):'),
+                        source.index('if arm.get("intent_role"):'))
+
 
 if __name__ == "__main__":
     unittest.main()
