@@ -1142,6 +1142,7 @@ def main():
             if v:
                 slots[f] = list(dict.fromkeys(list(slots.get(f, [])) + v))
         identity_expand_info, reference_follow_info = {}, {}
+        follow_ids, expand_contracts = set(), set()
         if arm.get("identity_expand"):
             config = arm["identity_expand"]
             added, identity_expand_info = identity_expansion_candidates(
@@ -1233,8 +1234,11 @@ def main():
                                 limit=int(follow.get("limit", 5)),
                                 max_hops=int(follow.get("max_hops", 2)))
                         if follow_ranked:
+                            follow_ids = {e["element_id"] for e, _ in follow_ranked}
                             rankings.append(follow_ranked)
                             quotas.append(int(follow.get("quota", 5)))
+                        else:
+                            follow_ids = set()
                         reference_follow_info = {
                             "mode": "tail_quota_after_existing_rankings",
                             "enabled": follow_enabled,
@@ -1296,6 +1300,8 @@ def main():
             if T:
                 t = T[e["element_id"]]; loc = t.get("locator") or {}
                 it["tag"] = f"[특약]{t.get('contract_key','')[:30]} [조]{loc.get('article','')} {loc.get('article_title','')[:30]} [역할]{'/'.join(t.get('role') or [])} [유형]{t.get('schema_tag','')}"
+            if e["element_id"] in follow_ids:
+                it["note"] = "참조표 후보: 질문 특약의 조가 인용하는 표/조 원문"
             items.append(it)
         fb = arm.get("fallback") if arm.get("meta") else None
         fb_used = ""
