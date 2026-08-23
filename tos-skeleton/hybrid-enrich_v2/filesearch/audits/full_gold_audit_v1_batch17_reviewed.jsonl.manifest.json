@@ -1,0 +1,138 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v19.jsonl",
+      "sha256": "3b7c8a5943e625916b2f25e6f4b3c29b8691a0db9b95a0197a4239179ed8cc5c"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch17_adjudicated.jsonl",
+      "sha256": "a66a89571b6b461d727f18d19a7f3bf338215e755c7bd8c9d0ccec7bb8c48839"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch17_qids.json",
+      "sha256": "825a4d4dfdb25730811864dd0e19f243806b6b758258346abfca19ff18deb8c9"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch17_reviewed.jsonl",
+  "output_sha256": "3827382a69df9e9904f09944c261f69bd1f9e7806b13a43fcc82882a57cffd7c",
+  "n_input": 17,
+  "n_output": 17,
+  "counts": {
+    "pass": 5,
+    "fix": 12,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0091",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0311",
+      "decision": "fix",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0413",
+      "decision": "fix",
+      "groups": 1,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0290",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0202",
+      "decision": "pass",
+      "groups": 2,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0275",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0443",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0414",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0448",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0374",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0377",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0170",
+      "decision": "fix",
+      "groups": 1,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0130",
+      "decision": "fix",
+      "groups": 1,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0256",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0231",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0288",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0490",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

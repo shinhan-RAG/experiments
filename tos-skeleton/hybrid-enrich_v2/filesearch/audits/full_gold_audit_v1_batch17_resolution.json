@@ -1,0 +1,90 @@
+{
+ "policy": "Targeted re-audit under the meeting's a/a-prime derived-version equivalence rule (criterion update recorded in the batch manifest). Both audits are retrieval-blind and validator-clean and agree on all 17 decisions; select the independent review, which re-verified every added OR member span, every version exclusion (material-difference), and the 0130 group replacement against source text.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0091",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0311",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0413",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0290",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0202",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0275",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0443",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0414",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0448",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0374",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0377",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0170",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0130",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0256",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0231",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0288",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  },
+  {
+   "qid": "v3-offline-0490",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments."
+  }
+ ]
+}
