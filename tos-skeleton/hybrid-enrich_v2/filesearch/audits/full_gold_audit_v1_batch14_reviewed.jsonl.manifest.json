@@ -1,0 +1,174 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v16.jsonl",
+      "sha256": "eb83153c404843eecaff3955941e226e38e17db963c97dd5c47acaa946f9b6d1"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch14_adjudicated.jsonl",
+      "sha256": "f57d83c4a42d6a6e8946796cd025ee5149d494893de64118ddf0deee86a2be2a"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch14_qids.json",
+      "sha256": "dec5deaf86e5244664b97d2d128ce8a88b326a3aa72dcc22c7ec64f08fe75c6b"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch14_reviewed.jsonl",
+  "output_sha256": "f2aba6219629b721eb0f777d93ad89bf62674967b33b0a15c407d28f3925a7c5",
+  "n_input": 24,
+  "n_output": 18,
+  "counts": {
+    "pass": 3,
+    "fix": 15,
+    "exclude": 6
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0202",
+      "decision": "fix",
+      "groups": 2,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0100",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0469",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0101",
+      "decision": "exclude",
+      "reason": "삭감지급 claim이 현재 group들에 전혀 지지되지 않으며 새 required AND group이 필요해 현재 적용기로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0509",
+      "decision": "exclude",
+      "reason": "범위·내용 불일치 group 제거 필요, 현재 적용기로 group 삭제 불가"
+    },
+    {
+      "qid": "v3-offline-0164",
+      "decision": "exclude",
+      "reason": "두 claim 모두 현재 group에서 미지지, 정의문 원문 손상 및 새 required AND group 필요로 현재 적용기로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0188",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0020",
+      "decision": "exclude",
+      "reason": "보장개시일 정의라는 세 번째 독립 필수 claim이 어느 group에도 없어, 새로운 required AND group이 필요하나 현재 op 계약으로는 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0490",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0485",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0090",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0470",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0364",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0451",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0275",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0394",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0091",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0272",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0277",
+      "decision": "exclude",
+      "reason": "20번째 열거 항목이 현재 group으로 미지지, 신규 필수 AND group 필요"
+    },
+    {
+      "qid": "v3-offline-0138",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0482",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0350",
+      "decision": "exclude",
+      "reason": "보장한도 claim 미지지, 신규 필수 AND group 필요"
+    },
+    {
+      "qid": "v3-offline-0429",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0086",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}
