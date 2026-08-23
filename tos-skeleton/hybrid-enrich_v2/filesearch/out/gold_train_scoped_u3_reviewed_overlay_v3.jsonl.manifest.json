@@ -1,0 +1,47 @@
+{
+  "policy": "preserve scoped-train order; replace reviewed-scope rows; drop reviewed exclusions",
+  "quality_scope": {
+    "retrieval_blind_reviewed_total": 34,
+    "newly_replaced_in_this_overlay": 1,
+    "scoped_not_completeness_reviewed": 247,
+    "excluded_after_review": [],
+    "zero_group_unscorable": []
+  },
+  "inputs": {
+    "base": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v2.jsonl",
+      "sha256": "8abac53330a469a9d952fcd696901c10b045f0cd553a9e681a58f72d09f1a002"
+    },
+    "reviewed": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/source_only_q0449_reviewed.jsonl",
+      "sha256": "cb98344d8a0fdc4d805c0f0bf084c704a63d6bf38f4e987e3f056b42766a67ae"
+    },
+    "reviewed_qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/source_only_q0449_qids.json",
+      "sha256": "f5499a5a1d8367acbad819be7058a66007bffea122455975c5405cfb4fa66691"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/build_reviewed_train_overlay.py",
+    "sha256": "e17f5173ef32b15999e03f28357cde18712551d5382f22a8595d7e3e41cac747"
+  },
+  "python": "3.9.6",
+  "counts": {
+    "base": 281,
+    "reviewed_scope": 1,
+    "replaced": 1,
+    "excluded": 0,
+    "zero_group_unscorable": 0,
+    "output": 281
+  },
+  "outputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v3.jsonl",
+      "sha256": "04faaa77585186fd34ee7c596b2c66909ca4d5b7ccb68845fe75979dc73cb830"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/qids_train_scoped_u3_reviewed_overlay_v3.json",
+      "sha256": "63d35e9f132392a659c34fd004bb60e550bcbbba38c766dd6acc074fe78752ea"
+    }
+  }
+}

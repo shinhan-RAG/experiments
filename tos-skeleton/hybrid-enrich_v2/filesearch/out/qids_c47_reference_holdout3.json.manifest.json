@@ -1,0 +1,20 @@
+{
+  "policy": "Among Gold-v12 retrieval-blind completeness-reviewed rows, keep questions accepted by the generic reference_or_scenario gate; exclude every qid used by C40, C41/C42, or C44; order by sha256('c47-reference-holdout-20260822|' + qid); take the first three. Selection reads no retrieval result or score.",
+  "gold": {
+    "path": "gold_train_scoped_u3_reviewed_overlay_v12.jsonl",
+    "sha256": "543f2a28d195a6a6fb6faf56389e850a07a4999cc52194435934cf904a6d4e28"
+  },
+  "excluded_qid_files": [
+    {"path": "../audits/c40_reference_bundle_holdout7_qids.json", "sha256": "8319a63be07e3fe899e628786deac2ba598b06c9654b70d46c10426e132c7815"},
+    {"path": "../audits/c41_scenario_smoke_qids.json", "sha256": "6939c7b7cfef5abdb72ec39d1390c055ea50d18231192cfd77a99467057817ed"},
+    {"path": "../audits/c44_reference_projection_smoke3_qids.json", "sha256": "f1cb505bf3d383059cf214bdae88c8e5ac1587e2a99f26b623e6dabc6b93f009"}
+  ],
+  "eligible_count": 3,
+  "selected_count": 3,
+  "qids": [
+    "v3-offline-0092",
+    "v3-offline-0083",
+    "v3-offline-0249"
+  ],
+  "output_sha256": "9e7d800ee3f065dfcbc92fe0897bcce2774e885dfa8d1c0290428ba851a87c4c"
+}

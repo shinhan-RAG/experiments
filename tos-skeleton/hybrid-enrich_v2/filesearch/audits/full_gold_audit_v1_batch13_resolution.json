@@ -1,0 +1,105 @@
+{
+ "policy": "Both audits are retrieval-blind. The primary contained one validator-contract violation (v3-offline-0297: cross-JO replacement encoded as replace_span). Select the validator-clean independent review for every qid: it re-verified each primary conclusion against source text, corrected 0297 to exclude (the answer's claims span two independent JOs, so an in-place fix cannot complete the row), and confirmed the remaining 19 decisions with span/version checks.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0049",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0413",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0208",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0545",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0455",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0147",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0409",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0408",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0508",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0311",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-generated-def-0035",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0217",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0297",
+   "selected_source": "review",
+   "reason": "Primary's cross-JO replace_span violates the validator contract; review re-verified the source and excluded the row because required claims live in two independent JOs (new AND group needed)."
+  },
+  {
+   "qid": "v3-offline-0426",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0291",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0381",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0226",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0216",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0054",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  },
+  {
+   "qid": "v3-offline-0228",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans, table headers, and version-OR members against source text."
+  }
+ ]
+}

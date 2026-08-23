@@ -1,0 +1,106 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_test_source_to_u3jo_provisional_v1.jsonl",
+      "sha256": "7576fed0bd908cc188764f2be570d8baccceb03ad995813dc24289cf737a2b76"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_adjudicated.jsonl",
+      "sha256": "2f5d4915851eac383021af1c4cc92ee4878384e5337e55cc33bb5a55772c5e50"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/c48_test_reference_holdout_qids.json",
+      "sha256": "0f6d983270dde85ffed4617feb428924059cea7c0cf84a07bc90080897fa698d"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_test_reference_holdout_reviewed_v1.jsonl",
+  "output_sha256": "421e8dbe9754c2bc22cf52b14797513dff827b8fea4baaacf6f78d9fbb956759",
+  "n_input": 12,
+  "n_output": 10,
+  "counts": {
+    "pass": 6,
+    "fix": 4,
+    "exclude": 2
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0310",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0088",
+      "decision": "pass",
+      "groups": 3,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0527",
+      "decision": "exclude",
+      "reason": "j00021은 영업일 정의로서 정답 claim과 무관하고 j00022만 진단·재해 발생 당시의 분류 적용 기준을 직접 지지한다. group 0을 j00022로 교체하면 기존 group 1의 j00022와 중복되어 적용이 거부되며, 불필요한 group을 삭제할 수도 없다."
+    },
+    {
+      "qid": "v3-offline-0204",
+      "decision": "fix",
+      "groups": 3,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0075",
+      "decision": "fix",
+      "groups": 4,
+      "members": 5
+    },
+    {
+      "qid": "v3-offline-0320",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0308",
+      "decision": "fix",
+      "groups": 3,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0187",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0309",
+      "decision": "pass",
+      "groups": 4,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0084",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0242",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0266",
+      "decision": "exclude",
+      "reason": "현재 네 AND group에는 표 참조문, 다른 일반 분류표의 F00·Q00 항목, 그리고 잘린 대장용종 표 조각이 혼재한다. 이를 하나의 직접근거 group으로 정리하려면 기존 group 삭제가 필요해 지원 operation으로 표현할 수 없다. 또한 해당 특약의 완전한 표가 있는 j07610은 F00을 FOO로 전사하여 공식 F00 claim을 정확히 직접 지지하지 못한다."
+    }
+  ]
+}
