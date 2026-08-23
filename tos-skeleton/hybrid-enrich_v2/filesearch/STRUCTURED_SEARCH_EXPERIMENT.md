@@ -753,3 +753,34 @@ model_error cell만 재실행)를 추가했고, 한도 해제 전 확정치를 �
   또한 s29는 retrieval-blind 감사를 마친 부분집합으로 전체 train을 대표하지 않는다
   (동일 arm의 Luna 전체 281 R@5 = .6314). Luna 한도 해제 후 `--resume`으로 원 실행을
   완주해 모델 축을 분리 보고한다.
+
+## Gold 전수 감사 완료(batch 12~16)와 v19 전량 하이브리드 실측 (2026-08-23)
+
+남은 미감사 110문항을 같은 retrieval-blind 절차(1차 감사 + 독립 교차검토 + validator +
+명시적 adjudication + manifest)로 batch 12~16에서 소진했다. 1차는 Claude Opus, 교차검토는
+Claude Sonnet 서브에이전트가 수행했고, 모델 산출물·resolution·ledger 는 전부 audits/ 에
+보존했다. 결과: pass 16 / fix 71 / exclude 23 — 미감사 층의 85%가 결함이었다. 지배 유형은
+표 span 의 표 제목·헤더행·급여금 명칭 유실, 판본 미특정 질문의 한쪽 판본 gold, 다중 claim
+일부 미지지(→exclude), span 무관/과확장이다. 교차검토는 4건을 실질 정정했다(0277 pass→exclude,
+0297 인코딩 위반→exclude, 0394 span 축소, 0478 OR member 보완).
+
+**Gold v19 (동결)**: scoreable 213문항, 전 문항 retrieval-blind completeness reviewed,
+미감사 0. exclude 누적 24건은 새 required AND group 이 필요한 유형이 대부분으로 수리 대장에
+남긴다(적용기가 group 신설을 지원하면 복귀 가능).
+
+v19 전 문항을 C29 하이브리드(meta V9 강제, rule router, search-only)로
+sonnet-medium ×2 reps 실측했다(426 cell, fatal 0, empty 1, 비용 $25.1).
+
+| 대상 | n | R@1 | R@5 | R@10 | suff@5 | suff@10 |
+|---|---:|---:|---:|---:|---:|---:|
+| **전체 (v19, 전 문항 감사)** | 213 | .5563 | **.8005** | .8521 | .7793 | .8333 |
+| single_lookup | 169 | — | .8432 | — | .8432 | .8905 |
+| multi_evidence | 42 | — | .6310 | — | .5357 | .6190 |
+
+- R@5 qid-bootstrap 95% CI `[.7512, .8474]`. reps 불일치 8.9%. 문항 분포: 만점 157 ·
+  부분 27 · 0점 29.
+- 해석: (i) Luna 281 실행의 `.6314`와 이 `.8005`의 차이는 gold 감사(모집단·정답 정의 변경)와
+  모델·meta 수리(sonnet, meta 강제)가 섞여 있어 단일 원인으로 귀속할 수 없다.
+  (ii) 감사가 완료된 지금, 남은 실패는 채점 결함이 아니라 검색·제출 실패다 — 0점 29문항과
+  multi_evidence(suff@5 .536)가 다음 개선의 명확한 표적이다. (iii) `.95` 대비 격차 −.15는
+  주로 multi_evidence 층(전체 기여 −.073)과 single_lookup 잔여 실패(−.077)에 있다.
