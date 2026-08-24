@@ -1,0 +1,269 @@
+{
+  "policy": "Both audits are retrieval-blind and validator-clean. Select the independent review for every qid: it re-verified each primary conclusion against source text and, on v3-offline-0237, corrected three OR-member spans in the primary's own fix that omitted the preceding paragraph-⑤ (1회 입원 합산) clause required by claim (1). All other decisions and ops were confirmed identical in substance.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_primary_claude.json",
+      "sha256": "4d231f44099eb01569d9f9bf6a8e7da1875f65255fd9dbd1fd25d9c663c4312c"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_review_claude.json",
+      "sha256": "3c55a6013e21d85efca70986ed8d94a9df59661e510604764326112dea97fe6a"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_resolution.json",
+      "sha256": "afa02b38d982127a945352386f0b217adbe6880acb1b9a8fe1511237a9a53dbd"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_qids.json",
+      "sha256": "4d55da45b19b45ca95456b57d84583fe6a843390fe83517e365dae706cf7bc6b"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v14.jsonl",
+      "sha256": "dce3531d6a675bc32f201d52ee8478719dd2cb4e2fa601b852ee656a216f272b"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 20,
+    "decision_agreements": 20,
+    "decision_disagreements": 0,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 5,
+    "fix": 10,
+    "exclude": 5
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0392",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (pass); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0402",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (pass); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0065",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0237",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Review corrected three member spans (j02380/j03282/j03327) to include the ⑤ aggregation clause; primary spans alone did not support claim (1)."
+    },
+    {
+      "qid": "v3-offline-0468",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0325",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (exclude); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0383",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0123",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (exclude); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0378",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (pass); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0475",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0076",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (exclude); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0298",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (exclude); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0368",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0082",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (exclude); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0165",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0278",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0256",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (pass); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0466",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0375",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (pass); review independently re-verified spans/claims against source."
+    },
+    {
+      "qid": "v3-offline-0003",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree (fix); review independently re-verified spans/claims against source."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch12_adjudicated.jsonl",
+    "sha256": "2193f7103941768ddd497d1fd14438fb64b111aebd43ecf7e03cb544830a52cb"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean Sol review throughout. Luna produced an out-of-JO span for q0293; Sol verified minimal spans and the missing required groups in q0334. No retrieval, agent, arm, or score artifact was consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_luna.json",
+      "sha256": "784a657d9110cb9b4a9b2209cd46d59ca366401b557f178dae403470ede6fe0b"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_sol_medium.json",
+      "sha256": "256aef5cffa71426efee85c24e2421f5cbd6161bf5e8f77eaeba01805a8c9d6a"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_resolution.json",
+      "sha256": "7866120c827e0aa9fb35ee1ede536a7a8436eeda1e98555330569820141c6435"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_qids.json",
+      "sha256": "5cf69efd58f8121a7f55ce5c364f2988138576670f65a42521b7dcf0715bbb4c"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v9.jsonl",
+      "sha256": "1bff40065468c3cfb9e4a504aeebde94ad2786e0233336acc75f26316d0a9d39"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 10,
+    "decision_agreements": 2,
+    "decision_disagreements": 8,
+    "primary_validation_errors": 1,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 9,
+    "exclude": 1
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0483",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only the hospital benefit rows containing the requested normal and simplified-underwriting rates."
+    },
+    {
+      "qid": "v3-offline-0544",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Keep benefit identity, covered cancer list, and first-once condition in a minimal span."
+    },
+    {
+      "qid": "v3-generated-def-0021",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only the directly requested cerebrovascular-disease-III definition."
+    },
+    {
+      "qid": "v3-offline-0479",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Keep the continuous voluntary-termination rule and its main-contract exception."
+    },
+    {
+      "qid": "v3-offline-0094",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use only the definition containing C18-C20, invasion depth, and anatomical scope."
+    },
+    {
+      "qid": "v3-offline-0293",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "span outside JO j07569 2605222:2608386: v3-offline-0293 op=0",
+      "review_validation_error": "",
+      "reason": "Use the valid complete classification-table range through I62; the primary coordinates exceed the JO boundary."
+    },
+    {
+      "qid": "v3-offline-0314",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Preserve the AND structure with minimal general-cancer exclusion and breast-cancer payment spans."
+    },
+    {
+      "qid": "v3-offline-0334",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The official answer requires additional proton and radiation treatment conditions as new required groups not expressible by current operations."
+    },
+    {
+      "qid": "v3-offline-0412",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use the single complete payment row containing both the first-year 50% and normal 100% rates."
+    },
+    {
+      "qid": "v3-offline-0234",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Use minimal payment-trigger and fifth-type rate spans as two required claims."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_final.jsonl",
+    "sha256": "ea7ece7f8418bc9360bafac40baa8f1aae01aaf275091e600af891970cbffbd1"
+  }
+}

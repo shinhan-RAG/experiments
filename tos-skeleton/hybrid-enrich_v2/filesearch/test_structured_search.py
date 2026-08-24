@@ -249,6 +249,24 @@ class StructuredSearchTest(unittest.TestCase):
                           weights={"_exact_identity": 4.0}, profile="core")
         self.assertEqual(0, ranked[0][0])
 
+    def test_router_strict_explicit_bracket_is_generic_and_opt_in(self):
+        contracts = [
+            "(간편)[기본]고액암진단특약(무배당, 갱신형)",
+            "(간편)[삭감없음용]고액암진단특약(무배당, 갱신형)",
+            "(간편)[임의판본X]고액암진단특약(무배당, 갱신형)",
+        ]
+        router = Router(contracts)
+        baseline, _ = router.route("[기본]고액암진단특약 지급사유")
+        self.assertGreater(len(baseline["contract"]), 1)
+        router.strict_explicit_bracket = True
+        basic, _ = router.route("[기본]고액암진단특약 지급사유")
+        self.assertEqual([contracts[0]], basic["contract"])
+        comparison, _ = router.route(
+            "[기본]과 [삭감없음용] 고액암진단특약 지급사유 비교")
+        self.assertEqual({contracts[0], contracts[1]}, set(comparison["contract"]))
+        arbitrary, _ = router.route("[임의판본X]고액암진단특약 지급사유")
+        self.assertEqual([contracts[2]], arbitrary["contract"])
+
     def test_exact_identity_bonus_rejects_nested_or_inferred_identity(self):
         elements = [
             {"contract_scope": "암진단특약(무배당)"},

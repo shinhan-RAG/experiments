@@ -1,0 +1,30 @@
+{
+  "policy": "coordinate-only provisional source Gold to JO mapping",
+  "retrieval_blind": true,
+  "inputs": {
+    "source_gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_spans_test_source_v1.jsonl",
+      "sha256": "630de97bdc8f70e5e7f730ccdcbaa2e46eb7c6260b46e14e840570c3bc23f6fc"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/map_source_gold_to_jo.py",
+    "sha256": "4374214300dfb4038704921418d1bdad9abb4b182fda78b848fff8a1bdd9d65f"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "counts": {
+    "input": 149,
+    "output": 149,
+    "provisional": 144,
+    "partial": 0,
+    "unmapped": 5
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_test_source_to_u3jo_provisional_v1.jsonl",
+    "sha256": "7576fed0bd908cc188764f2be570d8baccceb03ad995813dc24289cf737a2b76"
+  }
+}

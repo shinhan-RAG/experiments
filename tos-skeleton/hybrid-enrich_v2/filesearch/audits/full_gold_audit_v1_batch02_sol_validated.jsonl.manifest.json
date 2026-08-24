@@ -1,0 +1,39 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_sol_medium.json",
+      "sha256": "1ab5d9d419f89db7286eac5f4b8fd3e9a5e94836dc1861d1e097ace58b593076"
+    },
+    "prior_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_luna.json",
+      "sha256": "f4814cfa9fe5fd5385903c5b7be1117a59dc99e90d7524920d1d40e133adb5aa"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_qids.json",
+      "sha256": "b14b603ee46eea975d2309ed1242efafee01b9de140bf589dbe10f79bac2f75f"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v3.jsonl",
+      "sha256": "04faaa77585186fd34ee7c596b2c66909ca4d5b7ccb68845fe75979dc73cb830"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "c8330a44b1ce76092447a00c35edfab2f5f705d0bf6dc0f091dcdd7a62cc6c79"
+  },
+  "counts": {
+    "qids": 10,
+    "pass": 1,
+    "fix": 4,
+    "exclude": 5
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch02_sol_validated.jsonl",
+    "sha256": "4239d8e88eb66a2460bec42bfbc6fe51e8fbd9131fee23ccb987c53b0803c75e"
+  }
+}

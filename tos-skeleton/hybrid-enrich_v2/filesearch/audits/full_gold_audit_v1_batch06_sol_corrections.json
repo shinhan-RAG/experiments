@@ -1,0 +1,16 @@
+{
+  "policy": "Mechanical validator correction after independent review. The original Sol decision remains immutable. q0225 is changed from an unrepresentable fix to exclude because its proposed group 0 and group 2 use the same JO and must be merged; the current operation schema cannot delete a required group.",
+  "decisions": [
+    {
+      "qid": "v3-offline-0225",
+      "decision": "exclude",
+      "review": "현재 group 0은 무관한 납입면제 규정이다. 지급사유는 별도 JO에 있고, 지급률 20%와 무릎 인공관절 판정은 같은 j07549가 함께 지지하므로 하나의 compound group으로 병합해야 한다.",
+      "reason": "최종 Gold는 (1) 질병장해 지급사유와 (2) 무릎 인공관절의 심한 장해 판정 및 20% 지급률을 지지하는 compound evidence의 두 AND group이어야 한다. 현재 적용기는 기존 group 삭제·병합을 표현하지 못한다.",
+      "ops": [],
+      "evidence_notes": [
+        "권고 최종 G0: j00375 또는 직접 동등 갱신형 j00457의 질병장해 지급사유 OR.",
+        "권고 최종 G1: j07549의 한 다리 3대 관절 20% 행, 무릎관절 범위, 인공관절 삽입 판정 문장을 함께 포함하는 compound evidence. 동일 JO를 별 required group으로 중복하지 않는다."
+      ]
+    }
+  ]
+}

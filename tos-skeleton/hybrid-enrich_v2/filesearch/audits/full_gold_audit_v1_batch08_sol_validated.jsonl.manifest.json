@@ -1,0 +1,39 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_sol_medium.json",
+      "sha256": "256aef5cffa71426efee85c24e2421f5cbd6161bf5e8f77eaeba01805a8c9d6a"
+    },
+    "prior_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_luna.json",
+      "sha256": "784a657d9110cb9b4a9b2209cd46d59ca366401b557f178dae403470ede6fe0b"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_qids.json",
+      "sha256": "5cf69efd58f8121a7f55ce5c364f2988138576670f65a42521b7dcf0715bbb4c"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v9.jsonl",
+      "sha256": "1bff40065468c3cfb9e4a504aeebde94ad2786e0233336acc75f26316d0a9d39"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "c8330a44b1ce76092447a00c35edfab2f5f705d0bf6dc0f091dcdd7a62cc6c79"
+  },
+  "counts": {
+    "qids": 10,
+    "pass": 0,
+    "fix": 9,
+    "exclude": 1
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_sol_validated.jsonl",
+    "sha256": "ea7ece7f8418bc9360bafac40baa8f1aae01aaf275091e600af891970cbffbd1"
+  }
+}

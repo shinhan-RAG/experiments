@@ -1,0 +1,29 @@
+{
+  "policy": "retrieval-blind official source quote to raw character span",
+  "retrieval_blind": true,
+  "inputs": {
+    "document": {
+      "path": "/Users/ralph/Desktop/신한라이프/data_set/noah_qaset/판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md",
+      "sha256": "40a471d54b2ec8c89e145bf9350643df77a61da18844e2151d75a7bbb7309914"
+    },
+    "official_csv": {
+      "path": "/Users/ralph/Desktop/신한라이프/data_set/noah_qaset/정답셋_149_test_v3_retrieval_250212.csv",
+      "sha256": "5e20753ed1d2601acf87f78724af1d7f7598813977d4e5932ac400ed6c93e22c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/map_gold_spans.py",
+    "sha256": "ccb9b84dd1d151e70039f8e21924b62aa197b66a4001af986348b66833160bbc"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "counts": {
+    "n": 149,
+    "ok": 143,
+    "partial": 1,
+    "unmapped": 5
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_spans_test_source_v1.jsonl",
+    "sha256": "630de97bdc8f70e5e7f730ccdcbaa2e46eb7c6260b46e14e840570c3bc23f6fc"
+  }
+}

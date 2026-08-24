@@ -1,0 +1,65 @@
+{
+  "policy": "Select the validator-clean Sol cross-review for every qid. Both audits were retrieval-blind; the review rechecked the official test answer, source spans, JO boundaries, required-claim structure, and sibling alternatives. Exclusions quarantine malformed Gold and are unrelated to search outcomes.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0310",
+      "selected_source": "review",
+      "reason": "The review independently confirms that the existing single span contains all 19 high-cost cancer rows and codes."
+    },
+    {
+      "qid": "v3-offline-0088",
+      "selected_source": "review",
+      "reason": "The review confirms all three independent membership and code claims and their AND structure."
+    },
+    {
+      "qid": "v3-offline-0527",
+      "selected_source": "review",
+      "reason": "The coordinate mapper created a false cross-JO AND group from an adjacent business-day definition; deletion is required, so the row is quarantined."
+    },
+    {
+      "qid": "v3-offline-0204",
+      "selected_source": "review",
+      "reason": "The review retains the three direct claims while replacing truncated or overlong spans with minimal sentence boundaries."
+    },
+    {
+      "qid": "v3-offline-0075",
+      "selected_source": "review",
+      "reason": "The review supplies exact row spans and a same-scope alternative for the combined myocardial-infarction and brain-hemorrhage claim."
+    },
+    {
+      "qid": "v3-offline-0320",
+      "selected_source": "review",
+      "reason": "The review confirms the existing JO directly states the definition, exclusion, and diagnosis basis."
+    },
+    {
+      "qid": "v3-offline-0308",
+      "selected_source": "review",
+      "reason": "The review detects three truncated table fragments and replaces them with bounded section evidence."
+    },
+    {
+      "qid": "v3-offline-0187",
+      "selected_source": "review",
+      "reason": "The review confirms the existing body span directly and completely supports the premium-waiver claim."
+    },
+    {
+      "qid": "v3-offline-0309",
+      "selected_source": "review",
+      "reason": "The review confirms that the independent surgery-definition, advanced-technique, and radiation claims require the existing groups."
+    },
+    {
+      "qid": "v3-offline-0084",
+      "selected_source": "review",
+      "reason": "The review confirms direct coverage of the complete I60 through I69 cerebrovascular table."
+    },
+    {
+      "qid": "v3-offline-0242",
+      "selected_source": "review",
+      "reason": "The review corrects the truncated tooth-fracture exclusion while preserving the complete classification-table group."
+    },
+    {
+      "qid": "v3-offline-0266",
+      "selected_source": "review",
+      "reason": "The provisional groups mix an unrelated table and split fragments, while the apparent complete appendix has an F00/FOO transcription defect; the row is quarantined."
+    }
+  ]
+}

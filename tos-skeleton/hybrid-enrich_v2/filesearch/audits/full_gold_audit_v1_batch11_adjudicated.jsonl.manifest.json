@@ -1,0 +1,126 @@
+{
+  "policy": "Select the validator-clean Sol review for every qid. Both audits were retrieval-blind, but the review independently checked compound-claim completeness, sibling alternatives, exact JO boundaries, and the distinction between a classification table and a separate payment/definition claim. Exclusions quarantine incomplete Gold rows; they are not search-result-based removals.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch11_luna.json",
+      "sha256": "42fef663607cc5524e9a0f83e239c8b89cef77e74dd4e511818679f195bb48cd"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch11_sol_medium.json",
+      "sha256": "24ed22a79afddcc07fb62656bb2d949fa9350b8dd57bc069cc9eb51613f78afc"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch11_resolution.json",
+      "sha256": "e3600425c6e0b75d6fde6b58cae9093b6f6c4cd5bbcd45900ef53e1b524aacf5"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch11_qids.json",
+      "sha256": "cf424b010697516eb746b51fbc0518924138c595c0592296e6a55ed7f6c4f5d4"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v13.jsonl",
+      "sha256": "7b4f991d7cceb99e817b9c4583040afdd97599595a9ffa1eab322b7c8da55c17"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 7,
+    "decision_agreements": 4,
+    "decision_disagreements": 3,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 0,
+    "fix": 2,
+    "exclude": 5
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0153",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review confirms that brain and ischemic-heart code tables are separate required claims and supplies bounded source coordinates for both."
+    },
+    {
+      "qid": "v3-offline-0097",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits require the same corrected JO; the review's validated span directly binds the disease family to all three codes."
+    },
+    {
+      "qid": "v3-offline-0289",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The primary accepted the existing member, while the review finds seven additional direct equivalent rider variants and payment-table siblings required by the meeting OR policy."
+    },
+    {
+      "qid": "v3-offline-0265",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review separates code meaning, code-change policy, and claim-document notation, and identifies an unsupported attribution claim."
+    },
+    {
+      "qid": "v3-offline-0169",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both audits find a missing independent da Vinci rider invalidity claim; the review records the corresponding source JO."
+    },
+    {
+      "qid": "v3-offline-0071",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review rejects the OCR-confused 163 replacement and requires both a payment-trigger group and the exact I63 classification row."
+    },
+    {
+      "qid": "v3-offline-0321",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review distinguishes the requested surgery definition from the two code rows and requires them as separate AND claims."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch11_adjudicated.jsonl",
+    "sha256": "d095d166c30a90743781419bd5d781c446490ed3b52bdcb2bb6f3a2ad46da63b"
+  }
+}

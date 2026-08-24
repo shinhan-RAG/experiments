@@ -91,6 +91,65 @@
   "router": "rule",
   "facet": 1
  },
+ "structured_rule_relax": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "portfolio": "relax",
+  "seed_quota": 20,
+  "router": "rule",
+  "facet": 1
+ },
+ "structured_rule_relax_gated": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "portfolio": "relax_gated",
+  "seed_quota": 20,
+  "router": "rule",
+  "facet": 1
+ },
+ "structured_rule_evidence": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "portfolio": "evidence",
+  "portfolio_prompt": false,
+  "seed_quota": 5,
+  "router": "rule",
+  "facet": 1
+ },
+ "structured_rule_axis_coord": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "sfw": {"_axis": 1.0, "_coord": 1.0},
+  "router": "rule",
+  "facet": 1
+ },
+ "structured_rule_hybrid_gate": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {"gate": "axis_coverage", "top_k": 5, "min_axis_coverage": 0.5, "merge_k": 10, "first_only": true, "force_first": true}
+ },
+ "structured_rule_sequence_hybrid": {
+  "tags": "tags_u2_rules.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "portfolio": "sequence",
+  "portfolio_prompt": false,
+  "seed_quota": 30,
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "fallback": {"gate": "axis_coverage", "top_k": 5, "min_axis_coverage": 0.5, "merge_k": 10, "first_only": true, "force_first": true}
+ },
  "hybrid_final": {
   "tags": "tags_u2_rules.jsonl",
   "mode": "clm",

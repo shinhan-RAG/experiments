@@ -1,0 +1,148 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v15.jsonl",
+      "sha256": "787424e05fec4758a5f683b3e2c52ee31ae0d03ce1d8b37f951994956b72f83e"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch13_adjudicated.jsonl",
+      "sha256": "bc479d0e68a664fccdc51b77f87534559164b5c16fd0849e7899f73bd96ce82c"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch13_qids.json",
+      "sha256": "85582e1b74183361b109f26ad3368f304fe806c862cd4ca821888fd12917e1e1"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch13_reviewed.jsonl",
+  "output_sha256": "ef8781e8b503eea0d340038177813dbcf9a7034b0778bc8b6daeaeb3be2dc21c",
+  "n_input": 20,
+  "n_output": 12,
+  "counts": {
+    "pass": 2,
+    "fix": 10,
+    "exclude": 8
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0049",
+      "decision": "exclude",
+      "reason": "질문 scope 미특정으로 136건 동등 JO 중 단일 rider만 강제 불가 + 부재 claim + 비최소 span"
+    },
+    {
+      "qid": "v3-offline-0413",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0208",
+      "decision": "fix",
+      "groups": 2,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0545",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0455",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0147",
+      "decision": "exclude",
+      "reason": "구성 claim에 새 required AND group 필요, 현 op로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0409",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0408",
+      "decision": "exclude",
+      "reason": "삭감 근거 조문용 새 required AND group 필요, 현 op로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0508",
+      "decision": "exclude",
+      "reason": "무관한 required group 제거 필요(삭제 op 없음)"
+    },
+    {
+      "qid": "v3-offline-0311",
+      "decision": "fix",
+      "groups": 1,
+      "members": 5
+    },
+    {
+      "qid": "v3-generated-def-0035",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0217",
+      "decision": "exclude",
+      "reason": "코드범위 claim 미지지 + 무관 group 제거 필요, 현 op로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0297",
+      "decision": "exclude",
+      "reason": "독립된 두 claim이 서로 다른 JO에 위치해 새 required AND group 필요, 현 op로 표현 불가(1차 감사는 op 계약 위반이자 claim(1) 누락)"
+    },
+    {
+      "qid": "v3-offline-0426",
+      "decision": "exclude",
+      "reason": "호르몬치료 제외 claim용 새 required group 필요, 현 op로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0291",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0381",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0226",
+      "decision": "exclude",
+      "reason": "세부규정 claim용 새 required group 필요, 현 op로 표현 불가"
+    },
+    {
+      "qid": "v3-offline-0216",
+      "decision": "fix",
+      "groups": 3,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0054",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0228",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

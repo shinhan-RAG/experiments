@@ -68,8 +68,28 @@ class Router:
         # core = 정규화 핵심명, core_nb = 대괄호 수식어([기본]·[3~100%장해형]…) 제거 후 정규화
         self.cores = [(c, contract_core(c), contract_core(re.sub(r"\[.*?\]", "", c))) for c in self.contracts]
         self.partial = True  # 부분 일치(공통 부분문자열) 허용
+        self.strict_explicit_bracket = False
+        self.contract_brackets = {
+            contract: {compact(value) for value in re.findall(r"\[([^\]]+)\]", contract)
+                       if compact(value)}
+            for contract in self.contracts
+        }
+        self.known_brackets = set().union(*self.contract_brackets.values()) \
+            if self.contract_brackets else set()
         self.rev = {}        # 대상어(급여금명·질병명 등) → 특약 집합. SlotSearch 가 태그에서 채운다
         self.rev_max = 3     # 이 수 이하의 특약에만 나오는 대상어만 특약 추론에 사용
+
+    def explicit_bracket_values(self, q):
+        """Return only bracket values that are real document identity facets."""
+        if not self.strict_explicit_bracket:
+            return set()
+        return {
+            value for raw in re.findall(r"\[([^\]]+)\]", str(q))
+            if (value := compact(raw)) in self.known_brackets
+        }
+
+    def bracket_compatible(self, contract, requested):
+        return not requested or bool(self.contract_brackets.get(contract, set()) & requested)
 
     @staticmethod
     def _lcs(a, b):
@@ -85,6 +105,7 @@ class Router:
 
     def route(self, q):
         cq = compact(q)
+        explicit_brackets = self.explicit_bracket_values(q)
         # 별칭 정규화: 질문의 구어("보상제외기간")를 문서 표기("면책기간")로 치환한 사본도 매칭에 사용
         if getattr(self, "alias_map", None):
             for alt, canon in self.alias_map.items():
@@ -93,6 +114,8 @@ class Router:
         slots = collections.defaultdict(list)
         partial_hits = []
         for c, core, core_nb in self.cores:
+            if not self.bracket_compatible(c, explicit_brackets):
+                continue
             if not core:
                 continue
             if (len(core) >= 3 and core in cq) or (len(core_nb) >= 3 and core_nb in cq):
@@ -110,7 +133,9 @@ class Router:
                         hits[c] += 1
             if hits:
                 top = max(hits.values())
-                slots["contract"] = [c for c, n in hits.items() if n == top]
+                slots["contract"] = [c for c, n in hits.items()
+                                     if n == top and self.bracket_compatible(
+                                         c, explicit_brackets)]
                 slots["_conf"] = {"contract": 0.75}
         if not slots["contract"] and partial_hits:
             top = max(x[0] for x in partial_hits)

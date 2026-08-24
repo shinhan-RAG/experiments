@@ -1,0 +1,5 @@
+{
+ "policy": "re-audit of all rows previously excluded solely because the applier could not express a new required AND group; the applier now supports add_required_group. Audit remains retrieval-blind.",
+ "selection": "union of excluded_after_review across overlay v15~v19 manifests",
+ "seed": null
+}

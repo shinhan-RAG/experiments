@@ -1,0 +1,105 @@
+{
+  "policy": "Retrieval-blind manual adjudication after independent Luna and Sol reviews; select only validator-clean direct evidence, preserve independent AND claims, reject absence claims and unresolved question scope; no retrieval or agent results consulted.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0056",
+      "selected_source": "review",
+      "reason": "The official answer independently requires both the payment condition and the drug classification 214/180-day treatment definition; current Gold contains only the former."
+    },
+    {
+      "qid": "v3-offline-0356",
+      "selected_source": "review",
+      "reason": "Both reviews confirm that the current direct table evidence completely supports the requested claim."
+    },
+    {
+      "qid": "v3-offline-0260",
+      "selected_source": "review",
+      "reason": "The primary fix is mechanically invalid and replacing a proton-therapy title cannot directly prove the official answer's absence claim about heavy-ion coverage."
+    },
+    {
+      "qid": "v3-offline-0529",
+      "selected_source": "review",
+      "reason": "Both reviews find independent claims missing from the current Gold and require a new AND structure."
+    },
+    {
+      "qid": "v3-offline-0269",
+      "selected_source": "review",
+      "reason": "Both reviews find that the broad spinal-disability conditions cannot be represented by the current incomplete groups."
+    },
+    {
+      "qid": "v3-offline-0434",
+      "selected_source": "review",
+      "reason": "Both reviews confirm that the current JO directly and completely supports the answer."
+    },
+    {
+      "qid": "v3-offline-0491",
+      "selected_source": "review",
+      "reason": "The selected span isolates the contract-termination condition and removes unrelated premium-waiver and death-benefit notes."
+    },
+    {
+      "qid": "v3-offline-0361",
+      "selected_source": "review",
+      "reason": "Both reviews confirm direct completeness of the current evidence."
+    },
+    {
+      "qid": "v3-offline-0292",
+      "selected_source": "review",
+      "reason": "The table proves existing rider names and waiting periods but cannot directly prove the official answer's document-wide absence claim for other names."
+    },
+    {
+      "qid": "v3-offline-0396",
+      "selected_source": "review",
+      "reason": "Both reviews require the same direct rate evidence; the validator-clean review operation is retained."
+    },
+    {
+      "qid": "v3-offline-0354",
+      "selected_source": "review",
+      "reason": "Both reviews confirm current Gold completeness and scope."
+    },
+    {
+      "qid": "v3-offline-0436",
+      "selected_source": "review",
+      "reason": "Both reviews confirm current Gold completeness and scope."
+    },
+    {
+      "qid": "v3-offline-0421",
+      "selected_source": "review",
+      "reason": "Both reviews confirm that the current evidence directly supports all requested conditions."
+    },
+    {
+      "qid": "v3-offline-0058",
+      "selected_source": "review",
+      "reason": "Both reviews require separate measurement-method and spinal-condition evidence groups that current Gold lacks."
+    },
+    {
+      "qid": "v3-offline-0130",
+      "selected_source": "review",
+      "reason": "Both reviews confirm that the current claim-document list and issuer condition are directly supported."
+    },
+    {
+      "qid": "v3-offline-0141",
+      "selected_source": "review",
+      "reason": "Current Gold supports optional enrollment and contract effects but omits the official answer's independent Part 1/Part 2 policy-structure claim."
+    },
+    {
+      "qid": "v3-generated-def-0033",
+      "selected_source": "review",
+      "reason": "The review span preserves the complete statutory definition while excluding later revision-handling text not requested."
+    },
+    {
+      "qid": "v3-offline-0126",
+      "selected_source": "review",
+      "reason": "The review span isolates the tertiary-hospital definition and removes the preceding outpatient definition."
+    },
+    {
+      "qid": "v3-offline-0177",
+      "selected_source": "review",
+      "reason": "Both reviews confirm that the first-occurrence restriction directly supports the no-repeat-payment answer."
+    },
+    {
+      "qid": "v3-generated-def-0010",
+      "selected_source": "review",
+      "reason": "The review span isolates the requested circulatory-disease definition and removes unrelated exclusion and diagnostic-method text."
+    }
+  ]
+}

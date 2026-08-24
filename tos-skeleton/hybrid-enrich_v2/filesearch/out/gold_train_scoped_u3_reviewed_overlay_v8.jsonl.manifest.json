@@ -1,0 +1,51 @@
+{
+  "policy": "preserve scoped-train order; replace reviewed-scope rows; drop reviewed exclusions",
+  "quality_scope": {
+    "retrieval_blind_reviewed_total": 94,
+    "newly_replaced_in_this_overlay": 17,
+    "scoped_not_completeness_reviewed": 157,
+    "excluded_after_review": [
+      "v3-offline-0154",
+      "v3-offline-0142",
+      "v3-offline-0225"
+    ],
+    "zero_group_unscorable": []
+  },
+  "inputs": {
+    "base": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v7.jsonl",
+      "sha256": "e7b3088e1cf6608ae09d7c46117fabcdfe809b2087681dd69a1bfae74751ba83"
+    },
+    "reviewed": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_reviewed.jsonl",
+      "sha256": "03d309da29eccc7b36f327953f5e99e9e1a4936b235cac35c0d2a0e257733e86"
+    },
+    "reviewed_qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_qids.json",
+      "sha256": "c742ef231f804dbe4417224bc498fc832ba15d26c569c350cd0a27fe96ade65c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/build_reviewed_train_overlay.py",
+    "sha256": "e17f5173ef32b15999e03f28357cde18712551d5382f22a8595d7e3e41cac747"
+  },
+  "python": "3.9.6",
+  "counts": {
+    "base": 254,
+    "reviewed_scope": 20,
+    "replaced": 17,
+    "excluded": 3,
+    "zero_group_unscorable": 0,
+    "output": 251
+  },
+  "outputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v8.jsonl",
+      "sha256": "2a3268d508f182d3426f068ec4389043c0ddea54ee1e1910acb1d68a67df7c9a"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/qids_train_scoped_u3_reviewed_overlay_v8.json",
+      "sha256": "0bb3ffd378e549d8fe4ecd5370bc43287991fb7f3fb1584bd6e023f2ff5afe0e"
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "policy": "Retrieval-blind manual adjudication after independent Luna and Sol reviews; select only validator-clean direct evidence, preserve independent AND claims, reject absence claims and unresolved question scope; no retrieval or agent results consulted.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_luna.json",
+      "sha256": "3c674f4cc55d10328bab5d7a72f99fd9ca768d0493253ce294b4811d8cdd97cb"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_sol_medium.json",
+      "sha256": "66379d2b06e506600f1ab7603a9bc87bb5fd2747d7e59341c7650da33deccec0"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_resolution.json",
+      "sha256": "52f39099a6c4efe9d43029a16a2de580ed43a2f8b39a31a866c1cc54f91a5a05"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_qids.json",
+      "sha256": "d05009b8230f5da5fbb000813aaf29b1df430fa1d7f5728867504807e15d2dd5"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v4.jsonl",
+      "sha256": "f6882896b70df7c1db679dc5a8e5697feb7313a34dbd43fa1c8b59f6f84e4853"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "fd2da207986e92c257a8c6fecd2076a12a9c7811665beafc39af75d3cf75d745"
+  },
+  "counts": {
+    "qids": 20,
+    "decision_agreements": 12,
+    "decision_disagreements": 8,
+    "primary_validation_errors": 1,
+    "review_validation_errors": 0,
+    "pass": 8,
+    "fix": 5,
+    "exclude": 7
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0056",
+      "primary_decision": "pass",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The official answer independently requires both the payment condition and the drug classification 214/180-day treatment definition; current Gold contains only the former."
+    },
+    {
+      "qid": "v3-offline-0356",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm that the current direct table evidence completely supports the requested claim."
+    },
+    {
+      "qid": "v3-offline-0260",
+      "primary_decision": "fix",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "replace_span target count=0: v3-offline-0260 op=0",
+      "review_validation_error": "",
+      "reason": "The primary fix is mechanically invalid and replacing a proton-therapy title cannot directly prove the official answer's absence claim about heavy-ion coverage."
+    },
+    {
+      "qid": "v3-offline-0529",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews find independent claims missing from the current Gold and require a new AND structure."
+    },
+    {
+      "qid": "v3-offline-0269",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews find that the broad spinal-disability conditions cannot be represented by the current incomplete groups."
+    },
+    {
+      "qid": "v3-offline-0434",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm that the current JO directly and completely supports the answer."
+    },
+    {
+      "qid": "v3-offline-0491",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The selected span isolates the contract-termination condition and removes unrelated premium-waiver and death-benefit notes."
+    },
+    {
+      "qid": "v3-offline-0361",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm direct completeness of the current evidence."
+    },
+    {
+      "qid": "v3-offline-0292",
+      "primary_decision": "pass",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The table proves existing rider names and waiting periods but cannot directly prove the official answer's document-wide absence claim for other names."
+    },
+    {
+      "qid": "v3-offline-0396",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews require the same direct rate evidence; the validator-clean review operation is retained."
+    },
+    {
+      "qid": "v3-offline-0354",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm current Gold completeness and scope."
+    },
+    {
+      "qid": "v3-offline-0436",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm current Gold completeness and scope."
+    },
+    {
+      "qid": "v3-offline-0421",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm that the current evidence directly supports all requested conditions."
+    },
+    {
+      "qid": "v3-offline-0058",
+      "primary_decision": "exclude",
+      "review_decision": "exclude",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews require separate measurement-method and spinal-condition evidence groups that current Gold lacks."
+    },
+    {
+      "qid": "v3-offline-0130",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm that the current claim-document list and issuer condition are directly supported."
+    },
+    {
+      "qid": "v3-offline-0141",
+      "primary_decision": "pass",
+      "review_decision": "exclude",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "exclude",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Current Gold supports optional enrollment and contract effects but omits the official answer's independent Part 1/Part 2 policy-structure claim."
+    },
+    {
+      "qid": "v3-generated-def-0033",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review span preserves the complete statutory definition while excluding later revision-handling text not requested."
+    },
+    {
+      "qid": "v3-offline-0126",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review span isolates the tertiary-hospital definition and removes the preceding outpatient definition."
+    },
+    {
+      "qid": "v3-offline-0177",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Both reviews confirm that the first-occurrence restriction directly supports the no-repeat-payment answer."
+    },
+    {
+      "qid": "v3-generated-def-0010",
+      "primary_decision": "pass",
+      "review_decision": "fix",
+      "decision_agreement": false,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "The review span isolates the requested circulatory-disease definition and removes unrelated exclusion and diagnostic-method text."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch03_final.jsonl",
+    "sha256": "a33b111d7d6b6a7fee90f38316de19ec79a7ee36646cbe81cebf346080e4db37"
+  }
+}

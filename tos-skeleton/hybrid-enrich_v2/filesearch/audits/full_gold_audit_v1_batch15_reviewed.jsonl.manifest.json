@@ -1,0 +1,172 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v17.jsonl",
+      "sha256": "77369887e66d4b766540f93218a20435433b16b041e5b6965cb5fde79f86fe77"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch15_adjudicated.jsonl",
+      "sha256": "bfa9e1397145cf6684a134746fa474a483196ce52cb34b450b3002a2c4951054"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch15_qids.json",
+      "sha256": "4bfe8a3cfb1226c6193960f9624cde6b00bf396885964269981dbef44d69a6fe"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch15_reviewed.jsonl",
+  "output_sha256": "942d024bd9be6de2480ba43532359fe168e9c6b0ef6461ef5f187354ca330a61",
+  "n_input": 23,
+  "n_output": 21,
+  "counts": {
+    "pass": 2,
+    "fix": 19,
+    "exclude": 2
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0345",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0478",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0456",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0358",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0288",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0477",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0443",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0166",
+      "decision": "exclude",
+      "reason": "독립 재검증 결과 1차 판단과 일치: 목차 제목행만 있고, 정답의 두 claim이 서로 다른 특약의 새 AND group 2개를 요구"
+    },
+    {
+      "qid": "v3-offline-0248",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0022",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0029",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0253",
+      "decision": "exclude",
+      "reason": "독립 재검증 결과 1차 판단과 일치: 제2-3조 ③⑥ 세부규정 claim이 미지지, 새 AND group 필요"
+    },
+    {
+      "qid": "v3-offline-0009",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0371",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0414",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0522",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0261",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0551",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0009",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0374",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0448",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0232",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0480",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

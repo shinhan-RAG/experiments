@@ -1,0 +1,95 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v9.jsonl",
+      "sha256": "1bff40065468c3cfb9e4a504aeebde94ad2786e0233336acc75f26316d0a9d39"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_final.jsonl",
+      "sha256": "ea7ece7f8418bc9360bafac40baa8f1aae01aaf275091e600af891970cbffbd1"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_qids.json",
+      "sha256": "5cf69efd58f8121a7f55ce5c364f2988138576670f65a42521b7dcf0715bbb4c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch08_reviewed.jsonl",
+  "output_sha256": "d491519037560ca691a9cf067bf78960cec99712e7fc8c7c55cddc321986d127",
+  "n_input": 10,
+  "n_output": 9,
+  "counts": {
+    "pass": 0,
+    "fix": 9,
+    "exclude": 1
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0483",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0544",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0021",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0479",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0094",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0293",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0314",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0334",
+      "decision": "exclude",
+      "reason": "공식 정답을 충족하려면 기존 두 group 외에 항암방사선 지급조건과 양성자방사선 지급조건을 필수 AND 근거로 추가해야 하나 현재 적용 operation으로 새 필수 group을 만들 수 없다."
+    },
+    {
+      "qid": "v3-offline-0412",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0234",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    }
+  ]
+}

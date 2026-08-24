@@ -1,0 +1,39 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_sol_corrected.json",
+      "sha256": "792e6041f60f7995af89990a3da83af558afcd0fbf354406c6e330fc2bc22e6d"
+    },
+    "prior_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_luna.json",
+      "sha256": "a5f2d9640c5f9b2ac3164e1467eadeeda471da73e87acd6906a419fd603b201c"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_qids.json",
+      "sha256": "c742ef231f804dbe4417224bc498fc832ba15d26c569c350cd0a27fe96ade65c"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v7.jsonl",
+      "sha256": "e7b3088e1cf6608ae09d7c46117fabcdfe809b2087681dd69a1bfae74751ba83"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "c8330a44b1ce76092447a00c35edfab2f5f705d0bf6dc0f091dcdd7a62cc6c79"
+  },
+  "counts": {
+    "qids": 20,
+    "pass": 0,
+    "fix": 17,
+    "exclude": 3
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch06_sol_validated.jsonl",
+    "sha256": "6460c9c5bb1ebdba250e86c801fc09dd58d4ae95ad8e633624398756df9ff12a"
+  }
+}

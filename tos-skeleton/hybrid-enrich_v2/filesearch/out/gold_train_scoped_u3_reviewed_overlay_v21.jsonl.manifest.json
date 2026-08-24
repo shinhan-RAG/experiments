@@ -1,0 +1,19 @@
+{
+ "policy": "spec v1 §3 identical-text occurrence expansion (deterministic; question-string scope gate; no retrieval/QA input)",
+ "params": {
+  "key": 160,
+  "min": 40,
+  "cap": 40
+ },
+ "counts": {
+  "rows": 213,
+  "general_q": 89,
+  "scoped_q": 124,
+  "added_members": 316
+ },
+ "base": {
+  "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v20.jsonl",
+  "sha256": "8a723f0e9a86b8c2308cf2a03b3c9f3a8dd66b3b549be9708ea65db32556172e"
+ },
+ "output_sha256": "096465b1ba04f67ddbb3d80d6c8da6c100fea19ae33bdda7941609a64905441b"
+}

@@ -1,0 +1,94 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v8.jsonl",
+      "sha256": "2a3268d508f182d3426f068ec4389043c0ddea54ee1e1910acb1d68a67df7c9a"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_final.jsonl",
+      "sha256": "442185e35113dce0ef9e16f27f6b54441e4c3f6655beebb665463316a08b469e"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_qids.json",
+      "sha256": "4fbb69dd330cd80664bdfe024277f907379f11fd8d37a6038c35379066d39ae3"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch07_reviewed.jsonl",
+  "output_sha256": "baa89326d6ac19f59d18ab8fd349e0fd10f97e8c90e2aa7e6c848bb71decf5ba",
+  "n_input": 10,
+  "n_output": 8,
+  "counts": {
+    "pass": 0,
+    "fix": 8,
+    "exclude": 2
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0240",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0435",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0379",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0249",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0021",
+      "decision": "exclude",
+      "reason": "완전한 정답에는 새로운 required AND group이 필요하지만 현재 적용기가 새 group 추가를 지원하지 않는다."
+    },
+    {
+      "qid": "v3-offline-0388",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0074",
+      "decision": "fix",
+      "groups": 1,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0319",
+      "decision": "exclude",
+      "reason": "범위가 불명확한 비교 질문이며, 공식 정답을 그대로 보존하더라도 여러 required AND group을 새로 추가해야 하므로 적용 가능한 fix로 표현할 수 없다."
+    },
+    {
+      "qid": "v3-offline-0464",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0290",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}

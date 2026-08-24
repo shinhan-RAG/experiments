@@ -1,0 +1,171 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v18.jsonl",
+      "sha256": "fd5d7f718b4dd3bf261c7e3ba90aa600b299cf58cfcf1864a1d13f593edddd4e"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch16_adjudicated.jsonl",
+      "sha256": "de318f2a209190ff2df3769e3c8e5fff6094758d40bf71d1b7e03016eb39c11e"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch16_qids.json",
+      "sha256": "374c334b4198e3519ee32aba910aaf321893e887c964a0ab4c55da8210a4c4ba"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch16_reviewed.jsonl",
+  "output_sha256": "afd597636ce7f7f700ee7a98f141639bff019b17935ce9202bd80c84144afd41",
+  "n_input": 23,
+  "n_output": 20,
+  "counts": {
+    "pass": 3,
+    "fix": 17,
+    "exclude": 3
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0168",
+      "decision": "exclude",
+      "reason": "정답이 요구하는 4개 특약 중 2개(급여6대질병진단검사지원·3대질병간병인사용입원) 근거가 gold에 전혀 없어 required AND group 2개 신설이 필요하나 현재 적용기가 이를 표현하지 못함"
+    },
+    {
+      "qid": "v3-offline-0122",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0458",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0223",
+      "decision": "exclude",
+      "reason": "부활(효력회복) 특칙 claim을 정답 문언 그대로 지지하는 근거가 gold에 없어 required AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0259",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0170",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0231",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0454",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0453",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0380",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0532",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0227",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-generated-def-0030",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0416",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0072",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0419",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0400",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0245",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0405",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0179",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0445",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0081",
+      "decision": "exclude",
+      "reason": "뇌출혈 분류표 claim을 지지하는 group이 gold에 없어 required AND group 신설 필요"
+    },
+    {
+      "qid": "v3-offline-0377",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    }
+  ]
+}

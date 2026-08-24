@@ -1,0 +1,15 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean Sol review throughout. Luna produced an out-of-JO span for q0293; Sol verified minimal spans and the missing required groups in q0334. No retrieval, agent, arm, or score artifact was consulted.",
+  "resolutions": [
+    {"qid":"v3-offline-0483","selected_source":"review","reason":"Use only the hospital benefit rows containing the requested normal and simplified-underwriting rates."},
+    {"qid":"v3-offline-0544","selected_source":"review","reason":"Keep benefit identity, covered cancer list, and first-once condition in a minimal span."},
+    {"qid":"v3-generated-def-0021","selected_source":"review","reason":"Use only the directly requested cerebrovascular-disease-III definition."},
+    {"qid":"v3-offline-0479","selected_source":"review","reason":"Keep the continuous voluntary-termination rule and its main-contract exception."},
+    {"qid":"v3-offline-0094","selected_source":"review","reason":"Use only the definition containing C18-C20, invasion depth, and anatomical scope."},
+    {"qid":"v3-offline-0293","selected_source":"review","reason":"Use the valid complete classification-table range through I62; the primary coordinates exceed the JO boundary."},
+    {"qid":"v3-offline-0314","selected_source":"review","reason":"Preserve the AND structure with minimal general-cancer exclusion and breast-cancer payment spans."},
+    {"qid":"v3-offline-0334","selected_source":"review","reason":"The official answer requires additional proton and radiation treatment conditions as new required groups not expressible by current operations."},
+    {"qid":"v3-offline-0412","selected_source":"review","reason":"Use the single complete payment row containing both the first-year 50% and normal 100% rates."},
+    {"qid":"v3-offline-0234","selected_source":"review","reason":"Use minimal payment-trigger and fifth-type rate spans as two required claims."}
+  ]
+}

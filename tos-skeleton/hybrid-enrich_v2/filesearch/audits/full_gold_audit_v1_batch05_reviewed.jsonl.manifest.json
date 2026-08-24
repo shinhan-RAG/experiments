@@ -1,0 +1,149 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v6.jsonl",
+      "sha256": "3f5aeec9a11c497accb77802901747882e6ed8c634a5b385408b555287b15382"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_final.jsonl",
+      "sha256": "d95f05c54a05b7e95cd2bbe0d3c3687c637def12977467cad0d759546d6e87e4"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_qids.json",
+      "sha256": "34ee189fdd6add0538cd2ef1c0f434b993eaeb2884a9bdb62da49336630dda15"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "c79026cb91295ce74550ddd10845aec6602542654584152b13e6775fe55bd64b"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch05_reviewed.jsonl",
+  "output_sha256": "4b5658a5462d9a7cc1941e7145c4137957381417e748251f7698a944f6bb9184",
+  "n_input": 20,
+  "n_output": 13,
+  "counts": {
+    "pass": 0,
+    "fix": 13,
+    "exclude": 7
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0384",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0423",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0393",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-generated-def-0029",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0197",
+      "decision": "exclude",
+      "reason": "공식 정답의 다섯 용어 정의에는 각각 required AND group이 필요하지만 현재 네 group만 있어 적용 가능한 operation으로 완성할 수 없다."
+    },
+    {
+      "qid": "v3-offline-0360",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0459",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0262",
+      "decision": "exclude",
+      "reason": "진단·입원·수술의 세 독립 claim에 3개 AND group이 필요하지만 현재 두 group뿐이다."
+    },
+    {
+      "qid": "v3-offline-0092",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0546",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0373",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0303",
+      "decision": "exclude",
+      "reason": "공식 정답의 별도 지급 규정에 새 required AND group이 필요하며, 기존 한 group은 독립된 두 정의도 한데 묶고 있다."
+    },
+    {
+      "qid": "v3-offline-0108",
+      "decision": "exclude",
+      "reason": "부지급, 무효·반환, 청구서류, 지급절차는 별도 AND 근거가 필요하고 현재 세 group으로는 완성할 수 없다. 공식 정답의 무조건적 표현도 원문 조건과 충돌한다."
+    },
+    {
+      "qid": "v3-offline-0395",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0051",
+      "decision": "exclude",
+      "reason": "경피적 수술 방식과 분류표 적용·예외는 별도 required AND 근거가 필요하므로 한 group으로 완성할 수 없다."
+    },
+    {
+      "qid": "v3-offline-0006",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0355",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0346",
+      "decision": "exclude",
+      "reason": "두 분류표를 비교하려면 각각의 직접근거가 required AND group으로 필요하지만 현재 group은 하나뿐이다."
+    },
+    {
+      "qid": "v3-offline-0157",
+      "decision": "exclude",
+      "reason": "세 분류 영역과 예시를 구분한 required AND 구조가 필요하며 현재 두 group으로는 완성할 수 없다."
+    },
+    {
+      "qid": "v3-offline-0523",
+      "decision": "fix",
+      "groups": 2,
+      "members": 2
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "policy": "Retrieval-blind manual adjudication after independent Luna and Sol reviews; prefer direct completeness, explicit question scope, and minimal sufficient JO-local spans; no retrieval or agent results consulted.",
+  "resolutions": [
+    {
+      "qid": "v3-offline-0389",
+      "selected_source": "review",
+      "reason": "Both reviews find the JO sufficient; the review span uniquely preserves the diagnosis and first-occurrence claims while removing unrelated payment-rate text."
+    },
+    {
+      "qid": "v3-offline-0323",
+      "selected_source": "review",
+      "reason": "Both reviews require separate table and annotation claims; exclusion is necessary until a second AND group is represented."
+    },
+    {
+      "qid": "v3-offline-0085",
+      "selected_source": "review",
+      "reason": "The official answer includes both I63 membership and the vascular-dementia/traumatic-hemorrhage exclusion, but current Gold contains only the table membership claim."
+    },
+    {
+      "qid": "v3-offline-0004",
+      "selected_source": "review",
+      "reason": "Both reviews confirm the existing complete payment-condition JO and exact JO boundary."
+    },
+    {
+      "qid": "v3-offline-0418",
+      "selected_source": "review",
+      "reason": "Both reviews agree on semantic sufficiency; the review span isolates the two requested rates and the first-year simple-screening exception."
+    },
+    {
+      "qid": "v3-offline-0390",
+      "selected_source": "review",
+      "reason": "Both reviews agree on semantic sufficiency; the review span removes diagnosis and footnote text not required by the rate-comparison question."
+    },
+    {
+      "qid": "v3-offline-0484",
+      "selected_source": "review",
+      "reason": "The question omits screening type while the official answer assumes the stricter general-screening row; the two table rows have different eligibility conditions, so a unique Gold is not justified."
+    },
+    {
+      "qid": "v3-offline-0254",
+      "selected_source": "review",
+      "reason": "Both reviews find the broad question and current groups incomplete; the official answer itself covers two independent claim families without a stable rider scope."
+    },
+    {
+      "qid": "v3-offline-0113",
+      "selected_source": "review",
+      "reason": "Both reviews find missing independent claims; five required groups and an explicit contract scope are needed before the item is scoreable."
+    },
+    {
+      "qid": "v3-offline-0367",
+      "selected_source": "review",
+      "reason": "Both reviews agree on semantic sufficiency; the review span retains only the requested standard and first-year reduced rates."
+    }
+  ]
+}

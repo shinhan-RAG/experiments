@@ -1,0 +1,47 @@
+{
+  "policy": "preserve scoped-train order; replace reviewed-scope rows; drop reviewed exclusions",
+  "quality_scope": {
+    "retrieval_blind_reviewed_total": 34,
+    "newly_replaced_in_this_overlay": 5,
+    "scoped_not_completeness_reviewed": 247,
+    "excluded_after_review": [],
+    "zero_group_unscorable": []
+  },
+  "inputs": {
+    "base": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v1.jsonl",
+      "sha256": "d8038733c364f6441dd3d8bfc9bd3ac5bccb1b640b8458f344a96291be0936af"
+    },
+    "reviewed": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch01_reviewed.jsonl",
+      "sha256": "ac680716d90c88ae1c1c8e6db36f5aac607dbfbcd3061a7e79e4b220f3d8ad0b"
+    },
+    "reviewed_qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch01_qids.json",
+      "sha256": "a5be4e280867f9706eb453798abc7096bc55ad146c3b497cb8a8f9a3683d6513"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/build_reviewed_train_overlay.py",
+    "sha256": "e17f5173ef32b15999e03f28357cde18712551d5382f22a8595d7e3e41cac747"
+  },
+  "python": "3.9.6",
+  "counts": {
+    "base": 281,
+    "reviewed_scope": 5,
+    "replaced": 5,
+    "excluded": 0,
+    "zero_group_unscorable": 0,
+    "output": 281
+  },
+  "outputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v2.jsonl",
+      "sha256": "8abac53330a469a9d952fcd696901c10b045f0cd553a9e681a58f72d09f1a002"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/qids_train_scoped_u3_reviewed_overlay_v2.json",
+      "sha256": "63d35e9f132392a659c34fd004bb60e550bcbbba38c766dd6acc074fe78752ea"
+    }
+  }
+}

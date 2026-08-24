@@ -74,6 +74,8 @@ IGNORED_KEYS = {
     "char_start", "char_end", "line_start", "line_end", "members", "is_toc",
     "fact_tag_version",
     "reference_source_element_ids", "reference_target_element_id",
+    "reference_graph_version", "reference_scope_aliases", "reference_query_terms",
+    "reference_graph_paths", "fact_card_source_element_ids",
 }
 
 

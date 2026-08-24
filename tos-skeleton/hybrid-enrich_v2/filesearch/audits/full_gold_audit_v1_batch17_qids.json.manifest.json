@@ -1,0 +1,6 @@
+{
+ "policy": "targeted re-audit under the meeting's a/a-prime equivalence rule (derived-version OR) plus specific completeness candidates surfaced by the spec v1 §6 error-discovery loop; audit itself remains retrieval-blind (auditors see only question/answer/source/JO)",
+ "criterion_update": "Version OR membership no longer requires byte-identical wording: when the question does not pin a version, a derived version's clause/table row that directly supports the same claim(s) qualifies as an OR member even with immaterial wording differences (e.g., presence of '최초계약의'); material differences (different rates, different waiting periods, missing claims) still disqualify.",
+ "selection": "failure-loop + prior audit ledgers' wording-difference exclusions",
+ "seed": null
+}

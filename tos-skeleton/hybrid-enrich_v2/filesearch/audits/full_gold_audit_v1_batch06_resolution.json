@@ -1,0 +1,25 @@
+{
+  "policy": "Retrieval-blind adjudication of two independent audits. Select the validator-clean corrected Sol review throughout. The original Luna audit has a duplicate-JO operation at q0225; the original Sol q0225 fix also produced duplicate required groups and is preserved alongside an explicit correction to exclude. No retrieval, agent, arm, or score artifact was consulted.",
+  "resolutions": [
+    {"qid":"v3-offline-0225","selected_source":"review","reason":"The two same-JO facts must be merged with the payment-trigger group, which the current operation schema cannot express; exclude until a valid two-group Gold is authored."},
+    {"qid":"v3-offline-0274","selected_source":"review","reason":"Use both the S02/S02.5 classification row and the directly supporting payment note."},
+    {"qid":"v3-offline-0452","selected_source":"review","reason":"Use complete payment rows from directly equivalent unspecified variants."},
+    {"qid":"v3-offline-0391","selected_source":"review","reason":"Keep the minimal row containing both benefit identity and first-once limitation."},
+    {"qid":"v3-offline-0005","selected_source":"review","reason":"Isolate the cast exclusion and its directly required definition."},
+    {"qid":"v3-offline-0420","selected_source":"review","reason":"Use the complete row containing both the normal and first-year reduced rates."},
+    {"qid":"v3-offline-0401","selected_source":"review","reason":"Use only the simple-rehabilitation row with both requested rates."},
+    {"qid":"v3-offline-0357","selected_source":"review","reason":"Use the complete thrombolysis-benefit row."},
+    {"qid":"v3-generated-def-0012","selected_source":"review","reason":"Keep only the directly requested ICU-treatment definition paragraph."},
+    {"qid":"v3-offline-0385","selected_source":"review","reason":"Use the complete scope-correct no-reduction payment row."},
+    {"qid":"v3-offline-0046","selected_source":"review","reason":"Use the minimal simultaneous-surgery rule from directly equivalent variants."},
+    {"qid":"v3-offline-0132","selected_source":"review","reason":"Correct the evidence to complete JO-bounded contract components."},
+    {"qid":"v3-offline-0142","selected_source":"review","reason":"A missing independent required claim needs a new AND group not representable by the current ledger operations."},
+    {"qid":"v3-offline-0154","selected_source":"review","reason":"Two missing independent claims require new AND groups."},
+    {"qid":"v3-offline-0403","selected_source":"review","reason":"Use the complete single benefit row."},
+    {"qid":"v3-offline-0011","selected_source":"review","reason":"Use the minimal exclusion clause across directly equivalent variants."},
+    {"qid":"v3-offline-0365","selected_source":"review","reason":"Use complete direct payment rows across equivalent variants."},
+    {"qid":"v3-offline-0376","selected_source":"review","reason":"Use complete cancer-benefit rows across equivalent variants."},
+    {"qid":"v3-generated-def-0003","selected_source":"review","reason":"Keep only the directly requested general definition paragraph."},
+    {"qid":"v3-offline-0471","selected_source":"review","reason":"Use the complete test-benefit row containing purpose and annual limit."}
+  ]
+}
