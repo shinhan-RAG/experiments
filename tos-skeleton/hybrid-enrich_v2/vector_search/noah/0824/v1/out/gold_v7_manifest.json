@@ -1,0 +1,69 @@
+{
+  "version": "v7",
+  "spec": "정답기준_명세_v1_제안_20260818.md",
+  "changes_vs_v6": [
+    "required <= 5 (초과분은 supporting 강등)",
+    "빈 배열 금지 (조 없는 그룹 제거, 값 없는 키 생략)"
+  ],
+  "params": {
+    "merge_gap": 200,
+    "occ_prefix": 160,
+    "occ_min": 40,
+    "or_cap": 50,
+    "title_max": 45,
+    "max_required": 5,
+    "required_rank": "정답본문 bigram 겹침(usage) desc -> 인용순서 -> 길이 desc",
+    "fuzzy": "금지 (명세 §3)"
+  },
+  "target_metric": "R@5 (융합 meta+tag arm)",
+  "inputs": {
+    "csv": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\docs\\0805\\정답셋_503_현업303_문서보강200_v2_직접검수.csv",
+      "sha256": "a5da4e8b644e4e1c272867bcc49018affa88d5443e39be3401b034b613d18ced"
+    },
+    "corpus": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\doc\\판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md",
+      "sha256": "065e704128a8eb5486466f0ee4b6efdb6ff80270d599ce64360c4f99cbebd202"
+    },
+    "jo_universe": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2jo.jsonl",
+      "sha256": "cf8d4733b779410ea2fb654fed23f078459c643e8a1a4c8e43208459fad2848f"
+    }
+  },
+  "counts": {
+    "csv_확정": 303,
+    "kept": 272,
+    "removed": 26,
+    "fully_located": 195,
+    "partial": 77,
+    "demoted_to_supporting": 523,
+    "train_strict": 184,
+    "test_strict": 88,
+    "train_lenient": 184,
+    "test_lenient": 88
+  },
+  "required_per_q": {
+    "mean": 2.151,
+    "max": 5,
+    "hist": {
+      "1": 128,
+      "3": 37,
+      "2": 58,
+      "5": 34,
+      "4": 15
+    }
+  },
+  "R@5_arithmetic_ceiling": 1.0,
+  "citation_locate": {
+    "full": 1349,
+    "full+scope": 9,
+    "miss": 595,
+    "tail40": 153,
+    "head40": 157,
+    "head40+scope": 3,
+    "head25+scope": 10,
+    "tail40+scope": 1,
+    "head25": 240,
+    "short": 5
+  }
+}

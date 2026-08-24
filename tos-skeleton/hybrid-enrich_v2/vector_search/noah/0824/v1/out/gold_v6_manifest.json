@@ -1,0 +1,57 @@
+{
+  "spec": "정답기준_명세_v1_제안_20260818.md",
+  "params": {
+    "merge_gap": 200,
+    "occ_prefix": 160,
+    "occ_min": 40,
+    "or_cap": 50,
+    "title_max": 45,
+    "fuzzy": "금지 (명세 §3) — 정확일치 + head/tail 앵커만"
+  },
+  "primary_metric": "sufficient@10 (명세 §4)",
+  "inputs": {
+    "csv": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\docs\\0805\\정답셋_503_현업303_문서보강200_v2_직접검수.csv",
+      "sha256": "a5da4e8b644e4e1c272867bcc49018affa88d5443e39be3401b034b613d18ced"
+    },
+    "corpus": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\doc\\판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md",
+      "sha256": "065e704128a8eb5486466f0ee4b6efdb6ff80270d599ce64360c4f99cbebd202"
+    },
+    "jo_universe": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2jo.jsonl",
+      "sha256": "cf8d4733b779410ea2fb654fed23f078459c643e8a1a4c8e43208459fad2848f"
+    }
+  },
+  "counts": {
+    "csv_확정": 303,
+    "kept": 277,
+    "removed_인용전무": 26,
+    "fully_located": 199,
+    "partial": 78,
+    "scope_gated": 19,
+    "train_strict": 187,
+    "test_strict": 90,
+    "train_lenient": 187,
+    "test_lenient": 90
+  },
+  "citation_locate": {
+    "full": 1358,
+    "miss": 595,
+    "tail40": 154,
+    "head40": 160,
+    "head25": 250,
+    "short": 5
+  },
+  "groups": {
+    "total": 1109,
+    "required": 1044,
+    "supporting": 65
+  },
+  "qid_src": {
+    "v4_no": 249,
+    "new(train; test 봉인 §6.4)": 19,
+    "question_text": 9
+  },
+  "denominator_policy": "n = 확정303 − 인용전무(broken). 인덱스 미도달 문항은 분모에 유지하고 strict/reachable 층위로 병기 (사용자 결정 2026-08-24)"
+}

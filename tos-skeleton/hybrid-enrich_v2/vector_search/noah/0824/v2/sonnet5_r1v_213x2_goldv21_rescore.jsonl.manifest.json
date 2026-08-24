@@ -1,0 +1,31 @@
+{
+  "results": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0819\\out\\host_agent\\sonnet_final_r1v_213x2_goldv19_20260823\\results_goldv20_rescore.jsonl",
+  "results_sha256": "fb1a068d2c83f2f3d5f169f68598608042737189ba360702014de223621f40c9",
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0824\\v2\\gold_v21_train213.jsonl",
+  "gold_sha256": "bc326593dc23dde0c6bc5e8e67f3d426ecd5ede676b543b688b4f64b23023cd9",
+  "arms": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0819\\arms.json",
+  "arms_sha256": "b5e8afe2635bb7cb5dd57d1c4d5a781599a0236d02fdca251d5ca74ee62b5d5d",
+  "input_rows": 426,
+  "output_rows": 426,
+  "excluded_missing_gold_qids": [],
+  "excluded_missing_gold_rows": 0,
+  "arm_jo": {
+    "r1v_verify_identity_reference_hybrid": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u3jo.jsonl",
+      "sha256": "e947f3fe81eb5687249cffa538fc7150905f6a19365872a42c705c837e119534"
+    }
+  },
+  "output": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0824\\v2\\sonnet5_r1v_213x2_goldv21_rescore.jsonl",
+  "output_sha256": "a1301271fb4c6eb5dc2828e48035476318870aee1b4e7f370fd5f20ae54c7be8",
+  "summary": {
+    "r1v_verify_identity_reference_hybrid": {
+      "R@1": 0.5997652582159625,
+      "R@5": 0.8661971830985915,
+      "R@10": 0.8873239436619719,
+      "suff@5": 0.8474178403755869,
+      "suff@10": 0.8755868544600939,
+      "errors": 0,
+      "protocol_errors": 27
+    }
+  }
+}
