@@ -1,0 +1,4 @@
+{
+ "policy": "targeted content-equivalence re-audit under spec v1 section 3 human-registration clause. Selection: independent reviewer flagged batch19 as having missed cross-scope content-equivalent direct evidence for these two qids (spec v1 section-6 error-discovery loop). Audit itself remains retrieval-blind: question/official answer/source only; the prompt widens the sibling sweep from same-bracket-scope to whole-document when the question does not pin a scope, correcting the batch19 prompt's same-scope restriction.",
+ "seed": null
+}
