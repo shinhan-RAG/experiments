@@ -1,5 +1,8 @@
 # noah/0819 — Semantic Tag 검색 툴 고도화 실험
 
+> **현행 최종 스택 재현은 `FINAL_STACK_REPRO.md`** (arm `r1v_verify_identity_reference_hybrid` + Gold v22, host_agent_runner.py).
+> 아래 본문은 0819 당시(초기 c4 계열, Qwen/agent_runner_oai) 기록이며, 당시 스크립트 일부(agent_runner*.py, tune_tau.py, run_structured_rule.sh)는 정리되어 git 이력에만 남아 있다.
+
 0819 회의(`docs/0819/SemanticTag_Metadata_검색회의.md`) 기반. 평가 프로세스와 메타데이터
 검색기(msearch, V9 hybrid)는 **고정**, Semantic Tag 검색기(search)만 변경하며 비교한다.
 설계 근거는 0818 실험 결과(`docs/0818/`) — 상세는 계획서/설계 문서 참조.
