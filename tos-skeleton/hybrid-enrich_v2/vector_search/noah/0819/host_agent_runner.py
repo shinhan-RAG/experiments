@@ -352,6 +352,17 @@ def main():
                               "model_usage": usage})
                 fatal_errors += 1; break
             kind = action["action"]
+            if (kind == "submit" and turn == 0 and arm.get("verify_gate")
+                    and not any(x.get("action") in ("read", "search") for x in trace[1:])):
+                titles = {}
+                for item in (first.get("results") or [])[:10]:
+                    t = item.get("jo_title") or ""
+                    titles[t] = titles.get(t, 0) + 1
+                if titles and max(titles.values()) >= int(arm.get("verify_gate", 3)):
+                    trace.append({"action": "verify_gate", "message":
+                                  "상위 후보에 같은 제목의 근중복 후보가 많습니다. 질문이 특정한 특약·판본·범위와 일치하는지 read 로 원문을 확인한 뒤 다시 제출하십시오.",
+                                  "model_usage": usage})
+                    continue
             if kind == "submit":
                 did_submit = True
                 requested = action.get("ids") or []
