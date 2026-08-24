@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 상급종합병원 입원 입원급여금 지급 보장일수", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌혈관질환.{0,20}입원급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02555", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02596", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03970", "arm": "V9_CLM_RWX"}

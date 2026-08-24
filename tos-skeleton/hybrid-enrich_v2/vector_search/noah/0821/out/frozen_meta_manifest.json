@@ -1,0 +1,11 @@
+{
+  "files": {
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\hybrid_search.py": "b2e989abd10931e8341ccc57cd9a083d77bb0eb95fbba6f16b2984506b0c887b",
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\view_V9.jsonl": "48df5872f2c605ecf5fd8a2a4046ee0f557bb311ff910db962348aa52eb83a95",
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\chunks.jsonl": "80f27fe3cbf99154371307c768ceccbf25192532455d955befd8d48aa71a8dd6",
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\emb\\chunk_V9.npy": "a741535632e28f276d174bbada641a5e5bc2b364470f93ca11463e75af545090",
+    "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\out\\emb\\chunk_V9_ids.json": "cc886730f47319cfc2b7cd3065a5dcfc28f49a7bb7b0da545d905f09cf86c87a"
+  },
+  "n_queries": 0,
+  "parity": null
+}

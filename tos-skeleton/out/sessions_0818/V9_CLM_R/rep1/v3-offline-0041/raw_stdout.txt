@@ -1,0 +1,3 @@
+Based on the searches, I found the relevant clauses covering thyroid cancer diagnosis payout structure and remaining/continuing coverage after payment.
+
+{"status":"ranked","ranked_chunk_ids":["c01324","c01354","c00997","c00994","c00673","c00565","c00923"],"final_reason":"암주요치료비특약의 갑상선암 지급기간표(c01324/c01354)와 갱신 후 중복지급 배제 조항(c00997), 소액암진단급여금 지급기준(c00994/c00673)이 진단금 수령 후 남은 보장 범위를 직접 설명한다."}

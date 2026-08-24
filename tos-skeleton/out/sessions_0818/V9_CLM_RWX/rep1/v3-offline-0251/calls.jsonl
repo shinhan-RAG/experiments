@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "(간편)[30일한도형]첫날부터입원특약 보험금 지급 지급기준", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "30일한도형.*첫날부터입원", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03822", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03910", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제2-3조.*보험금 지급에 관한 세부규정", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03818", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03819", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03820", "arm": "V9_CLM_RWX"}

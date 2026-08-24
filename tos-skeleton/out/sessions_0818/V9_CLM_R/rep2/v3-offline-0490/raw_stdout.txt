@@ -1,0 +1,3 @@
+Both confirmed as the core "보험금 등의 청구" clause listing the basic required documents (청구서, 사고증명서, 신분증, 기타서류).
+
+{"status":"ranked","ranked_chunk_ids":["e00101","e00040","e04833","c05182","c00132","e00081"],"final_reason":"제1-5조/제7조 '보험금 등의 청구' 조항이 청구서·사고증명서·신분증·기타서류 등 기본 구비서류를 명시하며 다른 후보들이 이를 보강한다."}

@@ -1,0 +1,3 @@
+All three chunks confirm the answer: 뇌출혈 정의(의사 진단확정, CT/MRI 등 기초) + 지급사유(최초 1회 진단확정에 한함, 반복지급 불가).
+
+{"status":"ranked","ranked_chunk_ids":["c02239","c02255","c02236","e01944","c02240"],"final_reason":"약관 조문·지급기준표·정의조항이 모두 '뇌출혈 진단확정, 최초 1회 한정 지급'을 명시해 질문에 직접 답한다."}

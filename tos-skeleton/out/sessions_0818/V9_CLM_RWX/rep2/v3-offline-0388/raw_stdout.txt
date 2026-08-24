@@ -1,0 +1,3 @@
+Confirmed: both c00071 and c00072 explicitly state that for (간편)간병인사용입원특약, the 간병인사용입원(요양병원 제외)급여금 is subject to a 2-year reduced-payment period (재해 이외 원인 발생 시 가입 후 2년간 50% 지급), meaning full payment applies only after 2 years.
+
+{"status":"ranked","ranked_chunk_ids":["c00071","c00072","c00112","c04204"],"final_reason":"c00071/c00072 explicitly state 간병인사용입원(요양병원 제외)급여금은 간편심사형 기준 가입 후 2년이 지나야 전액(그 전엔 50%) 지급됨을 명시함"}

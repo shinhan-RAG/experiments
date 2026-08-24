@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "주계약 납입면제 사유", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보험료 납입면제 장해분류표 사망", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00146", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04897", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "주계약은 납입면제가 없습니다", "arm": "V9_CLM_RW"}

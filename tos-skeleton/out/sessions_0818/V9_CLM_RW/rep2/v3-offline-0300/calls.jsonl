@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "통합암 특약 갑상선암 소액암 보장", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "갑상선암 소액암 특약 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통합암", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00673", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "통합건강보험 암보장특약 구성", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "일반암.*소액암|소액암.*일반암", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00494", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00642", "arm": "V9_CLM_RW"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "간편 1-5종수술특약 4종 수술급여금 지급률 1년 이내", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "4종.*수술급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03130", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "4종 수술 급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03115", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03116", "arm": "V9_CLM_RWX"}

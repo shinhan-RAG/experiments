@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "고액암진단특약 고액암 진단급여금 지급사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143862, "dense/V9": 0.144523}, "sparse_share": 0.4989, "dense_share": 0.5011, "notes": []}

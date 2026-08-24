@@ -1,0 +1,3 @@
+e00654 and e00621 confirm the same clause at element level, consistent with c00787/c00754. Evidence solidly supports the "최초 1회 한정" answer.
+
+{"status":"ranked","ranked_chunk_ids":["c00787","c00754","c00770","e00654","e00621","c00755"],"final_reason":"고액암진단급여금 지급사유 조항이 '최초 1회의 진단확정에 한함'을 명시해 두 번째 진단 시 재지급되지 않음을 확인함"}

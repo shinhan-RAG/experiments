@@ -1,0 +1,3 @@
+Both candidates verified: c00325 gives the exact 보험금 지급기준표 (지급사유·지급금액) for the (3~100%) 재해장해 특약, and c00310 gives the supplementary payment examples/rules (지급률 산정, 100% 한도) for the same 특약. c00328 (목차/조항 구조) supports context but wasn't directly needed.
+
+{"status":"ranked","ranked_chunk_ids":["c00325","c00310","c00327","c00328"],"final_reason":"c00325는 (3~100%)재해장해특약의 지급사유·지급금액 기준표, c00310은 동일 특약의 지급률 산정 예시와 100% 한도 규정을 담아 질문에 직접 답한다."}

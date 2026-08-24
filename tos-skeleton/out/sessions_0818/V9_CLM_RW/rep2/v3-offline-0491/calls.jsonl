@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "보험금 지급 후 주계약 효력 유지", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보험금 지급 후에도 계약은 유효하게 존속", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "지급하여도 이 계약은", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보험금을 지급한 후에도", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "보험금 지급 후 주계약 존속", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02205", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00637", "arm": "V9_CLM_RW"}

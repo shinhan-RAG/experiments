@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "동일한 질병으로 인한 입원 간병인 185일 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "간병인사용 입원일당 지급일수 1회 입원 185일 한도", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04297", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "185일", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04230", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04163", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04209", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "간병인 동일질병 재입원 합산 180일", "arm": "V9_CLM_RW"}

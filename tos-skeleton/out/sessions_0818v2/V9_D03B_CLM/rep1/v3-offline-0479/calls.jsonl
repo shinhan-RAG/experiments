@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "납입면제 조건 발생 후 납입면제특약 해지", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "납입면제 조건 발생 후 납입면제특약 해지", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "납입면제.*해지", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "납입면제.*해지", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04771", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04771", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04949", "arm": "V9_D03B_CLM"}

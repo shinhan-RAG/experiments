@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "중증질환자[암] 산정특례 신규암 등록", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "신규암 등록", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "중증질환자 산정특례 신규암 등록 정의", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04467", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04468", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "신규암 등록", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04468", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04467", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "전이암 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암의 전이 재발 진단시 보험금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01178", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00962", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04045", "arm": "V9_CLM_RWX"}

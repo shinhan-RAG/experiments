@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 지급사유 반복지급", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]일반암진단특약", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00935", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "여성유방암 및 전립선암.{0,5}이외의 암.{0,10}중증 갑상선암.{0,20}진단확정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00598", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00921", "arm": "V9_CLM_R"}

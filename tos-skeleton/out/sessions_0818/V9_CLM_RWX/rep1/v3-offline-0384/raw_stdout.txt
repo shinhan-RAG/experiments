@@ -1,0 +1,3 @@
+Confirmed. Note c00564 is from the [기본] (with-삭감) 조항 (has 삭감 clause in ②), but c00610/c00935's own note text explicitly states no 삭감 note (for 삭감없음용) and confirms the same "최초 1회 진단확정에 한함" limit. All candidates consistently answer: diagnosis of "암" (여성유방암/전립선암 제외 암) or "중증 갑상선암" after coverage start date triggers payment, but only once — no repeat payment for subsequent diagnoses.
+
+{"status":"ranked","ranked_chunk_ids":["c00935","c00610","c00564","c00899"],"final_reason":"삭감없음용 일반암진단특약 지급기준표와 제2-2조 원문에서 암/중증갑상선암 진단확정 시 지급되나 '최초 1회의 진단확정에 한함'으로 반복지급 불가임을 확인함."}

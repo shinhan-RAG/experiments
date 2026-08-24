@@ -1,0 +1,3 @@
+These verified. c04033 and c00517/c01788 give the definitional article (제2-1조의5/6 "6대질병"의 정의) listing the six components (암, 대장점막내암, 비침습방광암, 제자리암, 경계성종양, 뇌혈관질환, 허혈심장질환, 간질환, 폐질환, 신장질환), and c05533 gives the classification table (부표2-2 표102) with disease codes.
+
+{"status":"ranked","ranked_chunk_ids":["c04033","c00517","c01788","c05533","c04063","c05538"],"final_reason":"c04033/c00517/c01788는 6대질병 정의(암·대장점막내암·비침습방광암·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환 구성)를 명시하고, c05533/c05538/c04063은 해당 6대질병 분류표(질병코드)를 제공한다."}

@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "표적항암약물허가치료특약 납입면제 사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.114558, "dense/V9": 0.110107}, "sparse_share": 0.5099, "dense_share": 0.4901, "notes": []}

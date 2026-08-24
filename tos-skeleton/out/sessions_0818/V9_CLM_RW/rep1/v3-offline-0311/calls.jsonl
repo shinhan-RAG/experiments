@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "통합건강원 보험료 납입면제특약 가입", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보험료 납입면제특약 별도 가입 필요 자동부가", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00067", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04747", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통합건강원", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04777", "arm": "V9_CLM_RW"}

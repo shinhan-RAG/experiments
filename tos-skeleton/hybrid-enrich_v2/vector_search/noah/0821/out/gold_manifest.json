@@ -1,0 +1,16 @@
+{
+  "default_test90": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_test_full.jsonl",
+    "sha256": "17a919647e9e6abd2dfaf485a8a26eff3d476394b1ce1eb2dc5ef63dee71310c",
+    "n_source": 90,
+    "n_eligible": 90,
+    "n_c3_partial": 27,
+    "n_strict_nonpartial": 63
+  },
+  "raw_test149": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\gold_mapped_noah_v3_149_test.jsonl",
+    "sha256": "a3c3bc3a2fd6572d26ee744d97f7c80b1863837f8c3a872e942d6298b7fa02c7"
+  },
+  "spanmap_status": "not_available; external transfer required",
+  "official_if_present": "default_test90"
+}

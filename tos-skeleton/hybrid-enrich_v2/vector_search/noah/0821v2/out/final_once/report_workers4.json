@@ -1,0 +1,47 @@
+{
+  "run_once": true,
+  "returncode": 0,
+  "config": {
+    "model": "gpt-5.6-luna",
+    "arm": "slot_meta_agent",
+    "run": "0821v2_v5_test_slot_meta_luna_workers4_once",
+    "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\out\\gold_v5\\gold_v5_test_full.jsonl",
+    "gold_sha256": "19bedd0aa23e94201c153ce0b103892b08894ca61389b25e5a852581201a67df",
+    "n": 90,
+    "codex": "C:\\Users\\Atdev-pc\\AppData\\Roaming\\npm\\codex.cmd",
+    "codex_version": "codex-cli 0.149.0",
+    "tool_preflight": [
+      "tag:slot",
+      "meta:hybrid"
+    ],
+    "test_qtag_overlap": 0
+  },
+  "summary": {
+    "run": "0821v2_v5_test_slot_meta_luna_workers4_once",
+    "arm_name": "slot_meta_agent",
+    "n_q": 90,
+    "reps": 1,
+    "model": "gpt-5.6-luna",
+    "metrics": {
+      "R@1": 0.3769,
+      "R@5": 0.593,
+      "R@10": 0.6055,
+      "R@20": 0.6055,
+      "S@5": 0.6889,
+      "suff@5": 0.5111,
+      "suff@10": 0.5222,
+      "RR@10": 0.5796
+    },
+    "no_submit": 0,
+    "errors": 0
+  },
+  "tool_calls": {
+    "search": 460,
+    "read": 554,
+    "submit": 90
+  },
+  "channels": {
+    "tag:slot": 460
+  },
+  "finished_at": "2026-08-21T08:16:56.031392+00:00"
+}

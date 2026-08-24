@@ -1,0 +1,3 @@
+Good, verified. c01219 and c04994 (plus duplicates c01173, c01635, c03051) directly confirm: 암 진단으로 보험금 지급사유가 발생해 보장계약이 소멸되면 해당 특약은 갱신 불가.
+
+{"status":"ranked","ranked_chunk_ids":["c01219","c04994","c01173","c01635","c03051","c01017","c05107","c04338"],"final_reason":"암 진단 등 보험금 지급사유 발생으로 보장계약이 소멸되면 해당 특약을 갱신할 수 없다는 조항을 여러 특약 약관에서 확인함"}

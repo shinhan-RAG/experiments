@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "재해장해 특약 보험금 지급 기준", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "3~100% 재해장해 보험금 지급률", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "재해장해 특약 보험금 지급", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00325", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "장해지급률 중 3%이상 100%이하", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00304", "arm": "V9_CLM_R"}

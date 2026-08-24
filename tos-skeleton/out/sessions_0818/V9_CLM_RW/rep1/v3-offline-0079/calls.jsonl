@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "뇌출혈진단특약 보험금 감액기간", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌출혈진단비 감액지급 50%", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00082", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02239", "arm": "V9_CLM_RW"}

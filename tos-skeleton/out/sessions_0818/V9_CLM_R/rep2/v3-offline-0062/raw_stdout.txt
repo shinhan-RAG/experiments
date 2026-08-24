@@ -1,0 +1,3 @@
+Confirmed: c01751/c01752 contain the exact definition and conditions for "급여 신경차단술" (부표2-3 분류표 해당 진료행위 + 국민건강보험법/의료급여법상 급여 절차 요건), with c05676/c05675 as the 분류표 detail and c01771 as the 지급기준표 context.
+
+{"status":"ranked","ranked_chunk_ids":["c01751","c01752","c05676","c05675","c01771","c01734"],"final_reason":"제2-1조의6에서 급여 신경차단술의 정의(부표2-3 분류표 해당 진료행위 + 국민건강보험법/의료급여법상 급여 절차 요건)를 직접 규정하며 부표 분류표와 지급기준표로 보강 확인함"}

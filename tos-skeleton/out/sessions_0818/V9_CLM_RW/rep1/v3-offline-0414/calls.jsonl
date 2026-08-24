@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "부정맥진단특약 부정맥 진단급여금 1년 이내 지급률", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "부정맥 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02419", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00081", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02442", "arm": "V9_CLM_RW"}

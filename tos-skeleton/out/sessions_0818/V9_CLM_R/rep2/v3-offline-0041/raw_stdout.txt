@@ -1,0 +1,3 @@
+This confirms the coverage structure: 소액암진단특약 pays 소액암진단급여금 once each for 갑상선암(중증이외), 기타피부암, 제자리암, 경계성종양, 대장점막내암, 비침습방광암 — receiving the thyroid cancer payout does not exhaust the other minor-cancer categories, which each remain separately payable on a first-occurrence basis.
+
+{"status":"ranked","ranked_chunk_ids":["c00673","c00994","e00494","c00098","c00958","e00826","e00828"],"final_reason":"소액암진단특약은 갑상선암 외 기타피부암·제자리암·경계성종양·대장점막내암·비침습방광암을 각각 최초 1회씩 별도로 보장하므로 갑상선암 진단금 수령 후에도 나머지 항목은 잔여 보장으로 남는다."}

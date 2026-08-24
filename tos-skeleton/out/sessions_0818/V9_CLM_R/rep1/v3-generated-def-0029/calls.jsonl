@@ -1,0 +1,4 @@
+{"tool": "slot", "arg": "중증질환자 암 산정특례 대상 질병", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e04095", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e04094", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "본인일부부담금 산정특례 대상 질병", "arm": "V9_CLM_R"}

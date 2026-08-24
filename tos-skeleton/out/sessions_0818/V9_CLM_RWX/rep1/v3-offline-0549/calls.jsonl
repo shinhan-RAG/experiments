@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "허혈심장질환 통원급여금 상급종합병원 1일 연간 횟수", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "허혈심장질환.*통원", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02680", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02699", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02683", "arm": "V9_CLM_RWX"}

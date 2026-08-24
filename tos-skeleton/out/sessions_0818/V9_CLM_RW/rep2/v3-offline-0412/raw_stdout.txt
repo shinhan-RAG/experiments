@@ -1,0 +1,3 @@
+e01830 confirms same content as c02140. This gives enough verification.
+
+{"status":"ranked","ranked_chunk_ids":["c02140","c00081","e01830","c02127"],"final_reason":"c02140의 지급기준표가 1년 미만 발생 시 50%, 1년 이후(및 최초1회) 100% 지급을 명시하고 c00081/e01830이 이를 재확인함."}

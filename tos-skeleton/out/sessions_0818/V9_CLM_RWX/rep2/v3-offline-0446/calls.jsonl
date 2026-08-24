@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "항암양성자 방사선 치료급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)항암양성자방사선치료특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01477", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00079", "arm": "V9_CLM_RWX"}

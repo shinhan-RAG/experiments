@@ -1,0 +1,86 @@
+{
+  "all": {
+    "n": 5,
+    "metrics": {
+      "R@5": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "R@10": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "suff@5": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "suff@10": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      }
+    },
+    "success_R@5_ge_090": false
+  },
+  "strict_nonpartial": {
+    "n": 5,
+    "metrics": {
+      "R@5": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "R@10": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "suff@5": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      },
+      "suff@10": {
+        "baseline": 0.8,
+        "candidate": 0.8,
+        "delta": 0.0,
+        "wins": 0,
+        "losses": 0,
+        "ties": 5,
+        "sign_test_p": 1.0
+      }
+    },
+    "success_R@5_ge_090": false
+  }
+}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "같은 날 여러 수술 중복 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "수술 특약 중복지급 하나만", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03100", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03371", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03302", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "동일자에.*수술|같은 날.*수술|1회의 입원.*2가지 이상", "arm": "V9_CLM_RWX"}

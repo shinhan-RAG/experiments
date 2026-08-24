@@ -1,0 +1,3 @@
+Confirmed: c03115 contains the exact 4종 보장계약 table specifying "1~5종 수술분류표에서 정하는 4종 수술" as the trigger. Also confirmed c03148 has the same content, and c03130 gives the definitional cross-reference.
+
+{"status":"ranked","ranked_chunk_ids":["c03115","c03148","c03130","e02809"],"final_reason":"c03115/c03148 contain the exact [4종 보장계약] table stating 4종 수술급여금 지급사유 is 질병 또는 재해로 인한 직접적 치료 목적의 1~5종 수술분류표상 4종 수술."}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편 암주요치료비특약 기타피부암 갑상선암 주요치료급여금 최초 진단확정일로부터", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "기타피부암.*갑상선암.*주요치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01322", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00106", "arm": "V9_CLM_RWX"}

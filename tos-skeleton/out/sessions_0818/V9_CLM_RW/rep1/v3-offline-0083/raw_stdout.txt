@@ -1,0 +1,3 @@
+Confirmed via read: c04814 gives the full diagnosis-confirmation basis (병력·신경학적 검진 + CT/MRI/뇌혈관조영술/PET/SPECT/뇌척수액검사, 사망 시 예외) and states 외상성 두개내출혈은 뇌혈관질환에서 제외(보장하지 않음). c05438's classification table (I60–I69) further confirms only "기타 비외상성 두개내출혈(I62)"이 포함되고 외상성은 별도 배제됨을 뒷받침. Grep confirms this exclusion clause is a standard boilerplate across many 특약(c02605, c02171, c04997, c04087, c02146 등).
+
+{"status":"ranked","ranked_chunk_ids":["c04814","c05438","c02605","c02171","c04997","c04087","c02146","c02675","c03451","c02125"],"final_reason":"c04814가 뇌혈관질환 진단확정의 근거(병력·신경학적 검진+영상검사)와 외상성 두개내출혈 제외 규정을 직접 명시하며, c05438의 질병분류표로 비외상성만 해당됨을 교차 확인함"}

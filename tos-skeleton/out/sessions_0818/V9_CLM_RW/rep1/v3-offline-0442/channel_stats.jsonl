@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "특정부정맥진단특약 특정부정맥 진단급여금 지급사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140118, "dense/V9": 0.138861}, "sparse_share": 0.5023, "dense_share": 0.4977, "notes": []}

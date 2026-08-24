@@ -1,0 +1,3 @@
+Found the key clause: c01412 confirms 지급대상 암 (암, 기타피부암, 갑상선암, 대장점막내암, 비침습방광암) and 최초 1회 한도, with c01411 giving the IMRT definition. c00062/c00099 corroborate scope and "최초 1회에 한해 보장".
+
+{"status":"ranked","ranked_chunk_ids":["c01412","c01411","c00099","c00062","c01394"],"final_reason":"c01412의 제2-2조가 지급대상 암(암·기타피부암·갑상선암·대장점막내암·비침습방광암)과 최초 1회 한도를 명시하며 c01411·c00099·c00062가 정의와 지급한도표로 이를 뒷받침함"}

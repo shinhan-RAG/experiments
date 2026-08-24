@@ -1,0 +1,3 @@
+Both candidates verified: c02381 gives the core definition text (제2-1조의4), and c05513 gives the actual 분류표(별첨2 표84) with disease codes referenced by that definition.
+
+{"status":"ranked","ranked_chunk_ids":["c02381","c05513","c02372","c02400","c05514"],"final_reason":"c02381 contains the article defining 특정순환계질환(3종), verified by reading; c05513/c05514 give the referenced 분류표 detail, others provide supporting context."}

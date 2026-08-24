@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "1-5종단일금액보장수술특약 수술급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "단일금액보장수술특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00085", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03168", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03190", "arm": "V9_CLM_RWX"}

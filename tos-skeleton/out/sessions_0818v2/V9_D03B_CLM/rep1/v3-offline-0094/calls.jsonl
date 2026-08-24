@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대장점막내암의 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대장점막내암", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00748", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00917", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00559", "arm": "V9_D03B_CLM"}

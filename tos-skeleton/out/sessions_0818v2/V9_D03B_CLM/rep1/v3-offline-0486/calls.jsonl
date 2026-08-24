@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "질병 분류 코드 개정 보험금 지급 재심사", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "질병 코드 기준 변경 보험금 재심사 기존 거절", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "한국표준질병사인분류 개정 재분류 적용시점", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "한국표준질병사인분류 개정 적용 기준", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00144", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00145", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "다시 판단하지 않습니다", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00144", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+Found the exact clause: c01880 confirms the payment table entry for 급여 갑상선 바늘생검 조직병리진단급여금 — 1년 이후 발생 시 특약보험가입금액의 1%, 1년 미만(가입일로부터) 발생 시 0.5%. c01881 adds the definition of "1년 미만" period.
+
+{"status":"ranked","ranked_chunk_ids":["c01880","c01881","c00075","c01865","c01859"],"final_reason":"c01880의 보험금 지급기준표가 갑상선 바늘생검 조직병리진단급여금의 1년 미만(0.5%) vs 1년 이후(1%) 지급률을 직접 명시함"}

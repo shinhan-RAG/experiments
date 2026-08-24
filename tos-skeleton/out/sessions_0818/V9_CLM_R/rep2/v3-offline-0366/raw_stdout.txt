@@ -1,0 +1,3 @@
+I've reached the tool call budget with sufficient verified evidence. Finalizing ranking based on confirmed chunks/elements.
+
+{"status":"ranked","ranked_chunk_ids":["c00754","c00747","e00621","c00770","c00787","c00781"],"final_reason":"c00754/e00621은 [기본]고액암진단특약의 지급사유(고액암 진단확정, 최초 1회 한정)를 직접 규정하고, c00747은 '고액암' 정의·진단확정 요건을, c00770/c00787/c00781은 동일 특약 계열의 지급기준표와 정의로 최초 1회 한정 지급을 교차 확인함."}

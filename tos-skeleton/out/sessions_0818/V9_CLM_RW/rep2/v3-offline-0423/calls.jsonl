@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "간편암수술특약 암수술급여금 지급률 1년 미만", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "간편암수술급여금 지급사유 지급률", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01147", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01002", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "암수술급여금.*특약보험가입금액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01017__r001", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01016__r001", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "간편심사형.*지급금액|지급금액.*간편심사형", "arm": "V9_CLM_RW"}

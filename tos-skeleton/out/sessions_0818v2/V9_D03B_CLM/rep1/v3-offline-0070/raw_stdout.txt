@@ -1,0 +1,3 @@
+Confirmed both are relevant: c05646 shows 뇌졸중 분류표 includes 뇌경색증(I63), and c05536 shows 6대질병 표에도 뇌경색증(I63) 포함. c02213/c05440/c02492 give the definition articles.
+
+{"status":"ranked","ranked_chunk_ids":["c05646","c05440","c02492","c05536","c02213","c02216","c02230"],"final_reason":"뇌졸중/6대질병 분류표와 급성뇌경색증 정의 조항이 뇌경색증(I63)이 보장대상에 포함됨을 명시한다"}

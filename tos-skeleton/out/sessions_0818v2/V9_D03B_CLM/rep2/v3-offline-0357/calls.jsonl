@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "혈전용해치료특약 급성뇌경색증 진단 혈전용해제 투여", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02513", "arm": "V9_D03B_CLM"}
+치료급여금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02495", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증혈전용해치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증혈전용해치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02513", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "\"급성뇌경색증\"이라 함은", "arm": "V9_D03B_CLM"}

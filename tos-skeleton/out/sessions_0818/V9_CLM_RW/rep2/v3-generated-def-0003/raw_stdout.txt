@@ -1,0 +1,3 @@
+Both candidates confirmed — they contain the exact definition (제2-1조의8) of "카티(CAR-T)항암약물허가치료 적응증", plus related definition of CAR-T치료제/치료 (c01582/e01372) for context.
+
+{"status":"ranked","ranked_chunk_ids":["e01374","c01585","c01582","e01372","c01586","e01375"],"final_reason":"제2-1조의8 조항이 두 형식(청크·요소)에서 모두 확인되어 적응증 정의를 직접 명시함"}

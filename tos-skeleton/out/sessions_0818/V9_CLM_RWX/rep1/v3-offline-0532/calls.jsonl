@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "승낙전 보장 제1회 보험료 납입", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "승낙하기 전", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00182", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00183", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "보장개시일 승낙 전 보험금 지급사유", "arm": "V9_CLM_RWX"}

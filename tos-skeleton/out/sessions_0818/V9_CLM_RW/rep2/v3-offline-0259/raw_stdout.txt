@@ -1,0 +1,3 @@
+Confirmed both c00146 and c00204 contain the same core clause; c04897 gives a concrete 납입면제사유 example from the 보험료납입면제특약.
+
+{"status":"ranked","ranked_chunk_ids":["c00146","c00204","c04897","c04874"],"final_reason":"주계약 자체는 납입면제가 없고 별도 가입한 납입면제특약의 기준(예: 50% 이상 장해)에 따라 면제된다는 조항을 확인함"}

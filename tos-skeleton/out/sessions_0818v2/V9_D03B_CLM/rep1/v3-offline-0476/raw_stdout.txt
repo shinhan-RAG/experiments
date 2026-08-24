@@ -1,0 +1,3 @@
+I've already verified the key evidence within budget. Finalizing.
+
+{"status":"ranked","ranked_chunk_ids":["c02754","c02759","c02774","c02756","c02755","c02753"],"final_reason":"c02754는 단순재활치료의 정의·인정기준을, c02759/c02774는 지급사유와 1일 1회·연간 30회 지급 제한을 명시적으로 확인함"}

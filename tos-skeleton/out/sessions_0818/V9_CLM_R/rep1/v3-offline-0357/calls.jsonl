@@ -1,0 +1,5 @@
+{"tool": "slot", "arg": "혈전용해치료 급성뇌경색증 진단", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02232", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02230", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02246__r001", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02227", "arm": "V9_CLM_R"}

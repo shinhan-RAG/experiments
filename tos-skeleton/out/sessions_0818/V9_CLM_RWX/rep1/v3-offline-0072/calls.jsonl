@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌심 주요치료비 청구 구비서류", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험금 청구서류 진단서 뇌졸중 급성심근경색증", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02701", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌심.{0,10}주요치료비", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02705", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02706", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02707", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "뇌혈관 허혈심장질환 주요치료비특약 사고증명서 구비서류", "arm": "V9_CLM_RWX"}

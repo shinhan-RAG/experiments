@@ -1,0 +1,5 @@
+{"tool": "grep", "arg": "암진단.*(1회|1회에 한|최초 1회)", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암진단금 지급 횟수 몇번", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00564", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00899", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01041", "arm": "V9_CLM_RWX"}

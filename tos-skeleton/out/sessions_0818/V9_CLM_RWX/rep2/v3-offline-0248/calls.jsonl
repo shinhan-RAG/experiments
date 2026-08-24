@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 예외 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "정기특약 보험금을 지급하지 않는 사유 고의로 인한 사망", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00264", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "정기특약.{0,50}자살", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00232", "arm": "V9_CLM_RWX"}

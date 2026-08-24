@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "전립선암진단급여금 지급사유 반복지급 남녀특정암진단특약", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]남녀특정암진단특약에서 전립선암진단급여금을 받으려면 어떤 진단을 받아야 하며, 여러 번 진단받아도 반복 지급되나요?", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전립선암진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전립선암진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00736", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00737", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00722", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00736", "arm": "V9_D03B_CLM"}

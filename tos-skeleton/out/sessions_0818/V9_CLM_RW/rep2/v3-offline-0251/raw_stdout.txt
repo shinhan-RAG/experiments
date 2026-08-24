@@ -1,0 +1,3 @@
+This confirms e03562 is the exact "제2-3조 보험금 지급에 관한 세부규정" article for (간편)[30일한도형]첫날부터입원특약(무배당, 갱신형), page 2354-2355. c03910 (지급기준표) and c03911 (footnotes with 30일 한도 detail) are directly supporting/adjacent content. All three verified by read.
+
+{"status":"ranked","ranked_chunk_ids":["e03562","c03911","c03910","e03574","c03822"],"final_reason":"e03562는 해당 특약의 제2-3조 세부규정 본문(①~⑧항, 1회 입원당 30일 한도 등)을 직접 담고 있고 c03910/c03911은 같은 문서의 지급기준표와 각주로 이를 뒷받침함"}

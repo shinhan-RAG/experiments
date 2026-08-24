@@ -1,0 +1,3 @@
+Both confirm: 1년 미만 발생 시 특약보험가입금액의 50%, 1년 이후는 100% 지급. c00579 is the exact 부표2-1 지급기준표 for [기본] version, c00076 corroborates with the summary table. c00899/c00935 are the 갱신형/삭감없음용 variants (less exact match to "[기본]" but relevant).
+
+{"status":"ranked","ranked_chunk_ids":["c00579","c00076","c00899","c00935"],"final_reason":"c00579의 보험금 지급기준표가 계약일부터 1년 미만 발생 시 50%, 1년 이후(정상) 100% 지급을 명시하며 c00076이 이를 재확인함"}

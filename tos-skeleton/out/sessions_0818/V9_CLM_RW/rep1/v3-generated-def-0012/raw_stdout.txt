@@ -1,0 +1,3 @@
+Both chunks confirmed and directly answer the question (제2-1조의7 정의 조항, ①+②).
+
+{"status":"ranked","ranked_chunk_ids":["c02714","c02715","c02740"],"final_reason":"c02714·c02715가 제2-1조의7 종합병원 중환자실치료의 정의(①②)를 담고 있어 질문에 직접 답한다"}

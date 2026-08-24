@@ -1,0 +1,3 @@
+c00094 confirms the same content in a summary table (감액기간 표) — consistent with c03667/c03643's detailed clause. All three verified and relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c03667","c03643","c00094","c00095"],"final_reason":"보험금 지급기준표 조항이 가입 1년 미만 시 0.5%, 1년 이후 정상 지급률 1%임을 직접 명시하고 요약표로도 교차 확인함."}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "보험안내자료 약관 내용 다른 경우 계약의 내용", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "안내자료", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00200", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "보험안내자료 내용이 약관과 다른 경우 계약자에게 유리한 내용", "arm": "V9_CLM_RW"}

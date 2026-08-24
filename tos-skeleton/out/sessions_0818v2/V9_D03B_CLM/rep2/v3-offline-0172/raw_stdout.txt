@@ -1,0 +1,3 @@
+Both confirm: cancer diagnosis triggers the special contract's coverage-payment event, causing that 보장계약 to be extinguished (소멸) and therefore non-renewable (갱신불가). c01295 explicitly states cancer diagnosis → cannot renew; c01219/c01173/c04526 give the general renewal-exclusion rule (payout event → 소멸 → cannot renew).
+
+{"status":"ranked","ranked_chunk_ids":["c01295","c01219","c01173","c04526","c03919","c01635","c03051"],"final_reason":"암 진단으로 보험금 지급사유 발생 시 해당 보장계약이 소멸되어 갱신 불가함을 명시한 특약 조항들을 확인함"}

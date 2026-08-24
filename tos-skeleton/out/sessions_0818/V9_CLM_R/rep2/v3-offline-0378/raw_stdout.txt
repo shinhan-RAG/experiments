@@ -1,0 +1,3 @@
+I have verified the payout-rate table for the 전립선암진단급여금 under (간편)[기본]남녀특정암진단특약.
+
+{"status":"ranked","ranked_chunk_ids":["c00706","c01042","c00073","e00895","c01030"],"final_reason":"c00706 and c01042 give the exact 지급기준표 showing 2년미만 50%/2년이상4년미만 75%/4년이상 100% for 전립선암진단급여금, with c00073 and e00895 corroborating the graded-payout rule."}

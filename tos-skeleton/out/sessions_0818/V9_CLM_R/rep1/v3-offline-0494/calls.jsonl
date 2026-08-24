@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "보험료 자동대출납입 유지", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "자동대출납입", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00185", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "자동대출납입기간 최대 1년 유지", "arm": "V9_CLM_R"}

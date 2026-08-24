@@ -1,0 +1,3 @@
+Confirmed via slot search too — e02683 and e02713 pinpoint the exact 제2-1조의4/5 (보장계약 등의 정의) clause stating both coverages must be contracted simultaneously with equal sum insured.
+
+{"status":"ranked","ranked_chunk_ids":["c03054","e02683","e02713","c03025","c03053","c03026"],"final_reason":"약관 제2-1조의4/5(보장계약 등의 정의)에서 대상포진·통풍 보장계약을 계약자가 동시에 체결해야 하며 가입금액도 동일해야 한다고 명시해 단독 선택가입이 불가함을 확인함."}

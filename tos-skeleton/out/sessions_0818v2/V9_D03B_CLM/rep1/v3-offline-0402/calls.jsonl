@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료급여금 전문재활 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전문재활.*급여주요뇌심장질환특정재활치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02775", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00083", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "간편심사형.*1년 미만.*지급사유가 발생한 경우", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 지급사유 진단확정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]일반암진단특약 암진단급여금 반복 지급 여러번", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00935", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "삭감없음용.*갱신형.*제2-2조|제2-2조.*지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00564", "arm": "V9_CLM_RWX"}

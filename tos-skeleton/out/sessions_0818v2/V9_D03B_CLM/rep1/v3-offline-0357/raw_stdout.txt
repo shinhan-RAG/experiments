@@ -1,0 +1,3 @@
+Already have enough evidence from c02495 which contains the 혈전용해치료 definition text.
+
+{"status":"ranked","ranked_chunk_ids":["c02513","c02492","c02495","c02491","c02488"],"final_reason":"c02513이 지급사유·횟수(최초 1회)를 명시하고, c02491/c02492는 급성뇌경색증 정의, c02495는 혈전용해치료 정의를 확인해준다."}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "주계약 납입면제 기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136752, "dense/V9": 0.142112}, "sparse_share": 0.4904, "dense_share": 0.5096, "notes": []}
+{"arm": "V9_CLM_RW", "query": "주계약 보험료 납입면제사유 장해상태 50%", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.1386, "dense/V9": 0.138116}, "sparse_share": 0.5009, "dense_share": 0.4991, "notes": []}

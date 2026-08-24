@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "재해장해 특약 보험금 지급 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "3~100% 재해장해분류표 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00325", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "특약보험가입금액의", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00300", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00379", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00096", "arm": "V9_CLM_RWX"}

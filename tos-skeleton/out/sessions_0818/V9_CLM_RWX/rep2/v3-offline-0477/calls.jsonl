@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여 주요 뇌심장질환 특정재활치료 특약 전문재활치료 급여금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "전문재활치료 급여금 1일 1회 연간 지급 횟수 제한", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02775", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02774", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02756", "arm": "V9_CLM_RWX"}

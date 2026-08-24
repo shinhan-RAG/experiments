@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "부정맥 진단급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "(간편)부정맥진단특약 반복 지급", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02405", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02428", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "부정맥.*최초 1회", "arm": "V9_CLM_R"}

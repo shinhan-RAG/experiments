@@ -1,0 +1,3 @@
+This confirms the answer clearly. c00564 gives the exact 제2-2조 지급사유 text ("최초 1회의 진단확정에 한함" — only paid once, not repeatedly), and c00899 provides the 부표2-1 지급기준표 corroborating the same clause with 지급금액.
+
+{"status":"ranked","ranked_chunk_ids":["c00564","c00899","c00579","c00935","c00610"],"final_reason":"제2-2조와 부표2-1 지급기준표가 '암'/'중증 갑상선암' 진단확정 시 최초 1회에 한해 암진단급여금을 지급한다고 명시함(반복 지급 아님)."}

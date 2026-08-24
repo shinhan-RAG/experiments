@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "주계약 보험료 납입면제 암 진단", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "보험료 납입면제 진단", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "보험료납입면제사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04917", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "제2-2조의2 보험료 납입면제사유\\n\\n회사는", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04897", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04938", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04860", "arm": "V9_CLM_R"}

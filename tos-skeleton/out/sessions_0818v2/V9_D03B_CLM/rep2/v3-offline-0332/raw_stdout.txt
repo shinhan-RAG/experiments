@@ -1,0 +1,3 @@
+Confirmed relevant clauses covering 한시장해 rules, worsening-after-determination, and combining multiple/different body-part disabilities.
+
+{"status":"ranked","ranked_chunk_ids":["c00308","c00412","c00436","c00434","c00461","c05333","c00528","c04901"],"final_reason":"이 청크들이 한시장해 정의(치료종결 후 한시적 장해, 5년 이상시 20%)와 이후 기간 내 장해상태 악화 시 재산정 규정, 및 다른 신체부위 장해 발생 시 합산·최고지급률 적용 규정을 함께 담고 있어 질문에 대한 근거가 된다."}

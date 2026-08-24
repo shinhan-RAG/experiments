@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "질병장해특약 질병장해급여금 장해율 3~100%", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "(간편)[3~100%장해형]질병장해특약", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "3%이상 100%이하", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00427", "arm": "V9_CLM_R"}

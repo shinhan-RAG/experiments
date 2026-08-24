@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "급여 신경차단술 급여암특정통증완화치료", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.14501, "dense/V9": 0.148772}, "sparse_share": 0.4936, "dense_share": 0.5064, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "암 통증완화치료 신경차단술 지급 조건", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.147647, "dense/V9": 0.142976}, "sparse_share": 0.508, "dense_share": 0.492, "notes": []}

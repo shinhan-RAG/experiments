@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보험금 청구 시 제출 서류", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "보험금 청구서류", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "e00040", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00150", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05182", "arm": "V9_CLM_RWX"}

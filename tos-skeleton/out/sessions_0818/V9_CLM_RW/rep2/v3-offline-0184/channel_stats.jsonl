@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "암진단금 수령 후 갱신 가능 여부", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.125495, "dense/V9": 0.11172}, "sparse_share": 0.529, "dense_share": 0.471, "notes": []}
+{"arm": "V9_CLM_RW", "query": "암 진단 확정 후 갱신형 재가입 계약갱신", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.10453, "dense/V9": 0.089405}, "sparse_share": 0.539, "dense_share": 0.461, "notes": []}

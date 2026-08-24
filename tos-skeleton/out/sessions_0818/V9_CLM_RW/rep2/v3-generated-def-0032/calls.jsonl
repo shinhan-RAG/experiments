@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증치매산정특례대상보장특약 중증치매 산정특례대상 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "중증치매 산정특례대상 정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e04149", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04527", "arm": "V9_CLM_RW"}

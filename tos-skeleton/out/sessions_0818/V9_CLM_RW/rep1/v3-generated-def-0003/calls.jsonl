@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "카티(CAR-T)항암약물허가치료 적응증 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "카티 CAR-T 항암약물허가치료 적응증", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01585", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01374", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01582", "arm": "V9_CLM_RW"}

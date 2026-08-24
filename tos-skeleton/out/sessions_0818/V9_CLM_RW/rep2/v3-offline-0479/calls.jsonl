@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "납입면제 특약 해지 조건 발생 후", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "납입면제.*해지", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04803", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04771", "arm": "V9_CLM_RW"}

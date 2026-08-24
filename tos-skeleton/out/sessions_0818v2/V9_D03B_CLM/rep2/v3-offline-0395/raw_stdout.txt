@@ -1,0 +1,3 @@
+Found clear confirmation: c01880 has the full 부표2-1 table entry for 급여 유방 바늘생검 조직병리진단급여금 (1% normally, 0.5% if within 1 year of contract date), and c00075 confirms the summary table (1년 이후 지급액의 50% within first year).
+
+{"status":"ranked","ranked_chunk_ids":["c01880","c00075","c01881","c01865","c01882"],"final_reason":"c01880의 부표2-1 지급기준표에 유방 바늘생검 조직병리진단급여금이 가입 1년 미만 시 특약보험가입금액의 0.5%, 그 외(1년 이후)는 1%로 명시되어 있고 c00075가 이를 '1년이후 지급액의 50%'로 요약 확인함."}

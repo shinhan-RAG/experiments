@@ -1,0 +1,3 @@
+Both candidates confirmed relevant: c04033 gives the definition/composition of "6대질병" (암·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환), c05533 (표102) provides the detailed classification table referenced by that definition, and c04063 is the 부표2-2 index pointing to 표102.
+
+{"status":"ranked","ranked_chunk_ids":["c04033","c05533","c04063","c05538"],"final_reason":"c04033은 6대질병(암·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환) 정의를, c05533(표102)은 그 세부 분류표를 제공하며 read로 확인함"}

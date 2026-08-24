@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "대상포진과 통풍 중 하나만 가입 가능 여부", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "대상포진진단비 통풍진단비 특약 동시가입 선택가입", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03054", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03026", "arm": "V9_CLM_RWX"}

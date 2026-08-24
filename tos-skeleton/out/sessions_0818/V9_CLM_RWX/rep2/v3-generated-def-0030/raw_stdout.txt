@@ -1,0 +1,3 @@
+Both c04468 and e04096 contain the exact 제2-1조의5 definition text, confirming the answer.
+
+{"status":"ranked","ranked_chunk_ids":["e04096","c04468","c04456","e04084","c04467"],"final_reason":"제2-1조의5 조항 원문(c04468, e04096)에서 '중증질환자[암] 산정특례 신규암 등록'의 정의를 직접 확인함"}

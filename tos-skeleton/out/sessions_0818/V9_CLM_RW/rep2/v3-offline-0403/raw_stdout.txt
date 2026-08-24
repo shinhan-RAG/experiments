@@ -1,0 +1,3 @@
+Verified: c01849 (부표2-1 보험금 지급기준표) gives exact rates — 1년 미만 0.5%, 1년 이후 1%. c01836 and c01837 corroborate the same rule (③항 및 삭감지급 도해).
+
+{"status":"ranked","ranked_chunk_ids":["c01849","c01836","c01837"],"final_reason":"부표2-1 지급기준표에서 1년 미만 발생 시 0.5%, 1년 이후 1% 지급률을 명시하고, 관련 조항(③항)과 삭감지급 도해로 교차 확인함"}

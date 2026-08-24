@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "통풍 진단확정 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통풍", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03025", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03026", "arm": "V9_CLM_RW"}

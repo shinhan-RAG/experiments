@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "고액암 진단급여금 지급 사유 반복 지급", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "고액암진단특약 고액암 진단급여금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "고액암", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00754", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "고액암 진단확정 반복 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00755", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "\"고액암\"의 정의 및 진단확정", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00754", "arm": "V9_D03B_CLM"}

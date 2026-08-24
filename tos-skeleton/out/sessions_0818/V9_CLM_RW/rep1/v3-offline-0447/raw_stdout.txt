@@ -1,0 +1,3 @@
+Verified: c02275, e01967, c02262 all confirm the diagnosis requirement ("허혈심장질환"으로 진단확정) and that payment is limited to the first diagnosis only (최초 1회의 진단확정에 한함), i.e., not repeatable.
+
+{"status":"ranked","ranked_chunk_ids":["e01967","c02275","c02262","c02299","c02346","c02322"],"final_reason":"제2-2조 지급사유와 보험금 지급기준표를 읽어 허혈심장질환 최초 1회 진단확정시에만 지급되고 반복 지급되지 않음을 확인함"}

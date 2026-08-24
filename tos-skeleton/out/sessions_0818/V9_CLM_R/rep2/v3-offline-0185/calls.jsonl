@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암진단금 지급 횟수", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "암진단비 최초 1회 한", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "암진단.{0,10}(1회|한 번|1회에 한)", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00899", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_R"}

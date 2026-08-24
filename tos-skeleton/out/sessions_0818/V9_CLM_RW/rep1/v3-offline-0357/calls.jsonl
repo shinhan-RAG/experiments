@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "혈전용해치료특약 급성뇌경색증혈전용해치료급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "급성뇌경색증 혈전용해치료 급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02513", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02512", "arm": "V9_CLM_RW"}

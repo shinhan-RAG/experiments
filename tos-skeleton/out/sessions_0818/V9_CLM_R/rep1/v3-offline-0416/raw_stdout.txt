@@ -1,0 +1,3 @@
+Confirmed: c01513/c01514 contain the (간편)항암약물치료특약 payment table showing 10% (암/대장점막내암/비침습방광암), 2% (기타피부암/갑상선암/제자리암/경계성종양), with e01297 confirming the same clause via 지급사유 element.
+
+{"status":"ranked","ranked_chunk_ids":["c01513","c01514","e01297","c01498","c01499"],"final_reason":"c01513/c01514의 [간편심사형] 보험금 지급기준표에서 항암약물치료급여금이 특약보험가입금액의 10%(암 등) 또는 2%(기타피부암·갑상선암 등)임을 직접 확인함"}

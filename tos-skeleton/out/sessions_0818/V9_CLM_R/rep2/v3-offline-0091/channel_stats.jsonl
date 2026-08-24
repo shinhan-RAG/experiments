@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "대상포진진단 특약 보험금 지급사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 5, "dense/V9": 5}, "rrf_mass": {"bm25/V9": 0.079405, "dense/V9": 0.079405}, "sparse_share": 0.5, "dense_share": 0.5, "notes": []}

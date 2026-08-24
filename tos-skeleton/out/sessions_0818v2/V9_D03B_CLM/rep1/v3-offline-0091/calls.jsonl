@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "대상포진진단 특약 보험금 지급사유", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대상포진.{0,10}진단.{0,10}지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03026", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03041", "arm": "V9_D03B_CLM"}

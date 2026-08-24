@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정순환계질환(2종~3종) 정의 특정순환계질환진단특약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "특정순환계질환\\(2종", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02378", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02379", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05511", "arm": "V9_CLM_RWX"}

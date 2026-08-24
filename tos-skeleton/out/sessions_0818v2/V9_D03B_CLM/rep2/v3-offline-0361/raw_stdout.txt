@@ -1,0 +1,3 @@
+Both confirm: 장해지급률 3%이상 100%이하가 지급 기준. This matches c00427 (해약환급금 미지급형) and c00475 (갱신형) for the same 특약.
+
+{"status":"ranked","ranked_chunk_ids":["c00427","c00475","c00457","c00404"],"final_reason":"보험금 지급기준표에서 (3~100%)질병장해급여금은 장해지급률 3%이상 100%이하에 해당하는 장해상태일 때 지급된다고 명시함."}

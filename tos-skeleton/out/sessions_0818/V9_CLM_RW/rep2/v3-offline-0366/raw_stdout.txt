@@ -1,0 +1,3 @@
+Verified: e00617 defines "고액암" diagnosis criteria, and c00754/c00755 confirm the payout is limited to the first diagnosis only (반복 지급 불가).
+
+{"status":"ranked","ranked_chunk_ids":["c00754","e00621","c00755","e00617","c00770","e00622"],"final_reason":"c00754/e00621이 지급사유(최초 1회 한정)를, c00755가 삭감·사망시 처리 세부규정을, e00617이 고액암 진단확정 요건을 직접 명시함"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료급여금 전문재활 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)급여주요뇌심장질환특정재활치료특약 전문재활 급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02775", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00083", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "부정맥진단특약 부정맥 진단급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "부정맥", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02418", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02419", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00081", "arm": "V9_CLM_RWX"}

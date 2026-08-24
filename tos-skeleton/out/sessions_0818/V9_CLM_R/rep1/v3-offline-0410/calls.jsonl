@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 허혈심장질환 입원특약 입원급여금 지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "허혈심장질환.*입원급여금", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "간편 뇌혈관질환 허혈심장질환 입원특약 가입 1년 이내 50% 지급률", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00083", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02541", "arm": "V9_CLM_R"}

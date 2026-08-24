@@ -1,0 +1,4 @@
+{"tool": "grep", "arg": "질병장해급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00482", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00483", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "50%이상장해형 질병장해특약 지급사유 장해율", "arm": "V9_CLM_R"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급여 갑상선 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여바늘생검조직병리진단특약 갑상선 바늘생검 조직병리진단급여금 지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갑상선.*바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갑상선.{0,10}바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01880", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01881", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00075", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01880", "arm": "V9_D03B_CLM"}

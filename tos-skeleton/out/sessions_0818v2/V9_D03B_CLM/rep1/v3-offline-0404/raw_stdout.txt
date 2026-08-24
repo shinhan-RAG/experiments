@@ -1,0 +1,3 @@
+Both key chunks confirm the answer: diagnosis must be confirmed by a physician based on 뇌출혈 분류표 criteria and specific tests (CT/MRI/뇌혈관조영술 등), and the 진단급여금 is paid only once (최초 1회의 진단확정에 한함) — not repeated for subsequent diagnoses.
+
+{"status":"ranked","ranked_chunk_ids":["c02239","c02236","c02240","c02255","c02233"],"final_reason":"c02239/c02240 state payment is limited to the first diagnosis only, while c02236 defines the medical diagnosis criteria (CT/MRI/뇌혈관조영술 등) for '뇌출혈'."}

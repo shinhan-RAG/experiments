@@ -1,0 +1,3 @@
+Both candidates confirm: 급성심근경색증으로 진단확정되어야 하며, 최초 1회에 한해 지급 (반복 지급 안 됨).
+
+{"status":"ranked","ranked_chunk_ids":["c02352","c02369","c00100"],"final_reason":"제2-2조와 보험금 지급기준표가 급성심근경색증 진단확정 시 최초 1회에 한해 지급됨을 명시함"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환 검사급여금 연간 횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "급여뇌심장질환 검사급여금 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00105", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_RW"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편뇌혈관질환진단특약 뇌혈관질환 진단급여금 1년 이내 지급률", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관질환.*진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02140", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00081", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "뇌혈관질환진단특약 1년 미만 감액 지급률", "arm": "V9_CLM_RW"}

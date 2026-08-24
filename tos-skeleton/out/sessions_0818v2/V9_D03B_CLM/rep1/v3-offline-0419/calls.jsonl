@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편 뇌혈관·허혈심장질환주요치료비특약 주요치료급여금 보험가입금액", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌혈관질환.{0,5}또는.{0,5}허혈심장질환.{0,10}주요치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02738", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02719", "arm": "V9_D03B_CLM"}

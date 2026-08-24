@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대상포진과 통풍 중 하나만 선택하여 가입", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "대상포진 통풍 특약 동시가입 불가", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대상포진.{0,20}통풍", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03054", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03026", "arm": "V9_D03B_CLM"}

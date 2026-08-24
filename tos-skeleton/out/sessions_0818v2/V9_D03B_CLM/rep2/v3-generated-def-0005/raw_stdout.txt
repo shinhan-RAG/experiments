@@ -1,0 +1,3 @@
+c01649 has the core definition (제2-1조의8 ①), and c01652 has the continuation (④ regarding 분류번호). Both are verified and directly relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c01649","c01652","c01650","c05655","c01650"],"final_reason":"c01649는 제2-1조의8 ①에서 갑상선암수술후항암호르몬치료제를 직접 정의하며 c01652는 그 후속 조항을 담고 있다"}

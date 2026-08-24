@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "암진단금 수령 후 갱신 가능 여부", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.125495, "dense/V9": 0.11172}, "sparse_share": 0.529, "dense_share": 0.471, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "암보험 갱신형 특약 갱신절차 보험료 재산정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.100778, "dense/V9": 0.104385}, "sparse_share": 0.4912, "dense_share": 0.5088, "notes": []}

@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "갑상선암 진단금 수령후 남은 진단금 보장", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.126897, "dense/V9": 0.119968}, "sparse_share": 0.514, "dense_share": 0.486, "notes": []}

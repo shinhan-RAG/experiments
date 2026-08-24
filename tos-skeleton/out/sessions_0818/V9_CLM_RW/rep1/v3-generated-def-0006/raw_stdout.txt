@@ -1,0 +1,3 @@
+Verified: c01704 and c01705 contain the full 제2-1조의6 "급여암특정재활치료(기본물리치료)"의 정의 clause (definition, 분류표, MM101 수가코드, 인정기준 관련 조항).
+
+{"status":"ranked","ranked_chunk_ids":["c01704","c01705","e01461","e01444"],"final_reason":"c01704/c01705 and matching elements e01461/e01444 contain the exact 제2-1조의6 definition clause for 급여암특정재활치료(기본물리치료), verified by direct read."}

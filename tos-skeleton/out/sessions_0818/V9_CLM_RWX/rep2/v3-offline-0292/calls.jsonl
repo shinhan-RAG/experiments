@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "통합건강보험 일반암 진단1 일반암 진단2 차이", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "일반암진단비 특약 일반암 진단1 일반암 진단2", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "일반암 진단[12]", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "일반암진단1|일반암진단2", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "일반암.{0,5}(Ⅰ|Ⅱ|I|II)", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "일반암진단비1|일반암진단비2|일반암진단금1|일반암진단금2", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00902", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00905", "arm": "V9_CLM_RWX"}

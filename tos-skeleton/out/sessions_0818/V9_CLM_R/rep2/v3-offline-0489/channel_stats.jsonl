@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "보험금 지급 여부에 대해 합의하지 못할 경우", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.094557, "dense/V9": 0.090275}, "sparse_share": 0.5116, "dense_share": 0.4884, "notes": []}

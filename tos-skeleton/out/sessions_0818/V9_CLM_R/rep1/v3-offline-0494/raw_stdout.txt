@@ -1,0 +1,3 @@
+e00065 confirms the same 제25조 as an element. c00185 and e00065 both directly answer the question (자동대출납입 유지 가능 여부, 1년 한도, 해약환급금 초과 시 중단, 재신청 필요). c00186 and c00184 provide context.
+
+{"status":"ranked","ranked_chunk_ids":["c00185","e00065","c00186","c00184"],"final_reason":"제25조(보험료의 자동대출납입)가 자동대출납입 유지 가능 여부와 1년 한도, 해약환급금 초과 시 중단 조건을 직접 규정한다."}

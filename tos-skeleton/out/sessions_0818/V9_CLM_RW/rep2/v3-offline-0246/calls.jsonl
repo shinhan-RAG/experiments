@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "전이암 보장", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "전이암", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02062", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00511", "arm": "V9_CLM_RW"}

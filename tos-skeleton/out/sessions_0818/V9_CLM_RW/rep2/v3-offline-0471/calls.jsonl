@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 검사급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌심장질환 검사급여금 연간 1회 한도", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02789", "arm": "V9_CLM_RW"}

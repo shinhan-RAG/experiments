@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "표적항암약물허가치료급여금", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "표적항암약물허가치료급여금 가입 후 1년 이내 지급률", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01561", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00078", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01559", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "표적항암약물허가치료급여금 지급금액 감액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01335", "arm": "V9_CLM_RW"}

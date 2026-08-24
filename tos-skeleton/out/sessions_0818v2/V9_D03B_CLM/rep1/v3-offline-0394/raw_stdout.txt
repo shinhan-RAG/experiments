@@ -1,0 +1,3 @@
+Both candidates confirmed: c01881 gives the exact 지급기준표 (1% vs 0.5% within 1 year), c00075 is a summary table corroborating the "가입 후 1년" reduced rate concept, and c01880 provides the surrounding 지급기준표 header context.
+
+{"status":"ranked","ranked_chunk_ids":["c01881","c01880","c00075","c01865","c01866"],"final_reason":"c01881의 부표2-1 지급기준표에 1년 미만 발생 시 0.5%, 그 외(1년 이상)에는 1% 지급이 명시되어 있고 c01880/c00075가 이를 보강한다."}

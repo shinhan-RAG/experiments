@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "대상포진 진단비 진단금", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.149906, "dense/V9": 0.146553}, "sparse_share": 0.5057, "dense_share": 0.4943, "notes": []}

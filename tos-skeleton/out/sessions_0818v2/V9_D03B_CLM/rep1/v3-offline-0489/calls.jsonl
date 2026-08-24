@@ -1,0 +1,8 @@
+{"tool": "grep", "arg": "제3자", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00214", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00148", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00152", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험금 지급 여부 합의 분쟁 조정", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험금청구권자와 회사 합의 성립 안될 때", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00214", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "합의하지 못할 때", "arm": "V9_D03B_CLM"}

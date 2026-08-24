@@ -1,0 +1,3 @@
+c00097 has an explicit FAQ entry "[질문]암 진단금 지급 횟수는?" — very strong match. Confirmed evidence gathered across 3 tool calls (hybrid, slot, grep) and read verification.
+
+{"status":"ranked","ranked_chunk_ids":["c00097","e00424","e00459","c00096","c00098","c00754","c00818"],"final_reason":"암진단급여금은 최초 1회의 진단확정에 한해 지급된다는 조항과 FAQ('암 진단금 지급 횟수는?')로 확인됨."}

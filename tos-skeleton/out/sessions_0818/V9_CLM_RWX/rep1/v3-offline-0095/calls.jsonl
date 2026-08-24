@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "대학병원 외래진료 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "외래제비용 통원의료비 대학병원", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "대학병원", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "상급종합병원", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02680", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03770", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00084", "arm": "V9_CLM_RWX"}

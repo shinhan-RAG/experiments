@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "수술 시 무조건 지급 여부", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "수술급여금 지급사유 부담보 면책", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03178", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03154", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "수술.{0,10}제외", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03699", "arm": "V9_CLM_RW"}

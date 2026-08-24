@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "(간편)[3~100%장해형]질병장해특약 질병장해급여금 보험가입금액 장해지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "질병장해급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00427", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00409", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00475", "arm": "V9_CLM_R"}

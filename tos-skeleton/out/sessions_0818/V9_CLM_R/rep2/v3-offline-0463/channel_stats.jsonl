@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "고액암 진단급여금 두 번 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.126316, "dense/V9": 0.111656}, "sparse_share": 0.5308, "dense_share": 0.4692, "notes": []}

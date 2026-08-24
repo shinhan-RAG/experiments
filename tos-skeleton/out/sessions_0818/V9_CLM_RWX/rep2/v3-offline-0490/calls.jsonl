@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보험금 청구 서류 구비서류", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험금.{0,10}청구.{0,10}서류", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "청구서.{0,5}\\(회사양식\\)", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00150", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00214", "arm": "V9_CLM_RWX"}

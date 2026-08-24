@@ -1,0 +1,3 @@
+Confirmed the core definition clause (제2-1조의4) in c02381/e02098, plus the classification table reference (부표2-4 → 별첨2 표84) in c02400/c05513/c05516.
+
+{"status":"ranked","ranked_chunk_ids":["c02381","e02098","c05513","c02400","e02092","c05516"],"final_reason":"c02381/e02098 contain the exact 제2-1조의4 definition clause for '특정순환계질환(3종)', cross-verified against the referenced 부표2-4/별첨2 표84 classification table in c05513/c02400/c05516."}

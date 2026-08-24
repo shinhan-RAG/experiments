@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갑상선암수술후항암호르몬치료제 정의", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "갑상선암수술후항암호르몬치료제 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갑상선암수술후항암호르몬치료제", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갑상선암수술후항암호르몬치료제", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01649", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01649", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01652", "arm": "V9_D03B_CLM"}

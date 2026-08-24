@@ -1,0 +1,3 @@
+Confirmed: these chunks explicitly enumerate which riders are excluded from "보험료납입면제대상계약" (premium waiver rider coverage) even when the waiver rider is attached — matching the exact question.
+
+{"status":"ranked","ranked_chunk_ids":["c04747","c04962","c04996","c04896","c04860","c04722","c04782","c04835","c05021"],"final_reason":"이 청크들은 납입면제특약이 적용되어도 「보험료납입면제대상계약」에서 제외되는 특약(가·나 목)을 명시적으로 열거한다."}

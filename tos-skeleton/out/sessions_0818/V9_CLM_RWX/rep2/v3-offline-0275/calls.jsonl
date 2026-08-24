@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "통풍 진단 확정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "통풍 진단비 지급 조건", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03025", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03026", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03068", "arm": "V9_CLM_RWX"}

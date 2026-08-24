@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "1-5종 수술특약 보험금을 지급하지 않는 사유", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "수술특약 보험금을 지급하지 아니하는 사유 면책", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "1-5종.*수술특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03156", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03101", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03157", "arm": "V9_CLM_RWX"}

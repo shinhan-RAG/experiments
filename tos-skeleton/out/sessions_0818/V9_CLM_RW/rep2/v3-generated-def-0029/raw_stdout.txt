@@ -1,0 +1,3 @@
+Both candidates verified: c04467 directly contains 제2-1조의4 defining "중증질환자[암] 본인일부부담금 산정특례 대상 질병" (= 제2-1조의3 해당 상병) and its 진단확정 기준. c04465 is the referenced 제2-1조의3 text defining the underlying "산정특례 대상" (등록일로부터 5년간 해당 상병으로 진료받은 경우). e04095 (element) is the same content as c04467.
+
+{"status":"ranked","ranked_chunk_ids":["c04467","c04465","e04095","c04456","c04484","e04094"],"final_reason":"c04467/e04095는 제2-1조의4에서 해당 정의 조항을 직접 명시하고, c04465(제2-1조의3)는 그 정의가 참조하는 산정특례 대상 상병 기준을 제공한다"}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "통합암 특약 갑상선암 소액암 포함", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.14518, "dense/V9": 0.147374}, "sparse_share": 0.4962, "dense_share": 0.5038, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "갑상선암 소액암 보장 특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140268, "dense/V9": 0.148583}, "sparse_share": 0.4856, "dense_share": 0.5144, "notes": []}

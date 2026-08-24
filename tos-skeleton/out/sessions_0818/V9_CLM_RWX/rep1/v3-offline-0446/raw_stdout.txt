@@ -1,0 +1,3 @@
+Both candidates verified: c01477 gives the exact payout table (100% vs 50% within 1 year), c00079 confirms the reduction rule (가입 후 1년간 1년이후 지급 보험금의 50% 지급) for this specific rider.
+
+{"status":"ranked","ranked_chunk_ids":["c01477","c00079","c01427"],"final_reason":"부표2-1 지급기준표(c01477)와 감액기간·지급비율표(c00079)가 1년 미만 50%, 1년 이후 100% 지급을 명시적으로 확인해준다."}

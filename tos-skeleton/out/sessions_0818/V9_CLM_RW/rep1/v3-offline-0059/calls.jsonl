@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "추간판탈출증 장해 진단 교통사고 장해보험금 청구 서류", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "장해보험금 청구시 제출서류", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00133", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04384", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "추간판탈출증.*(장해진단서|사고증명서|청구)", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "재해장해 보험금 청구시 구비서류 장해진단서", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00225", "arm": "V9_CLM_RW"}

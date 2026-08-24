@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "간병인 사용 입원 185일 보장", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "간병인 사용 입원 185일 보장 한도", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "185일", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "185일", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "동일한 질병.{0,30}재입원", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "180일이 지난 후 사용한 간병인은 새로운 입원", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04295", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "동일한 질병.*2회 이상 입원", "arm": "V9_D03B_CLM"}

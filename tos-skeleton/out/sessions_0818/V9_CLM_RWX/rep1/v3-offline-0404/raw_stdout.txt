@@ -1,0 +1,3 @@
+Both candidates confirm the answer well. c02239 gives the payment condition (최초 1회 진단확정에 한함 - only first diagnosis, not repeated), and c02236 gives the diagnostic criteria (한국표준질병사인분류상 뇌출혈 분류표 해당, 의사의 진단, CT/MRI/뇌혈관조영술 등 기초). c02255 (지급기준표) also corroborates "최초 1회에의 진단확정에 한함".
+
+{"status":"ranked","ranked_chunk_ids":["c02239","c02236","c02255","c02233","c02240"],"final_reason":"제2-2조와 제2-1조의2, 지급기준표가 진단 기준(CT/MRI 등)과 최초 1회 한정 지급을 명확히 확인해줌."}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "뇌전증 1회 발작 진단 지급 여부", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.135943, "dense/V9": 0.130702}, "sparse_share": 0.5098, "dense_share": 0.4902, "notes": []}
+{"arm": "V9_CLM_RW", "query": "뇌전증 진단비 지급사유 반복성 발작", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.142919, "dense/V9": 0.128157}, "sparse_share": 0.5272, "dense_share": 0.4728, "notes": []}

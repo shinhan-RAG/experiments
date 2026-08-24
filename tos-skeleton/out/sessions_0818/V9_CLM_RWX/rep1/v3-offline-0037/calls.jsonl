@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간병인사용입원특약 간병인 실제 사용 요건", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "간병인사용", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04297", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04109", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04211", "arm": "V9_CLM_RWX"}

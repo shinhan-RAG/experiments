@@ -1,0 +1,3 @@
+This confirms: the premium waiver only applies to contracts that have the separate (간편)보험료납입면제특약 rider attached (특약을 주계약에 부가하여 체결), and the waiver-target scope/exclusions are defined by that rider — i.e., simply holding the 통합건강보장보험 doesn't waive premiums unless this rider is subscribed and its specific conditions (장해/암/뇌혈관질환/허혈심장질환/치매 등, with 면책기간) are met.
+
+{"status":"ranked","ranked_chunk_ids":["c00067","e00097","c04895","e00170","c04926","c04860","e00038"],"final_reason":"보험료납입면제는 통합건강보장보험 자체가 아니라 별도의 (간편)보험료납입면제특약을 주계약에 부가 가입해야 하며, 그 특약이 정한 장해/암/뇌혈관질환 등 사유 발생 시에만 면제된다는 근거 조항들."}

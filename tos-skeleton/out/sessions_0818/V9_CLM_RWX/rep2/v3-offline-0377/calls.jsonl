@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 가입 1년 이내 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)[기본]일반암진단특약 암진단급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00076", "arm": "V9_CLM_RWX"}

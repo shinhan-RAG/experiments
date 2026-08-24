@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "보험금 지급 후 주계약 계속 유지", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "보험금 지급 후 계약의 효력", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "보험금을 지급한 후에도", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "지급한 후에도 이 계약은 계속", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "보험금 지급사유가 2회 이상", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "보험기간이 끝날 때까지 계속", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "지급사유가 발생하더라도", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "지급사유가 발생하여도", "arm": "V9_CLM_R"}

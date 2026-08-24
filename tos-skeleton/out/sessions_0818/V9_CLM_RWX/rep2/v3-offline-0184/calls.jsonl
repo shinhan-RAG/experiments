@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암진단금 수령 후 갱신 가능여부", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암진단급여금 지급 후 갱신", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01017", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00873", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제2-9조.*소멸", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00997", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+Both confirmed — they contain the exact 제2-1조의5 definition text answering the question directly.
+
+{"status":"ranked","ranked_chunk_ids":["c04468","e04096","c04456","e04094"],"final_reason":"c04468/e04096은 제2-1조의5 조항 원문으로 정의를 직접 명시하며 read로 확인됨"}

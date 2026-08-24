@@ -1,0 +1,3 @@
+Verified. Final ranking based on read confirmation.
+
+{"status":"ranked","ranked_chunk_ids":["c03025","c03068","c03026","e02714","c03054"],"final_reason":"통풍진단급여금은 최초 1회 진단확정만으로 지급되나, 진단확정은 임상학적 기준(혈청 요산검사·관절액검사·영상소견 등)을 충족해야 한다."}

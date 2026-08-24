@@ -1,0 +1,3 @@
+Both e04149 and c04527 confirm the exact definition text for "중증치매 I 산정특례대상" — the article 제2-1조의3 clause. This directly answers the question.
+
+{"status":"ranked","ranked_chunk_ids":["e04149","c04527","c04519","c04556","c04523"],"final_reason":"e04149와 c04527이 제2-1조의3 조항 원문으로 '중증치매 | 산정특례대상' 정의를 직접 제공함을 read로 확인함"}

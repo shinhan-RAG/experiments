@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "장해분류표 1급 사망보험금 지급 특약 보험료 납입 면제", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "1급.{0,10}장해.{0,20}사망보험금", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "장해지급률 100% 사망보험금 지급 계약 소멸 특약도 함께", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02486", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02120", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "장해분류표에 따른 각 신체부위별 장해지급률을 더하여 100% 사망보험금을 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "지급률을 더하여 100%", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제1급.{0,5}장해", "arm": "V9_CLM_RWX"}

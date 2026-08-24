@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "알릴의무 위반 해지", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "알릴의무", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00216", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00159", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00217", "arm": "V9_D03B_CLM"}

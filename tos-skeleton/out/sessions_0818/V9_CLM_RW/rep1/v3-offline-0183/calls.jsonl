@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 암주요치료 연간 보장 횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "암주요치료비 지급횟수 연간 한도", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00106", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01347", "arm": "V9_CLM_RW"}

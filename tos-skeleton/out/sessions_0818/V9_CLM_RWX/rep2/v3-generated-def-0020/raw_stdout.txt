@@ -1,0 +1,3 @@
+This confirms c03400 (page 2036, within the "(간편)[기본]신수술특약" document, page range 2031-2049 matching c03393/c03427) contains the exact definition of "급여수술" under 제2-1조의4.
+
+{"status":"ranked","ranked_chunk_ids":["c03400","c03393","c03427"],"final_reason":"c03400은 (간편)[기본]신수술특약 제2-1조의4에서 급여수술을 '의사에 의해 수술보장대상 질병/재해의 직접적 치료 목적으로 필요하다고 인정되어 신수술 분류표상 수술코드에 해당하는 행위를 받는 경우'로 정의하며, c03393/c03427로 동일 문서·조항임을 확인함."}

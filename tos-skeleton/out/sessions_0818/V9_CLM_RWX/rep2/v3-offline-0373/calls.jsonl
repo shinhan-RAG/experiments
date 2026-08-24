@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 지급 사유 진단확정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암보장개시일 이후 암으로 진단확정 암진단급여금 1회한 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00564", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00899", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_RWX"}

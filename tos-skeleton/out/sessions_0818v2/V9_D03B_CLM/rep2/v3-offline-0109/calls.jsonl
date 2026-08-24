@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "보장개시일 전 진단 확정 보험금 지급하지 않음 계약 해지", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "책임개시일 이전 진단 특약 소멸", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01769", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02091", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00220", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보장개시일.{0,10}전.{0,20}진단", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00531", "arm": "V9_D03B_CLM"}

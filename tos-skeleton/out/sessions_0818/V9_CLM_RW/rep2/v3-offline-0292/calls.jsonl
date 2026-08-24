@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "일반암 진단1 일반암 진단2 차이", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "일반암진단비 특약", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "일반암진단특약Ⅰ|일반암진단특약Ⅱ|일반암진단특약1|일반암진단특약2|일반암진단특약\\(1\\)|일반암진단특약\\(2\\)", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "삭감없음용.*일반암|기본.*일반암진단", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00551", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00585", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "일반암진단.*지급사유|보험금 지급사유.*일반암", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00867", "arm": "V9_CLM_RW"}

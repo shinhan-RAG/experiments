@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간병인사용입원특약 간병인 실제 사용 여부", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "간병인사용입원 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04297", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04211", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04109", "arm": "V9_CLM_RW"}

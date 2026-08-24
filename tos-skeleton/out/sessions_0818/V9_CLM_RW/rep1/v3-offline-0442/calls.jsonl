@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "특정부정맥진단특약 특정부정맥 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "특정부정맥 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02473", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02451", "arm": "V9_CLM_RW"}

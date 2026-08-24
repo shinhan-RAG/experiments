@@ -1,0 +1,3 @@
+Confirmed. This chunk directly answers the question with 지급사유 and 1일 1회/연간 30회 limits.
+
+{"status":"ranked","ranked_chunk_ids":["c02774","c02759","c02754","c00108","c00107","c02743"],"final_reason":"c02774/c02759가 단순재활치료 급여금의 지급사유·지급금액과 1일1회·연간30회 한도를 명시하며, c02754는 단순재활치료 정의, c00107/c00108은 한도표로 이를 뒷받침한다."}

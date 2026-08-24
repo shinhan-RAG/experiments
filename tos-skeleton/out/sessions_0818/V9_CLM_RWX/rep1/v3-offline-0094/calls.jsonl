@@ -1,0 +1,4 @@
+{"tool": "grep", "arg": "대장점막내암", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00950", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제2-1조의[0-9]+\\(\"대장점막내암\"", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01576", "arm": "V9_CLM_RWX"}

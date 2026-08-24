@@ -1,0 +1,3 @@
+Verified: the 소액암진단특약(minor-cancer diagnosis rider) explicitly pays 소액암진단급여금 for "중증이외갑상선암" (non-severe thyroid cancer), confirming thyroid cancer (other than medullary/anaplastic) is classified and covered as a 소액암.
+
+{"status":"ranked","ranked_chunk_ids":["c00673","c00642","c00613","c01008","c00939"],"final_reason":"소액암진단특약 보험금 지급기준표에 '중증이외갑상선암'이 소액암으로 명시되어 있어 갑상선암(중증 제외)이 소액암 보장에 포함됨을 확인"}

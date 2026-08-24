@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "제자리암 진단 확정 검사 조직검사", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "제자리암 진단확정 병리 또는 진단검사의학과 전문의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01493", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02027", "arm": "V9_CLM_RW"}

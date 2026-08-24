@@ -1,0 +1,3 @@
+e02487 confirms same table element for the 부표2-1 지급기준표. This aligns with c02775. I have sufficient verified evidence.
+
+{"status":"ranked","ranked_chunk_ids":["c02775","e02487","c00083","c02774","c02759"],"final_reason":"c02775(부표2-1 지급기준표)가 전문재활 급여금의 지급률을 1년 미만 0.5%, 1년 이후 1%로 명시하며 e02487·c00083·c02774·c02759가 이를 뒷받침한다."}

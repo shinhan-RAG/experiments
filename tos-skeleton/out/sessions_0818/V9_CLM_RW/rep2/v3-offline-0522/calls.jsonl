@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "주계약 보험료 납입면제 암 진단 질병", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "보험료 납입면제 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보험료의 납입을 면제하는 특약", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "주계약 보험료납입면제 특약 가입 여부", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04988", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04274", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00038", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e04375", "arm": "V9_CLM_RW"}

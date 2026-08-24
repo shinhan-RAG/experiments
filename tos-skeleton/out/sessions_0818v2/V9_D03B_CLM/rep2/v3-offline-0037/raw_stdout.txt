@@ -1,0 +1,3 @@
+This confirms the answer: c04268 gives the precise definition of "간병인" requiring a paid caregiver (유상 간병서비스 제공자, registered business), and c04206/c04230 show the payment condition requires actually using a caregiver ("간병인을 사용하여 실질적으로 간병서비스를 이용"). c04271 also confirms this for 요양병원 제외 case.
+
+{"status":"ranked","ranked_chunk_ids":["c04268","c04206","c04230","c04271","c04205","c04211"],"final_reason":"약관은 간병인사용입원 급여금 지급조건으로 '간병인을 사용하여 실질적으로 간병서비스를 이용'할 것을 명시하고, 제2-1조의4에서 유상·사업자등록된 간병인만 인정한다고 정의한다."}

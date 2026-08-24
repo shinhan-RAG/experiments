@@ -1,0 +1,3 @@
+Found the definition clause c02260 (진단확정 정의: 제8차 개정 한국표준질병·사인분류 <부표2-2> 허혈심장질환 분류표) and confirmed the payment clause with "최초 1회의 진단확정에 한함" (no repeated payment) in multiple chunks (c02299, c02275, c02346, c02322, e01967).
+
+{"status":"ranked","ranked_chunk_ids":["e01967","c02299","c02260","c02275","c02346","c02322","c02280","c02332"],"final_reason":"지급사유 조항과 허혈심장질환 정의·진단확정 조항이 '한국표준질병·사인분류상 허혈심장질환 분류표'에 해당하는 진단확정을 요구하고, '최초 1회의 진단확정에 한함'이라 명시해 반복 지급되지 않음을 확인함."}

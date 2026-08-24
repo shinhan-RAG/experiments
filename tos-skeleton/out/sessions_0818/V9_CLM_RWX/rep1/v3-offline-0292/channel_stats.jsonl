@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "일반암 진단1 일반암 진단2 차이", "n_results": 10, "channel_sizes": {"bm25/V9": 32, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.14657, "dense/V9": 0.142384}, "sparse_share": 0.5072, "dense_share": 0.4928, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "통합건강보험 일반암진단비 특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.099468, "dense/V9": 0.094299}, "sparse_share": 0.5133, "dense_share": 0.4867, "notes": []}

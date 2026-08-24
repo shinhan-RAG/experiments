@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "질병 분류 기준 변경 보험금 재심사", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.084223, "dense/V9": 0.086015}, "sparse_share": 0.4947, "dense_share": 0.5053, "notes": []}
+{"arm": "V9_CLM_RW", "query": "한국표준질병사인분류 개정 적용 기준일", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.137895, "dense/V9": 0.135843}, "sparse_share": 0.5037, "dense_share": 0.4963, "notes": []}

@@ -1,0 +1,3 @@
+Both confirm 대상포진 진단급여금 지급사유 및 금액. Also c03041 similarly relevant, and c03054 defines the contract structure.
+
+{"status":"ranked","ranked_chunk_ids":["c03068","c03026","c03041","c03054","c05473"],"final_reason":"대상포진 진단확정 시 특약보험가입금액의 10%(1년 미만은 5%)를 최초 1회 진단급여금으로 지급한다는 조항을 원문으로 확인함"}

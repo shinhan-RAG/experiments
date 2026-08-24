@@ -1,0 +1,3 @@
+Confirmed: c04713 and c04714 directly answer the question (해약환급금 없음 during premium payment period).
+
+{"status":"ranked","ranked_chunk_ids":["c04713","c04714","c03220","c02159","c04667"],"final_reason":"c04713/c04714는 급여인공관절치환수술특약(해약환급금 미지급형)의 임의해지·해약환급금 조항으로 납입기간 중 해지 시 환급금 없음을 명시하며, 나머지는 동일 유형 특약의 동일 조항으로 교차 확인됨."}

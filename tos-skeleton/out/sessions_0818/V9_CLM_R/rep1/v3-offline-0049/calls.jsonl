@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갱신형특약 비갱신형특약 차이 보험료 갱신", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "갱신형 특약 보험료 갱신시점 인상 만기", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "갱신형", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00119", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c05145", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "갱신형 특약 보험료 산출 기초율 비갱신형", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01865", "arm": "V9_CLM_R"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "한시 장해진단 지급 중 다른 부위 장해 악화", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "장해지급률 재판정 한시장해", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00434", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04725", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "한시.{0,4}장해.{0,20}지급.{0,10}중", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "한시장해 진단금 지급받던 중 다른 신체부위 장해 새로 발생", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "한시장해 지급 중 다른 부위 장해 악화 적용", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00330", "arm": "V9_CLM_RW"}

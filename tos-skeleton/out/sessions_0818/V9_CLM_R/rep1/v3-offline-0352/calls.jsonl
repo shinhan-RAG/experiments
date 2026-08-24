@@ -1,0 +1,7 @@
+{"tool": "slot", "arg": "1-5종단일금액보장수술특약 수술급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02820", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02822", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02859", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "특약보험가입금액의 0.5%", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02833", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "c03643", "arm": "V9_CLM_R"}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "뇌혈관질환 진단확정 기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136188, "dense/V9": 0.146405}, "sparse_share": 0.4819, "dense_share": 0.5181, "notes": []}
+{"arm": "V9_CLM_RW", "query": "외상성 두개내출혈 뇌혈관질환 해당여부", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.148762, "dense/V9": 0.137521}, "sparse_share": 0.5196, "dense_share": 0.4804, "notes": []}

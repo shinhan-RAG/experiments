@@ -1,0 +1,3 @@
+Both candidates verified — they contain the exact definition clause (제2-1조의2). e04231__r001 is the more complete version (includes CDR척도 detail and 진단 기준 절차), c04628/c04627/c04629 are supporting chunk-level fragments.
+
+{"status":"ranked","ranked_chunk_ids":["e04231__r001","c04628","c04629","c04627","c04650"],"final_reason":"제2-1조의2가 '중증치매상태'를 CDR척도 3점 이상 등 인지기능장애 진단 및 90일 지속 기준으로 정의하며 읽어서 확인함"}

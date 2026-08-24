@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증질환자[암] 산정특례 신규암 등록 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "중증질환자[암] 산정특례 신규암 등록", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04468", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e04096", "arm": "V9_CLM_RW"}

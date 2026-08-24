@@ -1,0 +1,3 @@
+Both candidates verified: c01237 clearly defines "항암약물치료" as including "항암화학요법 또는 항암면역요법" (chemo or immunotherapy), confirming immunotherapy is covered under the 항암약물치료 definition (excluding mere immune-boosting without cancer cells present). c01646 has the same definition text. c01536 likely duplicates similarly.
+
+{"status":"ranked","ranked_chunk_ids":["c01237","c01646","c01536","c01143","c01185"],"final_reason":"항암약물치료 정의 조항에서 항암면역요법(면역기전 이용 암세포 제거 치료)을 항암화학요법과 함께 보장 대상으로 명시함을 확인함"}

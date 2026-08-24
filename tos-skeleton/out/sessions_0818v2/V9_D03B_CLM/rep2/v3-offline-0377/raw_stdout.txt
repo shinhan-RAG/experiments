@@ -1,0 +1,3 @@
+Both c00579 and c00899 (from earlier hybrid preview) explicitly confirm: 가입(계약일) 후 1년 미만 지급사유 발생 시 특약보험가입금액의 50%, 1년 이후(1년 경과)는 100% 지급.
+
+{"status":"ranked","ranked_chunk_ids":["c00579","c00899","c00076","c00935","c01251"],"final_reason":"부표2-1 보험금 지급기준표에서 계약일부터 1년 미만 지급사유 발생 시 50%, 1년 이후(정상)는 100% 지급을 명시적으로 확인함"}

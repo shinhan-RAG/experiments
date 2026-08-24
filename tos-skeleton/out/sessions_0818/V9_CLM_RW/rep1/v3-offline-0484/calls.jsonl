@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 상급종합병원 입원 입원급여금 지급 1회 입원당 보장일수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "뇌혈관질환 입원급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02555", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02554", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관.*상급종합병원.*180일", "arm": "V9_CLM_RW"}

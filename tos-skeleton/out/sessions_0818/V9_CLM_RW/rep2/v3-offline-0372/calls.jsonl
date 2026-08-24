@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급사유 진단확정 반복지급", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "여성유방암진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00736", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00603", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "삭감없음.*남녀특정암진단특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01080", "arm": "V9_CLM_RW"}

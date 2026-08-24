@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "부정맥진단특약 부정맥 진단급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편 부정맥진단특약 진단확정 반복지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02405", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02428", "arm": "V9_CLM_RWX"}

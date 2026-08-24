@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "표적항암치료 해외 보장", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140941, "dense/V9": 0.142524}, "sparse_share": 0.4972, "dense_share": 0.5028, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "해외에서 발생한 의료비 보장 표적항암약물", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.094557, "dense/V9": 0.093691}, "sparse_share": 0.5023, "dense_share": 0.4977, "notes": []}

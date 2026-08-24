@@ -1,0 +1,3 @@
+Based on the two search calls performed, I have sufficient evidence from the previews already retrieved (tool budget reached).
+
+{"status":"ranked","ranked_chunk_ids":["c02759","c02756","c02775","c02758","c02760","c02743"],"final_reason":"c02759는 전문재활치료 급여금 지급사유(주요뇌심장질환 진단확정 후 전문재활치료 시, 1일 1회한·연간 30회한)를 직접 명시하고, c02756/c02758은 전문재활치료 정의와 인정기준을, c02775는 지급금액표를 뒷받침한다."}

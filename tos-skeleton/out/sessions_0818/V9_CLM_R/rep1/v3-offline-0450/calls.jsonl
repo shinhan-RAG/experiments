@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "1-5종단일금액보장수술특약 수술급여금 연간 몇회", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "1-5종 단일금액보장 수술급여금 지급횟수", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02820", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "수술급여금은 연간 1회", "arm": "V9_CLM_R"}

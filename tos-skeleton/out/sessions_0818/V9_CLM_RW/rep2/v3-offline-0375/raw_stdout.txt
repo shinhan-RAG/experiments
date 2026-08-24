@@ -1,0 +1,3 @@
+This is the 삭감없음용 (no-reduction) variant with flat 100% payout, so it's not the [기본] answer. c00706 confirms the [기본] version's tiered structure clearly.
+
+{"status":"ranked","ranked_chunk_ids":["c00706","c00073","e00558","c01030","c00736"],"final_reason":"c00706의 지급기준표가 [기본]형 여성유방암진단급여금의 경과기간별 지급률(2년미만 50%, 2년~4년미만 75%, 4년이상 100%)을 명시하며 c00073·c01030이 이를 뒷받침한다"}

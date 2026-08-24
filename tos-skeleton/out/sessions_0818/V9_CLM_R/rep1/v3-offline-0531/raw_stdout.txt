@@ -1,0 +1,3 @@
+Both confirm the answer: "최초 1회" limitation applies for 50% 이상 질병장해급여금.
+
+{"status":"ranked","ranked_chunk_ids":["c00448","c00433","c00432","c00096"],"final_reason":"부표2-1 지급기준표와 제2-2조 지급사유 조문이 50%이상 질병장해급여금은 최초 1회 진단확정에 한해 지급된다고 명시함."}

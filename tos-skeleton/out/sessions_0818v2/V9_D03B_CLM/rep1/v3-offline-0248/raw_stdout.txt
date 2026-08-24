@@ -1,0 +1,3 @@
+Confirmed by additional query: c00238 (다른 정기특약 판본, 해약환급금 미지급형) shows identical exception clause. Both c00264 and c00238 are strong, verified matches.
+
+{"status":"ranked","ranked_chunk_ids":["c00264","c00238","c00149","c00390"],"final_reason":"정기특약 제2-4조에서 심신상실 상태의 자해사망(재해사망보험금 지급)과 보장개시일로부터 2년 경과 후 자살(일반사망보험금 지급)을 고의사고 예외 보장사유로 명시함을 확인함"}

@@ -1,0 +1,3 @@
+Verified: c04628 contains the core definition (제2-1조의2), c04629 continues with CDR척도 supplementary detail, c04633/c04650 give supporting context on the 90일 rule.
+
+{"status":"ranked","ranked_chunk_ids":["c04628","c04629","c04633","c04650","c04630"],"final_reason":"c04628의 제2-1조의2가 '중증치매상태'를 CDR척도 3점 이상 및 90일 지속 요건으로 직접 정의하며, 나머지는 진단 절차와 최종 진단확정 규정을 보완한다."}

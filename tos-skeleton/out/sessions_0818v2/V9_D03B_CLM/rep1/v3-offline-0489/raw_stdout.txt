@@ -1,0 +1,3 @@
+Reached the tool-call limit; ranking based on verified evidence.
+
+{"status":"ranked","ranked_chunk_ids":["c00214","c00148"],"final_reason":"제1-3조(보험금 지급사유 등에 대한 제3자 의견 청취) 조항이 합의 불성립 시 제3자 의견에 따르도록 명시하여 질문에 직접 답한다."}

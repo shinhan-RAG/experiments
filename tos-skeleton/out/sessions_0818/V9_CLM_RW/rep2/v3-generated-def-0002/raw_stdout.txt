@@ -1,0 +1,3 @@
+Both e01372 (element-level, full clause with 제2-1조의7 title) and c01582 (chunk containing the same definition text) confirm the exact definition. e01357 provides the article index context.
+
+{"status":"ranked","ranked_chunk_ids":["e01372","c01582","e01357","c01581"],"final_reason":"e01372/c01582는 제2-1조의7에서 카티(CAR-T)항암약물치료제를 '환자 본인의 혈액에서 T세포를 분리하여...암세포를 공격하여 사멸시키는 치료제'로 정의한 원문을 직접 포함하고 있어 read로 확인함."}

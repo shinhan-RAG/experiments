@@ -1,0 +1,3 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환 검사급여금 연간 횟수", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "검사급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_R"}

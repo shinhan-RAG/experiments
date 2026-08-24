@@ -1,0 +1,3 @@
+This confirms the answer clearly: c00146 states the main contract itself has no automatic waiver — it only applies if a separate 납입면제특약 (premium waiver rider) is attached, and c04760 shows the rider's waiver trigger is a specific diagnosis (e.g., cancer/특정 갑상선암), not any illness generally.
+
+{"status":"ranked","ranked_chunk_ids":["c00146","c04760","c04917","c04962"],"final_reason":"c00146이 주계약은 원칙적으로 납입면제가 없고 별도 특약 가입 시에만 진단확정 등 특약이 정한 사유로 면제됨을 명시하며, c04760은 그 면제사유가 암 등 특정 진단확정으로 한정됨을 보여준다."}

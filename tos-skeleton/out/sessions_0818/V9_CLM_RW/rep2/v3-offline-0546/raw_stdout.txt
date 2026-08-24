@@ -1,0 +1,3 @@
+Both candidates confirmed: pays for 암/기타피부암/갑상선암/대장점막내암/비침습방광암, limited to first occurrence only (최초 1회에 한함).
+
+{"status":"ranked","ranked_chunk_ids":["c01477","c01446"],"final_reason":"두 청크 모두 항암양성자방사선치료급여금의 지급대상 암 5종과 최초 1회 한도를 명시하고 있음을 직접 확인함"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급률 가입경과기간", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "남녀특정암진단특약 여성유방암진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00073", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00706", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01080", "arm": "V9_CLM_RW"}

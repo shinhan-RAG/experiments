@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "한시적 장해진단 후 다른 부위 장해로 장해 상태 악화", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "장해지급률 변경 한시장해 재판정", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "한시", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "장해지급률의 변경", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00434", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05333", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "한시장해 지급 후 다른 신체부위 장해 발생 장해지급률 산정", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00308", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여 유방 바늘생검 조직병리진단급여금 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편급여바늘생검조직병리진단특약 가입 1년 이내 지급률 50%", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00075", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01882", "arm": "V9_CLM_RWX"}

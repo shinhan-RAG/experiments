@@ -1,0 +1,3 @@
+Both e02434 and c02715 confirm the definition text clearly (제2-1조의7 "종합병원 중환자실치료"의 정의). Verified.
+
+{"status":"ranked","ranked_chunk_ids":["e02434","c02715","e02419","c02701"],"final_reason":"e02434가 제2-1조의7 종합병원 중환자실치료의 정의 조항 전문을 담고 있어 read로 확인함"}

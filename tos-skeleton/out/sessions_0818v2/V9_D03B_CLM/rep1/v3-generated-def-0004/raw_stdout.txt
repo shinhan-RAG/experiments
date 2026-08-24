@@ -1,0 +1,3 @@
+Confirmed the definition in c01646 (제2-1조의7 ①항). Additional supporting context in c01649 and c01647.
+
+{"status":"ranked","ranked_chunk_ids":["c01646","c01649","c01647","c01661","c01629"],"final_reason":"c01646의 제2-1조의7 ①항이 '특정항암호르몬치료제'를 직접 정의하며, 나머지는 관련 목차·안전성 인정범위 등 보조 근거이다."}

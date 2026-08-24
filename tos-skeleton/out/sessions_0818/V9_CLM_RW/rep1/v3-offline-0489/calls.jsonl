@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "보험금 지급 여부 합의 안될 때 절차", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "제3자.*협의|손해사정사|보험금.*합의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00214", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00148", "arm": "V9_CLM_RW"}

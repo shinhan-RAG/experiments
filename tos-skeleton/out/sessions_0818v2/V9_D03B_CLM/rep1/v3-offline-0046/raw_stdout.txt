@@ -1,0 +1,3 @@
+This is a more specific sub-case (breast reconstruction/mastectomy), less directly on-point for the general question but relevant context. I'll keep the core general-rule chunks ranked highest.
+
+{"status":"ranked","ranked_chunk_ids":["c03099","c03132","c03205","c03654","c03773","c05115","c03336","c03470"],"final_reason":"동일자 동시 2종 이상 수술 시 가장 높은 급여금 1건만 지급하되 신체부위가 다른 독립 수술은 각각 지급한다는 조항(제5항)이 질문에 직접 답하며, 1회 입원·통원 중 복수수술 처리규정과 동일 질병 중복수술 규정이 이를 보강한다.","final_reason_ko":"동일자 동시 2종 이상 수술 시 가장 높은 급여금 1건만 지급하되 신체부위가 다른 독립 수술은 각각 지급한다는 조항(제5항)이 질문에 직접 답하며, 1회 입원·통원 중 복수수술 처리규정과 동일 질병 중복수술 규정이 이를 보강한다."}

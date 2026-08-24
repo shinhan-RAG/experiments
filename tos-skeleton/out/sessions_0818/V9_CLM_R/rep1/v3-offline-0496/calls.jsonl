@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편암주요치료비특약 기타피부암 갑상선암 보험금 지급기간", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "기타피부암 및 갑상선암", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01354", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01331", "arm": "V9_CLM_R"}

@@ -1,0 +1,3 @@
+This confirms the (간편)뇌전증진단특약 structure and payment provisions. I have enough verified evidence.
+
+{"status":"ranked","ranked_chunk_ids":["c02105","c02103","c02106","c05411","c02100"],"final_reason":"뇌전증진단특약은 KCD 뇌전증 분류표 기준 진단확정 시 최초 1회에 한해 지급되며, 발작 반복 여부는 장해분류표(별도 기준)에서만 다뤄진다."}

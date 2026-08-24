@@ -1,0 +1,3 @@
+Confirmed additional supporting chunks (c02759 with 지급사유 조항 text). All verified.
+
+{"status":"ranked","ranked_chunk_ids":["e02487","c02775","c02759","c00108","c02760"],"final_reason":"부표2-1 지급기준표와 지급사유 조항에서 전문재활치료 급여금이 주요뇌심장질환 진단 후 전문재활치료·기타이학요법을 받을 때 1일 1회, 연간 30회 한도로 지급됨을 확인함"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편 항암약물치료특약 항암약물치료급여금 보험가입금액 지급액", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "항암약물치료급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01513", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02052", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01498", "arm": "V9_CLM_RW"}

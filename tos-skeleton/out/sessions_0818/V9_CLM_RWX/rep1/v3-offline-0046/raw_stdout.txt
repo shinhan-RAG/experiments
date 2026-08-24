@@ -1,0 +1,3 @@
+Both angles confirmed via read: (1) 동일 질병 원인 다수 수술 → 1회만 지급 (c03654 등), (2) 같은 날(1회 입원/통원) 2가지 이상 수술 → 하나의 수술코드에 한해서만 지급 (c03205 등, ADRG 우선순위 규정). This directly answers "same day multiple surgeries → not duplicated payment."
+
+{"status":"ranked","ranked_chunk_ids":["c03205","c03654","c03371","c03336","c03773","c03764","c03693","c05115","c03262","c03301"],"final_reason":"약관상 같은 날(1회 입원·통원)에 2가지 이상 수술을 받아도 하나의 수술코드에 한해 급여금을 지급하며, 동일 질병 원인 복수 수술도 1회만 지급되어 중복 지급되지 않음을 확인함."}

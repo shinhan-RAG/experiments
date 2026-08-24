@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "갑상선 바늘생검 조직병리진단급여금 지급 요건 연간 지급 횟수", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "바늘생검 조직병리진단", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01866", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_R"}

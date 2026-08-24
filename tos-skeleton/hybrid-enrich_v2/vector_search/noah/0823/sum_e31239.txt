@@ -1,0 +1,28 @@
+e31239 | (간편)[소액암진단형]보험료납입보조특약(무배당, 갱신형)
+[별첨1] 약관 내용 중 법 관련 인용 조문
+The main feature of the system is that the data is stored in a database, which is a collection of objects. Each object represents a record of a particular data set. The data set is organized in a hierarchical structure, where each level represents a different category or type of data. This hierarchical structure allows for easy access and manipulation of the data set.
+지급받은 경우 급여가 제한될 수 있다.
+⑥ 복지용구사업소는 제5조제2호에 따른 세정 및 소독을 실시한 복지용구에 대해서만 대여방식으로 제공할 수 있다.
+⑦ 공단은 복지용구사업소가 수급자로부터 법 제40조에 의한 본인부담금을 수납하지 않거나 금품 등을 제공하는 등 유인·알선행위를 한 경우에는 장기요양급여비용 청구금액이 적합한지를 현지 확인심사하여 지급할 수 있다.
+<향후 관련법령이 개정된 경우 개정된 내용을 적용합니다.>
+The following is a markdown table extracted from the provided image:
+|  |  |
+| --- | --- |
+표1
+재해분류표
+1. 보장대상이 되는 재해
+다음 각 호에 해당하는 재해는 이 보험의 약관에 따라 보험금을 지급합니다.
+① 한국표준질병·사인분류상의(S00 ~ Y84)에 해당하는 우발적인 외래의 사고
+② 감염병의 예방 및 관리에 관한 법률 제2조 제2호에서 규정한 제1급감염병
+2. 보험금을 지급하지 않는 재해
+다음 각 호에 해당하는 경우에는 재해분류에서 제외하여 보험금을 지급하지 않습니다.
+① 질병 또는 체질적 요인이 있는 자로서 경미한 외부 요인으로 발병하거나 그 증상이 더욱 악화된 경우
+② 사고의 원인이 다음과 같은 경우
+- 과잉노력 및 격심한 또는 반복적 운동(X50)
+- 무중력 환경에서의 장기간 체류(X52)
+- 식량부족(X53)
+- 물부족(X54)
+- 상세불명의 결핍(X57)
+- 고의적 자해(X60 ~ X84)
+- "법적 개입" 중 법적 처형(Y35.5)
+③ "외과적 및 내과적 치료 중 환자의 재난(Y60 ~ Y69)" 중 진료기관의

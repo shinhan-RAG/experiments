@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "카티 CAR-T 항암약물치료제 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "카티\\(CAR-T\\)항암약물치료제", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01582", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01583", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "카티(CAR-T)항암약물치료제 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "카티\\(CAR-T\\)항암약물치료제", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01582", "arm": "V9_D03B_CLM"}

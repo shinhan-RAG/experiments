@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "일반암 진단1 일반암 진단2 차이", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "통합건강보험 원 특약 일반암진단특약", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "일반암.{0,3}진단.{0,2}[12ⅠⅡ]", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "일반암 진단", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "일반암진단특약Ⅰ|일반암진단특약Ⅱ|일반암진단특약I|일반암진단특약II", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "기본형|삭감없음용", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00868", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00869", "arm": "V9_CLM_R"}

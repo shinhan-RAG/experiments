@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "암 주요치료비 연간 1회 기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.149284, "dense/V9": 0.12582}, "sparse_share": 0.5426, "dense_share": 0.4574, "notes": []}
+{"arm": "V9_CLM_R", "query": "암주요치료비 연간 지급횟수", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.131323, "dense/V9": 0.121523}, "sparse_share": 0.5194, "dense_share": 0.4806, "notes": []}

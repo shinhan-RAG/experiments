@@ -1,0 +1,3 @@
+This confirms e00015__r002 has the exact table row (matching c00082) and e01945/e01944 correspond to c02239's 제2-3조 text. Both already verified by read.
+
+{"status":"ranked","ranked_chunk_ids":["c00082","c02239","e00015__r002"],"final_reason":"약관 제2-3조와 부표2-1 지급기준표가 뇌출혈진단특약에 가입 후 1년간 감액(50% 지급)이 적용됨을 명시함"}

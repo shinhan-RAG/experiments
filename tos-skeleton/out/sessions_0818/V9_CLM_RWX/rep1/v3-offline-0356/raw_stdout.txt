@@ -1,0 +1,3 @@
+Confirmed: c03149 clearly states the 5종 수술급여금 rate is 특약보험가입금액의 10% per surgery, but for 간편심사형, if the cause occurs within 1 year of the initial contract date due to non-accident causes, only 5% is paid. c03098 and c03112 corroborate the structure (간편심사형 1년 미만 감액 규정).
+
+{"status":"ranked","ranked_chunk_ids":["c03149","c03098","c03112","c03113","c00085"],"final_reason":"c03149의 5종 보장계약 조항이 1년 미만 재해외 사유 발생 시 5% 지급, 1년 이후(또는 재해)는 10% 지급으로 지급률 차이를 직접 명시함."}

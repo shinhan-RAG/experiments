@@ -1,0 +1,3 @@
+Found sufficient evidence: c01835 confirms the payout condition, target diseases, exam purpose, and "연간 1회" limit; c01851 confirms the "연간" definition and restates the purpose condition.
+
+{"status":"ranked","ranked_chunk_ids":["c01835","c01851","c01849","c05517","c01852","c01834","c05518"],"final_reason":"c01835/c01851이 지급대상 질병(암·기타피부암·갑상선암·대장점막내암·비침습방광암), 치료/진행여부 확인 목적, 연 1회 한도를 명시하며 나머지는 지급기준표·검사분류표로 이를 뒷받침한다."}

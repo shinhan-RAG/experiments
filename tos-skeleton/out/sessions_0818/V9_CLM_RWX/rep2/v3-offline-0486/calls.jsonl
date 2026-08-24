@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "질병 코드 기준 변경 소급 적용 보험금 거절 재심사", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "약관 개정 기준 변경 시점 적용 보험금 지급 재청구", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00144", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00145", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험금지급사유로 보지 않습니다", "arm": "V9_CLM_RWX"}

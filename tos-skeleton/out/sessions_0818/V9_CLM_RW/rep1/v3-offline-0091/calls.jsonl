@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "대상포진진단 특약 보험금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "대상포진진단 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02684", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02714", "arm": "V9_CLM_RW"}

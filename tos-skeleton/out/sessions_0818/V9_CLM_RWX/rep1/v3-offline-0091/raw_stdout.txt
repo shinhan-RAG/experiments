@@ -1,0 +1,3 @@
+Verified: c03026 contains 제2-2조(보험금의 지급사유) explicitly stating the payout condition for 대상포진 보장계약, and c03027 supplements with 세부규정 (1년 미만 삭감, 사망 시 처리). Both confirmed relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c03026","c03027","c03028","c03024"],"final_reason":"c03026이 제2-2조 보험금의 지급사유 원문(대상포진 진단확정 시 최초 1회 지급)을 직접 담고 있으며 c03027·c03028로 세부규정과 사망 시 처리가 보완됨을 read로 확인함"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "중증 갑상선암 진단 기준", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "갑상선암 진단확정 기준 유두암 여포암", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01096", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00592", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01057", "arm": "V9_CLM_RW"}

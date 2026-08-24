@@ -1,0 +1,3 @@
+Both candidates confirmed: c04467 directly defines "중증질환자[암] 본인일부부담금 산정특례 대상 질병" as referring to 제2-1조의3의 해당 상병, and c04465 provides the referenced definition detail (등록일로부터 5년간 해당 상병으로 진료받은 경우).
+
+{"status":"ranked","ranked_chunk_ids":["c04467","c04465","c04456","c04468","c05785"],"final_reason":"c04467 is the exact defining article (제2-1조의4) confirmed by read, supported by referenced clause c04465 and related context."}

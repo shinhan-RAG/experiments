@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "급여주요뇌심장질환특정재활치료급여금 단순재활 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 47, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.103488, "dense/V9": 0.147463}, "sparse_share": 0.4124, "dense_share": 0.5876, "notes": []}

@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "급성뇌경색증 진단 확정 CT MRI 없이 인정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.148056, "dense/V9": 0.147326}, "sparse_share": 0.5012, "dense_share": 0.4988, "notes": []}

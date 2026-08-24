@@ -1,0 +1,3 @@
+Both c00427 and c00475 confirm the same fact: 장해지급률 3%이상 100%이하.
+
+{"status":"ranked","ranked_chunk_ids":["c00427","c00475","c00457","c00476"],"final_reason":"보험금 지급기준표에서 (3~100%)질병장해급여금 지급사유가 장해지급률 3%이상 100%이하로 명시됨을 확인함"}

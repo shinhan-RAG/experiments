@@ -1,0 +1,3 @@
+Confirmed the core definition clause (제2-1조의2) and the classification table reference (부표2-2 / 별첨2 표82).
+
+{"status":"ranked","ranked_chunk_ids":["c02375","c02376","c05506","c05507","c02378","c02400","c02384","c02373"],"final_reason":"제2-1조의2가 특정순환계질환(1종~3종)을 부표2-2 분류표(제8차 한국표준질병사인분류 기준)로 정의하고 진단확정 기준을 명시하며, 별첨2 표82가 그 세부 질병코드 분류표를 제공한다."}

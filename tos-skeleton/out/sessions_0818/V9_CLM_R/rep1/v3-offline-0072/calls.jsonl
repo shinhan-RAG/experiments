@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌심 주요치료비 청구 구비서류", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "뇌심혈관질환 주요치료비 지급사유 구비서류", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "뇌혈관·허혈심장질환주요치료비특약[\\s\\S]{0,2000}구비서류", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "제2-5조의2.*보험금 등의 지급절차.*특칙", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02701", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02702", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "뇌혈관·허혈심장질환주요치료비특약\\(무배당, 갱신형\\)\\n\\n16(1[0-9]|2[0-9])", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02727", "arm": "V9_CLM_R"}

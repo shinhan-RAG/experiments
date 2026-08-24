@@ -1,0 +1,3 @@
+I've confirmed the core clauses: the payment condition (지급사유) and the "연간 1회" limit, plus the definition of "급여 갑상선 바늘생검 조직병리진단" and the payment amount table.
+
+{"status":"ranked","ranked_chunk_ids":["e01607","c01880","e01603","c01859","c01866","c01881","c01853"],"final_reason":"e01607/c01880이 지급사유(연간 1회 한함)와 지급금액을 직접 명시하고, e01603/c01859는 급여 갑상선 바늘생검 조직병리진단의 정의를 뒷받침한다."}

@@ -1,0 +1,3 @@
+c00598 also directly confirms "암진단급여금... 최초 1회의 진단확정에 한함" — consistent with verified candidates.
+
+{"status":"ranked","ranked_chunk_ids":["c00899","c00579","c00787","c00598","c00921","c00802"],"final_reason":"약관상 암진단급여금은 최초 1회 진단확정에 한해 지급된다고 여러 특약 조항에서 일관되게 명시함"}

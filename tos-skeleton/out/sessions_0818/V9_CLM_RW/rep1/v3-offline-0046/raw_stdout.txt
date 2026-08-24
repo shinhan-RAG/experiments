@@ -1,0 +1,3 @@
+These slot results are too generic. c03371 and c03100 already read directly answer the question (same-day/same-admission multiple surgeries → only one surgery code paid, unless different body parts/independent surgeries). That's sufficient verification.
+
+{"status":"ranked","ranked_chunk_ids":["c03371","c03100","c03773","c03654","c03693"],"final_reason":"c03371은 동일 입원(같은 날) 중 2가지 이상 수술 시 1개 수술코드에 한해 지급한다고 명시하고, c03100은 신체부위가 다른 독립적 수술은 각각 지급된다는 예외를 보여줌."}

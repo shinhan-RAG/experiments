@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "표적항암치료 해외 보장", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140941, "dense/V9": 0.142524}, "sparse_share": 0.4972, "dense_share": 0.5028, "notes": []}
+{"arm": "V9_CLM_R", "query": "표적항암약물허가치료비 해외", "n_results": 10, "channel_sizes": {"bm25/V9": 1, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 1, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.016393, "dense/V9": 0.138681}, "sparse_share": 0.1057, "dense_share": 0.8943, "notes": []}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 주보장 감액", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "주계약 보험가입금액 감액", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "주계약.{0,10}감액", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "주보장.{0,10}감액", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "주계약 보험가입금액 감액 신한통합건강보장보험", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "제1-8조", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보험가입금액을 감액할 수 있", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00243", "arm": "V9_CLM_RW"}

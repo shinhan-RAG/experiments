@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "통합암 특약 갑상선암 소액암 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "통합암진단특약 갑상선암 소액암 보험가입금액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "통합암", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00642", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00613", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00673", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+This is about 대리청구인 (proxy claimant), a special case, less relevant to "기본적으로" (basically) required documents than e00040/c00150.
+
+{"status":"ranked","ranked_chunk_ids":["e00040","c00150","c04571","c05182"],"final_reason":"제7조(보험금 등의 청구) 조항이 청구서·사고증명서·신분증 등 기본 구비서류를 명시하며 두 소스에서 동일 내용으로 검증됨."}

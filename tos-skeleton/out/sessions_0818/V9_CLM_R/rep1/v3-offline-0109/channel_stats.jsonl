@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "보장개시일 전 진단 확정 보장 소멸", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.142959, "dense/V9": 0.14169}, "sparse_share": 0.5022, "dense_share": 0.4978, "notes": []}
+{"arm": "V9_CLM_R", "query": "보장개시일 이전에 진단확정된 경우 특약 소멸", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.139718, "dense/V9": 0.104944}, "sparse_share": 0.5711, "dense_share": 0.4289, "notes": []}

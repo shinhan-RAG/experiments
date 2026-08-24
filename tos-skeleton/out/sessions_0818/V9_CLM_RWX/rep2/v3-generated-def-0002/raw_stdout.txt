@@ -1,0 +1,3 @@
+Verified: c01581 contains the article header (제2-1조의7 "카티(CAR-T)항암약물치료제" 정의) with the definition beginning, and c01582 continues with the full definition text. Both confirmed relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c01581","c01582","c01585","c05519"],"final_reason":"제2-1조의7에서 카티(CAR-T)항암약물치료제를 환자 T세포를 유전자 변형해 CAR을 발현시켜 재주입, 암세포를 인식·공격하는 치료제로 정의하는 조항을 read로 직접 확인함"}

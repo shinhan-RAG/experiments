@@ -1,0 +1,7 @@
+{"tool": "read", "arg": "c04628", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04629", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "중증치매상태 정의 중증치매보장특약", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "중증치매상태", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04628", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04629", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04630", "arm": "V9_D03B_CLM"}

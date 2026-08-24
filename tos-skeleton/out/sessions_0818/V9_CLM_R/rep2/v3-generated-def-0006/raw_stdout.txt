@@ -1,0 +1,3 @@
+Confirmed: c01704/e01461 (제2-1조의6) contain the exact definition text, with c01705 continuing the article and c01687 giving the 목차 context.
+
+{"status":"ranked","ranked_chunk_ids":["c01704","e01461","c01705","c01687"],"final_reason":"제2-1조의6이 급여암특정재활치료(기본물리치료)의 정의를 명시하며 c01704/e01461이 본문을, c01705가 후속 조항을, c01687이 목차 맥락을 제공함"}

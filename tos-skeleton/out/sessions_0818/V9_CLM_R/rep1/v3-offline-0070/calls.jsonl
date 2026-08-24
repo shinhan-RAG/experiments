@@ -1,0 +1,5 @@
+{"tool": "slot", "arg": "뇌경색", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "뇌경색", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c05646", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e04905__r086", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "뇌졸중 진단 뇌경색 포함 분류표", "arm": "V9_CLM_R"}

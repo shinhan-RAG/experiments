@@ -1,0 +1,3 @@
+Confirmed: c01646 contains the exact definition (제2-1조의7 ①항), c01649 contains the continuation (④항), and c01647/c05648 support with the related medicine list reference.
+
+{"status":"ranked","ranked_chunk_ids":["c01646","c01649","c01647","c05648","c01682"],"final_reason":"c01646의 제2-1조의7 ①항이 '특정항암호르몬치료제' 정의를 직접 규정하며 c01649·c01647이 관련 조항 및 부표 안내로 이를 뒷받침한다."}

@@ -1,0 +1,3 @@
+Confirmed. c00145 directly states that even if a rejected claim would qualify under a later-revised disease classification, it is still not treated as a valid claim event (no retroactive re-judgment). c00144 gives the general rule this example illustrates.
+
+{"status":"ranked","ranked_chunk_ids":["c00145","c00144","c05418","c05795"],"final_reason":"c00145 explicitly states a rejected claim is not re-judged even if a later KCD revision would newly cover the disease, with c00144 stating the general rule."}

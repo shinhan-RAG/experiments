@@ -1,0 +1,3 @@
+Both key sources confirm: c01559 (약관 부표2-1 보험금 지급기준표) gives exact rule — 100% of 특약보험가입금액, but 50% if 지급사유 발생 within 1 year of contract date. c00078 (요약 감액표) confirms same pattern in summary table format.
+
+{"status":"ranked","ranked_chunk_ids":["c01559","c00078","c01561","c01520"],"final_reason":"c01559의 지급기준표가 1년 미만 발생시 50%, 1년 이후 100% 지급률을 명시하고 c00078이 이를 요약 확인함"}

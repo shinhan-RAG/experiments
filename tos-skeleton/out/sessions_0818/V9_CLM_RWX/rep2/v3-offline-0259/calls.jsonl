@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "주계약 납입면제 사유", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험료 납입면제 장해 요건", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04897", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제1-[0-9]+조.*납입면제", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "주계약.*보험료.*납입을 면제", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00146", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험료의 납입면제|납입면제 요건|장해지급률.*50%", "arm": "V9_CLM_RWX"}

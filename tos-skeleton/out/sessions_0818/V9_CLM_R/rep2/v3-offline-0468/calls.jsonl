@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정 NGS 유전자패널 검사 지원급여금 지급대상 검사목적", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "NGS 유전자패널검사 지원급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01835", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01849", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01851", "arm": "V9_CLM_R"}

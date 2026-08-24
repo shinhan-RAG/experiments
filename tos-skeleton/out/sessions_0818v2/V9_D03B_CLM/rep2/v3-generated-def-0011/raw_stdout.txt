@@ -1,0 +1,3 @@
+I've gathered enough evidence. c02381 directly contains the definition text (조문 제2-1조의4), and c05513/c05514 contain the referenced 분류표(별표) detail confirming the definition scope.
+
+{"status":"ranked","ranked_chunk_ids":["c02381","c05513","c05514","c02400","c02372","c02379"],"final_reason":"c02381이 제2-1조의4 조문으로 '특정순환계질환(3종)'의 정의와 진단확정 기준을 직접 규정하며, c05513/c05514는 그 정의가 인용하는 <부표2-4> 분류표 본문이다."}

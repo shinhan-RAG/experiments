@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "한시적 장해진단 지급 중 다른 부위 장해 악화 적용", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "한시적 장해진단 장해상태 악화", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "다른 신체부위에 장해가 발생", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "장해지급률이 결정된 후 그 장해상태가 악화", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00434", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "한시장해에 대한 보험금을 지급받고", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "한시장해.{0,30}다른", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "한시장해 보험금 받는 중 다른 신체부위 장해 발생", "arm": "V9_CLM_R"}

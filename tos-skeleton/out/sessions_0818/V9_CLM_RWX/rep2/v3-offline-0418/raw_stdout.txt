@@ -1,0 +1,3 @@
+Both candidates confirmed. c03994 is the exact 보험금 지급기준표 for this specific 특약 (상급종합병원 입원급여금), directly answering: 특약보험가입금액의 1% normally, but 0.5% if 간편심사형 and 가입 후 1년 미만 재해 이외 원인. c03972 provides the supplementary clause on the 1년 경과 시 삭감 예외. c00089 corroborates via the summary table row for this exact product.
+
+{"status":"ranked","ranked_chunk_ids":["c03994","c03972","c00089"],"final_reason":"c03994의 보험금 지급기준표가 1년 미만 재해 이외 발생시 0.5%, 그 외(1년 이후 또는 재해)는 1% 지급률을 명시하며 c03972·c00089로 교차 확인함"}

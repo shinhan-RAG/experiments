@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료특약 기본물리치료 급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "기본물리치료", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02759", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02774", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01704", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료특약 기본물리치료 급여금 지급 횟수", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02753", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "기본물리치료", "arm": "V9_D03B_CLM"}

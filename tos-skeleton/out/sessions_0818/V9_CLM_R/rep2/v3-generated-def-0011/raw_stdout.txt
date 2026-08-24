@@ -1,0 +1,3 @@
+Confirmed the definition clause and its full text, plus the related classification table reference (c02400/e02115).
+
+{"status":"ranked","ranked_chunk_ids":["e02098","c02381","c02382","c02400","e02115","c05509"],"final_reason":"제2-1조의4가 \"특정순환계질환(3종)\"을 제8차 개정 한국표준질병사인분류 부표2-4 분류표 해당 항목으로 정의함을 직접 확인함"}

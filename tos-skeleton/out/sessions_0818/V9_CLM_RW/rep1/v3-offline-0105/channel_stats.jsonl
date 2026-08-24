@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "방사선치료 여러 번 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.133491, "dense/V9": 0.135072}, "sparse_share": 0.4971, "dense_share": 0.5029, "notes": []}
+{"arm": "V9_CLM_RW", "query": "방사선치료비 지급사유 횟수 제한", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.102605, "dense/V9": 0.117692}, "sparse_share": 0.4658, "dense_share": 0.5342, "notes": []}

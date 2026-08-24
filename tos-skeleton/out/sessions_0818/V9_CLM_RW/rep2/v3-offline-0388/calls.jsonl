@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "간병인사용입원특약 간병인사용 입원 요양병원 제외 급여금 가입 후 경과기간 지급률", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "간병인사용 입원.*요양병원 제외", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00112", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "간병인사용입원.*가입 후", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00071", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00072", "arm": "V9_CLM_RW"}

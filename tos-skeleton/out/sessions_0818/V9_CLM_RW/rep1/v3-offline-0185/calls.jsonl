@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 진단금 지급 횟수 몇 번 받을 수 있나", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "암진단급여금 지급사유 최초 1회한", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_RW"}

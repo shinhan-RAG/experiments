@@ -1,0 +1,3 @@
+Found and verified the definition clause (제2-1조의3) and its detailed classification table reference. These directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c02378","c02379","c05511","c02400","c05512"],"final_reason":"제2-1조의3이 정의 조문이며 부표2-3 분류표(c05511/c05512)가 구체적 대상질병을 명시한다"}

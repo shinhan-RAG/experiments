@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "항암세기조절방사선치료급여금 지급 대상 암 지급 횟수 한도", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.128616, "dense/V9": 0.118967}, "sparse_share": 0.5195, "dense_share": 0.4805, "notes": []}

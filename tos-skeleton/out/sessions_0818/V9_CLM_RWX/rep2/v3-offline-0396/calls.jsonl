@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여바늘생검조직병리진단특약 전립선 바늘생검 조직병리진단급여금 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "전립선.*바늘생검.*조직병리진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00075", "arm": "V9_CLM_RWX"}

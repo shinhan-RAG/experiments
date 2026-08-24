@@ -1,0 +1,3 @@
+This confirms the pattern is common across 특약s, but the query specifically asks about "급성뇌경색증" which is uniquely covered in c02492/c02493 (급성뇌경색증 특약) — this is the best match, not the generic 뇌혈관질환 clauses.
+
+{"status":"ranked","ranked_chunk_ids":["c02492","e02227","c02493"],"final_reason":"c02492/e02227은 급성뇌경색증 진단확정 조항으로, 사망 등으로 CT·MRI 검사를 진단 기초로 할 수 없는 경우 문서화된 기록·증거로 진단확정을 대신할 수 있다고 명시한다."}

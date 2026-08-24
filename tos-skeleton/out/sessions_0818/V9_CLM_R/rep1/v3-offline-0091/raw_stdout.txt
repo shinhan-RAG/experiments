@@ -1,0 +1,3 @@
+Confirmed. Both e02684 and c03026 (and its 갱신형 counterpart e02714) explicitly state the 지급사유: 피보험자가 "대상포진"으로 진단확정되었을 때 대상포진진단급여금(최초 1회) 지급.
+
+{"status":"ranked","ranked_chunk_ids":["e02684","c03026","e02714","c03056","c03028","e02685"],"final_reason":"제2-2조(보험금의 지급사유) 조항에서 대상포진 진단확정 시 최초 1회 진단급여금 지급을 명시적으로 확인함"}

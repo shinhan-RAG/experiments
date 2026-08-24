@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대상포진 진단금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대상포진", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03041", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03068", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03053", "arm": "V9_D03B_CLM"}

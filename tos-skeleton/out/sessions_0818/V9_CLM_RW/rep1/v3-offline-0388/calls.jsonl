@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간병인사용 입원 요양병원 제외 급여금 가입 후 경과기간 지급비율", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "(간편)간병인사용입원특약 감액 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00071", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04230", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "간병인사용입원 요양병원 제외 급여금 감액지급 지급비율", "arm": "V9_CLM_RW"}

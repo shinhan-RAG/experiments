@@ -1,0 +1,3 @@
+Confirmed relevant chunks covering 보험료납입면제 사유, 대상계약 정의, 면제하지 않는 사유, and 주계약 연계 조항. Enough evidence gathered across multiple queries and grep patterns.
+
+{"status":"ranked","ranked_chunk_ids":["c04897","c04895","c04961","c04996","c04860","c04902","c04817","c04762","c03055","c04723"],"final_reason":"이 청크들은 보험료납입면제사유(장해 50% 등), 보험료납입면제대상계약 정의, 면제하지 않는 사유, 주계약-특약 연동 규정을 직접 다룬다."}

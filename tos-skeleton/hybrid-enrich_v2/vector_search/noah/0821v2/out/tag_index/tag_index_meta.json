@@ -1,0 +1,22 @@
+{
+  "n": 32366,
+  "tag_embedding": false,
+  "channels": [
+    "clm",
+    "bm25"
+  ],
+  "sources": {
+    "elements": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2.jsonl",
+      "sha256": "ec34a987fef826bde2dd6a1c3ddadecd8bfc0a6ee6b559f080ea58b013378f87"
+    },
+    "tags": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\tags_u2_rules.jsonl",
+      "sha256": "2a8f2ff802a93b441c3a7c17abe39aefab721224b4729d01d09881612324113e"
+    },
+    "jo": {
+      "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2jo.jsonl",
+      "sha256": "cf8d4733b779410ea2fb654fed23f078459c643e8a1a4c8e43208459fad2848f"
+    }
+  }
+}

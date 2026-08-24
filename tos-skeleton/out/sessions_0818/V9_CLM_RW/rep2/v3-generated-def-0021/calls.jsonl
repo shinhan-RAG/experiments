@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "질병별 신수술특약 뇌혈관질환Ⅲ 정의", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관질환Ⅲ", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03245", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03489", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "\\(간편\\)\\[질병별\\]신수술특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03281", "arm": "V9_CLM_RW"}

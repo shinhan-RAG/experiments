@@ -1,0 +1,3 @@
+Both chunks confirm the exact document/특약 name and clause. c00736/c00737 clearly state 전립선암진단급여금 지급사유: 암보장개시일 이후 "전립선암"으로 진단확정, 최초 1회의 진단확정에 한함(즉 반복 지급 안됨).
+
+{"status":"ranked","ranked_chunk_ids":["c00736","c00737"],"final_reason":"c00736/c00737은 해당 특약의 보험금 지급기준표로, 전립선암 진단확정 시 지급하되 최초 1회에 한함을 명시한다"}

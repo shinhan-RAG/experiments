@@ -1,0 +1,3 @@
+c00601 is not directly the 지급사유 clause (it's 지급하지 않는 사유/사고증명서), so I'll drop it in favor of c00610 (지급기준표 for the 해약환급금 미지급형 variant) which directly answers the question with same wording.
+
+{"status":"ranked","ranked_chunk_ids":["c00921","c00935","c00610"],"final_reason":"제2-2조(c00921)와 지급기준표(c00935, c00610)가 암 또는 중증 갑상선암 진단확정 시 최초 1회에 한해 지급됨을 명시함을 read로 확인함"}

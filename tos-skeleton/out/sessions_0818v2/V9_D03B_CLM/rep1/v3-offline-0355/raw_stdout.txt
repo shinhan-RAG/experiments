@@ -1,0 +1,3 @@
+Based on the hybrid search results, c03116 contains the fragment showing the 4종 수술급여금 payment rate structure ("특약보험가입금액의 10%" for standard cases, and "특약보험가입금액의 5%" if the 간편심사형 cause occurs within 1 year for non-accident reasons), consistent with the pattern seen in c03113 (2종) and c03115 (3종).
+
+{"status":"ranked","ranked_chunk_ids":["c03116","c03115","c03130","c00085","c03113","c03168"],"final_reason":"c03116이 4종 수술급여금의 1년 미만(5%)·이후(10%) 지급률 조각을 담고 있고, c03130/c03115가 4종 보장계약 정의와 동일 패턴을 뒷받침함"}

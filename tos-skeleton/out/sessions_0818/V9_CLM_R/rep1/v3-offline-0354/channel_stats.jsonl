@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "간편1-5종수술특약 3종 수술급여금 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.124646, "dense/V9": 0.137959}, "sparse_share": 0.4747, "dense_share": 0.5253, "notes": []}
+{"arm": "V9_CLM_R", "query": "수술급여금 가입 1년 이내 지급률 감액", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.133021, "dense/V9": 0.143508}, "sparse_share": 0.481, "dense_share": 0.519, "notes": []}

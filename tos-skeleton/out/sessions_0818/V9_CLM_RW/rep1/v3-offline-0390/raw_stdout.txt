@@ -1,0 +1,3 @@
+Both confirmed. c02369 gives exact 지급기준표 (100% vs 50%), c02352 gives the clause referencing it.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","c02352","c02348"],"final_reason":"c02369의 지급기준표가 1년 미만 50%, 1년 이후(정상) 100% 지급을 명시하며 c02352가 이를 뒷받침하는 지급사유 조항이다."}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급성뇌경색증 진단확정 CT MRI 없이", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "급성뇌경색증 진단 확정 방법", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02492", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02493", "arm": "V9_CLM_RW"}

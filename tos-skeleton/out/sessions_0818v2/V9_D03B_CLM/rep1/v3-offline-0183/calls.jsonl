@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 암주요치료 연간 보장 횟수", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암주요치료비", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00106", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01347", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01351", "arm": "V9_D03B_CLM"}

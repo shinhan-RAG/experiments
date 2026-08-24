@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "본인일부부담금 산정특례 대상 질병", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04467", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04465", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "중증질환자 암 본인일부부담금 산정특례 대상 질병 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "본인일부부담금 산정특례 대상 질병", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04467", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04465", "arm": "V9_D03B_CLM"}

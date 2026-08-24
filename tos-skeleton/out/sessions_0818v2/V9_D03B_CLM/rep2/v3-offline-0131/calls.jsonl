@@ -1,0 +1,8 @@
+{"tool": "grep", "arg": "소액암", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "소액암진단특약 보장대상 암", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "소액암.{0,10}(이란|정의|기타피부암.{0,5}중증)", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제2-2조.{0,20}보험금의 지급사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00939", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "소액암", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "소액암진단급여금.{0,10}지급사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00940", "arm": "V9_D03B_CLM"}

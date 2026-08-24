@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "통합건강보험 납입면제 가입 대상", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.145426, "dense/V9": 0.147547}, "sparse_share": 0.4964, "dense_share": 0.5036, "notes": []}

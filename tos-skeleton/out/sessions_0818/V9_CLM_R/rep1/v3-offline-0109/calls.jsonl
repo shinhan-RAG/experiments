@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "보장개시일 전 진단 확정 보장 소멸", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "보장개시일 이전에 진단확정된 경우 특약 소멸", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00575", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04045", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c05250", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "보장개시일.{0,10}전.{0,20}진단.{0,20}무효", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "보장개시일 전 진단확정 특약 무효", "arm": "V9_CLM_R"}

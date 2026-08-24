@@ -1,0 +1,3 @@
+Both c04468 and e04096 contain the exact defining clause (제2-1조의5).
+
+{"status":"ranked","ranked_chunk_ids":["e04096","c04468","c04456","c04471","c04484"],"final_reason":"제2-1조의5 조항(c04468/e04096)이 '중증질환자[암] 산정특례 신규암 등록' 정의를 직접 명시하며 관련 목차·지급사유·지급기준표로 보강 확인함."}

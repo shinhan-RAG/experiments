@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "같은 질병 재입원 간병인 185일 보장", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "간병인 사용 특약 보장일수 185일 재입원", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "185일", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04276", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04101", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "동일한 질병 재입원 간병인 사용 180일", "arm": "V9_CLM_R"}

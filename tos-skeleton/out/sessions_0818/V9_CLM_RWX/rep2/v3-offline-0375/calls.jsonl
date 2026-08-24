@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급률 가입경과기간", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "여성유방암진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00691", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01029", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00690", "arm": "V9_CLM_RWX"}

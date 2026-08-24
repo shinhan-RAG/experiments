@@ -1,0 +1,3 @@
+Both candidates confirmed: c02789 (제2-2조 보험금의 지급사유) explicitly states the payment condition — 의료기관 의사가 "뇌심장질환"으로 진단 및 치료를 위한 필요소견을 토대로 "급여 뇌심장질환 검사"를 받은 경우, 연간 1회에 한함. c02803 (부표2-1 지급기준표) corroborates this with the payment amount table. c00105 also supports "연간 1회에 한해 보장" summary.
+
+{"status":"ranked","ranked_chunk_ids":["c02789","c02803","c00105","c02778"],"final_reason":"제2-2조와 부표2-1이 뇌심장질환 진단·치료 목적 검사 시 연간 1회 지급을 명시적으로 확인함"}

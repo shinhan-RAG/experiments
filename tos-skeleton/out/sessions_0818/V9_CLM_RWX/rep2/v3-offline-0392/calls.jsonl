@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여 뇌심장질환 검사급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급여뇌심장질환특정검사지원", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02789", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00105", "arm": "V9_CLM_RWX"}

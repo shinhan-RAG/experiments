@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "납입면제특약 해지 납입면제 조건 발생 후", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "납입면제특약만 별도 해지 가능 여부", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04771", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00970", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04847", "arm": "V9_CLM_RW"}

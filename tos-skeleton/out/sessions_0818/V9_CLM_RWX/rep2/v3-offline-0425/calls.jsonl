@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 대장점막내암 비침습방광암 주요치료급여금 연간 몇회 최대", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "대장점막내암.*비침습방광암|비침습방광암.*주요치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00106", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01347", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01328", "arm": "V9_CLM_RWX"}

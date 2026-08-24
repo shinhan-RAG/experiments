@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "표적항암약물허가치료급여금 지급 회차", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.102635, "dense/V9": 0.097093}, "sparse_share": 0.5139, "dense_share": 0.4861, "notes": []}

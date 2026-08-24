@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "수술 지급 조건 무조건 지급", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "수술 시 지급 조건 부담보 면책", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "수술의 정의 및 제외되는 것", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "수술의 정의 지급하지 않는 사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01306", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "수술.{0,10}제외", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03699", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험금을 지급하지 않는 사유", "arm": "V9_D03B_CLM"}

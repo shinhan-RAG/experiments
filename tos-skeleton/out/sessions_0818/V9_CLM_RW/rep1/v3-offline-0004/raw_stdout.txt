@@ -1,0 +1,3 @@
+Confirms c00325 is the unique 재해장해 match (c00427/c00475 are 질병장해 variants), so it's correctly ranked as the primary source.
+
+{"status":"ranked","ranked_chunk_ids":["c00325","e00194","c00300","e00196__r001"],"final_reason":"(3~100%)재해장해특약의 지급기준표(c00325)와 지급사유 조항(e00194)이 특약보험가입금액의 100%×장해지급률 지급 기준을 직접 명시함"}

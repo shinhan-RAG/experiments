@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "같은 날 여러 수술 중복 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143405, "dense/V9": 0.13721}, "sparse_share": 0.511, "dense_share": 0.489, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "수술 특약 중복지급 하나만", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136859, "dense/V9": 0.11902}, "sparse_share": 0.5349, "dense_share": 0.4651, "notes": []}

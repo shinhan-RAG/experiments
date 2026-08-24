@@ -1,0 +1,3 @@
+Confirmed. c03115 explicitly states the 4종 수술 급여금 지급사유: "1~5종 수술분류표(<부표2-2> 참조)에서 정하는 4종 수술을 받았을 때". Also c03148 has the same clause (다른 특약 버전), and c03130/c03097 give the 4종 보장계약 definition context.
+
+{"status":"ranked","ranked_chunk_ids":["c03115","c03148","c03130","c03097","c03116"],"final_reason":"c03115/c03148 contain the exact [4종 보장계약] table stating 4종 수술급여금 지급사유 is '1~5종 수술분류표(부표2-2)에서 정하는 4종 수술을 받았을 때'"}

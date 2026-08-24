@@ -1,0 +1,3 @@
+c02714 confirms the exact definition text of 제2-1조의7 "종합병원 중환자실치료"의 정의. c02701 is the table of contents confirming the article location. c02715 references 종합병원 정의 (제2-1조의9) which is related but c02714 is the core answer.
+
+{"status":"ranked","ranked_chunk_ids":["c02714","c02701","c02715","c02716"],"final_reason":"c02714는 제2-1조의7 '종합병원 중환자실치료'의 정의 조문 전문을 담고 있어 질문에 직접 답한다."}

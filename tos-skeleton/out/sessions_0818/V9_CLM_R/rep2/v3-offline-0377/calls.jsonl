@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 가입 후 1년 이내 지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "암진단급여금.*50%|가입일.*1년.*미만.*지급률|1년 미만.*암", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00075", "arm": "V9_CLM_R"}

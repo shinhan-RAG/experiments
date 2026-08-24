@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 진단확정 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "외상성 두개내출혈 뇌혈관질환 해당 여부", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04814", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05438", "arm": "V9_CLM_RWX"}

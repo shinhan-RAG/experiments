@@ -1,0 +1,3 @@
+Both verified: "특약보험가입금액의 100%" for the [삭감없음용] variant (both 해약환급금 미지급형 and 갱신형 versions).
+
+{"status":"ranked","ranked_chunk_ids":["c00935","c00610","c00582","c00902"],"final_reason":"보험금 지급기준표에서 암진단급여금 지급액이 특약보험가입금액의 100%로 명시됨을 read로 확인함"}

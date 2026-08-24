@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 원 주보장 감액", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "주계약 보험가입금액 감액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험가입금액을 감액", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00243", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00178", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제27조|계약내용의 변경 등", "arm": "V9_CLM_RWX"}

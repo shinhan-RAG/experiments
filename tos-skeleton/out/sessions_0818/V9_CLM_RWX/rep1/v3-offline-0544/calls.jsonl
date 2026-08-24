@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "표적항암약물허가치료급여금 지급 횟수", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "표적항암약물 허가치료 급여금 암 직접치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01559", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01561", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "표적항암약물허가치료.*최초.*1회", "arm": "V9_CLM_RWX"}

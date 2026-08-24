@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암진단금 지급 횟수 몇 번", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암진단급여금 최초 1회 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00899", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00787", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "최초 1회의 진단확정에 한함", "arm": "V9_CLM_RWX"}

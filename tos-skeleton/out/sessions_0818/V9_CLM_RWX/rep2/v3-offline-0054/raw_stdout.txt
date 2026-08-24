@@ -1,0 +1,3 @@
+Both confirm the same content (해약환급금 미지급형 and 갱신형 versions of the special clause). Both directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c02823","c02851","c02826","c02830"],"final_reason":"c02823/c02851는 제2-9조의2 특약의 무효 특칙 조항으로 고혈압보장개시일 전일 이전 고혈압(원발성) 진단확정 시 무효 사유를 직접 명시함을 read로 검증함."}

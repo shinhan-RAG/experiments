@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "주계약 보험료 납입면제 암 진단", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험료 납입면제 대상 질병", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04917", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04962", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험료 납입면제사유", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "주계약의 보험료 납입을 면제", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00146", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04760", "arm": "V9_CLM_RWX"}

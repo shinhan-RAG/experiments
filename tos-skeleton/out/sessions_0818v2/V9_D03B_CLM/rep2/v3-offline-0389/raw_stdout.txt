@@ -1,0 +1,3 @@
+I have enough verified evidence: c02352 confirms the diagnosis requirement ("급성심근경색증"으로 진단 확정) and explicitly states it's limited to the first diagnosis only ("다만, 최초 1회의 진단확정에 한함"), corroborated by c00100 and c02369 (지급기준표) showing "최초 1회에 한해 보장" / "최초 1회의 진단확정에 한함", plus c02351 which covers the definition/진단확정 criteria.
+
+{"status":"ranked","ranked_chunk_ids":["c02352","c02369","c00100","c02351","c00081"],"final_reason":"c02352가 지급사유와 최초 1회 한정 지급을 명시하고, c02369·c00100 지급기준표가 이를 재확인하며, c02351은 진단확정 정의를 보충한다."}

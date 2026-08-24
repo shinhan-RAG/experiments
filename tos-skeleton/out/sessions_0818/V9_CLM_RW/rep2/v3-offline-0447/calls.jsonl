@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "허혈심장질환 진단급여금 지급사유 재진단", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "간편 허혈심장질환진단특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02275", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02333", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "최초 1회의 진단확정에 한함", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02261", "arm": "V9_CLM_RW"}

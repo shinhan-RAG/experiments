@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "일반암 진단1 일반암 진단2 차이", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "일반암진단(?:비)?1|일반암진단(?:비)?2|일반암 진단1|일반암 진단2", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "일반암진단.?[ⅠⅡ12일이]", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "일반암진단특약 기본형과 삭감없음형 차이 보험금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00551", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00585", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "계약일.{0,10}1년.{0,20}(50|100)%", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "일반암진단비 지급사유 가입금액 50% 100% 계약일로부터 1년", "arm": "V9_D03B_CLM"}

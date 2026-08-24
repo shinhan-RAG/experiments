@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "보험금 지급 여부 합의하지 못할 때 분쟁 조정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험금 지급에 관한 분쟁 제3자 조정 관할법원", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00214", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00198", "arm": "V9_CLM_RWX"}

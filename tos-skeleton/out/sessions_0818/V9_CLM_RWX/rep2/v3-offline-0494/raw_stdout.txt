@@ -1,0 +1,3 @@
+c00184 (제25조 보험료의 자동대출납입 ①항) and c00185 (②~⑤항) together form the full article confirming maintenance is possible but capped at 1 year with reapplication needed, and blocked if loan principal+interest exceeds surrender value. Both verified as directly relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c00185","c00184","c00186"],"final_reason":"제25조(보험료의 자동대출납입)에서 자동대출납입은 최초 신청일로부터 1년 한도로 유지되며 재신청 시 계속 가능하나 대출원리금이 해약환급금을 초과하면 더 이상 불가하다고 명시함."}

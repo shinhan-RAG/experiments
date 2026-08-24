@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "같은 질병 여러 번 입원 간병인 사용 185일 보장", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.142597, "dense/V9": 0.136736}, "sparse_share": 0.5105, "dense_share": 0.4895, "notes": []}

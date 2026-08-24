@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정 류마티스 관절염 정의 특정류마티스관절염진단특약", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "특정 류마티스 관절염 정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02736", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03073", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03075", "arm": "V9_CLM_RW"}

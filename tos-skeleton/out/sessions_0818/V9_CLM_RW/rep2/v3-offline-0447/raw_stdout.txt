@@ -1,0 +1,3 @@
+Confirmed. All candidates verified and consistent: diagnosis must be confirmed by a medical doctor based on ECG/echocardiography/coronary angiography/cardiac enzyme tests/nuclear medicine tests per KCD classification, and payment is limited to the first diagnosis only (no repeat payment).
+
+{"status":"ranked","ranked_chunk_ids":["c02261","c02333","c02275","c02309","c02629","c02310"],"final_reason":"지급사유(제2-2조, 최초 1회 한정)와 진단확정 요건(제2-1조의3) 조항을 직접 읽어 확인함"}

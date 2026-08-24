@@ -1,0 +1,11 @@
+{
+  "id": "e00220",
+  "jo": "j00016",
+  "source": "tag",
+  "contract": "주계약((간편)신한통합건강보장보험 원(ONE)",
+  "variant": "",
+  "jo_title": "## 재해・상해",
+  "preview": "수술",
+  "score": 0.0426813
+}
+total_candidates 80 page 1 page_size 40

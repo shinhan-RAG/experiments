@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "표적항암약물허가치료급여금 가입 후 1년 이내 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.118449, "dense/V9": 0.136642}, "sparse_share": 0.4643, "dense_share": 0.5357, "notes": []}

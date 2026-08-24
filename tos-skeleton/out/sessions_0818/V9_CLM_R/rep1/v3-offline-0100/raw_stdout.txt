@@ -1,0 +1,3 @@
+Based on the grep hits (c01646, c01237, c01143, c01536, c01185 all show the definition text: "항암면역요법이란 면역기전을 이용해서 암세포를 제거하는 치료를 말하며, 암세포가 없는 상태에서 면역력을 증가시키는 약물치료는 제외됩니다" as part of 항암약물치료 정의), these directly answer whether immune cancer therapy (면역항암치료) is covered.
+
+{"status":"ranked","ranked_chunk_ids":["c01646","c01237","c01143","c01536","c01185","c01582","e01093","e01096","c01519","c00061"],"final_reason":"항암약물치료 정의 조항에 '항암면역요법'을 명시적으로 포함/제외 기준을 규정한 청크(c01646 등)와 CAR-T 등 면역세포 치료제 설명(c01582), 관련 특약 정의(e01093/e01096)로 면역항암치료 보장 여부를 확인함."}

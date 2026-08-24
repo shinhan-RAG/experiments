@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "뇌전증 1회 발작 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.14127, "dense/V9": 0.108087}, "sparse_share": 0.5665, "dense_share": 0.4335, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "뇌전증 진단확정 보험금 지급기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143321, "dense/V9": 0.13706}, "sparse_share": 0.5112, "dense_share": 0.4888, "notes": []}

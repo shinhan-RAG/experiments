@@ -1,0 +1,3 @@
+Confirmed: c01849 (부표2-1 지급기준표), c01836 (③항 삭감지급 근거), c01837 (삭감지급 도해) all consistently state 1% vs 0.5% before 1 year.
+
+{"status":"ranked","ranked_chunk_ids":["c01849","c01836","c01837","c00074","c01835"],"final_reason":"부표2-1 지급기준표와 제2-3조 삭감지급 조항이 가입 1년 미만 0.5%, 1년 이후 1% 지급률을 명시한다."}

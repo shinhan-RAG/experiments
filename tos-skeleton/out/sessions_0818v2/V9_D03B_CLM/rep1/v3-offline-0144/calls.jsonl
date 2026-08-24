@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 주보장 감액", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "감액", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "주계약.{0,10}감액", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00179", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험가입금액의 일부를 감액", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험가입금액을 감액하고자", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00178", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제27조.{0,20}(내용의 변경|감액)", "arm": "V9_D03B_CLM"}

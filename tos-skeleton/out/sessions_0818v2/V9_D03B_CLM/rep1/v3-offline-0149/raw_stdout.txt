@@ -1,0 +1,3 @@
+Tool budget is exhausted, so I'll finalize based on the verified previews gathered from hybrid/grep searches.
+
+{"status":"ranked","ranked_chunk_ids":["c00909","c03398","c01016","c00455","c04922","c00058"],"final_reason":"약관상 주계약 보험기간 만료일이 피보험자 100세 계약해당일 이후이면 100세 계약해당일까지로 정하는 조항이 20년납 후 보장기간(100세만기)을 뒷받침한다."}

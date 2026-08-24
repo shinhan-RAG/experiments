@@ -1,0 +1,3 @@
+Confirmed: c02369 (and matching element e02084) contain the exact 보험금 지급기준표 with the 1년 미만/이후 지급률 (100% vs 50%). Also c02352 and c02353 provide supporting article text (제2-2조 지급사유). This is sufficient evidence.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","e02084","c02352","e02071","c02353"],"final_reason":"c02369의 보험금 지급기준표가 계약일부터 1년 미만 발생시 50%, 1년 이후(정상) 100% 지급을 명시하며 e02084/c02352 등이 이를 뒷받침한다."}

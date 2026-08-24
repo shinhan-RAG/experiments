@@ -1,0 +1,3 @@
+Confirmed: c02775 has exact 지급사유 and 지급 횟수 제한 (1일 1회, 연간 30회), c02756 defines the 전문재활치료 term. Both verified.
+
+{"status":"ranked","ranked_chunk_ids":["c02775","c02756","c02743","e02487","c00108"],"final_reason":"c02775가 전문재활치료 급여금의 지급사유와 1일 1회·연간 30회 한도를 명시하고, c02756은 전문재활치료 정의를 뒷받침한다."}

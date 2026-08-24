@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간병인사용입원특약 간병인 실제 사용", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "간병인사용입원", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04297", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04109", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04230", "arm": "V9_CLM_R"}

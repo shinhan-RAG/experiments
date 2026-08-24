@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "첫날부터상급종합병원입원특약 상급종합병원 입원급여금 지급률 가입 1년 미만", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.133424, "dense/V9": 0.146448}, "sparse_share": 0.4767, "dense_share": 0.5233, "notes": []}

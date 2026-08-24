@@ -1,0 +1,3 @@
+Confirmed evidence gathered across multiple representative clauses and the classification table. Ready to finalize.
+
+{"status":"ranked","ranked_chunk_ids":["c04087","c05438","e01867","c02605","c03451","c04149","c04997","c02171","c02519","c02708"],"final_reason":"뇌혈관질환 정의·진단확정 조항(①②)과 부표2 분류표가 진단확정 기준(CT/MRI/뇌혈관조영술 등)을 명시하고, 외상성 두개내출혈은 명문으로 보장 제외됨을 확인함."}

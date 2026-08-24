@@ -1,0 +1,3 @@
+Enough evidence gathered. These chunks confirm the 소액암진단특약 pays 100% per disease category (기타피부암, 중증이외갑상선암, 제자리암, 경계성종양, 대장점막내암, 비침습방광암), each once — so after receiving thyroid cancer (중증이외갑상선암) payment, the other listed diseases remain separately payable once each.
+
+{"status":"ranked","ranked_chunk_ids":["c00673","c00994","c01007","c00098","c01162","c01351"],"final_reason":"소액암진단특약 지급기준표가 갑상선암 등 각 질병별로 최초 1회씩 별도 지급됨을 명시해 진단금 수령 후 남은 보장을 확인시켜준다"}

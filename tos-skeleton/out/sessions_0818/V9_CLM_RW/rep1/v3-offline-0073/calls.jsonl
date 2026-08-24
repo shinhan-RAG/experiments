@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "뇌전증 1회발작 진단확정 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌전증진단비 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02105", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02106", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02103", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "1회.{0,10}발작", "arm": "V9_CLM_RW"}

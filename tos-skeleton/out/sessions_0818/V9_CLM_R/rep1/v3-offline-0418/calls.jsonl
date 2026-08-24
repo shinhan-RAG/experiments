@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편 첫날부터 상급종합병원입원특약 상급종합병원 입원급여금 지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "상급종합병원 입원급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03971", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03972", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03994", "arm": "V9_CLM_R"}

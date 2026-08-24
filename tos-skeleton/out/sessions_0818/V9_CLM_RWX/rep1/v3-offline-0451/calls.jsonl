@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "1-5종수술특약 3종 수술급여금 지급대상 수술", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "3종.*수술급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03148", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03097", "arm": "V9_CLM_RWX"}

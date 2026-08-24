@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "허혈심장질환진단특약 허혈심장질환진단급여금 지급액 특약보험가입금액", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "허혈심장질환진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02322", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02281", "arm": "V9_CLM_R"}

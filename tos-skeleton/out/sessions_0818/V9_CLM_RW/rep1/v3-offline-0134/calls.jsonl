@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "수술급여금 지급 조건 무조건 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "수술의 정의 지급하지 않는 사유", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "제2-4조.*지급하지 않는 사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03177", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02130", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03154", "arm": "V9_CLM_RW"}

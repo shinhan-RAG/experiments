@@ -1,0 +1,3 @@
+Confirmed. These chunks directly address 상급종합병원(대학병원급) 통원(외래) 보장.
+
+{"status":"ranked","ranked_chunk_ids":["c02076","c02077","c02698","c02680","c02699","c02080"],"final_reason":"상급종합병원(대학병원급) 통원(외래진료) 보장급여금 지급사유를 규정한 특약 조항들을 확인함"}

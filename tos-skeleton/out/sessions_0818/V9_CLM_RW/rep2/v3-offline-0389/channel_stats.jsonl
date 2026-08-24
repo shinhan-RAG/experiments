@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "급성심근경색증진단급여금 지급사유 진단확정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.094557, "dense/V9": 0.106461}, "sparse_share": 0.4704, "dense_share": 0.5296, "notes": []}
+{"arm": "V9_CLM_RW", "query": "간편 급성심근경색증진단특약 반복 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136836, "dense/V9": 0.13714}, "sparse_share": 0.4994, "dense_share": 0.5006, "notes": []}

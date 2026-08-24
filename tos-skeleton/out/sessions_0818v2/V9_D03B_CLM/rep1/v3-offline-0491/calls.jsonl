@@ -1,0 +1,8 @@
+{"tool": "grep", "arg": "지급.{0,15}계약은 소멸하지 않", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "계약은 계속.{0,10}(유효|효력)", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험금.{0,5}지급.{0,10}후.{0,10}계약", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험금 지급 후에도 계약은 유효하게 존속한다", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험금 지급 후 주계약 효력 유지", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험금 지급 후에도 계약은 계속하여 유효", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험금을 지급한 후에도", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "지급.{0,5}후.{0,5}(주계약|이 계약)은 (계속|그대로)", "arm": "V9_D03B_CLM"}

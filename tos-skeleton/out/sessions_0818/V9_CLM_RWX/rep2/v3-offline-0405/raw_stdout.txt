@@ -1,0 +1,3 @@
+Both candidates confirmed: c02255 gives the exact 100%/50% payout rule with the 1-year cutoff definition, and c00082 corroborates it in the summary table (though its phrasing "1년 이후 50% 지급" is a truncated/inconsistent OCR rendering of the same 100%/50% rule — c02255 is the authoritative source). c02239 (지급사유 조항, 제2-2조) also supports context.
+
+{"status":"ranked","ranked_chunk_ids":["c02255","c00082","c02239","c02232"],"final_reason":"c02255의 보험금 지급기준표가 1년 미만 지급사유 발생 시 50%, 1년 이후(정상) 100% 지급을 명시하고 c00082 요약표와 c02239 지급사유 조항이 이를 뒷받침함"}

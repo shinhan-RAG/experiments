@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편 기본 신수술특약 급여수술 정의", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "신수술특약 급여수술 정의", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제2-1조의4.*급여수술.*정의", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03393", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03400", "arm": "V9_CLM_RWX"}

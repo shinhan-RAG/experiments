@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌경색 보장 포함", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "뇌졸중 뇌혈관질환 보장개시일 진단확정", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05438", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02230", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02492", "arm": "V9_CLM_RWX"}

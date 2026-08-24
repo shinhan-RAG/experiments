@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "허혈심장질환 진단급여금 진단확정 반복지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)허혈심장질환진단특약 진단급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02299", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02333", "arm": "V9_CLM_RWX"}

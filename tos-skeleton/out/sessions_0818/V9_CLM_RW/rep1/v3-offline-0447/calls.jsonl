@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "허혈심장질환진단특약 허혈심장질환 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "허혈심장질환 진단급여금 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02275", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01967", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02262", "arm": "V9_CLM_RW"}

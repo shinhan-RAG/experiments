@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 보장 예외", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "고의로 자신을 해친", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00264", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00149", "arm": "V9_CLM_RWX"}

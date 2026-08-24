@@ -1,0 +1,3 @@
+Both verified — these clauses directly answer that 항암방사선치료 benefits are paid only once per condition regardless of repeated treatments.
+
+{"status":"ranked","ranked_chunk_ids":["c01372","c01373","c01374","c01388","c01391","c01392","c01389","c01390"],"final_reason":"항암방사선치료급여금은 암/기타피부암/갑상선암/제자리암/경계성종양 각각 최초 1회에 한해 지급되어 여러 번 치료받아도 보험금은 1회만 지급됨을 확인함"}

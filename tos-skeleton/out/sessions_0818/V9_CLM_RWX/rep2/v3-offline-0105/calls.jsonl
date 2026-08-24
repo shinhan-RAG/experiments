@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 반복 보험금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "방사선치료 횟수 제한", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01329", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01412", "arm": "V9_CLM_RWX"}

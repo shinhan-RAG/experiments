@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "암 진단 특약 갱신 불가", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "암보험 갱신형 특약 갱신거절 사유", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "갱신.{0,10}거절", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01219", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04338", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01295", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "암 진단 갱신불가 보장계약 소멸", "arm": "V9_CLM_R"}

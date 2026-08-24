@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "질병 장해지급률 50% 이상 장해 질병장해급여금 최초 1회 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "질병장해급여금 지급 사유 및 지급금액", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00448", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00482", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "50%이상.*질병장해.*최초 1회", "arm": "V9_CLM_RWX"}

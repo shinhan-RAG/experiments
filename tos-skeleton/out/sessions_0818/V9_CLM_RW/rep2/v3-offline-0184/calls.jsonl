@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암진단금 수령 후 갱신 가능 여부", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "암 진단 확정 후 갱신형 재가입 계약갱신", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01017", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01295", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "진단확정된 경우.*갱신할 수 없", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01068", "arm": "V9_CLM_RW"}

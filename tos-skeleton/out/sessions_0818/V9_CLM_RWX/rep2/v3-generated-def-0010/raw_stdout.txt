@@ -1,0 +1,3 @@
+All three verified relevant and complementary (definition clause, diagnosis-confirmation clause, and referenced classification table).
+
+{"status":"ranked","ranked_chunk_ids":["c02378","c02379","c05511","c02400","c05512"],"final_reason":"제2-1조의3에서 정의·진단확정 규정을 확인했고, 부표2-3 분류표(표83)로 대상 질병 상세를 교차검증함"}

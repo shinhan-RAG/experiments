@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "항암세기조절방사선치료급여금 지급 대상 암 지급 횟수 한도", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "세기조절방사선치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01412", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01426", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00062", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+Verified: c02378 and c02379 together give the full 제2-1조의3 정의 (2종~3종) text — definition based on 부표2-3 classification table, plus diagnosis confirmation method. e02097 (slot) matches the same clause text. c02400/e02115 give the referenced 부표2-3 분류표 pointer.
+
+{"status":"ranked","ranked_chunk_ids":["c02378","c02379","e02097","c02400","e02115","c05511"],"final_reason":"제2-1조의3 조문(c02378/c02379, e02097)이 정의·진단확정 기준을 직접 제시하며, 부표2-3 분류표 참조(c02400/e02115/c05511)로 보완 확인함."}

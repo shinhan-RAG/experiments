@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "같은 날 여러 수술 중복 지급", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "동일한 날", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03100", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03371", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "동일자 여러 수술 수술급여금 지급", "arm": "V9_CLM_RW"}

@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "전문재활", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "특약보험가입금액의 0\\.5%|특약보험가입금액의 0\\.25%", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02759", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02760", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02774", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02775", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전문재활\\] 급여주요뇌심장질환특정재활치료급여금", "arm": "V9_D03B_CLM"}

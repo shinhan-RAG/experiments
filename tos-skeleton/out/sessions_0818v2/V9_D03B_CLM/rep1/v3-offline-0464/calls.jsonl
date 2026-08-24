@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갑상선 바늘생검 조직병리진단급여금 연간 횟수", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "바늘생검 조직병리진단", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01880", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00104", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01866", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01865", "arm": "V9_D03B_CLM"}

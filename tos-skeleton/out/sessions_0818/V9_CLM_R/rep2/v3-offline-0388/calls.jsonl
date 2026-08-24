@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "간편 간병인사용입원특약 간병인사용 입원 급여금 요양병원 제외", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "간병인사용 입원.*요양병원 제외", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00112", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "간병인사용입원.*감액|보장개시일부터.*경과.*간병인|간병인.*50%|간병인.*지급률", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "(간편)간병인사용입원특약 가입 후 1년 미만 50% 지급", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04188", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04230", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04296", "arm": "V9_CLM_R"}

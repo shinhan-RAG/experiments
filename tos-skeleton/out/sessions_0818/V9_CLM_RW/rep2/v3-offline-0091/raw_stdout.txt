@@ -1,0 +1,3 @@
+Both e02684, e02714 confirm identical text: 대상포진 보장계약의 지급사유는 "피보험자가 대상포진으로 진단확정 되었을 때(최초 1회 한)". Also c03026 chunk contains the same article header, and c03056 covers the death-related extension clause (제2-2조 관련, 사망 시에도 진단확정 간주). These support the answer.
+
+{"status":"ranked","ranked_chunk_ids":["e02684","e02714","c03026","c03056","e02685","e02674"],"final_reason":"제2-2조(보험금의 지급사유) 원문에서 대상포진 보장계약은 피보험자가 대상포진으로 진단확정된 때 대상포진진단급여금(최초 1회 한)을 지급한다고 명시함을 read로 확인했다."}

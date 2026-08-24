@@ -1,0 +1,3 @@
+Confirmed: c04230 explicitly states the payout table for 간병인사용입원(요양병원 제외)급여금, noting that for 간편심사형, if the cause occurs within 2 years from contract date due to non-accident causes, only 50% is paid — meaning full payment applies after 2 years have passed since enrollment. c00071 corroborates this with the same "가입 후 2년간...2년이후에 지급하는 보험금의 50%지급" table entry.
+
+{"status":"ranked","ranked_chunk_ids":["c04230","c00071","c00072","e03862"],"final_reason":"간편심사형 기준 가입 후 2년 이내 재해 외 원인 발생 시 50%만 지급되고 2년이 지나야 전액 지급된다는 지급기준표를 c04230과 c00071에서 확인함"}

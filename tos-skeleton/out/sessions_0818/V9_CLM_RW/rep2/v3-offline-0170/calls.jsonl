@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암보장개시일 계약일로부터 90일", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "계약의 무효 15세미만 심신상실 심신박약자", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "암보장개시일.*무효|무효.*암보장개시일", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01156", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03232", "arm": "V9_CLM_RW"}

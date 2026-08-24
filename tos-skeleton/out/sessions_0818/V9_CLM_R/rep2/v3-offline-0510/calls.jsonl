@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 가입자 사망 시 특약 소멸 적립금 처리", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "암주요치료비특약 피보험자 사망 적립금 지급", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "암주요치료비특약", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "암주요치료비특약 계약자적립액 사망", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01161__r001", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01341", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01342", "arm": "V9_CLM_R"}

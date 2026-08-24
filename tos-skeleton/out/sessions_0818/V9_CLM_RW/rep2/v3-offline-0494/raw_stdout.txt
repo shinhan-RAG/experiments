@@ -1,0 +1,3 @@
+Both c00184 and c00185 together form 제25조(보험료의 자동대출납입) — confirmed relevant and directly answer the question (1-year cap, reapplication required, terminates if loan+interest exceeds surrender value).
+
+{"status":"ranked","ranked_chunk_ids":["c00185","c00184","c00186"],"final_reason":"제25조 보험료의 자동대출납입 조항이 유지 가능 여부(1년 한도, 재신청, 해약환급금 초과 시 중단)를 직접 규정함"}

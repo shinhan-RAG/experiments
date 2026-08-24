@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "항암양성자방사선치료특약 항암양성자 방사선 치료급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암양성자.{0,10}방사선.{0,10}치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00079", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01477", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암양성자방사선치료.{0,20}(감액|50%|100%)", "arm": "V9_D03B_CLM"}

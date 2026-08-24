@@ -1,0 +1,3 @@
+I've reached the tool call limit. Based on the searches and reads performed, here's my ranked result.
+
+{"status":"ranked","ranked_chunk_ids":["c04760","c04938","c04917","c04996","c04860","c00922","c01907","c04897"],"final_reason":"주계약 보험료 납입면제는 별도 가입한 '보험료납입면제특약'의 제2-2조의2(보험료 납입면제사유)에 암 등 특정 진단확정 시로 규정되어 있어, 자동이 아니라 해당 특약 가입 및 조건 충족이 필요함을 c04760/c04938/c04917이 보여준다."}

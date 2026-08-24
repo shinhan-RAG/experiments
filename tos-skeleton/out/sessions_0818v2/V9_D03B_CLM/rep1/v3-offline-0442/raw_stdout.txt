@@ -1,0 +1,3 @@
+Both hybrid search and grep confirm the key clauses: diagnosis definition/criteria (c02451), payment cause clause (c02473, verified — "최초 1회의 진단확정에 한함" = only paid once even if repeatedly diagnosed), and the payment amount table (c02466).
+
+{"status":"ranked","ranked_chunk_ids":["c02473","c02451","c02466","c02472","c02485","c00104"],"final_reason":"c02473/c02451/c02466이 진단기준과 '최초 1회 한함' 지급조건을 직접 명시하며 grep·hybrid 양쪽에서 검증됨"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급사유 진단확정", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]남녀특정암진단특약 여성유방암", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00736", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01028", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "최초 1회의 진단", "arm": "V9_CLM_R"}

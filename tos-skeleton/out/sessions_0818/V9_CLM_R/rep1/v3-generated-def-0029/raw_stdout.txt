@@ -1,0 +1,3 @@
+Found and verified the exact definition clause (e04095 / c04467, referencing e04094 / c04465 for the underlying 산정특례 대상 정의).
+
+{"status":"ranked","ranked_chunk_ids":["e04095","c04467","e04094","c04465","c04456"],"final_reason":"제2-1조의4가 \"중증질환자[암] 본인일부부담금 산정특례 대상 질병\"을 제2-1조의3의 해당 상병으로 정의하며 진단확정 기준도 명시함."}

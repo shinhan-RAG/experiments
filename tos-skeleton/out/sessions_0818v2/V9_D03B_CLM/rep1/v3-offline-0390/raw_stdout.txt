@@ -1,0 +1,3 @@
+This confirms the key fact directly. c00081 also corroborates (summary table showing 1년 미만 50%, 1년 이후 100%). c02352 provides the 조항 context (제2-2조 지급사유).
+
+{"status":"ranked","ranked_chunk_ids":["c02369","c00081","c02352"],"final_reason":"c02369의 보험금 지급기준표가 1년 미만 50%, 1년 이후 100% 지급률을 명시하며 c00081·c02352가 이를 보강한다."}

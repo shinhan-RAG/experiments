@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급성뇌경색증 혈전용해치료 급여금 지급 횟수", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급성뇌경색증혈전용해치료급여금 진단 치료 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증혈전용해치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증혈전용해치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02513", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증\".{0,20}(정의|이라 함은)", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02513", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02514", "arm": "V9_D03B_CLM"}

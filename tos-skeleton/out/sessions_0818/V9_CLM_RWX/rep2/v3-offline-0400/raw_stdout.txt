@@ -1,0 +1,3 @@
+Confirms same 50% reduction pattern for [기본물리] item too (c00083 lists it as summary confirming "가입 후 1년간, 1년이후 지급하는 보험금의 50% 지급" — matches c02774's specific 0.1% vs 0.2% figures).
+
+{"status":"ranked","ranked_chunk_ids":["c02774","c00083","c02759"],"final_reason":"c02774의 보험금 지급기준표가 1년 미만 발생 시 0.1%, 그 외(1년 이후 포함) 0.2% 지급을 명시하며 c00083이 이를 '1년간 50% 지급'으로 재확인한다."}

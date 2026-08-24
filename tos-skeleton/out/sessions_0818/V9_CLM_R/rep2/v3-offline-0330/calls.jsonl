@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "표적항암치료 해외 보장", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "표적항암약물허가치료비 해외", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "표적항암", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "표적항암치료비 특약 보장지역", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01543", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "해외.{0,30}(표적항암|요양기관)", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "국내.{0,20}요양기관", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01239", "arm": "V9_CLM_R"}

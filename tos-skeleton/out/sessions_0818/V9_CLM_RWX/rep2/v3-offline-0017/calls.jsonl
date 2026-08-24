@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "6대 질병 구성요소", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "6대 질병 정의 암 뇌졸중 급성심근경색증", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04033", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05533", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "6대질병 분류표", "arm": "V9_CLM_RWX"}

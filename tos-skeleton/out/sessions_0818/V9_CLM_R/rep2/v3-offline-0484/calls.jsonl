@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 입원급여금 상급종합병원 지급 요건", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "뇌혈관질환 입원급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02555", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02288", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "상급종합병원.*180일", "arm": "V9_CLM_R"}

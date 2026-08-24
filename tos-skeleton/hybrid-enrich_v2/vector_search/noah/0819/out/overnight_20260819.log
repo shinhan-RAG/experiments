@@ -1,0 +1,61 @@
+=== overnight start Wed Aug 19 22:47:54 KST 2026 ===
+--- [gate 1/2] filesearch eval_det baseline ---
+| arm | 단위 | R@1 | R@5 | R@10 | R@20 | R@40 | R@100 | S@5 | suff@10 | RR@10 | core R@5 | 비core R@5 | 후보0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| clm:lex=count:w=contract=2 | u2 | 0.225 | 0.447 | 0.519 | 0.609 | 0.678 | 0.770 | 0.483 | 0.489 | 0.337 | 0.595 | 0.221 | 0 |
+| clm:lex=count:w=contract=2 | jo | 0.246 | 0.496 | 0.604 | 0.663 | 0.756 | 0.809 | 0.533 | 0.573 | 0.381 | 0.651 | 0.258 | 0 |
+--- [gate 2/2] 0819 eval_det parity + alias det ---
+| arm | 단위 | R@1 | R@5 | R@10 | R@20 | R@40 | R@100 | S@5 | suff@10 | RR@10 | core R@5 | 비core R@5 | 후보0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| clm:lex=count:w=contract=2 | u2 | 0.225 | 0.447 | 0.519 | 0.609 | 0.678 | 0.770 | 0.483 | 0.489 | 0.337 | 0.595 | 0.221 | 0 |
+| clm:lex=count:w=contract=2 | jo | 0.246 | 0.496 | 0.604 | 0.663 | 0.756 | 0.809 | 0.533 | 0.573 | 0.381 | 0.651 | 0.258 | 0 |
+| clm:lex=count:w=contract=2:alias=1 | u2 | 0.197 | 0.430 | 0.527 | 0.617 | 0.711 | 0.784 | 0.467 | 0.492 | 0.321 | 0.559 | 0.234 | 0 |
+| clm:lex=count:w=contract=2:alias=1 | jo | 0.216 | 0.491 | 0.597 | 0.686 | 0.775 | 0.831 | 0.529 | 0.567 | 0.359 | 0.631 | 0.279 | 0 |
+--- tune_tau (정보용 — arms.json 은 밤새 그대로) ---
+| 6.0 | 0.461 | 0.833 | 0.268 | 0.406 |
+| 7.0 | 0.669 | 0.938 | 0.208 | 0.341 |
+| 8.0 | 0.746 | 0.979 | 0.195 | 0.325 |
+| 9.0 | 0.814 | 1.000 | 0.183 | 0.309 |
+| 10.0 | 0.920 | 1.000 | 0.162 | 0.278 |
+| 11.0 | 0.960 | 1.000 | 0.155 | 0.268 |
+| 13.0 | 0.994 | 1.000 | 0.150 | 0.260 |
+| 16.0 | 0.997 | 1.000 | 0.149 | 0.259 |
+
+권장 tau = 5.0 (F1 0.454, min_n=5) — arms.json 의 c4_fb/c4_all 에 반영
+=== arm base_c3 start Wed Aug 19 23:03:39 KST 2026 ===
+ "completion_tokens": 51936,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_alias start Wed Aug 19 23:41:00 KST 2026 ===
+ "completion_tokens": 53004,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_scope start Thu Aug 20 00:19:43 KST 2026 ===
+ "completion_tokens": 47315,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_fb start Thu Aug 20 00:54:19 KST 2026 ===
+ "completion_tokens": 44513,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_fbp start Thu Aug 20 01:23:00 KST 2026 ===
+ "completion_tokens": 52815,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_ref start Thu Aug 20 01:55:18 KST 2026 ===
+ "completion_tokens": 47646,
+ "rep_disagreement_R@5": 0.0
+}
+=== arm c4_all start Thu Aug 20 02:27:51 KST 2026 ===
+ "completion_tokens": 41520,
+ "rep_disagreement_R@5": 0.0
+}
+=== overnight done Thu Aug 20 02:59:24 KST 2026 ===
+--- summary ---
+night_base_c3    R@5=0.510 R@10=0.536 suff@5=0.471 suff@10=0.495 no_submit=2 err=2
+night_c4_alias   R@5=0.526 R@10=0.565 suff@5=0.486 suff@10=0.523 no_submit=2 err=1
+night_c4_all     R@5=0.398 R@10=0.430 suff@5=0.368 suff@10=0.399 no_submit=5 err=4
+night_c4_fb      R@5=0.432 R@10=0.474 suff@5=0.399 suff@10=0.440 no_submit=3 err=1
+night_c4_fbp     R@5=0.443 R@10=0.491 suff@5=0.409 suff@10=0.455 no_submit=4 err=1
+night_c4_ref     R@5=0.477 R@10=0.500 suff@5=0.443 suff@10=0.464 no_submit=2 err=1
+night_c4_scope   R@5=0.482 R@10=0.510 suff@5=0.452 suff@10=0.483 no_submit=4 err=3

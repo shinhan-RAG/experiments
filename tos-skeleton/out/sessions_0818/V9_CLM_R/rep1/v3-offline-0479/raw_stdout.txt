@@ -1,0 +1,3 @@
+Confirmed: the clause consistently states that once the 보험료납입면제사유 has occurred, the 특약 can only be terminated together with (upon termination of) the 주계약 — not independently.
+
+{"status":"ranked","ranked_chunk_ids":["c04771","c04847","c05031","c04911","c04736","c04803","e04453","c04983"],"final_reason":"제2-10조(계약자의 임의해지)는 납입면제사유 발생 이후에는 주계약을 해지하는 경우에 한하여 특약을 해지할 수 있다고 명시해, 단독 해지가 불가함을 직접 뒷받침한다."}

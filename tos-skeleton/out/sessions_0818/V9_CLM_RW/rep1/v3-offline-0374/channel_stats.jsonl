@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "전립선암진단급여금 지급사유 진단확정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.148798, "dense/V9": 0.133532}, "sparse_share": 0.527, "dense_share": 0.473, "notes": []}
+{"arm": "V9_CLM_RW", "query": "남녀특정암진단특약 전립선암 진단급여금", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.149346, "dense/V9": 0.134767}, "sparse_share": 0.5257, "dense_share": 0.4743, "notes": []}

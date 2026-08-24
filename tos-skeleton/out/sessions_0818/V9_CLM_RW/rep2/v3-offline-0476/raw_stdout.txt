@@ -1,0 +1,3 @@
+All three candidates confirmed: c02759 (지급사유+횟수제한), c02774 (부표 지급기준표, 지급금액 포함), c02754 (단순재활치료 정의) all directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c02759","c02774","c02754","c02756"],"final_reason":"c02759와 c02774가 지급사유 및 1일 1회·연간 30회 제한을 명시하고, c02754는 단순재활치료의 정의를 확인해준다."}

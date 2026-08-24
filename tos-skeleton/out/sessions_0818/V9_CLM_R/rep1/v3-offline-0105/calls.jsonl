@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 반복 지급", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "방사선치료 특약 지급사유", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "항암방사선치료.{0,80}(1회|여러|반복|재발|같은)", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "방사선치료.{0,50}재발.{0,50}(급여금|지급)", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01205__r001", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_R"}

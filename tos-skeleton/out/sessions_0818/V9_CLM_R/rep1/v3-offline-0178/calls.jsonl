@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "암 주요치료비 연간 1회 기준", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "암주요치료비 연간 지급횟수", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "연간 1회", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01327", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01329", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "암주요치료급여금 연간 정의", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01151", "arm": "V9_CLM_R"}

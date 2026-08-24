@@ -1,0 +1,3 @@
+Both confirmed — e04231__r001 contains the full definition (제2-1조의2), c04629/c04628 contain the same article split across chunks.
+
+{"status":"ranked","ranked_chunk_ids":["e04231__r001","c04628","c04629","c04649"],"final_reason":"제2-1조의2에서 '중증치매상태'를 CDR척도 3점 이상 등 중증 인지기능 장애가 90일 이상 지속되어 최종 진단확정된 상태로 정의함을 read로 확인함"}

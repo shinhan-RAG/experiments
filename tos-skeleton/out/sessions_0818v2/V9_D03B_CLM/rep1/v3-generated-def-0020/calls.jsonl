@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "간편 기본 신수술특약 급여수술 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급여수술", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "(간편)[기본]신수술특약 급여수술 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급여수술", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03393", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03400", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03401", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급여수술\"이란", "arm": "V9_D03B_CLM"}

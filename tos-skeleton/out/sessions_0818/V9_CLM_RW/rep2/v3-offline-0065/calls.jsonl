@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "납입면제 특약 가입 시 납입면제 대상에서 제외되는 특약", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "납입면제.*제외|보험료 납입을 면제.*제외|납입면제 대상이 아닌", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04996", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04962", "arm": "V9_CLM_RW"}

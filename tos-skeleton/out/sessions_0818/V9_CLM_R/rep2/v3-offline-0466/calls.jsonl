@@ -1,0 +1,6 @@
+{"tool": "slot", "arg": "유방 바늘생검 조직병리진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01608", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01604", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "급여 유방 바늘생검 조직병리진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e01607", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01882", "arm": "V9_CLM_R"}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "소액암진단특약 소액암 진단급여금 지급사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140231, "dense/V9": 0.138074}, "sparse_share": 0.5039, "dense_share": 0.4961, "notes": []}
+{"arm": "V9_CLM_R", "query": "소액암 진단확정 반복 지급 재진단", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.13527, "dense/V9": 0.141452}, "sparse_share": 0.4888, "dense_share": 0.5112, "notes": []}

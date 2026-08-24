@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "방사선치료 여러 번 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "방사선치료비 지급사유 횟수 제한", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01373", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "항암방사선치료.*(1회|한 번|최초|여러)", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_RW"}

@@ -1,0 +1,3 @@
+Both candidates confirm the answer: 질병장해율 3%~100% (3%이상 100%이하).
+
+{"status":"ranked","ranked_chunk_ids":["e00274","c00427","e00329","c00457"],"final_reason":"제2-2조 지급사유 및 보험금 지급기준표가 장해지급률 3%이상 100%이하를 지급기준으로 명시함"}

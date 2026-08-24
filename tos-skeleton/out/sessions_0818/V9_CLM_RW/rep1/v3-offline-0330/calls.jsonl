@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "표적항암치료 해외 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "해외 의료기관 항암치료 보장", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "해외.{0,20}(의료기관|요양기관)", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "요양기관에 한합니다", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01543", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01239", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "해외", "arm": "V9_CLM_RW"}

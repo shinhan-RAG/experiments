@@ -1,0 +1,3 @@
+Both candidates confirm the answer clearly: c00579 gives the primary clause (100% after 1 year, 50% if within 1 year of contract date), and c00076 corroborates with the summary table (1년 이후 지급액의 50%가 1년 이내 지급률).
+
+{"status":"ranked","ranked_chunk_ids":["c00579","e00440__r001","c00076","c00899","c00935"],"final_reason":"c00579(및 동일 내용 e00440__r001)이 가입 1년 미만 시 특약보험가입금액의 50%, 1년 이후 100% 지급을 명시하며 c00076·c00899·c00935가 이를 뒷받침한다."}

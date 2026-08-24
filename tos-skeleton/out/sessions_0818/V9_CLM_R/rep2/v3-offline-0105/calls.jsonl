@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 반복 지급", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "방사선치료", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "항암방사선치료.*여러|여러 번.*방사선|방사선치료.*1회|방사선치료급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01412", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_R"}

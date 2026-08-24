@@ -1,0 +1,3 @@
+Confirmed: c03073/c03074 (제2-1조의2) contain the definition clause, and c05471 has the classification table (부표2-2) referenced by it. e02736 is the element-level match for the same definition clause.
+
+{"status":"ranked","ranked_chunk_ids":["c03073","e02736","c03074","c05471","c03075","c03089","c03070"],"final_reason":"제2-1조의2(특정 류마티스 관절염의 정의 및 진단확정) 조항과 관련 분류표·지급기준표를 확인하여 정의 근거를 확보함"}

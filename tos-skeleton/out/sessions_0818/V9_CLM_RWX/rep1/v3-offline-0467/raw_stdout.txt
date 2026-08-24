@@ -1,0 +1,3 @@
+Both candidates confirmed relevant. c01881 shows 지급기준표 (연간 1회, 특약보험가입금액의 1%), c01864 shows 지급요건 세부규정 (급여 인정기준 등). Also c01863 (정의) and c01866 (연간 1회 재확인) support these.
+
+{"status":"ranked","ranked_chunk_ids":["c01881","c01864","c01863","c01866","c01865","c00104"],"final_reason":"read로 확인한 c01881(지급사유·연간1회·지급금액)과 c01864(급여인정기준 세부규정)가 질문에 직접 답하며, 나머지는 정의·보완 근거로 채택"}

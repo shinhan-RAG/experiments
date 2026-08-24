@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "전립선 바늘생검 조직병리진단급여금 지급 요건 연간 횟수", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "전립선.{0,10}바늘생검", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01864", "arm": "V9_CLM_RWX"}

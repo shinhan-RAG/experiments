@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급성심근경색증진단급여금 지급사유 진단확정", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "급성심근경색증진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02352", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02351", "arm": "V9_CLM_R"}

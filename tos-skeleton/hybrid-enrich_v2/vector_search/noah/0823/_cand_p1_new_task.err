@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\Users\Atdev-pc\Desktop\wiki\experiments\tos-skeleton\hybrid-enrich_v2\vector_search\noah\0823\agent_tools.py", line 281, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Atdev-pc\Desktop\wiki\experiments\tos-skeleton\hybrid-enrich_v2\vector_search\noah\0823\agent_tools.py", line 140, in main
+    output({
+    ~~~~~~^^
+        "query": payload.get("query", ""),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        "results": items,
+        ^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "C:\Users\Atdev-pc\Desktop\wiki\experiments\tos-skeleton\hybrid-enrich_v2\vector_search\noah\0823\agent_tools.py", line 120, in output
+    print(json.dumps(record, ensure_ascii=False))
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'cp949' codec can't encode character '\u30fb' in position 2222: illegal multibyte sequence

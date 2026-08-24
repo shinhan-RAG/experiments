@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "설계사 안내자료 약관 내용 다른 경우 계약 성립", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "회사가 작성한 자료와 약관 내용이 다른 경우 계약자에게 유리한 내용", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00200", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보험안내자료.*계약자에게 유리한", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00169", "arm": "V9_CLM_RW"}

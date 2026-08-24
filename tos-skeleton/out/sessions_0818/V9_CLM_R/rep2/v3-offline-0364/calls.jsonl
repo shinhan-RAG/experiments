@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "(간편)[50%이상장해형]질병장해특약 질병장해급여금 장해율 기준", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "질병장해급여금 지급사유 장해율 50%", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00301", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00448", "arm": "V9_CLM_R"}

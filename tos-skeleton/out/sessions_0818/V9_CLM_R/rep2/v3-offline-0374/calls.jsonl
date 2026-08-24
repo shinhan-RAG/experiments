@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "전립선암진단급여금 지급사유 반복지급", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "남녀특정암진단특약 전립선암 진단확정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00736", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00711", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "전립선암.{0,5}이라 함은", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "전립선암.{0,10}진단확정되었을 때", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00714", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00737", "arm": "V9_CLM_R"}

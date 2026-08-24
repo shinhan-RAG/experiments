@@ -1,0 +1,3 @@
+All confirmed with multiple sources: the 지급기준표 (c02255), the operative clause (c02240), the summary table (c00082/e00015__r002), and the specific 지급사유 clause (e01944).
+
+{"status":"ranked","ranked_chunk_ids":["c02255","c02240","c00082","e01944","e01945"],"final_reason":"지급기준표와 세부규정 조항이 1년 미만 50%, 1년 이후 100% 지급률을 명시적으로 확인해준다."}

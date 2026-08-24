@@ -1,0 +1,3 @@
+All three candidates confirmed consistent with "최초 1회에 한해 지급".
+
+{"status":"ranked","ranked_chunk_ids":["c02352","c02369","c00100"],"final_reason":"제2-2조와 보험금 지급기준표 모두 급성심근경색증진단급여금은 최초 1회의 진단확정에 한해서만 지급된다고 명시함"}

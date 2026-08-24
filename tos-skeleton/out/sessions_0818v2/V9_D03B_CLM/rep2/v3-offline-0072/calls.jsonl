@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌심혈관질환 주요치료비 청구 구비서류", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌심.*주요치료비", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌혈관.{0,20}허혈심장질환.{0,10}사고증명서", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02740", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "사고증명서", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02741", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02742", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제2-4조 보험금을 지급하지 않는 사유", "arm": "V9_D03B_CLM"}

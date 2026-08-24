@@ -1,0 +1,3 @@
+This confirms c03100 (제2-4조 시작, listing item 1: 피보험자가 고의로 자신을 해친 경우) and c03101 (continuing items 2-3: 보험수익자/계약자가 고의로 피보험자를 해친 경우) together contain the "제2-4조 보험금을 지급하지 않는 사유" clause for the 1-5종수술특약. Both verified by reading.
+
+{"status":"ranked","ranked_chunk_ids":["c03100","c03101","c03098","c03099"],"final_reason":"제2-4조(보험금을 지급하지 않는 사유)는 피보험자 자해, 보험수익자·계약자의 고의 상해가 사유이며 c03100-c03101에서 확인됨"}

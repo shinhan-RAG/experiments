@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "표적항암약물허가치료급여금 지급사유 지급횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "표적항암약물허가치료급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01335", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01352", "arm": "V9_CLM_RW"}

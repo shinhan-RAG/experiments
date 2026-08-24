@@ -1,0 +1,3 @@
+Both candidates confirmed relevant. c02451 gives the diagnosis definition/criteria, c02473 gives the payment condition (once-only, no repeat payment). c02466 (payment table) also supports this. These verified chunks directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c02473","c02451","c02466","c02454"],"final_reason":"진단확정 기준(제2-1조의2)과 최초 1회 한정 지급사유(제2-2조)를 직접 확인해 반복 지급되지 않음을 검증함"}

@@ -1,0 +1,3 @@
+Confirmed across both 기본/삭감없음용 소액암진단특약 clauses: the payout list is fixed at "기타피부암", "중증이외갑상선암", "제자리암", "경계성종양", "대장점막내암", "비침습방광암" — 양성뇌종양(benign brain tumor) does not appear anywhere in the 지급사유 or 지급기준표.
+
+{"status":"ranked","ranked_chunk_ids":["c00641","c01007","e00542__r001","c00939","e00828"],"final_reason":"소액암진단특약 지급기준표는 기타피부암·중증이외갑상선암·제자리암·경계성종양·대장점막내암·비침습방광암만 나열하며 양성뇌종양은 포함되지 않음"}

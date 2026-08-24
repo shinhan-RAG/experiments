@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "질병 장해지급률 50% 이상 장해 질병장해급여금 최초 1회 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.149667, "dense/V9": 0.151187}, "sparse_share": 0.4975, "dense_share": 0.5025, "notes": []}

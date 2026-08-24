@@ -1,0 +1,3 @@
+Verified: c03115 contains the exact 4종 수술 급여금 지급사유 text ("1~5종 수술분류표에서 정하는 4종 수술을 받았을 때"), and c03130 confirms the same via 제2-2조 definition.
+
+{"status":"ranked","ranked_chunk_ids":["c03115","c03130","c03148","c03116"],"final_reason":"c03115가 4종 수술급여금의 정확한 지급사유(1~5종 수술분류표상 4종 수술을 받았을 때)를 명시하며 c03130은 이를 뒷받침하는 정의 조항이다."}

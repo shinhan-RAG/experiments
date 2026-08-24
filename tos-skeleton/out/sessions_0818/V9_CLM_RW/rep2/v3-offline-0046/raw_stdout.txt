@@ -1,0 +1,3 @@
+Found the direct answer: c03099 (제4항) explicitly addresses simultaneous multiple surgeries on the same occasion — highest-benefit surgery pays, unless different body parts with independent treatment purpose, in which case each pays separately. This directly answers "같은날 여러수술을 받으면 중복지급되나요".
+
+{"status":"ranked","ranked_chunk_ids":["c03099","c03100","c03371","c03654","c03751"],"final_reason":"c03099/c03100은 동시 2종 이상 수술 시 최고 급여금 1건만 지급하되 신체부위가 다른 독립적 수술은 각각 지급한다는 규정을 직접 명시하며, c03371은 1회 입원·통원 중 다수 수술 시 1개 수술코드만 지급하는 유사 규정을 보강한다."}

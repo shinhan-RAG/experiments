@@ -1,0 +1,3 @@
+e02487 matches c02774's content exactly (지급기준표). I have enough verified evidence now.
+
+{"status":"ranked","ranked_chunk_ids":["c02774","e02487","c00082","c02759"],"final_reason":"부표2-1 지급기준표(c02774/e02487)와 감액기간표(c00082)가 1년 미만 0.1%(간편심사형) vs 1년 이후 0.2%(=50%) 지급률 차이를 명시함."}

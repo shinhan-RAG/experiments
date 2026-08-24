@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보장개시일 전 진단 확정 특약 효력 소멸", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보장개시일 이전 진단확정 계약 무효 해당특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05250", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01923", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00575", "arm": "V9_CLM_RW"}

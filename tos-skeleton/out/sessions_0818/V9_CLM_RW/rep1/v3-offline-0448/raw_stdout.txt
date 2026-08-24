@@ -1,0 +1,3 @@
+This confirms the "삭감없음용" (no-reduction) variant pays 100% regardless of timing, unlike the "[기본]" variant which reduces to 50% within 1 year. Both are verified and relevant since the question likely concerns the standard 기본형 특약.
+
+{"status":"ranked","ranked_chunk_ids":["c02275","e01969","c02299","c02346","c02059"],"final_reason":"c02275와 e01969가 1년 미만 발생 시 50% 삭감, 1년 이후 100% 지급이라는 조건을 직접 명시해 질문에 정확히 답한다."}

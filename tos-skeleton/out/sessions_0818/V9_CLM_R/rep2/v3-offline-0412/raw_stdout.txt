@@ -1,0 +1,3 @@
+c02140 confirms exact answer: 100% normally, 50% if within 1 year of contract date. This directly answers the question for (간편)[기본]뇌혈관질환진단특약.
+
+{"status":"ranked","ranked_chunk_ids":["c02140","e01830","e01868","e01818"],"final_reason":"c02140의 보험금 지급기준표가 1년 미만 지급사유 발생 시 50%, 1년 이후(100%) 지급률 차이를 명시함"}

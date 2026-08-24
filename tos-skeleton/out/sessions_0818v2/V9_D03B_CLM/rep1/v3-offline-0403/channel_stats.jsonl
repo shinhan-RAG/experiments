@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "급여 특정NGS 유전자패널 검사 지원급여금 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.149612, "dense/V9": 0.152966}, "sparse_share": 0.4945, "dense_share": 0.5055, "notes": []}

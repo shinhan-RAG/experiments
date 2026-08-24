@@ -1,0 +1,3 @@
+Both confirm exactly the "알릴의무 위반" regulation (제14조 및 제1-8조, 계약 전 알릴 의무 위반의 효과). Also c00158/e00047 (상법 제651조) and e00046/제13조 (알릴의무 본문) provide supporting context.
+
+{"status":"ranked","ranked_chunk_ids":["e00048","c00217","c00158","e00047","e00046","c00216","c00220","c00160"],"final_reason":"제14조/제1-8조 계약 전 알릴 의무 위반의 효과 조항과 관련 상법 제651조 규정을 read로 확인함"}

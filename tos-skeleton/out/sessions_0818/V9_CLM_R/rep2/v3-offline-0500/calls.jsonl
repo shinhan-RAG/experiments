@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편암주요치료비특약 기타피부암 갑상선암 주요치료급여금 지급 횟수 년", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "기타피부암.*갑상선암.*주요치료급여금|갑상선암.*주요치료급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01322", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00106", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01351", "arm": "V9_CLM_R"}

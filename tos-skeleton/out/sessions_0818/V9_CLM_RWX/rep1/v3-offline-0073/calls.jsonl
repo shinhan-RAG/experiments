@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "뇌전증 1회 발작 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "뇌전증 진단확정 보험금 지급기준", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02105", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02103", "arm": "V9_CLM_RWX"}

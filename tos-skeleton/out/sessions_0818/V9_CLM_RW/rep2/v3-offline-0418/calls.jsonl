@@ -1,0 +1,5 @@
+{"tool": "grep", "arg": "상급종합병원 입원급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03971", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03972", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03994", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "상급종합병원 입원급여금 지급률 0.5% 1% 계약일부터 1년 미만", "arm": "V9_CLM_RW"}

@@ -1,0 +1,6 @@
+{"tool": "read", "arg": "c01327", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "매년 진단확정일", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암 주요치료비 연간 1회 지급 기준", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암주요치료비 연간 산정 기준일", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01327", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "매 1년 단위로 도래하는 진단확정일", "arm": "V9_D03B_CLM"}

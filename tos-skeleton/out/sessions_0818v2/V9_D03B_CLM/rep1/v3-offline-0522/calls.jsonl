@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "주계약 보험료 납입면제 암 진단", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험료 납입면제 대상", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "주계약 보험료 납입면제 암 질병 진단", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료.*납입.*면제", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료 납입면제사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04917", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00024", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04859", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "제자리암 진단 확정 검사 기준", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제자리암", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02068", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "제자리암 진단 확정 검사기준", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00956", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "제자리암 진단확정 병리학적 검사", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01230", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제자리암.*병리과 전문의", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+Confirmed candidates. c02555/e02288 give the payment condition (뇌혈관질환 or 허혈심장질환 진단확정 + 상급종합병원 1일 이상 계속 입원, 1회 입원당 180일 한도), c02596 gives the 보험금 지급기준표 entry specifically for 뇌혈관질환상급종합병원입원급여금, and c03970 gives the general 제2-2조 지급사유 clause.
+
+{"status":"ranked","ranked_chunk_ids":["c02555","e02288","c02596","c03970","c02554","c00108","c03972","c03994"],"final_reason":"제2-2조 지급사유 조항과 보험금 지급기준표에서 뇌혈관질환 상급종합병원 입원급여금의 지급요건(1일 이상 계속 입원)과 1회 입원당 180일 한도를 직접 확인했다."}

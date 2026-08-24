@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "종합병원 중환자실치료 정의 뇌혈관질환 허혈심장질환 주요치료비 특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.141897, "dense/V9": 0.143174}, "sparse_share": 0.4978, "dense_share": 0.5022, "notes": []}

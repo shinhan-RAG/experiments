@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 반복 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "방사선치료", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "방사선치료 여러 번 보험금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01246", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01392", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암방사선치료.*지급.*1회|1회에 한함|같은 치료그룹", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "방사선치료", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01372", "arm": "V9_D03B_CLM"}

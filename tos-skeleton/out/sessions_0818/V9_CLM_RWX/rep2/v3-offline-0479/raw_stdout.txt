@@ -1,0 +1,3 @@
+This directly confirms the answer: c04771's 제2-10조(계약자의 임의해지) explicitly states that once the 보험료 납입면제사유 has occurred, the rider (납입면제특약) can only be terminated together with cancellation of the 주계약 — it cannot be cancelled separately/alone.
+
+{"status":"ranked","ranked_chunk_ids":["c04771","c00970","c04847","c03144","c04873"],"final_reason":"c04771의 제2-10조(계약자의 임의해지)가 납입면제사유 발생 후에는 주계약 해지시에만 특약 해지가 가능하다고 명시하여 질문에 직접 답한다."}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "고혈압(원발성)약물치료특약 소멸 사유", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "고혈압약물치료특약 보장종료 소멸", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02827", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "고혈압.{0,20}특약의 소멸", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "고혈압", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02854", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02845", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02846", "arm": "V9_CLM_RW"}

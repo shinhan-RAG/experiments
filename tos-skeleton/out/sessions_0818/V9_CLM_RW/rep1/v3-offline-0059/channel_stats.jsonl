@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "추간판탈출증 장해 진단 교통사고 장해보험금 청구 서류", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.123598, "dense/V9": 0.123912}, "sparse_share": 0.4994, "dense_share": 0.5006, "notes": []}
+{"arm": "V9_CLM_RW", "query": "장해보험금 청구시 제출서류", "n_results": 10, "channel_sizes": {"bm25/V9": 27, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.1027, "dense/V9": 0.089588}, "sparse_share": 0.5341, "dense_share": 0.4659, "notes": []}

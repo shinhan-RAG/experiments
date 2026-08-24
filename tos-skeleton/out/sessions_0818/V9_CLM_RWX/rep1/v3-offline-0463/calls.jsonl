@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고액암 진단급여금 재진단 두 번 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "고액암.*진단", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00787", "arm": "V9_CLM_RWX"}

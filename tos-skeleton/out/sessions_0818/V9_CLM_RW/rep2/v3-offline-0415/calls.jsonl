@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 대장점막내암 비침습방광암 주요치료급여금 보험가입금액", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "대장점막내암 비침습방광암 주요치료급여금 지급비율", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01347", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01314", "arm": "V9_CLM_RW"}

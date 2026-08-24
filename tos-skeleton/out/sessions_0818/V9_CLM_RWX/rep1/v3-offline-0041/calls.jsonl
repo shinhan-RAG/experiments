@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "갑상선암 진단금 수령후 잔여 진단금 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "동일한 진단확정으로 이미 보험금 지급된 경우 잔여 보장금액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "갑상선암.{0,30}(차감|잔여|공제)", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "갑상선암.{0,20}진단.{0,20}이후.{0,30}(암|보장)", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00962", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00997", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "중증갑상선암 진단급여금 지급 후 재발 전이 보장 여부", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00565", "arm": "V9_CLM_RWX"}

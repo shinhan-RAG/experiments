@@ -1,0 +1,3 @@
+Both candidates confirmed with exact matching definition text for 제2-1조의5.
+
+{"status":"ranked","ranked_chunk_ids":["c04468","e04096","c04467","e04084"],"final_reason":"제2-1조의5 조문에서 신규암 등록 정의를 직접 읽어 확인함"}

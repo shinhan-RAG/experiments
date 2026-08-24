@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증질환자[암] 산정특례대상보장특약 본인일부부담금 산정특례 대상 질병 정의", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "산정특례 대상 질병", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04467", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04465", "arm": "V9_CLM_RW"}

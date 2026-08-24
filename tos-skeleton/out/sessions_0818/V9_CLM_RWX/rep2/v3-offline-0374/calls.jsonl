@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "전립선암진단급여금 지급사유 진단확정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "남녀특정암진단특약 전립선암 반복 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00736", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "전립선암.*진단확정|전립선암\"의 정의", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00722", "arm": "V9_CLM_RWX"}

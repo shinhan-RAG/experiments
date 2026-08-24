@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편질병수술특약 질병수술급여금 1년 미만 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "질병수술급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03667", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03643", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00094", "arm": "V9_CLM_RWX"}

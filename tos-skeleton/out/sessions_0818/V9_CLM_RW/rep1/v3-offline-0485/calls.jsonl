@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "대상포진 통풍 중 하나만 가입", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "대상포진진단비 통풍및통풍성관절염진단비 특약 선택가입", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03054", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03026", "arm": "V9_CLM_RW"}

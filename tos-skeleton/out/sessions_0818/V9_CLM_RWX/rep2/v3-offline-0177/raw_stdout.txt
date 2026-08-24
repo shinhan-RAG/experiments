@@ -1,0 +1,3 @@
+Confirmed c00962/c00997 directly address the 재발 payment rule (소액암 재발/전이 시 원칙 미지급, 단 5년 경과 후 재보장). Ranking these top, with c01801 as supporting context on the general 암보장개시일 전 재발 예외 rule.
+
+{"status":"ranked","ranked_chunk_ids":["c00962","c00997","c01801","c04106"],"final_reason":"소액암진단급여금은 동일암 재발·전이 시 원칙적으로 재지급되지 않으나, 갱신 후 5년간 추가진단·치료가 없으면 그 이후엔 다시 보장된다는 조항을 확인했다."}

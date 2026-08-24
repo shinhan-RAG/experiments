@@ -1,0 +1,3 @@
+Confirmed both c00433 and c00483 directly state "(다만, 최초 1회의 진단확정에 한함)" / "(다만, 최초 1회에 한함)" for the (50%이상)질병장해급여금 payout clause. c00448 and c00502 also show the 지급기준표 with the same "최초 1회" condition.
+
+{"status":"ranked","ranked_chunk_ids":["c00433","c00483","c00448","c00502","c00432","c00482","c00096"],"final_reason":"조항 원문(c00433, c00483)과 보험금 지급기준표(c00448, c00502)가 50%이상 질병장해급여금이 최초 1회(진단확정)에 한해 지급됨을 명시적으로 확인시켜 준다."}

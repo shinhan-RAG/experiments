@@ -1,0 +1,3 @@
+This confirms outpatient care at 상급종합병원 (colloquially "대학병원", designated under 의료법 제3조의4) is a covered benefit under specific riders (암직접치료상급종합병원통원특약 etc.), paying a 통원급여금 for outpatient visits.
+
+{"status":"ranked","ranked_chunk_ids":["c02071","c02097","e01782__r001","c00084","c02679" ,"c03202"],"final_reason":"약관상 '대학병원'은 의료법상 상급종합병원을 지칭하며, 상급종합병원통원특약(제2-1조의7·부표2-1)이 해당 병원 외래(통원) 치료를 급여금으로 보장함을 확인함."}

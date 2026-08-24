@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "통합건강보험 납입면제 조건", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험료 납입면제 특약 가입", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04747", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00067", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "통합건강", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04719", "arm": "V9_CLM_RWX"}

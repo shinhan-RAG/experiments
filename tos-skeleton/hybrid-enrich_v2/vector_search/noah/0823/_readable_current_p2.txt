@@ -1,0 +1,82 @@
+query: (간편)항암호르몬약물허가치료특약에서 "특정항암호르몬치료제"의 정의는 무엇인가요?
+num results: 40
+e09076 | jo=j01968 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제1관 용어의 정의 등
+  preview: 제1관 용어의 정의 등
+e09120 | jo=j01999 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제1관 용어의 정의 등
+  preview: 제1관 용어의 정의 등
+e09088 | jo=j01980 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2관 보험금의 지급
+  preview: 제2관 보험금의 지급
+e09233 | jo=j02011 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2관 보험금의 지급
+  preview: 제2관 보험금의 지급
+e07428 | jo=j01645 | contract=(간편)암주요치료비특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암방사선치료특약 (무배당, 해약환급금 미지급형)
+e07461 | jo=j01671 | contract=(간편)항암방사선치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암방사선치료특약 (무배당, 해약환급금 미지급형)
+e09095 | jo=j01987 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제3관 특약의 성립과 유지
+  preview: 제3관 특약의 성립과 유지
+e09298 | jo=j02018 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제3관 특약의 성립과 유지
+  preview: 제3관 특약의 성립과 유지
+e07663 | jo=j01697 | contract=(간편)항암방사선치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암세기조절방사선치료특약 (무배당, 갱신형)
+e07696 | jo=j01723 | contract=(간편)항암세기조절방사선치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암세기조절방사선치료특약
+c01536 | jo=j01890 | contract=(간편)표적항암약물허가치료특약 | variant= | title=제2-1조의6 "항암약물치료"의 정의
+  preview: 
+e09092 | jo=j01984 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-5조 사고증명서
+  preview: 제2-5조 사고증명서
+e07908 | jo=j01775 | contract=(간편)항암양성자방사선치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암양성자방사선치료특약
+c01581 | jo=j01944 | contract=(간편)카티(CAR-T)항암약물허가치료특약 | variant= | title=제2-1조의6 "항암약물치료"의 정의
+  preview: 
+e09085 | jo=j01977 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-1조의9 "수술"의 정의와 장소
+  preview: 제2-1조의9 "수술"의 정의와 장소
+c00975 | jo=j01197 | contract=(간편)[기본]소액암진단특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: 
+c01655 | jo=j02009 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-1조의10 "암, 대장점막내암, 비침습방광암 또는 갑상선암의 직접적인 항
+  preview: 
+e09281 | jo=j02017 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-7조 보험수익자의 지정
+  preview: ## 법정상속인
+e08373 | jo=j01829 | contract=(간편)항암약물치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)항암약물치료특약
+e08614 | jo=j01881 | contract=(간편)표적항암약물허가치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)표적항암약물허가치료특약 (무배당, 갱신형)
+e09094 | jo=j01986 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-7조 보험수익자의 지정
+  preview: 제2-7조 보험수익자의 지정
+c03570 | jo=j04797 | contract=(간편)[9대관절척추질병]신수술특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: 
+e08851 | jo=j01935 | contract=(간편)카티(CAR-T)항암약물허가치료특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: (간편)카티(CAR-T)항암약물허가치료특약 ※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.
+c03094 | jo=j04169 | contract=(간편)1-5종수술특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: 
+c01307 | jo=j01623 | contract=(간편)암주요치료비특약 | variant= | title=제2-1조의7 "항암약물치료"의 정의
+  preview: 
+e09093 | jo=j01985 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-6조 보험금 받는 방법의 변경
+  preview: 제2-6조 보험금 받는 방법의 변경
+e09275 | jo=j02016 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-6조 보험금 받는 방법의 변경
+  preview: 제2-6조 보험금 받는 방법의 변경
+c03326 | jo=j04478 | contract=(간편)[난이도별]신수술특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: 
+c01143 | jo=j01435 | contract=(간편)암수술특약 | variant= | title=제2-1조의7 "수술"의 정의와 장소
+  preview: 
+e09096 | jo=j01988 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-8조 특약내용의 변경 등
+  preview: 제2-8조 특약내용의 변경 등
+c01496 | jo=j01839 | contract=(간편)항암약물치료특약 | variant= | title=제2-1조의7 "항암약물치료"의 정의
+  preview: 
+e09082 | jo=j01974 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-1조의6 “항암약물치료” 및 “항암방사선치료”의 정의
+  preview: 제2-1조의6 “항암약물치료” 및 “항암방사선치료”의 정의
+e09087 | jo=j01979 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-1조의11 보장계약 등의 정의
+  preview: 제2-1조의11 보장계약 등의 정의
+e09098 | jo=j01990 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-9조 특약의 소멸
+  preview: 제2-9조 특약의 소멸
+e09313 | jo=j02021 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-9조 특약의 소멸
+  preview: 제2-9조 특약의 소멸
+e09090 | jo=j01982 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-3조 보험금 지급에 관한 세부규정
+  preview: 제2-3조 보험금 지급에 관한 세부규정
+e09100 | jo=j01992 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제4관 특약의 해지 및 해약환급금 등
+  preview: 제4관 특약의 해지 및 해약환급금 등
+e09333 | jo=j02023 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제4관 특약의 해지 및 해약환급금 등
+  preview: 제4관 특약의 해지 및 해약환급금 등
+e09166 | jo=j02003 | contract=(간편)항암호르몬약물허가치료특약 | variant= | title=제2-1조의4 "대장점막내암"의 정의 및 진단확정
+  preview: □ 악성종양세포 침범깊이
+c02646 | jo=j03432 | contract=(간편)허혈심장질환수술특약 | variant= | title=제2-12조 주계약 약관 규정의 준용
+  preview: 

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료 기본물리 급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급여주요뇌심장질환특정재활치료급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02774", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02759", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00083", "arm": "V9_CLM_RWX"}

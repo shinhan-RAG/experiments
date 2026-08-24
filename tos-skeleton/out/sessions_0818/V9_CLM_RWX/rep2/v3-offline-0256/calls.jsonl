@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "주계약 납입면제 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험료 납입면제 대상 장해", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04897", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험료 납입을 면제", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00146", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04895", "arm": "V9_CLM_RWX"}

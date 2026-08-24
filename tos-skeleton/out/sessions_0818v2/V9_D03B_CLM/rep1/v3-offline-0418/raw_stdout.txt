@@ -1,0 +1,3 @@
+c03994 gives the exact answer: normally 특약보험가입금액의 1% per day, but if 간편심사형 and 계약일부터 1년 미만에 재해 이외의 원인으로 발생 시 0.5%. c03971 confirms the same rule textually (삭감 지급).
+
+{"status":"ranked","ranked_chunk_ids":["c03994","c03971","c03972"],"final_reason":"부표2-1 지급기준표(c03994)와 제2-3조(c03971)가 1년 미만·재해 이외 원인 시 0.5%로 삭감, 그 외는 1% 지급됨을 명시한다."}

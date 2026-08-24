@@ -1,0 +1,3 @@
+Both candidates confirmed: c00083 gives the explicit 1년 감액 지급비율 rule (간편심사형 가입 후 1년간 → 1년이후 지급 보험금의 50%), and c02541 gives the 지급기준표 context for 허혈심장질환입원급여금(간편심사형). c02597/c00108 provide supporting detail on 상급종합병원 입원급여금 variant and 180일 한도.
+
+{"status":"ranked","ranked_chunk_ids":["c00083","c02541","c02597","c00108","c02516"],"final_reason":"c00083의 감액지급표가 간편심사형 허혈심장질환입원급여금의 1년 이내 50%/1년 이후 100% 지급률을 직접 명시하고, c02541은 해당 특약의 지급기준표로 이를 뒷받침한다."}

@@ -1,0 +1,3 @@
+Confirmed: c02466/c02467 give the exact payment table (100% after 1 year, 50% within 1 year from contract date). c00094 corroborates with same summary. Also c02485 (해약환급금 미지급형) is the sibling contract version of the same clause.
+
+{"status":"ranked","ranked_chunk_ids":["c02466","c02467","c00094","c02485"],"final_reason":"보험금 지급기준표에서 1년 미만은 50%, 1년 이후(100%) 지급률 차이를 직접 확인함"}

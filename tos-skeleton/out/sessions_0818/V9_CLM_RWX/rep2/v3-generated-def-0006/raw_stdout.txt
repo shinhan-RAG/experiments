@@ -1,0 +1,3 @@
+Both candidates verified — c01704 contains the core definition (제2-1조의6) and classification table, c01705 continues with the amendment/enforcement clauses (②③).
+
+{"status":"ranked","ranked_chunk_ids":["c01704","c01705","c01687","c01712"],"final_reason":"c01704(제2-1조의6 본문 정의+분류표)와 c01705(후속 ②③항)가 직접 정의를 담고 있음을 read로 확인함"}

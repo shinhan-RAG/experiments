@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대상포진 통풍 특약 동시가입 각각 가입", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "대상포진진단비 통풍진단비 특약 선택가입", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03054", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "동시에 체결", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "대상포진 통풍 특약 동시 체결", "arm": "V9_CLM_R"}

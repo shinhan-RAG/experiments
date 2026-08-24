@@ -1,0 +1,3 @@
+e02434 confirms the definition text matches c02714/c02715. Good corroboration.
+
+{"status":"ranked","ranked_chunk_ids":["c02714","c02715","e02434","c02701"],"final_reason":"c02714/c02715와 e02434가 제2-1조의7 '종합병원 중환자실치료'의 정의 본문을 직접 담고 있어 근거로 확인함."}

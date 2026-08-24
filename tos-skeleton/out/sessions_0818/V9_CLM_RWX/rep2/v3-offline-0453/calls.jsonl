@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "1-5종수술특약 5종 수술급여금 지급 대상 수술", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "5종.*수술급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03116", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03149", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "5종 수술.*예\\)|5종.*백내장|5종.*척추|5종 수술.*해당", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "표 24", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05456", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "\\| 5 \\|", "arm": "V9_CLM_RWX"}

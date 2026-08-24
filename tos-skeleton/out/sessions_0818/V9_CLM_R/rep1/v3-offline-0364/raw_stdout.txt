@@ -1,0 +1,3 @@
+Found clear confirmation: c00482/e00301/e00354 all state the payment trigger clause "질병을 직접적인 원인으로 장해분류표에서 정한 장해지급률 중 **50%이상**에 해당하는 장해상태가 되었을 경우" for (50%이상)질병장해급여금. Also e00301 (해약환급금미지급형 version) and e00369 (지급기준표) corroborate the 50% threshold with multiple channel agreement.
+
+{"status":"ranked","ranked_chunk_ids":["c00482","e00301","c00483","e00369","e00354","e00316"],"final_reason":"제2-2조 보험금의 지급사유 조항이 질병 직접원인 장해지급률 50% 이상을 (50%이상)질병장해급여금 지급기준으로 명시함."}

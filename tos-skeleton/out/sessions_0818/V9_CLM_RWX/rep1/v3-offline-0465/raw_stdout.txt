@@ -1,0 +1,3 @@
+All three candidates confirm the payment requirement (수가코드 C8591 갑상선생검-침생검, 의사 소견에 의한 진단) and annual limit (연간 1회 한함), plus payout amount (가입금액 1%, 1년 미만 시 0.5%).
+
+{"status":"ranked","ranked_chunk_ids":["c01880","c01865","c01859","c01858","c01860"],"final_reason":"부표2-1 지급기준표와 제2-2조 지급사유, 인정기준 조항이 연간 1회 한도와 지급요건(수가코드 C8591, 의사 소견)을 직접 명시한다"}

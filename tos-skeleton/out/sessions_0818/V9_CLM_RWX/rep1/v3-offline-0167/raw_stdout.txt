@@ -1,0 +1,3 @@
+Both c00158 and c00217 confirmed as directly answering the question — they contain the full "계약 전 알릴 의무 위반의 효과" (제14조/제1-8조) clause text, including 상법 제651조 reference and the exceptions (해지/보장제한 불가 사유). c00220 confirms related follow-on effects (해약환급금 지급, 보험금 지급사유 발생 영향 미치지 못한 경우). c00009 is the table of contents pointing to 제14조.
+
+{"status":"ranked","ranked_chunk_ids":["c00158","c00217","c00220","c00183","c00189","c00009","c00153"],"final_reason":"c00158/c00217은 계약 전 알릴 의무 위반의 효과(제14조/제1-8조) 조문 원문을, c00220은 관련 후속 지급 규정을, 나머지는 관련 준용·참조 조항을 담고 있어 질문에 직접 부합한다."}

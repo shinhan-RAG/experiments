@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암 재발 보험금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암 재진단 암진단비 재발", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00962", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00997", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "재발.*지급하지 않", "arm": "V9_CLM_RWX"}

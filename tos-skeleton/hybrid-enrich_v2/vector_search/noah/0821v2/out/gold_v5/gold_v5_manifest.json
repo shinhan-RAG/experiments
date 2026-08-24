@@ -1,0 +1,29 @@
+{
+  "version": "v5",
+  "corpus": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\doc\\판매약관_(간편)신한통합건강보장보험 원(ONE)(무배당, 해약환급금 미지급형)_250212.md",
+    "sha256": "065e704128a8eb5486466f0ee4b6efdb6ff80270d599ce64360c4f99cbebd202"
+  },
+  "corrections": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\qa_gold_corrections_v5.jsonl",
+    "sha256": "005541f389078c96b5a47cfbb7a5415964cd4d31f42dd18cd1acca8436d7532b",
+    "n": 76
+  },
+  "train": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\out\\gold_v5\\gold_v5_train_full.jsonl",
+    "sha256": "f68514e4e44b0870d3f1f0c39116c59feff282db72e4a4a475ea2c5ee9ea8d6d",
+    "n": 337,
+    "n_partial": 0,
+    "n_not_answerable": 0,
+    "n_groups_gt_10": 0
+  },
+  "test": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\out\\gold_v5\\gold_v5_test_full.jsonl",
+    "sha256": "19bedd0aa23e94201c153ce0b103892b08894ca61389b25e5a852581201a67df",
+    "n": 90,
+    "n_partial": 0,
+    "n_not_answerable": 0,
+    "n_groups_gt_10": 0
+  },
+  "train_test_qid_overlap": 0
+}

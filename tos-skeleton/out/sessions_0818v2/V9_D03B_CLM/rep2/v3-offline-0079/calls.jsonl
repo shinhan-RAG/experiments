@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌출혈진단특약 보험금 감액기간", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌출혈진단.{0,20}감액", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "뇌출혈진단특약 보험금 감액기간", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00082", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02255", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌출혈진단급여금.{0,100}지급기준표", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌출혈진단.*감액", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌출혈.{0,10}삭감", "arm": "V9_D03B_CLM"}

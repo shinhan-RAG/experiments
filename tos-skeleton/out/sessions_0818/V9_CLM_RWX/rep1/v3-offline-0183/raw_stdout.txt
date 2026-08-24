@@ -1,0 +1,3 @@
+Both candidates verified and consistent.
+
+{"status":"ranked","ranked_chunk_ids":["c01314","c00106","c01347","c01351"],"final_reason":"약관 조문(c01314)과 보장한도표(c00106)가 모두 최초 진단확정일로부터 최대 10년간 연간 1회(최대 10회) 보장임을 확인함."}

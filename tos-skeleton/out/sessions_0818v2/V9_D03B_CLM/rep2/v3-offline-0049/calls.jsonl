@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "갱신형특약 비갱신형특약 차이 약관 반영", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갱신형.{0,10}비갱신형", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "갱신계약의 보험료, 계약자적립액", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "특약의 갱신 보험료 산출 기초율 갱신 시점 나이", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04495", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00909", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제2-8조.{0,20}특약의 갱신", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제2-8조\\(특약의 갱신\\)", "arm": "V9_D03B_CLM"}

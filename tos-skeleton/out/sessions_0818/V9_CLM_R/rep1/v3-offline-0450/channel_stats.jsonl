@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "1-5종단일금액보장수술특약 수술급여금 연간 몇회", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.145568, "dense/V9": 0.133821}, "sparse_share": 0.521, "dense_share": 0.479, "notes": []}

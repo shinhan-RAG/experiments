@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "6대질병장해특약 장해급여금 지급사유 장해지급률 50% 이상", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "6대질병장해특약 장해급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00545", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00546", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "6대질병.*허혈심장질환.*뇌출혈", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00404", "arm": "V9_CLM_R"}

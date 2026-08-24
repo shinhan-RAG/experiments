@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "항암약물치료특약 항암약물치료급여금 보험가입금액 %", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.10712, "dense/V9": 0.100417}, "sparse_share": 0.5161, "dense_share": 0.4839, "notes": []}

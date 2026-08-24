@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "CT나 MRI 없이 급성뇌경색증 진단 확정 인정", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "뇌경색증", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02492", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02493", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "급성뇌경색증 진단확정 CT MRI 없이 문서화된 기록", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "사망하여.*검사방법을 진단의 기초로 할 수 없는", "arm": "V9_CLM_R"}

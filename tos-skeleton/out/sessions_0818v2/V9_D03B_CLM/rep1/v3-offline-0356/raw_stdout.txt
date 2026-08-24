@@ -1,0 +1,3 @@
+c03116 confirms this belongs to (간편)1-5종수술특약 product and gives exact 5종 수술급여금 rates: 10% normally, 5% if 간편심사형 and cause (non-재해) occurs within 1 year. c03098 confirms product name and structure context.
+
+{"status":"ranked","ranked_chunk_ids":["c03116","c03098","c03130","c03149"],"final_reason":"c03116이 (간편)1-5종수술특약의 5종 수술급여금 지급률(1년 미만 5% vs 이후 10%)을 직접 명시하며 c03098/c03130은 조항 문맥을 보강함"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고액암 진단급여금 중복 지급 두 번 진단", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "고액암진단비 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00787", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00770", "arm": "V9_CLM_RW"}

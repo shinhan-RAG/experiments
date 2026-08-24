@@ -1,0 +1,3 @@
+Verified c00133 (구비서류 표: 진단서/입퇴원확인서/수술확인서/통원확인서 등) and c00132 (청구절차 및 서류 개요) directly answer the question about basic claim documents. c02685/c00999 provide the 사고증명서 정의 as supporting context.
+
+{"status":"ranked","ranked_chunk_ids":["c00133","c00132","c02685","c00999","c04620"],"final_reason":"c00133/c00132 directly list the basic 보험금 청구서류 표와 절차이며 사고증명서 정의 조항으로 보완했다."}

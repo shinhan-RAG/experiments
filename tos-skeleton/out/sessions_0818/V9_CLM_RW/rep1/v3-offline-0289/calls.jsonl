@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "소액암진단특약 양성뇌종양 보험금 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "소액암 진단비 특별약관 지급사유 암의 정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00673", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "양성뇌종양", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00629", "arm": "V9_CLM_RW"}

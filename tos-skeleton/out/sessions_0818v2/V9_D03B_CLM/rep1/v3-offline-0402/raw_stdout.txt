@@ -1,0 +1,3 @@
+Confirmed c02775 and c02774 both belong to this specific 특약's 지급기준표. c02774 is the [기본물리] row, c02775 has the [전문재활] row I need, and both are from the same table (부표2-1) of "(간편)급여주요뇌심장질환특정재활치료특약". This is sufficient confirmation.
+
+{"status":"ranked","ranked_chunk_ids":["c02775","c02774","c00083","c02759"],"final_reason":"c02775의 부표2-1 지급기준표가 [전문재활]급여주요뇌심장질환특정재활치료급여금의 지급률(1%, 간편심사형 1년 미만은 0.5%)을 직접 명시함"}

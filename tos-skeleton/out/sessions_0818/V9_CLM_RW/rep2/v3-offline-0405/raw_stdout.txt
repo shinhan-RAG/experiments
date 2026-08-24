@@ -1,0 +1,3 @@
+Verified: c02255 explicitly states 100% (1년 이후) vs 50% (1년 미만) for 뇌출혈 진단급여금, and c00082 confirms the same rate structure in the summary table for (간편)뇌출혈진단특약. c02239 confirms the 지급사유 clause referencing the 지급기준표.
+
+{"status":"ranked","ranked_chunk_ids":["c02255","c00082","c02239"],"final_reason":"c02255의 보험금 지급기준표가 1년 미만 50%·1년 이후 100% 지급률을 명시하고 c00082가 이를 요약표로 재확인함"}

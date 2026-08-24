@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "항암양성자방사선치료급여금 지급 대상 암 지급 횟수 한도", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "항암양성자방사선치료급여금 지급사유 지급금액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01276", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01260", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01477", "arm": "V9_CLM_RW"}

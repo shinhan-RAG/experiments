@@ -1,0 +1,44 @@
+{
+ "run": "night_c4_scope",
+ "n_q": 323,
+ "reps": 1,
+ "model": "Qwen/Qwen3-32B-FP8",
+ "protocol": "text",
+ "no_think": true,
+ "arm": {
+  "tags": "tags_u2_rules.jsonl",
+  "mode": "clm",
+  "lex": "count",
+  "w": {
+   "contract": 2
+  },
+  "router": "llm",
+  "qtags": "out/qtags_haiku.jsonl",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "V9",
+  "scope_boost": 3.0
+ },
+ "metrics": {
+  "R@1": 0.2717,
+  "R@5": 0.4819,
+  "R@10": 0.5103,
+  "R@20": 0.5103,
+  "S@5": 0.5139,
+  "suff@5": 0.452,
+  "suff@10": 0.483,
+  "RR@10": 0.3882
+ },
+ "core_R@5": 0.5949,
+ "noncore_R@5": 0.3099,
+ "no_submit": 4,
+ "errors": 3,
+ "prompt_tokens": 8787682,
+ "completion_tokens": 47315,
+ "rep_disagreement_R@5": 0.0,
+ "gold": "filesearch/out/gold_spans_lsh_train.jsonl (유효 323문항, jo/element 우주)",
+ "scoring": "filesearch/scoring.py — fractional recall + OR members, 주지표 suff@5/suff@10",
+ "date": "2026-08-20 (밤샘 런 2026-08-19 22:47 ~ 08-20 02:59)",
+ "source": "atdev-h200:noah/0819/out/agent/night_c4_scope",
+ "note": "tau=null 런. fallback 발동 0회, scope 사용 0회 (docs/0820 보고서 참조)"
+}

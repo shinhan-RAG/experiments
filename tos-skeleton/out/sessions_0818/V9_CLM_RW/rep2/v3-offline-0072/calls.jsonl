@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "뇌심혈관질환 주요치료비 청구 구비서류", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌졸중 급성심근경색증 진단비 보험금 청구서류", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02701", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관·허혈심장질환주요치료비특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02727", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02728", "arm": "V9_CLM_RW"}

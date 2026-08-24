@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "혈전용해치료특약 급성뇌경색증혈전용해치료급여금 지급 요건", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "급성뇌경색증 혈전용해치료 급여금 진단 확정 치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02513", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02495", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02496", "arm": "V9_CLM_RWX"}

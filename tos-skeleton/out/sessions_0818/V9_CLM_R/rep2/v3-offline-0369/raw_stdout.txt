@@ -1,0 +1,3 @@
+Both key clauses confirmed: c00628 (제2-2조 보험금의 지급사유 — 진단확정 시 지급, 각각 최초 1회에 한함) and c00641 (부표2-1 보험금 지급기준표 — 동일 내용, 지급금액 포함) are from the (간편)[기본]소액암진단특약(무배당, 해약환급금 미지급형) document and directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c00628","c00641","c00972","c00673"],"final_reason":"제2-2조 지급사유 조항과 부표2-1 지급기준표가 소액암 6종 진단확정 시 각각 최초 1회 한정 지급을 명시한다."}

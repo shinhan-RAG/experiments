@@ -1,0 +1,3 @@
+Verified. All three candidates confirm "뇌출혈" 진단확정 시 최초 1회에 한해 지급(반복지급 불가).
+
+{"status":"ranked","ranked_chunk_ids":["c02239","c02255","e01944","c02240"],"final_reason":"약관 제2-2조와 지급기준표에서 '뇌출혈'로 진단 확정 시 최초 1회에 한해 지급됨을 확인함"}

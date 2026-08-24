@@ -1,0 +1,3 @@
+Confirmed: c02759 gives the exact payment condition and "1일 1회한, 연간 30회에 한함" limit; c02774 (부표2-1) and c02753 (기본물리치료 정의/인정기준) corroborate.
+
+{"status":"ranked","ranked_chunk_ids":["c02759","c02774","c02753","c02754","c02743"],"final_reason":"c02759가 급여주요뇌심장질환특정재활치료(기본물리치료) 지급사유와 1일 1회·연간 30회 한도를 직접 명시하며 c02774·c02753이 이를 뒷받침한다."}

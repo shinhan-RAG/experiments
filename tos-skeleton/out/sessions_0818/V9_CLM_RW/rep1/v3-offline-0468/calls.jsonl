@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정NGS 유전자패널 검사 지원급여금 지급대상 지급사유 연간 지급횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "NGS 유전자패널검사 지원급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01849", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01835", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "연간.{0,10}회|연 1회|1년에 1회", "arm": "V9_CLM_RW"}

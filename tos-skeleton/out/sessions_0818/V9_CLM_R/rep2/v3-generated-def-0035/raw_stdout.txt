@@ -1,0 +1,3 @@
+Both candidates confirmed the exact definition clause (제2-1조의2). This satisfies the requirement to verify before ranking.
+
+{"status":"ranked","ranked_chunk_ids":["e04231__r001","c04628","c04629","c04624","e04222"],"final_reason":"제2-1조의2 조항이 \"중증치매상태\"를 재해/질병으로 인한 중증의 인지기능장애가 90일 이상 지속되어 호전 불가로 최종 진단확정된 상태로 정의함을 직접 확인함."}

@@ -1,0 +1,3 @@
+All candidates verified — they directly address renewal-type (갱신형) special contract provisions: automatic renewal mechanics, premium/reserve recalculation at renewal age-based rates, non-renewal conditions, notice obligations, and the explicit table of contracts whose premiums may increase upon renewal (distinguishing them from non-renewal/비갱신형 특약).
+
+{"status":"ranked","ranked_chunk_ids":["e01076","c04433","e00022__r002","c01779","c03867","c04373","c02748","e00143","e00326","c05021"],"final_reason":"이 조항들은 갱신형 특약의 자동갱신 절차, 갱신 시 나이·기초율 재적용에 따른 보험료 변동, 갱신 불가 사유, 갱신 대상 특약 목록을 명시해 비갱신형과의 차이를 근거로 제시한다."}

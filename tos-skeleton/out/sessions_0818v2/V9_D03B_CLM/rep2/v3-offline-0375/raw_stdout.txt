@@ -1,0 +1,3 @@
+This confirms the exact answer: c00706 shows the [기본] tiered payout rates (50%/75%/100% by 2yr/4yr thresholds), matching page 416 context. c00073 preview also corroborates (2년/4년 감액 언급), and c01030/c01029 show the 도해 diagram for the same structure.
+
+{"status":"ranked","ranked_chunk_ids":["c00706","c00073","c01030","c01029","c00736","c01080","c00691"],"final_reason":"c00706의 보험금 지급기준표가 [기본] 여성유방암진단급여금의 2년/4년 경과기간별 50%·75%·100% 지급률을 명시한다."}

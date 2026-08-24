@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "청약 승낙 전 보장 책임개시", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "제1회 보험료 납입 책임개시일", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00182", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00183", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00164", "arm": "V9_CLM_RW"}

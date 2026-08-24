@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "통합건강보험 납입면제 가입 조건", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "납입면제 특약 미가입시 보험료 면제 안됨", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00067", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04747", "arm": "V9_CLM_RWX"}

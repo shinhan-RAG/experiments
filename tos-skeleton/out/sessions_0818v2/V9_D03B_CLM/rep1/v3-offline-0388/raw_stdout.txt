@@ -1,0 +1,3 @@
+Tool budget is exhausted, so I'll rank based on the evidence already gathered from hybrid/grep previews.
+
+{"status":"ranked","ranked_chunk_ids":["c04188","c04230","c04206","c04272","c04296","c04297","c04229","c00112","c04271","c00070"],"final_reason":"약관 조항들이 (간편)간병인사용입원특약의 요양병원 제외 급여금 지급사유와 계약일부터 1년 미만 시 50%(1.5%→0.75%) 지급 후 1년 경과 시 전액 지급되는 구조를 보여줌"}

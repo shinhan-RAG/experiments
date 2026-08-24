@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "수술 시 수술비 지급 면책 부담보", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "수술의 정의 보험금을 지급하지 않는 수술", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03774", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03605", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05684", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "수술.*지급하지 않는 수술", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03633", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+This confirms: c03025 (통풍의 정의 및 진단확정 요건 — 의사에 의한 임상적 기준·검사소견 기초) and c03026 (지급사유: 통풍 진단확정 시 통풍진단급여금 지급, 최초 1회 한함) directly answer whether diagnosis alone suffices.
+
+{"status":"ranked","ranked_chunk_ids":["c03025","c03026","c03042","c05475"],"final_reason":"통풍 정의·진단확정 요건과 진단확정만으로 지급되는 지급사유 조항을 확인함"}

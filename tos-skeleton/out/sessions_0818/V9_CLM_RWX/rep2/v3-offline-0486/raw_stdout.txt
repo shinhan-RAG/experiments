@@ -1,0 +1,3 @@
+Confirmed uniquely in c00145, with c00144 as the surrounding rule statement.
+
+{"status":"ranked","ranked_chunk_ids":["c00145","c00144"],"final_reason":"c00145의 사례예시가 질문 상황(구기준 거절→신기준 보장)을 그대로 다루며 재판단하지 않는다고 명시하고, c00144는 그 근거 조항(진단 당시 기준 적용, 재판단 안함)을 제공한다."}

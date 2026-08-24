@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "1급장해 사망보장 특약 소멸", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "장해분류표 1급 사망간주 주계약 소멸 특약 보장", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "80% 이상.*사망", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00449", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00326", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "사망한 것으로 (보아|보고|간주)", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "장해지급률이 80% 이상", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c05208", "arm": "V9_CLM_R"}

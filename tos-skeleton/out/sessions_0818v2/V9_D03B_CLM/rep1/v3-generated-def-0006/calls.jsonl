@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급여암특정재활치료(기본물리치료) 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급여암특정재활치료\\(기본물리치료\\)", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01704", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01703", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여암특정재활치료 기본물리치료 정의", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "간편급여암특정재활치료특약", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01704", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01705", "arm": "V9_D03B_CLM"}

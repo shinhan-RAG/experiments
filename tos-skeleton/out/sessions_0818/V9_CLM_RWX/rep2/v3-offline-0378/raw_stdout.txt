@@ -1,0 +1,3 @@
+All three candidates verified and consistent: the [기본] version is subject to a 4-year graded reduction schedule referenced in 부표2-1.
+
+{"status":"ranked","ranked_chunk_ids":["c01042","c01029","c00073","c00706","c01030"],"final_reason":"c01042(부표2-1 지급기준표)이 2년미만 50%, 2년~4년미만 75%, 4년이상/갱신 100%의 정확한 구간별 지급률을 명시하고, c01029(본문 조항)와 c00073(요약표)이 동일 내용을 확인함."}

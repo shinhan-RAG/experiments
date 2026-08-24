@@ -1,0 +1,3 @@
+Verified: c01372 and c01412 both confirm that 항암방사선치료 급여금 (radiation therapy benefit) is paid only for the first occurrence ("최초 1회에 한함"), even though the treatment itself may be received multiple times.
+
+{"status":"ranked","ranked_chunk_ids":["c01372","c01412","e01190","c01477"],"final_reason":"항암방사선치료 관련 조항은 여러 번 치료받아도 보험금은 최초 1회에 한해 지급된다고 명시함"}

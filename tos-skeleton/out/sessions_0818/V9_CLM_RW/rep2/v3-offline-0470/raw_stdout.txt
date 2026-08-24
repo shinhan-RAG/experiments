@@ -1,0 +1,3 @@
+c02789 directly contains the question phrasing — good confirming match too. All three candidates verified.
+
+{"status":"ranked","ranked_chunk_ids":["c00105","c02803","c02789"],"final_reason":"보험금 지급기준표와 세부 지급사유 조항 모두 급여뇌심장질환 검사급여금이 연간 1회 한도임을 확인함"}

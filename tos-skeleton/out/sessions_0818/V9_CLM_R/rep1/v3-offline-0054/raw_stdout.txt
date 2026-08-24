@@ -1,0 +1,3 @@
+Confirmed both plan variants (해약환급금 미지급형: c02823/e02533/e02553; 갱신형: c02851) contain the identical 무효 특칙 clause.
+
+{"status":"ranked","ranked_chunk_ids":["c02823","e02533","e02553","c02851"],"final_reason":"제2-9조의2 특약의 무효 특칙 조항이 고혈압보장개시일 전일 이전 고혈압(원발성) 진단확정 시 무효 처리됨을 명시적으로 규정함"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 보험기간 납입기간 20년납 보장기간", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "신한통합건강보장보험", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험기간.*100세|100세만기|보험기간은.*까지", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "주계약 보험기간 납입기간 20년납 100세만기", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "신한통합건강보장보험 20년납 보험기간 보장기간", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "100세만기", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00057", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험기간.*100세", "arm": "V9_D03B_CLM"}

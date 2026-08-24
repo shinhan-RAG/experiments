@@ -1,0 +1,3 @@
+Both c01446 (지급사유 조항, 최초 1회에 한함) and c01477 (보험금 지급기준표, 대상 암 5종 + 최초 1회 한도) confirm the answer. Sufficient evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c01446","c01477","c01439","c01443"],"final_reason":"c01446·c01477이 지급대상 암(암/기타피부암/갑상선암/대장점막내암/비침습방광암)과 지급횟수(최초 1회 한함)를 명시적으로 규정함"}

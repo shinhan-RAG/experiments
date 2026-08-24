@@ -1,0 +1,3 @@
+Found the exact article: 제2-1조의4 "급여수술"의 정의와 장소 in c03400/c03401, which is within the (간편)[기본]신수술특약(무배당, 갱신형) document (confirmed via TOC in c03393 and preceding chunks c03398-c03399).
+
+{"status":"ranked","ranked_chunk_ids":["c03400","c03401","c03393","c03399","c03427"],"final_reason":"c03400-c03401은 (간편)[기본]신수술특약 제2-1조의4 \"급여수술\"의 정의와 장소 조항 원문을 담고 있어 질문에 직접 답한다."}

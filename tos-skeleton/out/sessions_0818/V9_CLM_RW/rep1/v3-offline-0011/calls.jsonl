@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "1-5종 수술특약 보험금을 지급하지 않는 사유", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "수술특약 면책사유 보장하지 않는 손해", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "1-5종단일금액보장수술특약.*보험금을 지급하지 않는 사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03170", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "1-5종 수술특약 보험금을 지급하지 않는 사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02883", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03156", "arm": "V9_CLM_RW"}

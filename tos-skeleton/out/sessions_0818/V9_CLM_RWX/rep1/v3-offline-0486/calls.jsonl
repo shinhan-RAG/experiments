@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "질병 분류 코드 기준 변경 보험금 재심사 소급 적용", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "한국표준질병사인분류 개정 진단기준 변경 기존 확정된 보험금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00144", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00145", "arm": "V9_CLM_RWX"}

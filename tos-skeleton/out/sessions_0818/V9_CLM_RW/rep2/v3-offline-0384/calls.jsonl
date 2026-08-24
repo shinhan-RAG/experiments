@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "삭감없음용 일반암진단특약 암진단급여금 반복 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "삭감없음용.*일반암진단특약.*제2-2조|암진단급여금.*최초 1회", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00598", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00935", "arm": "V9_CLM_RW"}

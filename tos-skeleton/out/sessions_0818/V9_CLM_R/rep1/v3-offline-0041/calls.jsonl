@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "갑상선암 진단금 수령 후 남은 진단금 보장", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "갑상선암.*진단.*잔액|잔여.*진단.*보험금|남은 진단", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "차액.*갑상선암|갑상선암.*차액", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "갑상선암 진단급여금 잔여 보장", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "이미 지급.*보험금.*차감", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "갑상선암 진단급여금 지급 후 계약 소멸 여부 재진단", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01324", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01354", "arm": "V9_CLM_R"}

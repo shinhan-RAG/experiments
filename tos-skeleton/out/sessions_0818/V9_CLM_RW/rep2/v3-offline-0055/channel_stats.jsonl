@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "고혈압(원발성)약물치료특약 소멸 사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.139075, "dense/V9": 0.145679}, "sparse_share": 0.4884, "dense_share": 0.5116, "notes": []}
+{"arm": "V9_CLM_RW", "query": "고혈압약물치료특약 보장종료 소멸", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.109514, "dense/V9": 0.093773}, "sparse_share": 0.5387, "dense_share": 0.4613, "notes": []}

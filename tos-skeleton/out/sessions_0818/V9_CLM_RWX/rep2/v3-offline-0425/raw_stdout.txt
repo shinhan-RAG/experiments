@@ -1,0 +1,3 @@
+Verified: c01347 explicitly states "최대 10년간, 연간 1회에 한하여 지급함(최대 10회지급)" — max 10 years, once per year, max 10 times total. c00106 corroborates, c01328 confirms the 10-year payment period definition.
+
+{"status":"ranked","ranked_chunk_ids":["c01347","c00106","c01328","c01329","c01315"],"final_reason":"c01347의 지급기준표에 최대 10년간 연간 1회, 최대 10회 지급이 명시되어 있고 c00106·c01328이 이를 뒷받침함"}

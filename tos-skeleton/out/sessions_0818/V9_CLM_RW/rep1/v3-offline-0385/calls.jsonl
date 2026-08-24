@@ -1,0 +1,4 @@
+{"tool": "slot", "arg": "일반암진단특약 지급금액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00473__r001", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00803__r001", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "삭감없음용.*암진단.*보험가입금액의", "arm": "V9_CLM_RW"}

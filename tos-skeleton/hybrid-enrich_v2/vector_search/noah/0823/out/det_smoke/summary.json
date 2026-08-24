@@ -1,0 +1,26 @@
+{
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_train_full.jsonl",
+  "n": 10,
+  "selection_metric": "jo fractional R@5",
+  "full_train_screen": false,
+  "tie_break": [
+    "suff@10",
+    "R@10",
+    "equal-weight simplicity"
+  ],
+  "selected_arm": "baseline",
+  "arms": {
+    "baseline": {
+      "R@1": 0.05,
+      "R@5": 0.157143,
+      "R@10": 0.157143,
+      "R@20": 0.457143,
+      "R@40": 0.712619,
+      "suff@5": 0.1,
+      "suff@10": 0.1,
+      "RR@10": 0.17
+    }
+  },
+  "union": {},
+  "oracle_path": null
+}

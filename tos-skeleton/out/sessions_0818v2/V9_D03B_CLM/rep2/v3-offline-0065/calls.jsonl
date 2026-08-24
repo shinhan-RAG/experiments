@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "납입면제 특약 가입해도 납입면제 되지 않는 특약", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "납입면제.{0,20}제외", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04747", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04962", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04896", "arm": "V9_D03B_CLM"}

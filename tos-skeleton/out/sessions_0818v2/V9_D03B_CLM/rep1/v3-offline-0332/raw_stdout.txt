@@ -1,0 +1,3 @@
+I have enough verified evidence. The core clause is c05333, which explicitly states that if disability worsens during the period after a temporary disability (한시장해) rating was determined, the payout is recalculated based on the worsened state. This directly answers the question about disability progression/worsening after a temporary disability determination.
+
+{"status":"ranked","ranked_chunk_ids":["c05333","c00485","c00307","c00412","c00436","c04901","c00308","c05334"],"final_reason":"c05333 조항 5)가 한시장해 판정 후 보장기간 내 장해상태가 악화된 경우 그 악화된 장해상태를 기준으로 장해지급률을 재결정한다고 명시하며, 나머지는 한시장해 정의 및 장해지급률 합산규정을 뒷받침한다."}

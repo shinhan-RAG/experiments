@@ -1,0 +1,3 @@
+This confirms c04209 and c04163 as the correct, verified clauses.
+
+{"status":"ranked","ranked_chunk_ids":["c04209","c04163","c04297","c02525","c04295"],"final_reason":"약관상 동일 질병 재입원은 1회 입원으로 합산되어 사용일수(180일 등)를 공유하며, 최종 사용일로부터 180일 경과 후에만 새 입원으로 간주되므로 매번 185일씩 별도 보장되지 않음을 c04209·c04163이 직접 확인함."}

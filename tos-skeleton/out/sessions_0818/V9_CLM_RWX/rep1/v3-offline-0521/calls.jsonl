@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "제자리암 진단 확정 검사 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "제자리암 진단확정 병리학적 조직검사", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01493", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00956", "arm": "V9_CLM_RWX"}

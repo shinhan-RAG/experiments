@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "주계약 보험료 납입면제 암 진단 질병", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.138101, "dense/V9": 0.132891}, "sparse_share": 0.5096, "dense_share": 0.4904, "notes": []}
+{"arm": "V9_CLM_RW", "query": "주계약 보험료납입면제 특약 가입 여부", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 5}, "rrf_mass": {"bm25/V9": 0.091453, "dense/V9": 0.074773}, "sparse_share": 0.5502, "dense_share": 0.4498, "notes": []}

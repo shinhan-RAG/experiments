@@ -1,0 +1,3 @@
+No exact "1회 발작만으로" phrase found; the diagnosis rider (c02103, c02105) confirms payment is based on medical diagnosis confirmation of G40/G41 via EEG/MRI/PET/SPECT (or documented evidence if death), not explicitly requiring a minimum seizure count — while the 장해분류표 definition (c05410/c05411) separately defines 뇌전증(간질) as "발작을 반복하는 것" for disability-grading purposes, implying a single isolated seizure alone would not typically meet the diagnostic definition.
+
+{"status":"ranked","ranked_chunk_ids":["c02103","c02105","c05411","c05410","c05505","c02106"],"final_reason":"진단확정 요건(c02103/c02105)과 뇌전증은 발작을 반복하는 질환이라는 정의(c05410/c05411)가 단순 1회 발작만으로는 지급되지 않음을 뒷받침한다."}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 반복 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "방사선치료비 특약 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01412", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "항암방사선치료 최초 1회 지급", "arm": "V9_CLM_RW"}

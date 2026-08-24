@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암 진단 특약 갱신불가", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "갱신형 특약 갱신 거절 암 진단", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01219", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보장계약을 갱신할 수 없습니다", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01295", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04526", "arm": "V9_D03B_CLM"}

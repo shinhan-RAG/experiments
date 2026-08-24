@@ -1,0 +1,3 @@
+Both candidates confirmed: c02451 explains the diagnosis definition/method, and c02473 confirms 최초 1회 한함 (no repeated payment).
+
+{"status":"ranked","ranked_chunk_ids":["c02473","c02451","c02466","e02178","e02202"],"final_reason":"제2-2조·제2-1조의2 조항에서 특정부정맥 진단확정 요건과 최초 1회 한정 지급을 직접 확인함"}

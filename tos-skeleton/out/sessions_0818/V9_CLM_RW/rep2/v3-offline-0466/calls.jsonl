@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "급여 유방 바늘생검 조직병리진단급여금 지급 요건 연간 지급 횟수", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "바늘생검", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01866", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01865", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_RW"}

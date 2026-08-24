@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "암 직접치료 입원치료비 연간 1회 기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136987, "dense/V9": 0.125678}, "sparse_share": 0.5215, "dense_share": 0.4785, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "암주요치료비 연간1회 지급 기준일", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.102855, "dense/V9": 0.094626}, "sparse_share": 0.5208, "dense_share": 0.4792, "notes": []}

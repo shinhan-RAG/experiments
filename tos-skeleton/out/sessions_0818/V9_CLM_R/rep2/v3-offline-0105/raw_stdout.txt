@@ -1,0 +1,3 @@
+Confirmed: c01372 and c01412 both directly answer that 항암방사선치료급여금 is paid only for the first treatment (최초 1회에 한함) per cancer type — so repeated radiation treatments don't yield repeated payouts. c01374, c00098 corroborate this "최초 1회" rule.
+
+{"status":"ranked","ranked_chunk_ids":["c01372","c01412","c01374","c00098","c01426","c01477","c01329"],"final_reason":"항암방사선치료급여금은 암 종류별로 '최초 1회에 한함'으로 지급되어, 여러 번 치료받아도 반복 지급되지 않음을 명시한 조항들을 확인함"}

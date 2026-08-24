@@ -1,0 +1,3 @@
+Verified: c04468 contains the direct definition text of 제2-1조의5, c04456 confirms the article location in the table of contents, and c04467 provides the closely related preceding definition (제2-1조의4).
+
+{"status":"ranked","ranked_chunk_ids":["c04468","c04456","c04467","c04471"],"final_reason":"c04468 contains the exact 제2-1조의5 definition text of 중증질환자[암] 산정특례 신규암 등록, verified by read; c04456 confirms via 목차, c04467/c04471 give related context."}

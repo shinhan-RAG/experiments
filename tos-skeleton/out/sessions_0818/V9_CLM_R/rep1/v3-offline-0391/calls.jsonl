@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "(간편)급성심근경색증진단특약 재진단 급여금 지급", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "최초 1회의 진단확정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00100", "arm": "V9_CLM_R"}

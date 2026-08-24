@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "허혈심장질환 입원급여금 가입 1년 미만 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편 뇌혈관질환 허혈심장질환 입원특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02542", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02541", "arm": "V9_CLM_RWX"}

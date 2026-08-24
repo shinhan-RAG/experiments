@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편암수술특약 암수술급여금 지급률 1년 이내 이후", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "암수술급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01161", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01147", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01163", "arm": "V9_CLM_RWX"}

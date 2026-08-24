@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "6대질병장해특약 장해급여금 지급률 50% 이상", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "50%이상장해형 6대질병 장해급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00546", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00525", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "(간편)1-5종수술특약 5종 수술급여금 지급률 1년 이내", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "5종 수술급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03116", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00085", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "5종 수술급여금 지급금액 1년 미만 재해 이외", "arm": "V9_CLM_R"}

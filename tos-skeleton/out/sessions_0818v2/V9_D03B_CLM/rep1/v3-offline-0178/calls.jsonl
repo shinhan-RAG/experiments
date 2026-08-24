@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "연간 1회", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01327", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01329", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암 주요치료비 연간 1회 지급 기준", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "연간 1회", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01327", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01329", "arm": "V9_D03B_CLM"}

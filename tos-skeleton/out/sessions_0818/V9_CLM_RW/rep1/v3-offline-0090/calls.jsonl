@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대상포진 진단금", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "대상포진 진단비 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03068", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02684", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03041", "arm": "V9_CLM_RW"}

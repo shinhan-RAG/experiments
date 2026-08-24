@@ -1,0 +1,3 @@
+Confirmed via slot search as well — e02683/e02713 both contain the identical clause. Enough evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c03054","e02683","c03023","c03026"],"final_reason":"약관상 대상포진 보장계약과 통풍 보장계약은 계약자가 동시에 체결해야 하며 각 가입금액도 동일해야 하므로 하나만 선택 가입할 수 없다."}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증치매보장특약 중증치매상태 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "중증치매상태 정의 특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04628", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e04231__r001", "arm": "V9_CLM_RW"}

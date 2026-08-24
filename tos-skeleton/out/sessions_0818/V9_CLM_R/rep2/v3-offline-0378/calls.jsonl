@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "남녀특정암진단특약 전립선암진단급여금 지급률 가입경과기간", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "전립선암진단급여금 지급률", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00073", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01042", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00706", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "전립선암.{0,5}50%", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00459", "arm": "V9_CLM_R"}

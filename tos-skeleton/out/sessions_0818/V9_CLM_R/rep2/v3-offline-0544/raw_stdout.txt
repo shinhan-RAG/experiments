@@ -1,0 +1,3 @@
+Confirmed: c01559 gives the exact 지급사유 (암/기타피부암/갑상선암/대장점막내암/비침습방광암의 직접적인 치료 목적으로 표적항암약물허가치료를 받았을 때, 최초 1회에 한함), corroborated by c00099's summary table.
+
+{"status":"ranked","ranked_chunk_ids":["c01559","c00099","c01536","c01561"],"final_reason":"c01559의 보험금 지급기준표가 지급사유(암 등 5대 암종의 직접치료 목적 표적항암약물허가치료)와 최초 1회 한도를 명시하고 c00099가 이를 재확인함."}

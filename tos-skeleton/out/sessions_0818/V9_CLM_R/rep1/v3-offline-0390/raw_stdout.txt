@@ -1,0 +1,3 @@
+c02369 and e02084 both confirm the exact clause: 100% after 1 year, 50% if within 1 year of contract date. c02352 provides the payment-cause clause context.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","e02084","c02352","e02071"],"final_reason":"c02369(및 동일 원문의 e02084)가 급성심근경색증진단급여금 지급기준표에서 1년 미만 발생 시 가입금액의 50%, 그 외(1년 이후)는 100% 지급으로 명시함."}

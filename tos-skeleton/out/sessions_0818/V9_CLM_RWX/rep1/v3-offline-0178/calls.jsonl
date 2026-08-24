@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 치료비 연간 1회 지급 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험계약일로부터 1년 단위 연간 정의", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01327", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01329", "arm": "V9_CLM_RWX"}

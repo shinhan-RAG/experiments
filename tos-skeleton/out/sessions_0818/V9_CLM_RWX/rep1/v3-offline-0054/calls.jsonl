@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고혈압(원발성)약물치료특약 무효", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "고혈압.{0,5}원발성.{0,5}약물치료", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02823", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02851", "arm": "V9_CLM_RWX"}

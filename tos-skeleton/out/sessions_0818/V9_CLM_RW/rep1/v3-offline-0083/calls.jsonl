@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌혈관질환 진단확정 기준", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "외상성 두개내 출혈 뇌혈관질환 해당 여부", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04814", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05438", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "외상성 두개내 출혈로 분류되는 경우에는 보장하지 않습니다", "arm": "V9_CLM_RW"}

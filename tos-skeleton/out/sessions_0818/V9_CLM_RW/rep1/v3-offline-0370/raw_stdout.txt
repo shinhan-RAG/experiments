@@ -1,0 +1,3 @@
+All three candidates verified and consistent: within 1 year of contract, 50% of the 특약보험가입금액 is paid; after 1 year, 100% is paid.
+
+{"status":"ranked","ranked_chunk_ids":["c00641","c00629","c00076","c00972","c00673"],"final_reason":"지급기준표(c00641)가 계약일부터 1년 미만 발생시 50%, 이후 100% 지급을 명시하고, 삭감지급 도해(c00629)와 요약표(c00076)로 교차 검증함"}

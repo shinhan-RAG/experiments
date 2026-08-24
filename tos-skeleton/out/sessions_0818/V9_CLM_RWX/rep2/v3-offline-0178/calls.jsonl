@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 직접치료 입원치료비 연간 1회 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암주요치료비 연간1회 지급 기준일", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01327", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01347", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+c01477 matches e01276 content (same chunk, different granularity), confirming consistency.
+
+{"status":"ranked","ranked_chunk_ids":["e01276","c01477","e01260","c01446"],"final_reason":"부표2-1과 제2-2조가 대상 암(암·기타피부암·갑상선암·대장점막내암·비침습방광암)과 지급횟수(최초 1회 한)를 명시적으로 확인함"}

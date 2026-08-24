@@ -1,0 +1,3 @@
+Tool budget exhausted; finalizing based on verified hybrid-search evidence (previews confirm the "제2-9조 특약의 소멸" clause text explaining that riders lapse when the main contract terminates via death-benefit payment, subject to exceptions, plus the 장해지급률 50%+ 보험료납입면제 clause).
+
+{"status":"ranked","ranked_chunk_ids":["c04897","c02205","c00421","c03162","c04664","c04013","c02506","c02089"],"final_reason":"제2-9조 특약의 소멸 조항과 장해지급률 50%↑ 보험료납입면제/주계약 소멸 조항이 1급장해로 주계약 사망보장이 지급될 때 특약이 원칙적으로 소멸하되 예외가 있음을 직접 규정함"}

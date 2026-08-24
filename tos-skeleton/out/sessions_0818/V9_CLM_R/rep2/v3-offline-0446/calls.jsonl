@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "(간편)항암양성자방사선치료특약 항암양성자 방사선 치료급여금 지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "항암양성자", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01477", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01478", "arm": "V9_CLM_R"}

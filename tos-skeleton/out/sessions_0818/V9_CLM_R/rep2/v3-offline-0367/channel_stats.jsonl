@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "고액암 진단급여금 지급률 가입 1년 이내", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.135005, "dense/V9": 0.139734}, "sparse_share": 0.4914, "dense_share": 0.5086, "notes": []}
+{"arm": "V9_CLM_R", "query": "(간편)[기본]고액암진단특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.131902, "dense/V9": 0.144096}, "sparse_share": 0.4779, "dense_share": 0.5221, "notes": []}

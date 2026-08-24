@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "1-5종단일금액보장수술특약 수술급여금 연간 수술회수", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "단일금액보장수술특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03190", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03156", "arm": "V9_CLM_RW"}

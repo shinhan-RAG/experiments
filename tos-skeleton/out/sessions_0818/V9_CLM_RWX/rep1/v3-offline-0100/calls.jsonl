@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "면역항암치료 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "면역항암약물허가치료비", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "면역항암", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "면역항암약물허가치료비 특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01496", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00014", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01237", "arm": "V9_CLM_RWX"}

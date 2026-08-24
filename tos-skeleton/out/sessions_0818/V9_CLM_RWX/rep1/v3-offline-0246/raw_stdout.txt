@@ -1,0 +1,3 @@
+All three candidates verified relevant: c01178 directly explains that metastatic cancer (전이암) is covered based on the primary cancer site classification, c00962 covers exclusion rules for recurrence/metastasis of minor cancers already paid, and c04045 covers exclusion for cancer diagnosed before coverage start that later metastasizes.
+
+{"status":"ranked","ranked_chunk_ids":["c01178","c00962","c04045","c01801","c04106"],"final_reason":"c01178은 전이암이 원발부위 기준으로 진단확정되어 보장됨을 명시하고, c00962/c04045/c01801/c04106은 재발·전이 관련 보장 및 면책 조건을 다룬다."}

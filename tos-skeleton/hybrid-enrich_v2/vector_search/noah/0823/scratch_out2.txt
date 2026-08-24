@@ -1,0 +1,92 @@
+[
+ {
+  "element_id": "e01348",
+  "element_type": "heading",
+  "text": "제2-12조 주계약 약관 규정의 준용",
+  "char_start": 155542,
+  "char_end": 155562,
+  "line_start": 5381,
+  "line_end": 5381,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01349",
+  "element_type": "paragraph",
+  "text": "[부표2-1] 보험금 지급기준표",
+  "char_start": 155564,
+  "char_end": 155581,
+  "line_start": 5383,
+  "line_end": 5383,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01350",
+  "element_type": "paragraph",
+  "text": "[부표2-2] 장해분류표",
+  "char_start": 155607,
+  "char_end": 155620,
+  "line_start": 5391,
+  "line_end": 5391,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01351",
+  "element_type": "paragraph",
+  "text": "(간편)[3~100%장해형]재해장해특약\n(무배당, 해약환급금 미지급형)",
+  "char_start": 155866,
+  "char_end": 155905,
+  "line_start": 5407,
+  "line_end": 5408,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01352",
+  "element_type": "paragraph",
+  "text": "※ 이 특약은 계약자의 선택에 의해 해당 보험료를 납입함으로써 보장이 가능합니다.",
+  "char_start": 155907,
+  "char_end": 155952,
+  "line_start": 5410,
+  "line_end": 5410,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01353",
+  "element_type": "paragraph",
+  "text": "※ 계약자가 가입한 보험종목에 따라 특약 명칭은 다음과 같이 변경됩니다.",
+  "char_start": 155954,
+  "char_end": 155994,
+  "line_start": 5412,
+  "line_end": 5412,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01354",
+  "element_type": "paragraph",
+  "text": "- 일반심사형의 경우: “(간편)” 부분이 없습니다.",
+  "char_start": 155996,
+  "char_end": 156025,
+  "line_start": 5414,
+  "line_end": 5414,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01355",
+  "element_type": "paragraph",
+  "text": "- 일반형의 경우: “(무배당, 해약환급금 미지급형)” 부분이 “(무배당)”으로 변경됩니다.",
+  "char_start": 156027,
+  "char_end": 156078,
+  "line_start": 5416,
+  "line_end": 5416,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ },
+ {
+  "element_id": "e01356",
+  "element_type": "paragraph",
+  "text": "※ “간편심사형”과 “일반심사형” 모두 이 약관을 적용합니다.",
+  "char_start": 156080,
+  "char_end": 156114,
+  "line_start": 5418,
+  "line_end": 5418,
+  "contract_scope": "(간편)[3~100%장해형]재해장해특약(무배당, 해약환급금 미지급형)"
+ }
+]

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "한시적 장해진단 후 다른 부위 장해 악화", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "한시적", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05333", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "장해가 더 악화", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "다른 신체부위에 장해가 발생", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "한시장해 지급받고 있는 중 다른 신체부위 장해 발생", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "한시장해.*다른", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00307", "arm": "V9_D03B_CLM"}

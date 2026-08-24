@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "청약 후 승낙 전 보장 개시 책임개시일", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 5}, "rrf_mass": {"bm25/V9": 0.093898, "dense/V9": 0.07433}, "sparse_share": 0.5582, "dense_share": 0.4418, "notes": []}

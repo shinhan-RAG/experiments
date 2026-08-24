@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "암진단금 몇 번 받을 수 있나요 지급 횟수", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.095512, "dense/V9": 0.142809}, "sparse_share": 0.4008, "dense_share": 0.5992, "notes": []}

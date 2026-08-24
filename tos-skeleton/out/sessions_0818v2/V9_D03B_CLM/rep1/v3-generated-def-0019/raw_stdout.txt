@@ -1,0 +1,3 @@
+Confirmed: c03073 contains the core definition (제2-1조의2 "특정 류마티스 관절염"의 정의 및 진단확정, ①항 정의), c03074 continues with ②③항 (DMARDs 치료 요건 및 진단확정 요건), and c05471/c05472 contain the referenced 분류표(표39).
+
+{"status":"ranked","ranked_chunk_ids":["c03073","c03074","c05471","c03075","c05472","c03089"],"final_reason":"제2-1조의2가 '특정 류마티스 관절염'을 제8차 개정 한국표준질병·사인분류상 분류표 해당 질병 및 DMARDs 치료 이력으로 정의하며, 관련 분류표·진단확정·급여금 조항으로 보강 확인함."}

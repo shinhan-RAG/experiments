@@ -1,0 +1,5 @@
+{"tool": "slot", "arg": "대상포진 진단비 특약", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e02684", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "대상포진.*진단.*보험금|대상포진 진단비", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03068", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03054", "arm": "V9_CLM_R"}

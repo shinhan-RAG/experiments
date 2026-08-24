@@ -1,0 +1,3 @@
+Tool budget exhausted — finalizing based on verified results already gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c01250","c00886","c01349","c04962","c00067","c01520","c01213","c01536"],"final_reason":"표적항암약물허가치료특약은 별도 납입면제 조항 대신 주계약/보험료납입면제특약의 납입면제사유(50%장해·일반암·남녀특정암 진단 등)를 준용하는 구조가 검색된 청크들에서 일관되게 확인됨."}

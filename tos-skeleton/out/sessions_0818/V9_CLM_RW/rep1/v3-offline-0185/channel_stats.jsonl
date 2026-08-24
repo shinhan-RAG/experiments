@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "암 진단금 지급 횟수 몇 번 받을 수 있나", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.1403, "dense/V9": 0.134627}, "sparse_share": 0.5103, "dense_share": 0.4897, "notes": []}
+{"arm": "V9_CLM_RW", "query": "암진단급여금 지급사유 최초 1회한", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.131763, "dense/V9": 0.127516}, "sparse_share": 0.5082, "dense_share": 0.4918, "notes": []}

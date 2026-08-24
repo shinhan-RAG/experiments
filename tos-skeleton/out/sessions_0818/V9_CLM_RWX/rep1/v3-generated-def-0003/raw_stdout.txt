@@ -1,0 +1,3 @@
+c01585 confirms 제2-1조의8 definition text directly; c01564 confirms it's the correct 목차 (table of contents) for context but lacks actual definition. c01582 (제2-1조의7 정의) provides related term context, and c01586 shows how the term is used in 지급사유. These are verified as directly relevant.
+
+{"status":"ranked","ranked_chunk_ids":["c01585","c01586","c01582","c01564"],"final_reason":"c01585는 제2-1조의8의 '카티(CAR-T)항암약물허가치료 적응증' 정의 원문을 직접 담고 있어 read로 확인함"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "소액암진단특약 제자리암진단비 경계성종양진단비 청구 구비서류", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제자리암진단비", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제자리암", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "사고증명서", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "소액암진단특약 사고증명서 진단서 구비서류", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00964", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00632", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제1-5조.*보험금 등의 청구", "arm": "V9_CLM_RWX"}

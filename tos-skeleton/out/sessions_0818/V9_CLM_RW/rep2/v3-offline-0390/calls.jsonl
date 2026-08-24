@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급성심근경색증진단특약 급성심근경색증진단급여금 가입 1년 이내 지급률", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "급성심근경색증진단급여금 지급률 1년 미만", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02084", "arm": "V9_CLM_RW"}

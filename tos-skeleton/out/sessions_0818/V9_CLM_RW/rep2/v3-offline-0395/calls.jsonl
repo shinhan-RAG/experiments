@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "급여바늘생검조직병리진단특약 유방 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "유방 바늘생검 조직병리진단급여금 지급률", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00075", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "유방 바늘생검 조직병리진단 급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_RW"}

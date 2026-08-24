@@ -1,0 +1,3 @@
+This confirms multiple 보험료납입면제특약 types (50% 장해, 뇌혈관·허혈심장질환, 남녀특정암) each defining the 납입면제사유 that then applies to 주계약(보험료납입면제대상계약) via 제2-2조의2.
+
+{"status":"ranked","ranked_chunk_ids":["c04897","c04791","c02722","c04895","c04746","c04996","c04947","c04948"],"final_reason":"제2-2조의2(보험료 납입면제사유) 조항들이 장해·암·뇌혈관/허혈심장질환 등 주계약 납입면제 발생 사유와 그 적용범위(보험료납입면제대상계약)를 정의한다."}

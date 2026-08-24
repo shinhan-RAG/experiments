@@ -1,0 +1,3 @@
+Verified: this is directly the 신한통합건강보장보험 주계약 조항 stating the main contract has no built-in premium waiver and requires a separate rider (보험료납입면제특약) to be subscribed. c00067 confirms the corresponding rider list/면책기간 table, and c04962/c04996 give the rider's own 보험료납입면제대상계약 definition detail.
+
+{"status":"ranked","ranked_chunk_ids":["e00036","c00067","e04528","c04996","c04962"],"final_reason":"e00036이 주계약은 납입면제가 없고 별도 특약 가입 시에만 면제된다고 명시하며, c00067은 해당 통합건강보장보험의 납입면제특약 목록을, e04528/c04996/c04962는 그 특약의 가입대상계약 정의를 뒷받침한다."}

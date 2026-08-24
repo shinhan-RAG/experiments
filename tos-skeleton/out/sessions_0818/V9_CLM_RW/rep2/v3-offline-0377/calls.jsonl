@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 1년 미만 지급률", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "일반암진단급여금 지급률 가입후 1년", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00076", "arm": "V9_CLM_RW"}

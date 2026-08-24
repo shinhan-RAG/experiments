@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "뇌혈관 허혈심장질환입원특약 허혈심장질환 입원급여금 지급률 1년", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "허혈심장질환.*입원급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00083", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02541", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02542", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "허혈심장질환 입원급여금 지급금액 1년 미만", "arm": "V9_CLM_RW"}

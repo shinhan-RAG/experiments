@@ -1,0 +1,3 @@
+All three candidates verified: c02451 defines "특정부정맥" and its diagnosis criteria, c02473 states the payment condition (limited to first diagnosis only), and c02466 confirms the payment table language "다만, 최초 1회의 진단확정에 한함" — confirming no repeat payment for subsequent diagnoses.
+
+{"status":"ranked","ranked_chunk_ids":["c02473","c02451","c02466","c00104"],"final_reason":"제2-1조의2(정의·진단확정 기준)와 제2-2조·지급기준표가 최초 1회 진단확정에 한해 지급됨을 명시해 반복지급 불가를 확인함"}

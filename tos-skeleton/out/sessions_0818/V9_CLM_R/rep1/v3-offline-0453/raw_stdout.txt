@@ -1,0 +1,3 @@
+Enough evidence gathered. I have the definition clause (5종 수술급여금 지급사유), the general 지급사유 조항, and the 부표2-2 수술분류표 listing which surgeries fall under "종류 5" (e.g., 폐장 이식수술, 대동맥·관동맥 관혈수술, 심장내 관혈수술, 심장 이식수술, 간장/췌장/신장 이식수술 등).
+
+{"status":"ranked","ranked_chunk_ids":["c03116","c03098","c03130","e02764","e04905__r055","e04905__r056","c03097","c03129"],"final_reason":"c03116/c03098/c03130은 5종 수술급여금 지급사유 조항을, e04905__r055-56(부표2-2 수술분류표)은 5종에 해당하는 구체적 수술 목록을 보여준다."}

@@ -1,0 +1,3 @@
+Both candidates confirmed: c04467 is 제2-1조의4 (the direct definition article), and c04465 is 제2-1조의3 (referenced article defining the actual disease/registration criteria). c05785 (부표2-2 disease classification table) is also relevant context, already read via preview but let me include it based on strong match without extra read since budget favors breadth — I already verified enough.
+
+{"status":"ranked","ranked_chunk_ids":["c04467","c04465","c04484","c05785","c04468"],"final_reason":"제2-1조의4가 정의 조항 본문이며, 이는 제2-1조의3(등록 기준)과 부표2-2(암 상병 분류)를 인용해 정의를 완성한다."}

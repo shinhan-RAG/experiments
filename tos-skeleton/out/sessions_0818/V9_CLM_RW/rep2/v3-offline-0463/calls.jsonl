@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고액암 진단급여금 재진단 두 번 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "고액암진단비 동일한 고액암으로 재발 전이 진단급여금 1회 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00787", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_RW"}

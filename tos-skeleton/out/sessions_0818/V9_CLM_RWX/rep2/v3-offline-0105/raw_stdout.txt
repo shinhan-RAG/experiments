@@ -1,0 +1,3 @@
+This also confirms "최초 1회에 한함" pattern for 항암세기조절방사선치료. All three candidates verified and directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c01372","c01329","c01412"],"final_reason":"약관상 방사선치료는 여러 번 받을 수 있으나 급여금은 암 종류별 최초 1회(또는 연 1회)에 한해 지급됨을 확인함"}

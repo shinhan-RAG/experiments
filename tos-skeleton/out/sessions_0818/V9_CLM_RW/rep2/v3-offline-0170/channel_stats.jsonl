@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "암보장개시일 계약일로부터 90일", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.146614, "dense/V9": 0.144004}, "sparse_share": 0.5045, "dense_share": 0.4955, "notes": []}
+{"arm": "V9_CLM_RW", "query": "계약의 무효 15세미만 심신상실 심신박약자", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.13708, "dense/V9": 0.126817}, "sparse_share": 0.5194, "dense_share": 0.4806, "notes": []}

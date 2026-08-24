@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "항암양성자방사선치료급여금 지급대상 암 지급횟수", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암양성자방사선치료", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01477", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01446", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암양성자방사선치료급여금.*(각각 )?최초", "arm": "V9_D03B_CLM"}

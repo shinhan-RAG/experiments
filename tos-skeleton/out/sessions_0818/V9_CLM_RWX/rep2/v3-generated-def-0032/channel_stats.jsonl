@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "중증치매산정특례대상보장특약 중증치매 산정특례대상 정의", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.139237, "dense/V9": 0.149881}, "sparse_share": 0.4816, "dense_share": 0.5184, "notes": []}

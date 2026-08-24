@@ -1,0 +1,3 @@
+Confirmed: c02255 shows the exact 지급기준표 (100% vs 50% for <1년), c02240 shows the 삭감 조항 referencing 부표2-1, and c00082 confirms the 50% rate in the summary table.
+
+{"status":"ranked","ranked_chunk_ids":["c02255","c02240","c00082","c02239"],"final_reason":"c02255의 보험금 지급기준표가 1년 이후 100%, 1년 미만 50% 지급을 명시하고 c02240의 제2-2조 삭감 조항과 c00082 요약표로 교차 검증됨"}

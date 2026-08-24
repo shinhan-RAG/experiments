@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "표적항암약물허가치료특약 납입면제", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "표적항암약물허가치료특약 보험료 납입면제 사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01522", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "표적항암약물허가치료.{0,10}납입면제", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "표적항암약물허가치료특약 보험료 납입면제사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "e01098", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "e01315", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "특약보험료 납입기간 중 주계약의 보험료 납입이 면제된 경우", "arm": "V9_CLM_RWX"}

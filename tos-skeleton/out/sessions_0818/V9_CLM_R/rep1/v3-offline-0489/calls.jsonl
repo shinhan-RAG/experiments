@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보험금 지급 여부 합의 안될 때 분쟁 조정", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "보험금 지급사유 분쟁 금융감독원 조정 소송", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "제3자.*협의|분쟁의 조정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00214", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00197", "arm": "V9_CLM_R"}

@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갱신형특약 비갱신형특약 차이 보험료 갱신", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "갱신형 특약 보험료 인상 갱신일 갱신절차", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00119", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05145", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "비갱신형", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04433", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04747", "arm": "V9_CLM_RWX"}

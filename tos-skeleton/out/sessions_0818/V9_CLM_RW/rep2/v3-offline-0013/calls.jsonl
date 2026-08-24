@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "1급장해 사망보장 특약 소멸", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "장해분류표 1급 보험료 납입면제 계약 소멸 특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02437", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03275", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "고도장해.*사망보험금|1급.*사망보험금 지급", "arm": "V9_CLM_RW"}

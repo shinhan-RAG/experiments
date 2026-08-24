@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "암주요치료비특약 암 대장점막내암 비침습방광암 주요치료급여금 지급한도 연간 최대", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140032, "dense/V9": 0.15257}, "sparse_share": 0.4786, "dense_share": 0.5214, "notes": []}

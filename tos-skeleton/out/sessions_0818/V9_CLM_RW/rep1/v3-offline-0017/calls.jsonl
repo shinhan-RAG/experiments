@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "6대 질병 구성요소", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "6대 질병 정의 구성", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04033", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05533", "arm": "V9_CLM_RW"}

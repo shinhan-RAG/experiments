@@ -1,0 +1,3 @@
+All three verified candidates confirm the same "대장점막내암" definition text (제8차 개정 한국표준질병·사인분류, C18~C20, epithelium→lamina propria/muscularis mucosa, not reaching submucosa).
+
+{"status":"ranked","ranked_chunk_ids":["c05076","e00383","c04787","e00421","e00488","e00522","e00555","e00585","e00618","e00456"],"final_reason":"read로 검증된 다수 조항이 동일하게 대장점막내암을 C18~C20 중 기저막을 뚫고 점막고유층/점막근층을 침범했으나 점막하층까지는 침범하지 않은 상태로 정의함을 확인함"}

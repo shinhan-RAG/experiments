@@ -1,0 +1,3 @@
+Both candidates confirmed: c02381 gives the formal definition (제2-1조의4), and c05513/c05516 provide the classification table (부표2-4/표84).
+
+{"status":"ranked","ranked_chunk_ids":["c02381","c05513","c02400","c02382","c05516","c02372"],"final_reason":"c02381의 제2-1조의4 조항이 특정순환계질환(3종)의 정의를 직접 규정하고, c05513·표84가 그 분류표를 뒷받침함을 read로 확인했다."}

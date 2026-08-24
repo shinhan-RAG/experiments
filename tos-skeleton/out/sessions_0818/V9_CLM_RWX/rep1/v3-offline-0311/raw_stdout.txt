@@ -1,0 +1,3 @@
+This confirms c00000/c00024 relate to 신한통합건강보장보험 원(ONE) product, and c04782/c04747 confirm the 보험료납입면제특약 riders are separate special contracts (특약) that require explicit 부가 (attachment) — they are listed among many optional riders (납입면제형별로 여러 종류: 50%장해납입면제형, 일반암납입면제형, 남녀특정암납입면제형, 뇌혈관질환납입면제형, 허혈심장질환납입면제형, 중등도이상치매납입면제형 등), not automatically included in the base contract.
+
+{"status":"ranked","ranked_chunk_ids":["c04782","c00024","c04747","c04943"],"final_reason":"보험료납입면제특약은 통합건강보장보험 원(ONE) 주계약에 자동 포함되지 않고 여러 종류(암/장해/뇌혈관/허혈심장/치매납입면제형) 중 선택하여 별도로 부가해야 하는 특약임을 약관이 명시함"}

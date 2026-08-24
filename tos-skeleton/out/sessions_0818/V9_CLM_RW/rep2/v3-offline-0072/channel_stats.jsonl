@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "뇌심혈관질환 주요치료비 청구 구비서류", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 5}, "rrf_mass": {"bm25/V9": 0.107544, "dense/V9": 0.079405}, "sparse_share": 0.5753, "dense_share": 0.4247, "notes": []}
+{"arm": "V9_CLM_RW", "query": "뇌졸중 급성심근경색증 진단비 보험금 청구서류", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 7, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.104467, "dense/V9": 0.115761}, "sparse_share": 0.4744, "dense_share": 0.5256, "notes": []}

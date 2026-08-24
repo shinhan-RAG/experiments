@@ -1399,6 +1399,18 @@ def main():
                             "total_quota": int(intent_cfg.get("total_quota", 8)),
                             "subqueries": used,
                         }
+                    if arm.get("ensemble_quota_redistribute"):
+                        active = [i for i, r in enumerate(rankings) if r]
+                        inactive_total = sum(quotas[i] for i in range(len(rankings)) if i not in active)
+                        if inactive_total > 0 and active:
+                            per = inactive_total // len(active)
+                            remainder = inactive_total % len(active)
+                            for idx in active:
+                                quotas[idx] += per
+                            quotas[active[0]] += remainder
+                            for i in range(len(rankings)):
+                                if i not in active:
+                                    quotas[i] = 0
                     res = unique_jo_quota(
                         rankings, member_to_jo, quotas, limit=400)
                 else:

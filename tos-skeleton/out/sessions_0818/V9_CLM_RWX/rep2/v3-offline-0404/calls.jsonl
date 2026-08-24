@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편 뇌출혈진단특약 뇌출혈 진단급여금 지급 사유", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌출혈진단비|뇌출혈 진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02239", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02236", "arm": "V9_CLM_RWX"}

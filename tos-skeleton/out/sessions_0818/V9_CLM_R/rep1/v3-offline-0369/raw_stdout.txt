@@ -1,0 +1,3 @@
+Confirmed. c00097 (FAQ 스타일) directly answers the "반복 지급 여부" question, and c00628/c00641/c00673/c00972/c00958 give the exact 지급사유 조항 and 지급기준표 with the "각각 최초 1회" 한정.
+
+{"status":"ranked","ranked_chunk_ids":["c00628","c00641","c00673","c00097","c00972","c00958","c00959","c00994","c01007","c01008"],"final_reason":"제2-2조 지급사유(6개 소액암 진단확정)와 부표2-1 지급기준표가 '각각 최초 1회에 한함'을 명시해 반복지급 여부를 직접 답한다."}

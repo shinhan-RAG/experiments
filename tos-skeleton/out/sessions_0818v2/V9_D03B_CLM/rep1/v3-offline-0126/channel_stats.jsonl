@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "상급종합병원 정의", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.14158, "dense/V9": 0.148715}, "sparse_share": 0.4877, "dense_share": 0.5123, "notes": []}

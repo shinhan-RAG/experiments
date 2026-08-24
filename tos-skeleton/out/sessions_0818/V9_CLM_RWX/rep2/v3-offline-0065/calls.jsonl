@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "납입면제 특약 가입 시 납입면제 대상이 되지 않는 특약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "납입면제.{0,20}(제외|않는|해당되지)", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04962", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04794", "arm": "V9_CLM_RWX"}

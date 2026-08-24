@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "표적항암약물허가치료급여금 지급사유 몇 회", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "표적항암약물허가치료", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01536", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00099", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "표적항암약물허가치료급여금.{0,80}지급사유|표적항암약물허가치료.{0,200}최초 1회", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01559", "arm": "V9_CLM_RW"}

@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 예외 보장", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "고의로 자신을 해친 경우 보험금 지급 사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00264", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "정기특약[\\s\\S]{0,50}제2-4조", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "정기특약.{0,10}갱신형.{0,3000}피보험자가 고의로 자신을 해친 경우", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "정기특약 고의사고 예외 지급사유", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00120", "arm": "V9_CLM_R"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]일반암진단특약 암진단급여금 보험가입금액", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "삭감없음용.*일반암진단특약", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00935", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_R"}

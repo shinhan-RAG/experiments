@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 주요치료비 연간 1회 기준 연간의 정의", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "암주요치료비 지급사유 연간 1회한", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01327", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "매 1년 단위로 도래하는 진단확정일", "arm": "V9_CLM_R"}

@@ -1,0 +1,3 @@
+c00310 confirms the continuation with the concrete calculation example (기지급 장해지급률을 차감하여 지급). Both c00309 and c00310 are the exact 재해장해특약 clauses (질병장해 c00413/c00462 are for a different 특약, not relevant).
+
+{"status":"ranked","ranked_chunk_ids":["c00309","c00310","c00325"],"final_reason":"c00309/c00310은 재해장해특약에서 동일부위 기왕장해 시 기지급분을 차감하여 추가보험금을 지급하는 조항과 계산 예시를 직접 담고 있다."}

@@ -1,0 +1,3 @@
+All candidates verified: c02555 and c03970 directly state the payment requirement (뇌혈관질환 진단확정 + 상급종합병원 1일 이상 계속 입원), and c02597/c02541 confirm the 180-day per-admission limit via the 지급기준표.
+
+{"status":"ranked","ranked_chunk_ids":["c02555","c03970","c02597","c02541","c00108"],"final_reason":"뇌혈관질환 진단확정 후 상급종합병원 1일 이상 계속 입원 시 지급, 1회 입원당 180일 한도임을 지급사유 조문과 지급기준표로 확인함"}

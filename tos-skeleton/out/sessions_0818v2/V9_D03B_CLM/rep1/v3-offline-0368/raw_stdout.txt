@@ -1,0 +1,3 @@
+Confirmed: (기본) specifically states "다만, 최초 1회의 진단확정에 한함" — 최초 1회만 지급.
+
+{"status":"ranked","ranked_chunk_ids":["c00754","c00098","c00770","c00787"],"final_reason":"제2-2조에 명시된 대로 (간편)[기본]고액암진단특약의 고액암진단급여금은 최초 1회의 진단확정에 한해서만 지급된다."}

@@ -1,0 +1,3 @@
+Sufficient evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["e02232","e02246__r001","e02227","e02230","e02231"],"final_reason":"e02232/e02246__r001이 급성뇌경색증 진단확정+혈전용해치료+최초1회 지급 요건을 명시하고, e02227·e02230이 각각 급성뇌경색증·혈전용해치료 정의를 뒷받침함."}

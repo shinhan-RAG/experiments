@@ -1,0 +1,3 @@
+Both candidates confirm: c01477 gives the direct 지급기준표 (100% vs 50% within 1 year), and c00079 confirms via the summary 감액기간표 (가입 후 1년간 1년이후에 지급하는 보험금의 50%).
+
+{"status":"ranked","ranked_chunk_ids":["c01477","c00079","c01427"],"final_reason":"c01477의 지급기준표가 1년 미만은 50%, 이후 100% 지급을 명시하고 c00079가 동일 내용을 감액기간표로 재확인함"}

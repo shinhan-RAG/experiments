@@ -1,0 +1,3 @@
+Found the exact table with 4종 수술 급여금 details in c03148. This confirms: 1년 이후는 10%, 1년 미만(간편심사형, 재해 이외 사유)은 5%.
+
+{"status":"ranked","ranked_chunk_ids":["c03148","c03130","c03149"],"final_reason":"c03148의 [4종 보장계약] 표에서 1년 이상 경과 시 10%, 간편심사형으로 1년 미만에 재해 이외 사유 발생 시 5% 지급을 명시적으로 확인함"}

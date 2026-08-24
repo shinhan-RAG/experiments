@@ -1,0 +1,3 @@
+c02275 confirms the exact answer: 100% after 1 year, 50% if within 1 year of contract date. c00081 corroborates via the reduction-ratio summary table. c02322 (갱신형 variant) also matches this pattern.
+
+{"status":"ranked","ranked_chunk_ids":["c02275","c00081","c02322","c02346","c02299"],"final_reason":"c02275의 보험금 지급기준표가 1년 미만 발생 시 50%, 1년 이후(정상) 100% 지급률 차이를 직접 명시하며 c00081 감액표가 이를 재확인함"}

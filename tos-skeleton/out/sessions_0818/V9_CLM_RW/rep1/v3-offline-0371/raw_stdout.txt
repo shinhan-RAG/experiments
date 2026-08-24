@@ -1,0 +1,3 @@
+Confirmed: c00959 explicitly states "각각 최초 1회의 진단확정에 한함" (payment limited to first diagnosis only per condition), and c00961 confirms even upon renewal, no repeat payment for a condition already paid. This directly answers the question — not repeatable on re-diagnosis, only first-time payment.
+
+{"status":"ranked","ranked_chunk_ids":["c00959","c00961","c00962","c00097","c00958"],"final_reason":"약관 조항이 소액암진단급여금은 각 질병별로 최초 1회 진단확정에 한해 지급되며 갱신 후에도 이미 지급된 질병은 재지급되지 않음을 명시함"}

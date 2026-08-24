@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "질병장해특약 질병장해급여금 장해율 3~100%", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "질병장해급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00427", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00409", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00475", "arm": "V9_CLM_RWX"}

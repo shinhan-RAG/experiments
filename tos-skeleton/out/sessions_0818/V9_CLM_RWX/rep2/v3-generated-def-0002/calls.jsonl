@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "카티(CAR-T)항암약물치료제 정의", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "카티항암약물허가치료특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01582", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01581", "arm": "V9_CLM_RWX"}

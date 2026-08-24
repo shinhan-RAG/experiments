@@ -1,0 +1,3 @@
+Confirmed via `read`: c02369 has the exact 지급기준표 with 100%/50% rates, and c02352 confirms the 제2-2조/제2-3조② clause referencing the reduction rule for within-1-year cases.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","c02352","c00081","c02353"],"final_reason":"c02369의 보험금 지급기준표가 1년 미만 50%, 1년 이후 100% 지급을 명시하고 c02352의 제2-3조②가 이를 뒷받침함"}

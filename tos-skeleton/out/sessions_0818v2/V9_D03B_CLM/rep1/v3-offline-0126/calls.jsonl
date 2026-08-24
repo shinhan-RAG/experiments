@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "상급종합병원 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "상급종합병원", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04093", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "상급종합병원.{0,20}지정", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04137", "arm": "V9_D03B_CLM"}

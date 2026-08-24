@@ -1,0 +1,3153 @@
+{
+  "args": {
+    "run": "r2_verify_dense_quota_213x2_goldv21_20260824",
+    "arms": [
+      "r2_verify_dense_quota_hybrid"
+    ],
+    "qids": "../0824/v2/qids_v21_train213.json",
+    "gold": "../0824/v2/gold_v21_train213.jsonl",
+    "reps": 2,
+    "rep_start": 0,
+    "workers": 5,
+    "provider": "claude",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "medium",
+    "timeout": 240,
+    "max_actions": 4,
+    "seed": 20260824,
+    "max_call_budget_usd": 0.25,
+    "meta_python": "",
+    "embed_endpoint": "",
+    "resume": true,
+    "require_meta_first": false
+  },
+  "arms": {
+    "r2_verify_dense_quota_hybrid": {
+      "elements": "elements_u3.jsonl",
+      "tags": "tags_u4_fact_rules.jsonl",
+      "jo": "elements_u3jo.jsonl",
+      "ranker": "bm25f",
+      "profile": "core",
+      "sfw": {
+        "identity_container": 0.7,
+        "evidence": 2.4,
+        "_hierarchy": 1.0
+      },
+      "baseline_sfw": {},
+      "tag_ensemble": "quota",
+      "ensemble_lex": "count",
+      "ensemble_clm_w": {
+        "contract": 2.0,
+        "role": 0.5,
+        "subject": 1.5
+      },
+      "ensemble_rrf_k": 60,
+      "ensemble_clm_quota": 17,
+      "ensemble_fact_quota": 8,
+      "ensemble_support_clm_quota": 15,
+      "ensemble_support_fact_quota": 7,
+      "ensemble_unit_quota": 3,
+      "ensemble_unit_gate": "membership_or_code",
+      "ensemble_unit_require_support": true,
+      "ensemble_unit_sfw": {
+        "identity_container": 0.0,
+        "identity_full": 0.0,
+        "identity_base": 0.0,
+        "variant": 0.0,
+        "topic": 0.0,
+        "function": 0.0,
+        "locator": 0.0,
+        "table": 0.0,
+        "constraint": 0.0,
+        "relation": 0.0,
+        "structure": 0.0,
+        "evidence": 0.0,
+        "evidence_unit": 1.0,
+        "extra": 0.0,
+        "_evidence_unit_rare": 8
+      },
+      "ensemble_membership_support_quota": 3,
+      "ensemble_membership_support_sfw": {
+        "identity_container": 0.0,
+        "identity_full": 0.0,
+        "identity_base": 1.0,
+        "variant": 0.0,
+        "topic": 0.0,
+        "function": 0.0,
+        "locator": 0.0,
+        "table": 0.0,
+        "constraint": 0.0,
+        "relation": 0.0,
+        "structure": 0.0,
+        "evidence": 0.0,
+        "evidence_unit": 1.0,
+        "extra": 0.0
+      },
+      "preserve_jo_top": 5,
+      "router": "rule",
+      "facet": 1,
+      "meta": 1,
+      "meta_view": "V9",
+      "search_only": true,
+      "audit_payload": true,
+      "score_view": "rank",
+      "fallback": {
+        "gate": "axis_coverage",
+        "top_k": 5,
+        "min_axis_coverage": 0.5,
+        "merge_k": 10,
+        "first_only": false,
+        "force_first": true
+      },
+      "prompt_addendum": "추가 제출 규칙:\n- 같은 문구가 여러 특약·판본에 반복되어 보이면(제목이 같고 preview 가 거의 동일한 후보들), 질문이 특정한 특약명·판본(갱신형/해약환급금 미지급형/[기본] 등)·범위와 정확히 일치하는 후보를 read 로 원문 확인한 뒤 그것을 앞세우십시오.\n- 질문이 표·분류표·코드·지급기준을 물으면 조문 후보보다 해당 표(부표·지급기준표·분류표) 후보를 상위에 두십시오.\n- 제출 순서는 \"그 하나만으로 답이 되는 후보\" 우선입니다. 확신이 없는 후보를 1~5위에 채우지 말고, 관련 조가 다른 후보를 6~10위에 두십시오.\n- 상위 10건 중 제목이 같거나 비슷한 후보가 3건 이상이면, 반드시 read 로 원문을 확인한 뒤 제출하십시오. 즉시 submit 하지 마십시오.\n- 질문이 짧거나 구어체(예: \"입원 첫날부터?\", \"또 받을 수 있나요?\")인 경우, 상위 후보 중 가장 관련성 높은 1~2개를 read 한 뒤 제출하십시오.",
+      "identity_expand": {
+        "min_variant_len": 4,
+        "segment_min_len": 3,
+        "segment_max_len": 8,
+        "segment_min_contracts": 2,
+        "max_variants": 6,
+        "limit": 12
+      },
+      "reference_follow": {
+        "stats": "tags_u5_reference_graph_v14_stats.json",
+        "gate": "table_code_or_document",
+        "limit": 5,
+        "quota": 5,
+        "max_hops": 2
+      },
+      "verify_gate": 3,
+      "ensemble_quota_redistribute": true
+    }
+  },
+  "arm_order_policy": "balanced_rotation_by_qid_and_rep_v1",
+  "runtime": {
+    "python": "3.13.13 | packaged by conda-forge | (main, Apr  8 2026, 01:56:49) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "codex_cli": "unavailable:FileNotFoundError:[WinError 2] 지정된 파일을 찾을 수 없습니다",
+    "claude_cli": "unavailable:FileNotFoundError:[WinError 2] 지정된 파일을 찾을 수 없습니다",
+    "provider": "claude",
+    "model_sampling": {
+      "temperature": "provider_default_unset",
+      "seed": "not_exposed_by_codex_exec"
+    },
+    "meta_python": "",
+    "embed_endpoint": "",
+    "require_meta_first": false
+  },
+  "runner_sha256": "97f4afca0216d4c97e8c1912f1a5a14be014233fdab58361aae802ba3a0c0b19",
+  "action_schema_sha256": "2999394884fd82709cee84bdf58e3ce5fc7b18483c5375f0cc0acc58c32b5d12",
+  "system_prompt_sha256": "6a1b741cfc184cde13e2883cec3207f5e2b3de602177c4c4dff3cb3ba2c93d5b",
+  "agent_tools_sha256": "11b6718a4dfb663a2484d60072005f88974ee0106bb456c273b43795bd82a72e",
+  "arms_sha256": "11bc6fffcd4c89e2b779e4d76c57d97e957c3f4e06acbae66c5e633ebedd8093",
+  "hybrid_search_sha256": "b2e989abd10931e8341ccc57cd9a083d77bb0eb95fbba6f16b2984506b0c887b",
+  "clm_search_sha256": "4ddd9de061bd274383dcc42a9235f73e76ddba6e8ca2e4808e9818e31eed00e9",
+  "structured_search_sha256": "c858d3591dd3fe4fcd266fd6b7c25b06280de8ef0c2c14f1bdc5075796fc1f4f",
+  "schema_adapter_sha256": "d2082b9205e38a1dd4c5b9e073cd86a5304c571963a98626c50098762cd63b90",
+  "textmatch_sha256": "6097dbdceccf286d904e08d73f288fbbafb719e52a31160b1c91de627e2acb6e",
+  "patterns_sha256": "8be8e5711a0be08d0cdd751a39b9094c733364b0547fe53ca6c69dcbbd0a7487",
+  "scoring_sha256": "cd6be80bea06f1e41b4640b1560f38d3374c0c9fe6f9b13ab0a13537a87a1677",
+  "units_sha256": "b345fb8928d9a7e2e3ef69eff4462a9b9ba3c0a7b8e0a7cac94e384f2309ef0f",
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0824\\v2\\gold_v21_train213.jsonl",
+  "gold_sha256": "bc326593dc23dde0c6bc5e8e67f3d426ecd5ede676b543b688b4f64b23023cd9",
+  "qids_sha256": "da550804866676e1e0e136f36541178aae1a2179e280da6398a5676d38281f01",
+  "arm_data": {
+    "r2_verify_dense_quota_hybrid": {
+      "elements": {
+        "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u3.jsonl",
+        "sha256": "4d6b52cc244e01821825b8a36acff49c33ace6a68a178557ad7fced38eb95398"
+      },
+      "tags": {
+        "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\tags_u4_fact_rules.jsonl",
+        "sha256": "97d30c66b8968535087d60f62f610520ab2b2b286245848442bba3dda89c9acf"
+      },
+      "jo": {
+        "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u3jo.jsonl",
+        "sha256": "e947f3fe81eb5687249cffa538fc7150905f6a19365872a42c705c837e119534"
+      }
+    }
+  },
+  "arm_orders": [
+    {
+      "qid": "v3-offline-0240",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0100",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0228",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0472",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0261",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0434",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0279",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0009",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0100",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0367",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0429",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0414",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0357",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0356",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0459",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0092",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0448",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0109",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0177",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0306",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0475",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0457",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0480",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0454",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0274",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0384",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0201",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0420",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0208",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0476",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0090",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0375",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0434",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0170",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0522",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0390",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0551",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0500",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0416",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0467",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0367",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0086",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0126",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0372",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0453",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0358",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0356",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0368",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0332",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0445",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0385",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0374",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0447",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0452",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0418",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0369",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0034",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0278",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0532",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0506",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0415",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0097",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0393",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0388",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0037",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0451",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0361",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0464",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0425",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0478",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0009",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0421",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0449",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0351",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0006",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0165",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0477",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0442",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0389",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0418",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0550",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0240",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0447",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0259",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0130",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0392",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0032",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0272",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0452",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0544",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0376",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0170",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0151",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0355",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0216",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0378",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0091",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0435",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0179",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0405",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0021",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0019",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0055",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0468",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0416",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0385",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0033",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0279",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0491",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0030",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0465",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0476",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0065",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0409",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0401",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0396",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0497",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0471",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0373",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0545",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0009",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0072",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0261",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0506",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0400",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0227",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0388",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0544",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0402",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0010",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0466",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0234",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0410",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0291",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0470",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0440",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0362",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0413",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0463",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0392",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0010",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0429",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0033",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0231",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0364",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0290",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0456",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0046",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0463",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0444",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0275",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0035",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0293",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0054",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0041",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0374",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0550",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0288",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0547",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0451",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0479",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0311",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0453",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0483",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0122",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0485",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0131",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0485",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0394",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0248",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0412",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0444",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0387",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0245",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0470",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0035",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0011",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0034",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0446",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0402",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0403",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0414",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0454",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0083",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0134",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0256",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0003",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0458",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0391",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0122",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0027",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0032",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0259",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0046",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0358",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0332",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0377",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0109",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0306",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0134",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0534",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0072",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0237",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0059",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0523",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0278",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0378",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0381",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0366",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0005",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0371",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0201",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0502",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0395",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0012",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0021",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0471",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0005",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0365",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0028",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0004",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0490",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0371",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0027",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0410",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0314",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0458",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0126",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0450",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0037",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0390",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0455",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0445",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0202",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0383",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0415",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0248",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0025",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0549",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0366",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0546",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0404",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0019",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0004",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0028",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0055",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0090",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0442",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0391",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0074",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0467",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0370",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0483",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0232",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0449",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0256",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0412",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0459",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0006",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0249",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0421",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0086",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0477",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0345",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0152",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0012",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0369",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0423",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0006",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0007",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0532",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0132",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0003",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0419",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0352",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0401",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0094",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0029",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0395",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0472",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0482",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0365",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0091",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0480",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0403",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0370",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0083",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0361",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0041",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0029",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0165",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0354",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0466",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0394",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0379",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0059",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0420",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0465",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0381",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0478",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0290",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0138",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0482",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0455",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0546",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0464",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0074",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0400",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0237",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0351",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0092",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0155",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0216",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0411",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0446",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0022",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0360",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0177",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0003",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0152",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0227",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0151",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0054",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0547",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0450",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0354",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0435",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0368",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0364",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0522",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0497",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0293",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0523",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0373",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0500",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0379",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0551",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0443",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0362",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0380",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0274",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0490",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0409",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0202",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0345",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0352",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0022",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0179",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0232",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0469",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0011",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0375",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0425",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0234",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0419",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0231",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0009",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0411",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0534",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0469",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0493",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0413",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0228",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0131",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0393",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0389",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0376",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0003",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0275",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0436",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0065",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0387",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0479",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0545",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0468",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0372",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0494",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0289",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0440",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0380",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0494",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0006",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0457",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0357",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0502",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0188",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0405",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0249",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0314",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0245",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0549",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0404",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0384",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0289",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0423",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0383",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0097",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0185",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0030",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0491",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0132",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0007",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0377",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0448",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0130",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0456",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0029",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0311",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0436",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0188",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0475",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0029",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0291",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0443",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-generated-def-0025",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0355",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0272",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0288",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0396",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0094",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0185",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0360",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0208",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0493",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0155",
+      "rep": 0,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    },
+    {
+      "qid": "v3-offline-0138",
+      "rep": 1,
+      "arms": [
+        "r2_verify_dense_quota_hybrid"
+      ]
+    }
+  ]
+}

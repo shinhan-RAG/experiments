@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "표적항암약물허가치료특약 표적항암약물허가치료급여금 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 5}, "rrf_mass": {"bm25/V9": 0.120309, "dense/V9": 0.079405}, "sparse_share": 0.6024, "dense_share": 0.3976, "notes": []}

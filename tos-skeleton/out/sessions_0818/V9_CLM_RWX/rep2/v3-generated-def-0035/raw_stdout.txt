@@ -1,0 +1,3 @@
+Both chunks confirmed and directly answer the question: c04628 contains the core definition of "중증치매상태" (제2-1조의2 ①,②), and c04629 continues with the CDR척도 설명 and ③항.
+
+{"status":"ranked","ranked_chunk_ids":["c04628","c04629","c04630","c04624","c04649"],"final_reason":"c04628의 제2-1조의2 ①②항이 중증치매상태·중증의 인지기능의 장애(CDR척도 3점 이상) 정의를 직접 규정하며 c04629·c04630·c04649로 세부 진단절차와 지급기준이 이어진다."}

@@ -1,0 +1,3 @@
+Confirmed: e02809 (same as c03148 content) explicitly identifies the 3종 보장계약 clause and references the "1~5종 수술분류표" (별첨2 [표 24]).
+
+{"status":"ranked","ranked_chunk_ids":["c03148","e02809","c03115","c03130","c03098","e02795"],"final_reason":"c03148/e02809/c03115가 '3종 수술 급여금'은 질병·재해 치료 목적으로 1~5종 수술분류표(부표2-2)에서 정하는 3종 수술을 받았을 때 지급된다는 지급사유 조항을 명시적으로 담고 있어 동일 내용을 복수 청크로 교차 검증함."}

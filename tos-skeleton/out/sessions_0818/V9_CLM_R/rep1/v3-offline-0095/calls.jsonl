@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "대학병원 외래진료 보장", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "외래 통원 진료비 보장", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "대학병원", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "상급종합병원", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "통원 의료기관 정의 외래", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "통원 급여금 대상 병원", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02071", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c02097", "arm": "V9_CLM_R"}

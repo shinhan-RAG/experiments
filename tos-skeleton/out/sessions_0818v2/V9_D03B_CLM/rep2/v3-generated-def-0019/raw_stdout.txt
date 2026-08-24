@@ -1,0 +1,3 @@
+Confirmed: c03073 and c03074 contain 제2-1조의2 "특정 류마티스 관절염"의 정의 및 진단확정, directly answering the question. c05471/c05472 provide the classification table (부표2-2) referenced by the definition.
+
+{"status":"ranked","ranked_chunk_ids":["c03073","c03074","c05471","c05472","c03075","c03089"],"final_reason":"제2-1조의2가 특정 류마티스 관절염의 정의(분류표 해당 항목 + DMARDs 치료 요건)와 진단확정 기준을 직접 규정한다."}

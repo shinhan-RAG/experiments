@@ -1,0 +1,3 @@
+Verified. All three chunks confirm surgery alone doesn't guarantee payment — there's a formal 정의 requirement, exclusion clauses, and payment restrictions (감액/1회 제한).
+
+{"status":"ranked","ranked_chunk_ids":["c03774","c03654","c03605","c03633","c03724","c03100"],"final_reason":"수술 정의 충족과 별도로 지급 제외사유(제2-4조), 1년 미만 삭감, 동일질병 1회 제한 등 조건이 있어 무조건 지급되지 않음을 확인함"}

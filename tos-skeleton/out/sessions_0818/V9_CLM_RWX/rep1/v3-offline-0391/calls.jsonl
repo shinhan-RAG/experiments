@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급성심근경색증진단특약 급성심근경색증진단급여금 최초 1회 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급성심근경색증진단급여금.{0,20}최초", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02352", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_RWX"}

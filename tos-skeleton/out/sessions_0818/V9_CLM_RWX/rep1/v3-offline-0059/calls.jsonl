@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "교통사고 추간판탈출증 장해보험금 청구 서류", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "장해보험금 청구시 제출서류 진단서", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00133", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "추간판탈출증", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04384", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "교통사고확인원 자동차사고 사실확인서 장해 청구서류", "arm": "V9_CLM_RWX"}

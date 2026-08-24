@@ -1,0 +1,5 @@
+{"tool": "grep", "arg": "상급종합병원", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "상급종합병원 정의 의료법", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04154", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04074", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03749", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+This confirms c01652 is the continuation (④ clause) of the same 제2-1조의8 definition article, with c01649 holding the core ① definition.
+
+{"status":"ranked","ranked_chunk_ids":["c01649","c01652","c01650","c05655","c01629"],"final_reason":"c01649 contains 제2-1조의8 ①의 정확한 정의 문구이며 c01652는 같은 조항의 후속(④)이고 나머지는 관련 의약품 목록·조 목차로 보강 근거."}

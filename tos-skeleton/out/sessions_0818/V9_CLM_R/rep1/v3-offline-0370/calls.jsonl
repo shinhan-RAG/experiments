@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "소액암진단특약 소액암 진단급여금 1년 이내 지급률", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "소액암.{0,20}진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00629", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00959", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00076", "arm": "V9_CLM_R"}

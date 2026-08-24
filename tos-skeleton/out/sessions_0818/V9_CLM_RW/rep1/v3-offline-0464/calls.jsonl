@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "갑상선 바늘생검 조직병리진단급여금 연간 횟수", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "갑상선 세침흡인검사 조직병리검사 진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01866", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_RW"}

@@ -1,0 +1,3 @@
+This confirms the "연간 1회에 한함" limit for 급여뇌심장질환 검사급여금.
+
+{"status":"ranked","ranked_chunk_ids":["c02803","c00105","c02789","c00080"],"final_reason":"c02803의 보험금 지급기준표가 급여뇌심장질환 검사급여금을 '연간 1회에 한함'으로 명시하며 c00105·c02789가 이를 요약·재확인함"}

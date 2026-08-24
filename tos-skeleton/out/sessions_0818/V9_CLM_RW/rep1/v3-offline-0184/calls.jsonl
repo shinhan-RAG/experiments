@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암진단금 수령 후 갱신 가능 여부", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "암진단비 지급 후 재가입 갱신형 특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01017", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00997", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "이 특약을 갱신할 수 없습니다", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01295", "arm": "V9_CLM_RW"}

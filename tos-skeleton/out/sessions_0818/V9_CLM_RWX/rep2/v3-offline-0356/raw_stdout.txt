@@ -1,0 +1,3 @@
+Verified: c03116 and c03149 (both variants of the (간편)1-5종수술특약 product) confirm the 5종 수술급여금 pays 10% of 특약보험가입금액 per surgery normally, but 5% if the cause arises within 1 year of the contract date (간편심사형, non-accident cause). c03098 confirms the product/article context.
+
+{"status":"ranked","ranked_chunk_ids":["c03116","c03149","c03098","c03130"],"final_reason":"부표2-1 지급기준표(c03116, c03149)에서 5종 수술급여금은 통상 특약보험가입금액의 10%이나, 간편심사형의 경우 계약일부터 1년 미만 재해 이외 사유 발생 시 5%로 감액 지급됨을 직접 확인함."}

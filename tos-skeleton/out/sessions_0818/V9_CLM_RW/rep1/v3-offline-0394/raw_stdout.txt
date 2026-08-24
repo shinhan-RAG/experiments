@@ -1,0 +1,3 @@
+Confirmed: c01880/c01881 contain the exact payment table entry (특약보험가입금액의 1%, but 0.5% if within 1 year of contract date), consistent with c00075's summary table.
+
+{"status":"ranked","ranked_chunk_ids":["c01880","c01881","c00075","c01858"],"final_reason":"부표2-1 보험금 지급기준표에서 갑상선 바늘생검 조직병리진단급여금은 가입 후 1년 미만 발생 시 특약보험가입금액의 0.5%, 1년 이후 발생 시 1%를 지급함을 확인함."}

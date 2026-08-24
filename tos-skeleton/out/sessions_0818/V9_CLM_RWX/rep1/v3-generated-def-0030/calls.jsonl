@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "중증질환자 산정특례 신규암 등록 정의", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "(간편)중증질환자[암]산정특례대상보장특약 신규암 등록", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04468", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제2-1조의5", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04456", "arm": "V9_CLM_RWX"}

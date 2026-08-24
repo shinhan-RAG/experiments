@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "방사선치료 여러번 지급 횟수", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "방사선치료비 특약 보장", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01372", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "방사선치료.{0,20}(1회|여러|재발|동일)", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01329", "arm": "V9_CLM_RWX"}

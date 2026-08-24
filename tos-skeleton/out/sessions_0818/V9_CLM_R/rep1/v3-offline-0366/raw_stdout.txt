@@ -1,0 +1,3 @@
+Both candidates confirmed: c00754 gives the payment condition (고액암 진단확정, 최초 1회 한함 — not repeated), c00747 defines "고액암" and diagnosis confirmation method.
+
+{"status":"ranked","ranked_chunk_ids":["c00754","c00747","c00755","c00770"],"final_reason":"제2-2조와 정의 조항이 고액암 진단확정 요건과 최초 1회 지급 한정을 직접 명시한다."}

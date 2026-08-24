@@ -1,0 +1,3 @@
+I've gathered sufficient evidence. c03148 directly answers the question with the 3종 보장계약 payout table showing the 1-year distinction.
+
+{"status":"ranked","ranked_chunk_ids":["c03148","c03113","c03130","c03112"],"final_reason":"c03148의 [3종 보장계약] 지급금액란이 간편심사형 기준 가입 후 1년 미만 재해 이외 사유는 5%, 그 외(1년 이후 포함)는 10% 지급으로 명시함."}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "항암세기조절방사선치료특약 항암세기조절 방사선 치료급여금 지급률 1년", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "항암세기조절", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01427", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00078", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00079", "arm": "V9_CLM_RW"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "면역항암치료 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "면역항암약물허가치료비", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "면역항암", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "면역항암약물허가치료 특약 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "면역", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01318", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01646", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01237", "arm": "V9_CLM_RW"}

@@ -1,0 +1,1 @@
+{"arm": "V9_D03B_CLM", "query": "소액암진단특약 양성뇌종양 보험금 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50, "clm": 50}, "hits_per_channel": {"bm25/V9": 4, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.051026, "dense/V9": 0.149554}, "sparse_share": 0.2544, "dense_share": 0.7456, "notes": []}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "같은 날 여러 수술을 받은 경우 수술비 중복 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "같은.{0,4}날.{0,10}수술", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03205", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03644", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "동시에.{0,10}수술", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03099", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03132", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03470", "arm": "V9_D03B_CLM"}

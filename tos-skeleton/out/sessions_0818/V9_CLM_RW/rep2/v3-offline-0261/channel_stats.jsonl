@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "중증 갑상선암 진단 기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.148544, "dense/V9": 0.147462}, "sparse_share": 0.5018, "dense_share": 0.4982, "notes": []}
+{"arm": "V9_CLM_RW", "query": "갑상선암 진단확정 기준 유두암 여포암", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.117473, "dense/V9": 0.132486}, "sparse_share": 0.47, "dense_share": 0.53, "notes": []}

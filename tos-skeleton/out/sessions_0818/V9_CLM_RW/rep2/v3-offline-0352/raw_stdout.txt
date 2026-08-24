@@ -1,0 +1,3 @@
+Both candidates confirmed: c03190 gives the exact 지급기준표 (특약보험가입금액의 1% normally, 0.5% if 간편심사형 and within 1 year from non-accident cause), and c00085 corroborates with the summary table (1년 이후분의 50% 지급, i.e., same 0.5%/1% ratio).
+
+{"status":"ranked","ranked_chunk_ids":["c03190","c00085","c03168","c03179"],"final_reason":"c03190의 지급기준표가 1년 미만(재해 이외 사유)에는 가입금액의 0.5%, 1년 이후(통상)에는 1%를 지급한다고 명시하며 c00085·c03168·c03179가 동일 내용을 보강한다."}

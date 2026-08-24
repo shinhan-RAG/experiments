@@ -1,0 +1,3 @@
+Confirmed: c02140 [기본]뇌혈관질환진단특약 documents the 1년 미만 50% / 1년 이후 100% rule (which matches the general pattern also seen in e00015 for other similar 특약s), while c02162 [삭감없음용] pays flat 100% regardless of timing — that's a different product variant, not the answer. c02127 (지급사유 조항) references the same 지급기준표, corroborating c02140.
+
+{"status":"ranked","ranked_chunk_ids":["c02140","c02127","e01830","c02162"],"final_reason":"c02140의 보험금 지급기준표가 가입 1년 미만 50%, 1년 이후 100% 지급률 차이를 명시하며 제2-2조(c02127)가 이를 인용해 뒷받침한다."}

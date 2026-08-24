@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "고액암 진단급여금 중복 지급 두 번 진단", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암보장개시일 이후 다른 고액암으로 추가로 진단 확정 진단급여금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00787", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00802", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_RWX"}

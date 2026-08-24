@@ -1,0 +1,3 @@
+Both c02554 and c02555 directly confirm the 뇌혈관질환 상급종합병원 입원급여금 지급요건 (진단확정 + 1일이상 계속 입원) and the 1회 입원당 180일 한도. c02596 provides the 지급기준표. Sufficient evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c02554","c02555","c02596","c03970","c02523","c03994"],"final_reason":"뇌혈관질환 상급종합병원 입원급여금 지급사유(1일이상 계속 입원)와 1회 입원당 180일 한도를 명시한 조항을 확인함"}

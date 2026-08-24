@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "고액암진단특약 고액암 진단급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "고액암 진단급여금 지급사유 반복지급", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "고액암.{0,20}정의 및 진단확정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00747", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "고액암 진단급여금.{0,10}특약보험가입금액", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00770", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00757", "arm": "V9_CLM_R"}

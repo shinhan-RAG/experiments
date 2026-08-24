@@ -1,0 +1,3 @@
+Both confirmed: contain the exact 제2-9조의2 "특약의 무효"에 대한 특칙 clause stating the invalidation ground (피보험자가 고혈압보장개시일 전일 이전에 "고혈압(원발성)"으로 진단확정되는 경우).
+
+{"status":"ranked","ranked_chunk_ids":["c02823","c02851","c02807","c02831","c02837"],"final_reason":"c02823/c02851은 해약환급금미지급형·갱신형 각각의 제2-9조의2(특약의 무효 특칙) 원문으로 무효 사유(고혈압보장개시일 전일 이전 고혈압 진단확정)를 직접 명시함."}

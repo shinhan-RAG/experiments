@@ -1,0 +1,3 @@
+Confirmed via slot search: e01147 (지급사유 조항) corresponds to same clause as c01314/c01347. The 100% figure is well-supported by both the 지급기준표 (c01347) and the payment example (c01315).
+
+{"status":"ranked","ranked_chunk_ids":["c01347","c01314","c01315","e01147__r001","c01326"],"final_reason":"보험금 지급기준표(c01347)에서 암·대장점막내암·비침습방광암 주요치료급여금은 특약보험가입금액의 100%로 명시되어 있고, 지급 예시(c01315, 가입금액 1,000만원=지급 1,000만원)로 확인됨."}

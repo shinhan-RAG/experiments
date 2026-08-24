@@ -1,0 +1,3 @@
+Verified: c02738 shows the payment table with "특약보험가입금액의 100%", and c02718 confirms the payment clause referencing 부표2-1.
+
+{"status":"ranked","ranked_chunk_ids":["c02738","c02718","c02725","c02701"],"final_reason":"부표2-1 지급기준표(c02738)에서 주요치료급여금 지급액이 특약보험가입금액의 100%로 명시되어 있고 c02718이 해당 지급사유 조항을 뒷받침함"}

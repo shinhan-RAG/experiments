@@ -1,0 +1,3 @@
+c00427 confirms exact answer: 3%이상 100%이하 장해지급률. Sufficient verified evidence.
+
+{"status":"ranked","ranked_chunk_ids":["c00427","c00475","c00409","c00457","c00325"],"final_reason":"c00427/c00475의 보험금 지급기준표가 (3~100%)질병장해급여금 지급사유를 '장해지급률 3%이상 100%이하'로 명시함"}

@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "뇌경색 보장 여부", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "뇌졸중 뇌경색 정의 보험금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02213", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05440", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌경색증.*포함", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05646", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05536", "arm": "V9_D03B_CLM"}

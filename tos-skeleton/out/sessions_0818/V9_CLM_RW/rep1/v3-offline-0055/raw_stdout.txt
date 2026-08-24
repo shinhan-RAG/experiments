@@ -1,0 +1,3 @@
+This confirms both e02532 (해약환급금 미지급형) and e02552__r001 (갱신형) are the correct, verified clause instances for this specific rider — other c-ids in grep results belong to different riders.
+
+{"status":"ranked","ranked_chunk_ids":["e02532","e02552__r001","c02827","c02854"],"final_reason":"제2-9조 특약의 소멸 조항(e02532, e02552__r001)에서 주계약 해지/무효/취소/철회, 피보험자 사망, 보험금 지급사유 소멸 등 3가지 소멸 사유를 직접 확인함"}

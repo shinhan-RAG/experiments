@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌출혈진단특약 보험금 감액기간", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "뇌출혈진단특약 감액지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00082", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00015__r002", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02239", "arm": "V9_CLM_RW"}

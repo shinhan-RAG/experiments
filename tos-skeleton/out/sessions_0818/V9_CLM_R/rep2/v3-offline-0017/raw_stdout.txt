@@ -1,0 +1,3 @@
+Found the exact defining clause listing the 6대질병 components (암/기타피부암/갑상선암, 대장점막내암, 비침습방광암, 제자리암, 경계성종양, 뇌혈관질환, 허혈심장질환, 간질환, 폐질환, 신장질환). Verified c04033 and c01788 both contain this "제2-1조의5/6 '6대질병'의 정의 및 진단확정" clause; c05533 and c04063 provide the related 분류표(classification table) context.
+
+{"status":"ranked","ranked_chunk_ids":["c04033","c01788","c01789","c00517","c05533","c04063"],"final_reason":"c04033/c01788/c01789/c00517은 '6대질병' 정의 조항(암·대장점막내암·비침습방광암·제자리암·경계성종양·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환 등 6대 구성요소 나열)을 직접 담고 있고, c05533/c04063은 관련 6대질병 분류표를 제공한다."}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "암 재발 보험금 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.133648, "dense/V9": 0.151606}, "sparse_share": 0.4685, "dense_share": 0.5315, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "암 재진단 암진단비 재발", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.119097, "dense/V9": 0.132547}, "sparse_share": 0.4733, "dense_share": 0.5267, "notes": []}

@@ -1,0 +1,3 @@
+That's a different 특약 (남녀특정암진단특약), not relevant here — c00695 is not the 1-5종수술특약. e02797 remains the confirmed target for the actual question.
+
+{"status":"ranked","ranked_chunk_ids":["e02797","e02796","e02798","e02883","e03073"],"final_reason":"e02797은 1-5종수술특약(간편, 갱신형)의 제2-4조 '보험금을 지급하지 않는 사유' 조항으로, 고의 자해·피보험자/계약자의 고의 가해 등 지급 제외 사유를 직접 명시한다."}

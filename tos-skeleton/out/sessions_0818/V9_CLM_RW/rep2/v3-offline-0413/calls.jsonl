@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "부정맥진단특약 부정맥 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "부정맥 진단급여금 지급사유 반복지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02405", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02428", "arm": "V9_CLM_RW"}

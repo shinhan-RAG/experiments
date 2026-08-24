@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "특정순환계질환(3종) 정의 간편 특정순환계질환진단특약", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "특정순환계질환(3종) 정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02381", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02098", "arm": "V9_CLM_RW"}

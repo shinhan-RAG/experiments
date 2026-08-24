@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "1급 장해 사망보장 주계약 특약 소멸", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "1급장해 사망보장 주계약 특약 소멸", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "장해분류표 제1급 사망 간주 특약 보험료 납입면제", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "장해지급률 100% 사망 간주 보험료 납입면제", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04897", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "장해지급률이 100%인 장해상태가 되었을 때", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "사망한 것으로 보아", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "장해지급률이 .* 이상.*사망", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "5종.{0,10}수술급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03116", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03149", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "1-5종수술특약 5종 수술급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "5종 수술급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03116", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03098", "arm": "V9_D03B_CLM"}

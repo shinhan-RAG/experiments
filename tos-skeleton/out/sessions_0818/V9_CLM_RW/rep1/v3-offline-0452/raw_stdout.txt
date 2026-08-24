@@ -1,0 +1,3 @@
+I have enough verified evidence. c03115 directly confirms the 4종 수술급여금 clause text, c03130 confirms the 4종 보장계약 definition referencing 제2-2조, and c03098/c03129 give the overall 지급사유 framework referencing the 부표2-2 수술분류표.
+
+{"status":"ranked","ranked_chunk_ids":["c03115","c03130","c03098","c03129","c05455"],"final_reason":"c03115에서 4종 수술급여금 지급사유(부표2-2 1~5종 수술분류표의 4종 수술)를 직접 확인했고, c03130·c03098·c03129로 정의 및 근거 조항을 교차 검증했다."}

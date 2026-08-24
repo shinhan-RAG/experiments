@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "대학병원 외래진료 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "외래제비용 통원의료비 대학병원", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "대학병원", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "상급종합병원 통원급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02680", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01764", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02653", "arm": "V9_CLM_RW"}

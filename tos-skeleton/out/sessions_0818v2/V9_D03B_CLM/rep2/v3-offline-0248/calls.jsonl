@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 보장 예외", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 예외 보장", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "계약의 보장개시일부터 2년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "고의로 자신을 해친 경우", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00264", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "정기특약.{0,20}보험금을 지급하지 않는 사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00264", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00235", "arm": "V9_D03B_CLM"}

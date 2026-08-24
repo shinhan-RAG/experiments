@@ -1,0 +1,3 @@
+Confirmed the definitional text is consistent across multiple 특약 sections. Ready to finalize.
+
+{"status":"ranked","ranked_chunk_ids":["c04093","c03969","c02554","c03769","e03740","e02436"],"final_reason":"여러 특약 조항이 상급종합병원을 '의료법 제3조의4에 따라 보건복지부장관이 지정한, 종합병원 중 중증질환에 대해 난이도 높은 의료행위를 전문적으로 하는 병원'으로 동일하게 정의함을 확인했다."}

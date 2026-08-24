@@ -1,0 +1,3 @@
+c00736 has the explicit "(간편)[삭감없음용]남녀특정암진단특약" title with the 지급기준표 showing 100% flat (no 삭감), confirming both diagnosis payments are single-payment-only ("최초 1회의 진단확정에 한함"). c00722 (지급사유 조항) is the corresponding 제2-2조 clause for the same document (page numbers 435-436 area match).
+
+{"status":"ranked","ranked_chunk_ids":["c00736","c00722","c00690","e00603","c01042"],"final_reason":"c00736/c00722 explicitly confirm this is the 삭감없음용 특약, requiring '전립선암' 진단확정 with 최초 1회 한정 (no repeat payment), backed by matching 지급사유 clause and cross-checked slot/grep hits."}

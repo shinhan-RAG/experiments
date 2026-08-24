@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급성심근경색증진단급여금 지급 진단확정 반복지급 여부", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급성심근경색증진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02352", "arm": "V9_CLM_RWX"}

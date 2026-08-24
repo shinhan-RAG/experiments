@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "소액암진단특약 양성뇌종양 보험금 지급 대상", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "소액암.*양성뇌종양|양성뇌종양.*소액암", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00641", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "양성뇌종양", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00097", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "소액암진단급여금 지급사유 대상 질병", "arm": "V9_CLM_RWX"}

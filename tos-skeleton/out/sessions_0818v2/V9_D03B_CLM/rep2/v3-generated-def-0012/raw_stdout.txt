@@ -1,0 +1,3 @@
+Found the definition (제2-1조의7) spanning c02714 and c02715, confirmed via grep and hybrid search.
+
+{"status":"ranked","ranked_chunk_ids":["c02714","c02715","c02701","c02740","c02716"],"final_reason":"c02714-c02715는 제2-1조의7 '종합병원 중환자실치료'의 정의 조문 원문을 직접 담고 있음"}

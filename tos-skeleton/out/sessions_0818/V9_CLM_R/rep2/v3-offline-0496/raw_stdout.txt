@@ -1,0 +1,3 @@
+Confirmed both chunks directly define and elaborate the term. c01354 has the core definition; c01331 explains the extension rule and related provisions. c01322 shows the payment fee clause referencing this period with example.
+
+{"status":"ranked","ranked_chunk_ids":["c01354","c01331","c01322","e01152","c01352"],"final_reason":"c01354/c01331은 '기타피부암 및 갑상선암 보험금 지급기간'의 정의(최초 진단확정일로부터 10년, 10차년도 치료 시 치료일까지 연장)를 직접 서술하며 나머지는 이를 활용하는 지급사유/지급금액 조항이다."}

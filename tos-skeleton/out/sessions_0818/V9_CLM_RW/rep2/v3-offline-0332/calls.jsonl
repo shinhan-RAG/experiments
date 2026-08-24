@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "한시적 장해진단 후 다른 부위 장해로 악화된 경우 장해지급률 적용", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "한시", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00527", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00459", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "다른 신체부위", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "한시장해 지급 중 다른 신체부위 장해 발생 장해지급률 결정", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "한시장해 다른 신체부위 장해 악화 지급률", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00435", "arm": "V9_CLM_RW"}

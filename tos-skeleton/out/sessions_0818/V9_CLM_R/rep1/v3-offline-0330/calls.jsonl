@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "표적항암치료 해외 보장", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "표적항암약물허가치료 해외소재 요양기관", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "해외.{0,20}요양기관", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01543", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "국외", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "해외", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "의료기관.{0,5}:.{0,10}의료법 제3조", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01239", "arm": "V9_CLM_R"}

@@ -1,0 +1,3 @@
+Both are 재해장해특약 context (168 area, near c00311). Sufficient evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c00133","c00336","c00390","c00391","c04384","c05358","c00415"],"final_reason":"장해보험금 청구서류 표(c00133)와 재해장해특약 사고증명서 조항(c00336/c00390/c00391)이 사망진단서·장해진단서·진단서·진료기록부 등 제출서류를 명시하며 추간판탈출증 장해판정 기준(c05358)이 이를 뒷받침한다."}

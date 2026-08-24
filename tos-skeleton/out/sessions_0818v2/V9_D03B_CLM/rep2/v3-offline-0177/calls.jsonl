@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암 재발 보험금 재지급", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암보험금 재진단 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "재진단암|암 재진단", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01317", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00962", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00997", "arm": "V9_D03B_CLM"}

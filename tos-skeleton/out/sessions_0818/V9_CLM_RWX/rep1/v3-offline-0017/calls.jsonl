@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "6대 질병 구성요소", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "6대 질병 구성요소", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "6대질병.*(뇌출혈|뇌경색|급성심근경색|말기신부전|말기간질환|말기폐질환)", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04033", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05533", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04063", "arm": "V9_CLM_RWX"}

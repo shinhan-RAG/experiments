@@ -1,0 +1,3 @@
+e00424 confirms exact contract match with 지급사유 조항 text "최초 1회의 진단확정에 한함". Combined with c00899 (지급기준표), this fully answers the question: paid only once, not on rediagnosis.
+
+{"status":"ranked","ranked_chunk_ids":["c00899","e00424","c00579","e00768__r001"],"final_reason":"지급기준표와 지급사유 조항 모두 '최초 1회의 진단확정에 한함'을 명시해 재진단 시 재지급되지 않고 최초 1회만 지급됨을 확인함."}

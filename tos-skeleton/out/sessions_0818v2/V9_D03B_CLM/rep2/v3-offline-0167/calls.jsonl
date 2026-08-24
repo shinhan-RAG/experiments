@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "알릴의무 위반 효과 계약해지", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "알릴의무.*위반", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "계약 전 알릴 의무 위반의 효과", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00220", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00219", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00158", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00217", "arm": "V9_D03B_CLM"}

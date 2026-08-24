@@ -1,0 +1,3 @@
+Confirmed: the clause requires actually using a caregiver and receiving real care ("간병인을 사용하여 실질적으로 간병서비스를 이용"), and payment applies only to actually-used days, with verification documentation possibly required.
+
+{"status":"ranked","ranked_chunk_ids":["c04230","c04297","c04211","c04109","c04165","c04205"],"final_reason":"약관 지급사유·실제사용일 조항이 실제 간병인 사용·간병서비스 이용을 요건으로 명시함"}

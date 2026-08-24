@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "대상포진 진단비", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "대상포진 진단 확정시 진단보험금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03068", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03026", "arm": "V9_CLM_RWX"}

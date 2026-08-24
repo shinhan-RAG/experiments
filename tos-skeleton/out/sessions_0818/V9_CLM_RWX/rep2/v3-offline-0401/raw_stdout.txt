@@ -1,0 +1,3 @@
+Found the exact answer: c02774 contains the [단순재활] payment table with the rate 0.5% (normal) vs 0.25% (within 1 year, 간편심사형). c02775 and c02759 provide corroborating context (adjacent table rows/rules), verified by reading.
+
+{"status":"ranked","ranked_chunk_ids":["c02774","c02775","c02759","c00083"],"final_reason":"c02774 지급기준표에 [단순재활] 급여금이 간편심사형 기준 1년 미만 0.25%, 그 외(1년 이후) 0.5% 지급으로 명시되어 있음을 read로 확인함"}

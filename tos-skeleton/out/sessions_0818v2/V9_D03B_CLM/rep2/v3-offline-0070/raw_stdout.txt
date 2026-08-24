@@ -1,0 +1,3 @@
+All three confirm 뇌경색증(I63) is explicitly listed as a covered/classified disease under both "뇌졸중" and "뇌경색증" classification tables, and under 급성뇌경색증 definition articles.
+
+{"status":"ranked","ranked_chunk_ids":["c05646","c05440","c02492","c02512","c05509","c00083"],"final_reason":"뇌경색증(I63)이 뇌졸중·뇌경색증 분류표 및 급성뇌경색증 정의 조항에 명시적으로 포함되어 보장 대상임을 확인함"}

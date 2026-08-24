@@ -1,0 +1,3 @@
+Both candidates verified: c01477 gives the exact 부표2-1 지급기준표 (100% vs 50% within 1 year), and c00079 confirms this via the summary table of 감액기간 및 보험금 지급비율 (50% within first year vs full amount after).
+
+{"status":"ranked","ranked_chunk_ids":["c01477","c00079","c01427"],"final_reason":"c01477의 지급기준표가 가입 1년 미만 50%, 1년 이후 100% 지급을 명시하며 c00079가 이를 감액기간 요약표로 재확인함"}

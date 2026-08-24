@@ -1,0 +1,3 @@
+All three verified candidates directly answer the question: diagnosis-confirmation criteria (CT/MRI/angiography/PET/SPECT/CSF exam, or documented records if deceased) and explicit exclusion of traumatic intracranial hemorrhage, corroborated by the classification table (I62 = non-traumatic intracranial hemorrhage only).
+
+{"status":"ranked","ranked_chunk_ids":["c04814","c02605","c05438","c02171","c04997","c04087","c03451"],"final_reason":"약관 조항이 뇌혈관질환 진단확정 근거(CT/MRI/뇌혈관조영술 등)와 외상성 두개내 출혈 제외 규정을 명시적으로 확인시켜줌"}

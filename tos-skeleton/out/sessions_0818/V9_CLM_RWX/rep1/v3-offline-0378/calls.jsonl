@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "전립선암진단급여금 지급률 가입 경과기간", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "전립선암진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01042", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00706", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00073", "arm": "V9_CLM_RWX"}

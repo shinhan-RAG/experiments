@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "갑상선암 진단금 수령후 남은 진단금 보장", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "갑상선암 진단급여금 잔여 보장", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00424", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00098", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "특약의 소멸", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "갑상선암진단급여금을 지급함으로써", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "중증갑상선암진단급여금을 지급함으로써", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "진단급여금을 지급함으로써 이 특약이 소멸", "arm": "V9_CLM_RW"}

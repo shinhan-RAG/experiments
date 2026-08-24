@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "주계약 납입면제 기준", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료의 납입을 면제", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험료납입면제 사유 장해상태", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료의 납입을 면제합니다", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료의 납입이 면제되는 경우", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제1-6조", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04897", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04895", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "통합암 특약 갑상선암 소액암 보장", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "갑상선암 소액암 통합암 진단비", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통합암", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통합건강보험", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00613", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "통합.{0,10}건강보험", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00494", "arm": "V9_CLM_RW"}

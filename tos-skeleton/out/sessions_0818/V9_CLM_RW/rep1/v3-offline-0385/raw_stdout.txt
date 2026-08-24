@@ -1,0 +1,3 @@
+Both verified candidates confirm: "특약보험가입금액의 100%" for 암진단 급여금 under (간편)[삭감없음용]일반암진단특약 — both the 해약환급금 미지급형 (e00473__r001) and 갱신형 (e00803__r001) versions.
+
+{"status":"ranked","ranked_chunk_ids":["e00473__r001","e00803__r001","e00440__r001","e00768__r001"],"final_reason":"두 (간편)[삭감없음용]일반암진단특약 보험금 지급기준표를 직접 확인한 결과 암진단 급여금은 특약보험가입금액의 100%로 명시됨"}

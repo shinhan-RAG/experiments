@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 20년납 보험기간 보장기간", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험기간 100세 만기 납입기간 20년", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "20년납 100세", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험기간.*100세만기", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00058", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험기간과 보험료납입기간", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "납입기간.*20년.*보험기간", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "보험기간 보험료납입기간 계약사항", "arm": "V9_CLM_RWX"}

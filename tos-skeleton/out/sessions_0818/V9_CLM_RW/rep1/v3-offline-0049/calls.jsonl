@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갱신형특약 비갱신형특약 차이 보험료 갱신", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "갱신형 특별약관 보험료 갱신 시점 납입", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04433", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04494", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00909", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04266", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "갱신형이 아닌\\|비갱신형", "arm": "V9_CLM_RW"}

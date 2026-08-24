@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌출혈진단특약 보험금 감액기간", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌출혈.*감액", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00082", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02239", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "뇌출혈진단특약 감액기간 보험금 지급기준표", "arm": "V9_CLM_RWX"}

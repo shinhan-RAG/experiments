@@ -1,0 +1,3 @@
+All three candidates verified and consistent.
+
+{"status":"ranked","ranked_chunk_ids":["c02255","c02239","c00082"],"final_reason":"보험금 지급기준표(c02255)와 지급사유 조항(c02239)이 1년 미만 50%, 1년 이후 100% 지급을 명시하며 c00082가 감액비율표로 이를 재확인한다."}

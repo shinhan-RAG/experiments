@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "희귀질환자 산정특례대상 정의", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "희귀질환자산정특례대상보장특약", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "희귀질환자 산정특례대상", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04564", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e04178", "arm": "V9_CLM_R"}

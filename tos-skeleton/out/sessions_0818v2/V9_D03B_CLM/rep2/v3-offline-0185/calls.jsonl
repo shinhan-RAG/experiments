@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "암진단금 몇번 받을 수 있나요 지급횟수", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암진단비 최초 1회한 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "최초 1회에 한해", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00097", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01314", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00099", "arm": "V9_D03B_CLM"}

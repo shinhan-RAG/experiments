@@ -1,0 +1,11 @@
+['query', 'total_candidates', 'page', 'page_size', 'results']
+{
+  "id": "e00144",
+  "jo": "j00006",
+  "source": "tag",
+  "contract": "주계약((간편)신한통합건강보장보험 원(ONE)",
+  "variant": "",
+  "jo_title": "# 熊",
+  "preview": "(①간편)신한통합건강보장보험 원(ONE)(②무배당, ③해약환급금 미지급형)",
+  "score": 0.0785173
+}

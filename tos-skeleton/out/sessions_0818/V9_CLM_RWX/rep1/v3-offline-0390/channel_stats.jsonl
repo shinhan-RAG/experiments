@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "급성심근경색증진단특약 급성심근경색증진단급여금 1년 이내 지급률", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.115327, "dense/V9": 0.102564}, "sparse_share": 0.5293, "dense_share": 0.4707, "notes": []}

@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "해약환급금 미지급형 인공관절치환수술특약 납입 중 해지 환급금", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136679, "dense/V9": 0.144164}, "sparse_share": 0.4867, "dense_share": 0.5133, "notes": []}

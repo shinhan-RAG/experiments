@@ -1,0 +1,8 @@
+{"tool": "grep", "arg": "전립선.{0,10}바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01881", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01863", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01866", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여 전립선 바늘생검 조직병리진단급여금 지급 요건 연간 지급 횟수", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전립선.{0,10}바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01863", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01866", "arm": "V9_D03B_CLM"}

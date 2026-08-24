@@ -1,0 +1,3 @@
+Based on verified evidence: c02789 contains the exact embedded question "급여 뇌심장질환 검사급여금은 연간 몇 회 받을 수 있나요?" and leads into the payout clause; c02803 explicitly states "(다만, 연간 1회에 한함)" for 급여 뇌심장질환 검사급여금 and 급여 혈관조영술 검사급여금; c00105 confirms in table form "연간 1회에 한해 보장".
+
+{"status":"ranked","ranked_chunk_ids":["c02803","c02789","c00105","c00080"],"final_reason":"c02803의 지급사유 조항이 급여뇌심장질환 검사급여금을 연간 1회로 명시하고, c02789/c00105/c00080이 이를 교차 확인함"}

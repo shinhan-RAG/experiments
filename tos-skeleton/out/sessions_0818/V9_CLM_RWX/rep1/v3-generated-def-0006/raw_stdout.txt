@@ -1,0 +1,3 @@
+Verified both chunks contain the exact 제2-1조의6 정의 text.
+
+{"status":"ranked","ranked_chunk_ids":["c01704","c01705","c01687","c01712"],"final_reason":"c01704/c01705는 제2-1조의6 조문 원문으로 정의를 직접 명시하며 c01687(목차)과 c01712(급여금 지급조건)로 문맥을 보강함."}

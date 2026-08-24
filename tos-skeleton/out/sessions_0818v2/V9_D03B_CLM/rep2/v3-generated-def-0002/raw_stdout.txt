@@ -1,0 +1,3 @@
+Definition confirmed directly in c01582 (조문 제2-1조의7), with c01581/c01583 providing surrounding context.
+
+{"status":"ranked","ranked_chunk_ids":["c01582","c01581","c01583","c01585","c01564"],"final_reason":"c01582 contains the explicit legal definition of 카티(CAR-T)항암약물치료제, confirmed by reading and cross-checked via grep/hybrid."}

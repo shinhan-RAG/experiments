@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정부정맥진단특약 특정부정맥 진단급여금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "특정부정맥", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02473", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02451", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02466", "arm": "V9_CLM_RWX"}

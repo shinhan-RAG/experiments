@@ -1,0 +1,3 @@
+Confirmed both elements define "간병인" strictly: a paid caregiver registered with a medical institution/registered business, whose service payment is verifiable — actual use of a qualified caregiver is required, and it excludes 간호·간병통합서비스.
+
+{"status":"ranked","ranked_chunk_ids":["e03840","e03753","e03907","c04154","c04092","c04125","e03776__r001","c04160"],"final_reason":"약관 조항이 '간병인'을 유상·등록된 자로 정의하며 실제 간병서비스 이용과 비용 지불 확인을 지급요건으로 명시함"}

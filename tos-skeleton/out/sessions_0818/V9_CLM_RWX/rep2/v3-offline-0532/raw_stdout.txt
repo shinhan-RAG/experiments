@@ -1,0 +1,3 @@
+These two chunks directly confirm: even before the company formally accepts (승낙) the application, if the first premium was paid along with the application, coverage still applies from the date the first premium is received — with limited exceptions (breach of disclosure duty, exceeding underwriting limits, etc.). Verified and consistent with c00280 (special rider version of the same clause) and c00164 (30-day acceptance/rejection window) found in the searches.
+
+{"status":"ranked","ranked_chunk_ids":["c00182","c00183","c00280","c00164"],"final_reason":"제23조/제2-1조는 청약과 함께 제1회 보험료를 낸 경우 승낙 전이라도 보장개시일(보험료 받은 날)부터 보장한다고 명시함(일부 예외 제외)."}

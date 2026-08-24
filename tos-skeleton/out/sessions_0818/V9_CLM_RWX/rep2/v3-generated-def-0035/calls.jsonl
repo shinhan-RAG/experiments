@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증치매상태 정의 중증치매보장특약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "중증치매상태", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04628", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04629", "arm": "V9_CLM_RWX"}

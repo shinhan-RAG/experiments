@@ -1,0 +1,3 @@
+Both c00950 and c01576 contain identical verified definitions of 대장점막내암 (same clause text repeated across the policy document versions/articles). Both directly and precisely answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["c00950","c01576","c01487","c04146","c00583"],"final_reason":"c00950/c01576 contain the verified full legal definition clause (제2-1조의4/5 대장점막내암의 정의) with matching text confirmed via read."}

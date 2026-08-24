@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보험료 자동대출납입 유지", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "자동대출납입 해지 요건 유지기간", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00185", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00186", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00184", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "같은 날 여러 수술을 받은 경우 수술비 중복 지급", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "동일한 날 2회 이상 수술 수술급여금 지급기준", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "같은 날.{0,10}수술", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c05115", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03693", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "동일한 질병을 직접적인 원인으로 두", "arm": "V9_CLM_R"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "6대 질병 구성요소", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "6대 질병", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04033", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "6대질병.{0,20}이라 함은", "arm": "V9_CLM_R"}

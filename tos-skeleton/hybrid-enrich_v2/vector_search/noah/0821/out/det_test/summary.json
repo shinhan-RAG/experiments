@@ -1,0 +1,34 @@
+{
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_test_full.jsonl",
+  "n": 90,
+  "selection_metric": "jo fractional R@5",
+  "full_train_screen": false,
+  "tie_break": [
+    "suff@10",
+    "R@10",
+    "equal-weight simplicity"
+  ],
+  "selected_arm": "tag_sparse_lexical",
+  "arms": {
+    "baseline_fs_slot": {
+      "R@1": 0.103704,
+      "R@5": 0.232256,
+      "R@10": 0.302247,
+      "R@20": 0.379689,
+      "R@40": 0.494503,
+      "suff@5": 0.166667,
+      "suff@10": 0.222222,
+      "RR@10": 0.210922
+    },
+    "tag_sparse_lexical": {
+      "R@1": 0.158468,
+      "R@5": 0.319116,
+      "R@10": 0.420396,
+      "R@20": 0.518864,
+      "R@40": 0.597382,
+      "suff@5": 0.266667,
+      "suff@10": 0.344444,
+      "RR@10": 0.312293
+    }
+  }
+}

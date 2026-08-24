@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "부정맥진단특약 부정맥 진단급여금 1년 이내 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편부정맥진단특약 진단급여금 가입후 1년미만 지급률 50%", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02442", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00081", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02405", "arm": "V9_CLM_RWX"}

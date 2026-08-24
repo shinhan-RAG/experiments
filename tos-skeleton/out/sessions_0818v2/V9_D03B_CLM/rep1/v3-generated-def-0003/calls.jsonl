@@ -1,0 +1,6 @@
+{"tool": "grep", "arg": "카티\\(CAR-T\\)항암약물허가치료 적응증", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01585", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01564", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "카티(CAR-T)항암약물허가치료 적응증 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "카티\\(CAR-T\\)항암약물허가치료 적응증", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01585", "arm": "V9_D03B_CLM"}

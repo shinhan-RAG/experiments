@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "재해장해 특약 장해급여금 수령 후 장해진단 추가판정 지급기준", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.136521, "dense/V9": 0.126601}, "sparse_share": 0.5189, "dense_share": 0.4811, "notes": []}

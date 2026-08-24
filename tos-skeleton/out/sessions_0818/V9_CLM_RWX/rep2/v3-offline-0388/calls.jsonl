@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편 간병인사용입원특약 간병인사용 입원 요양병원 제외 급여금 가입 후 감액 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "간병인사용.{0,10}입원.{0,10}요양병원.{0,5}제외", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00071", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00072", "arm": "V9_CLM_RWX"}

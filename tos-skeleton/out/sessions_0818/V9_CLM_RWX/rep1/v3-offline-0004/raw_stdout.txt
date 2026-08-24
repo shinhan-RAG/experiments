@@ -1,0 +1,3 @@
+This is about 50%이상형 (different variant), not the 3~100%형 asked about — less directly relevant. c00325 remains the clear primary answer, verified.
+
+{"status":"ranked","ranked_chunk_ids":["c00325","c00300","c00096"],"final_reason":"c00325는 (3~100%)재해장해특약의 보험금 지급기준표를 직접 명시해 질문에 정확히 답하며, 나머지는 특약명/한도 관련 보조 맥락이다."}

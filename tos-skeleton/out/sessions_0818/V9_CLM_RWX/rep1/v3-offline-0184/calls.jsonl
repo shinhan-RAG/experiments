@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "암진단금 수령 후 갱신 가능 여부", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암보험 갱신형 특약 갱신절차 보험료 재산정", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01017", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01055", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "소멸.*갱신할 수 없", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "암진단급여금 지급 후 특약 소멸 갱신 불가", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01173", "arm": "V9_CLM_RWX"}

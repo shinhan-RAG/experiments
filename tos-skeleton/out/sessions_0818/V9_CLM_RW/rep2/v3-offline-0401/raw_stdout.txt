@@ -1,0 +1,3 @@
+e02487 confirms same content as c02774 (부표2-1 지급기준표). This corroborates my verified answer.
+
+{"status":"ranked","ranked_chunk_ids":["c02774","e02487","c02775"],"final_reason":"부표2-1 지급기준표에서 [단순재활] 급여주요뇌심장질환특정재활치료급여금은 특약보험가입금액의 0.5%이나, 간편심사형 최초계약일부터 1년 미만 지급사유 발생 시 0.25%로 확인됨."}

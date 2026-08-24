@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대장점막내암의 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "대장점막내암 정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05076", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00383", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04787", "arm": "V9_CLM_RW"}

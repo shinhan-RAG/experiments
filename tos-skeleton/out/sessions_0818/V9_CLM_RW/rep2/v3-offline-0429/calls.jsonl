@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "정기특약 사망보험금 가입 후 2년 미만 지급금액", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "간편정기특약 사망보험금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00252", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00071", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "간편심사형.*2년 미만", "arm": "V9_CLM_RW"}

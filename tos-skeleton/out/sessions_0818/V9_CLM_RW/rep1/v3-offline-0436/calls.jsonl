@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편질병수술특약 질병수술급여금 지급률 1년", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "질병수술급여금 지급률 가입후 1년 미만", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03667", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03643", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03763", "arm": "V9_CLM_RW"}

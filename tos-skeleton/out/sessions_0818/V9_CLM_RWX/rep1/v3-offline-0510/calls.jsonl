@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 피보험자 사망 적립금", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "암주요치료비특약 소멸 사망시 특약 효력", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01339", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01341", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01342", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "갑상선암 진단금 수령 후 남은 진단금 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "갑상선암진단비 최초 1회 잔여 보장기간", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01331", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01322", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00565", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00106", "arm": "V9_CLM_RWX"}

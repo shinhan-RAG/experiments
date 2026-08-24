@@ -1,0 +1,3 @@
+That's just the table of contents (not the actual clause text), so I'll drop it and keep c00264 as primary verified answer.
+
+{"status":"ranked","ranked_chunk_ids":["c00264","c00232"],"final_reason":"c00264는 정기특약(갱신형) 제2-4조에서 고의사고(자해·자살)로 인한 사망 시 심신상실 상태이거나 보장개시 후 2년 경과한 자살인 경우 예외적으로 사망보험금을 지급한다고 명시하며, c00232는 같은 정기특약 문서의 목차로 해당 조항 위치를 확인해줌."}

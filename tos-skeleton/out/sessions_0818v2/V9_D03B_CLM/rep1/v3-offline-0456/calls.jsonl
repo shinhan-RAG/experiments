@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급성뇌경색증 진단 확정 검사방법 CT MRI", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급성뇌경색증 진단 확정 영상의학적 진단 CT MRI", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급성뇌경색증", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌경색증", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02492", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02493", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02492", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02493", "arm": "V9_D03B_CLM"}

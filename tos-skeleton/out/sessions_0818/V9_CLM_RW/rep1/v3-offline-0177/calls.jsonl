@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 재발 진단급여금 재지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "재진단암 진단비 지급사유 2년", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00962", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00997", "arm": "V9_CLM_RW"}

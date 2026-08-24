@@ -1,0 +1,3 @@
+c00304 duplicates the same 지급사유 조항 text with more surrounding context (용어정의, 세부규정 heading). This is the strongest set.
+
+{"status":"ranked","ranked_chunk_ids":["c00325","c00304","e00194","e00210","c00327"],"final_reason":"지급기준표(c00325)와 지급사유 조항(c00304/e00194)이 (3~100%)재해장해특약의 지급기준(3%~100% 장해지급률, 가입금액×장해지급률)을 직접 명시함"}

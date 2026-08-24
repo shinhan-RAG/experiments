@@ -1,0 +1,3 @@
+Confirmed all three chunks answer the question thoroughly: diagnosis definition/method (c02351), payment condition article (c02352), and payment table with "최초 1회 한함" (c02369).
+
+{"status":"ranked","ranked_chunk_ids":["c02352","c02369","c02351"],"final_reason":"c02352/c02369는 급성심근경색증 진단확정 시 진단급여금을 최초 1회에 한해 지급한다는 지급사유·지급기준표를 명시하고, c02351은 진단확정의 의학적 기준(제2-1조의2)을 정의한다."}

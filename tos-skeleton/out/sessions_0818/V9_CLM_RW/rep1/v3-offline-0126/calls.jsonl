@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "상급종합병원 정의", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "상급종합병원", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보건복지부장관.{0,10}지정.{0,15}종합병원", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02071", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04093", "arm": "V9_CLM_RW"}

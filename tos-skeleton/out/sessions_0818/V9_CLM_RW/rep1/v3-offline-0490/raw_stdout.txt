@@ -1,0 +1,3 @@
+Both confirmed relevant and directly answer the question.
+
+{"status":"ranked","ranked_chunk_ids":["e00040","c00133","c00139","e00041"],"final_reason":"제7조(보험금 등의 청구)가 기본 구비서류(청구서·사고증명서·신분증 등)를 명시하고, 보험금 청구서류 표와 안내문이 이를 보완한다."}

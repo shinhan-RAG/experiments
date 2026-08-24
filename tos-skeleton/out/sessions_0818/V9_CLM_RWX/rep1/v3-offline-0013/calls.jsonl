@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "1급 장해 사망보장 주계약 특약 소멸", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "장해분류표 1급 사망간주 특약 계속 보장", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00326", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "사망한 것으로 본다", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "사망으로 간주", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02205", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01382", "arm": "V9_CLM_RWX"}

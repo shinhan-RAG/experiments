@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "갱신형특약 비갱신형특약 차이 약관", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "갱신형 보험료 변경 갱신주기 갱신시점", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04266", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00119", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00213", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "제2-1조의2|보험기간 및 갱신", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00479", "arm": "V9_CLM_RW"}

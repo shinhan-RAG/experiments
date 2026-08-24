@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "같은 날 여러 수술 중복 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143405, "dense/V9": 0.13721}, "sparse_share": 0.511, "dense_share": 0.489, "notes": []}
+{"arm": "V9_CLM_RW", "query": "동일자 2회 이상 수술 보험금 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.125343, "dense/V9": 0.110823}, "sparse_share": 0.5307, "dense_share": 0.4693, "notes": []}

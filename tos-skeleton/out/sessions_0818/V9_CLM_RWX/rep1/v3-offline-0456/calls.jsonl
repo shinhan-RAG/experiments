@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급성뇌경색증 진단 확정 CT MRI 없이", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌경색증", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02492", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02493", "arm": "V9_CLM_RWX"}

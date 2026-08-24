@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "뇌혈관질환 상급종합병원 입원 입원급여금 지급 보장일수", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.149578, "dense/V9": 0.143319}, "sparse_share": 0.5107, "dense_share": 0.4893, "notes": []}

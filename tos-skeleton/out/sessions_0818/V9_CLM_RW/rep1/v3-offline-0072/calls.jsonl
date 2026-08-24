@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌심 주요치료비 청구 구비서류", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보험금 청구서류 진단서 뇌혈관질환 허혈성심장질환", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02701", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관·허혈심장질환주요치료비특약.*사고증명서", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "뇌혈관 또는 허혈심장질환.{0,20}주요치료", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌혈관 허혈심장질환 주요치료비 사고증명서 진단서 수술확인서", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "혈전용해치료확인서", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02710", "arm": "V9_CLM_RW"}

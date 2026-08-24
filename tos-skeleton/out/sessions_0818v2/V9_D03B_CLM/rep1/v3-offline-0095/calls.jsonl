@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "대학병원 외래진료 보장", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "외래", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "대학병원 외래 통원 진료비 보장", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02076", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대학병원", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02055", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02698", "arm": "V9_D03B_CLM"}

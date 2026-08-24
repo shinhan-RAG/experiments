@@ -1,0 +1,3 @@
+Both confirm the exact definition text (제2-1조의3). c04566 also covers overlapping content. e04170 is the table-of-contents entry pointing to the same article — useful supporting evidence but not the actual definition text itself.
+
+{"status":"ranked","ranked_chunk_ids":["e04178","c04565","c04566","e04170"],"final_reason":"e04178와 c04565를 read로 검증한 결과 제2-1조의3에서 희귀질환자 산정특례대상을 보건복지부 고시 별표4 기준 해당자로 정의함을 확인함"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌전증 1회 발작 진단 지급 여부", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌전증 진단비 지급사유 반복성 발작", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02105", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02103", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "1회", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "발작", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05410", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "단순 열성경련|단순열성경련|1회성 발작|단순 발작|1회의 발작", "arm": "V9_CLM_RW"}

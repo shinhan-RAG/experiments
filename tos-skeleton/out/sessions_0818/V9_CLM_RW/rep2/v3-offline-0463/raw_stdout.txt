@@ -1,0 +1,3 @@
+Both confirm: "다만, 최초 1회의 진단확정에 한함" (limited to the first diagnosis only), so the 고액암진단급여금 is paid only once regardless of subsequent diagnoses.
+
+{"status":"ranked","ranked_chunk_ids":["c00787","c00754","c00770","c00802","c00801"],"final_reason":"제2-2조 지급사유 조항에 '최초 1회의 진단확정에 한함'이라고 명시되어 두 번째 진단 시에는 재지급되지 않음을 확인"}

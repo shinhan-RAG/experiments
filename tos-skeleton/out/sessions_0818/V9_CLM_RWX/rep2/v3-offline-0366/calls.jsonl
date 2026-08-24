@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고액암진단특약 고액암 진단급여금 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "고액암 진단비 반복 지급 재진단", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00747", "arm": "V9_CLM_RWX"}

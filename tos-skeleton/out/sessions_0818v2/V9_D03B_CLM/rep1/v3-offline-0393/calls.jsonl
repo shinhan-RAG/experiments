@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 급여 혈관조영술 검사급여금 지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "혈관조영술 검사급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02803", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00080", "arm": "V9_D03B_CLM"}

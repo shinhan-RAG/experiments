@@ -1,0 +1,3 @@
+Both e01372 and c01582 confirm the exact definition text from 제2-1조의7. Ranking complete.
+
+{"status":"ranked","ranked_chunk_ids":["e01372","c01582","c01581","e01357"],"final_reason":"제2-1조의7에서 '카티(CAR-T)항암약물치료제'를 T세포 분리·유전자 도입 CAR-T세포 주입 방식의 암세포 사멸 치료제로 정의하는 조항을 읽고 확인함."}

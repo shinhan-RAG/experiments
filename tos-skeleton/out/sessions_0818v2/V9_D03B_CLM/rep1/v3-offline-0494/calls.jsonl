@@ -1,0 +1,7 @@
+{"tool": "grep", "arg": "자동대출납입", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00185", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "자동대출납입기간", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험료 자동대출 납입 유지", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "자동대출.*납입", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00185", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "자동대출납입기간", "arm": "V9_D03B_CLM"}

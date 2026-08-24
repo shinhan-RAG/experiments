@@ -1,0 +1,3 @@
+Based on the searches and verified reads, I have sufficient evidence: the payment-cause article (제2-2조) and the payment table (부표2-1) for (간편)[삭감없음용]일반암진단특약(무배당, 갱신형) both confirm diagnosis of "암"/"중증 갑상선암" (excluding 여성유방암·전립선암 unless via 중증 갑상선암 category) is required, and payment is limited to "최초 1회의 진단확정에 한함" (first diagnosis only — not repeated).
+
+{"status":"ranked","ranked_chunk_ids":["c00921","c00935","c00885","c00886","e00424","c00564"],"final_reason":"c00921/c00885 give the 제2-2조 지급사유 문구(암·중증갑상선암 진단확정, 최초 1회 한정)이고 c00935는 해당 특약의 보험금 지급기준표로 동일 조건을 재확인한다."}

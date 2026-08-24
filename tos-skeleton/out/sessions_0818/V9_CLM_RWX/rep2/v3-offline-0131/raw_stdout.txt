@@ -1,0 +1,3 @@
+Both confirm the same 보장대상 암 list: 기타피부암, 중증이외갑상선암, 제자리암, 경계성종양, 대장점막내암, 비침습방광암. Good enough evidence from two independent chunks (기본형/갱신형 policies).
+
+{"status":"ranked","ranked_chunk_ids":["c00641","c00972","c00612","c00939","c00613","c00646","c00938","c00097"],"final_reason":"c00641과 c00972의 지급기준표가 소액암진단급여금 대상암(기타피부암·중증이외갑상선암·제자리암·경계성종양·대장점막내암·비침습방광암)을 명시적으로 확인함"}

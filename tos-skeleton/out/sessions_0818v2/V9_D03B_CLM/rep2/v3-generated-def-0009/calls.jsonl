@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "특정순환계질환진단특약 특정순환계질환 1종 2종 3종 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "특정순환계질환\\(1종", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "특정순환계질환진단특약 특정순환계질환 정의 1종 2종 3종", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02376", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05506", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "특정순환계질환", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02375", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "이 특약에 있어서 \"특정순환계질환\\(1종", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "급성심근경색증진단급여금 지급사유 진단확정", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "간편 급성심근경색증진단특약 반복 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02352", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "급성심근경색증.*정의", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02751", "arm": "V9_CLM_RW"}

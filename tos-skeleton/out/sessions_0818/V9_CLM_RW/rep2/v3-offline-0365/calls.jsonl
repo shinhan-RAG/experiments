@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "50%이상장해형 질병장해특약 질병장해급여금 지급액 보험가입금액", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "50%이상 질병장해급여금 지급사유 지급금액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00502", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00448", "arm": "V9_CLM_RW"}

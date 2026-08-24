@@ -1,0 +1,3 @@
+Both confirm: 최초 1회의 진단확정에 한함 (paid only once, for the first diagnosis confirmation). c00100 also supports this as a summary table entry.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","c02352","c00100"],"final_reason":"약관 조항과 지급기준표 모두 급성심근경색증진단급여금은 '최초 1회의 진단확정에 한함'으로 명시해 재진단 시 재지급되지 않고 최초 1회만 지급됨을 확인함."}

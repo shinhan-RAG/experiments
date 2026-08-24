@@ -1,0 +1,3 @@
+This element (e01865) is the full 제2-1조의2 조항 covering all 8 subclauses on 갱신형 특약's boundary period, renewal notice, non-renewal conditions, premium/reserve recalculation at renewal, prior notice, and same coverage amount — directly answering the question. Combined with c00119 (갱신형 상품의 보험료 인상 가능성 안내) as supporting context.
+
+{"status":"ranked","ranked_chunk_ids":["e01865","c05145","c00119","c04433","c02748","c00980","c03175","e00815"],"final_reason":"제2-1조의2(특약의 보험기간 및 갱신) 조항이 갱신형 특약 특유의 보험기간 산정, 갱신 불가 사유, 갱신계약의 보험료·기초율 재산정, 사전 안내, 가입금액 동일 적용 등을 명시하며 비갱신형과 다른 반영사항을 직접 규정한다."}

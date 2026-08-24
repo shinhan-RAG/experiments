@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "재해장해 특약 보험금 지급기준 3~100%", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "재해장해분류표 지급률 장해지급률", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00325", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00310", "arm": "V9_CLM_RWX"}

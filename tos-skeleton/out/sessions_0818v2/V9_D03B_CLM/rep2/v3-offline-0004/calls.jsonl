@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "재해장해 특약 보험금 지급 기준 3% 100%", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "재해장해분류표", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00325", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "재해장해 급여금.*지급률", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "재해장해특약 보험금 지급사유 세부규정", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "정기특약 사망보험금 2년 미만", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "정기특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00252", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00276", "arm": "V9_CLM_RWX"}

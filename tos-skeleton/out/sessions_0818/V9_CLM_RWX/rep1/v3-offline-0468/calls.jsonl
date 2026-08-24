@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정 NGS 유전자패널 검사 지원급여금 지급 대상 질병 검사 목적 연간 지급 횟수", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "NGS 유전자패널", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01835", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01833", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01852", "arm": "V9_CLM_RWX"}

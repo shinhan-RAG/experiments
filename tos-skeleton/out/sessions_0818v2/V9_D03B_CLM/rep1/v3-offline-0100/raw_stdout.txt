@@ -1,0 +1,3 @@
+Tool call budget exhausted; ranking based on the verified previews already returned by the two `hybrid` queries.
+
+{"status":"ranked","ranked_chunk_ids":["c02033","c01904","c02074","c01536","c01498","c01497","c01237","c01307"],"final_reason":"면역치료(면역기전을 이용한 항암면역요법) 보장 여부와 유효성 입증 여부에 따른 지급/제외 기준을 담은 항암약물치료특약 조항들이 질문에 직접 답한다."}

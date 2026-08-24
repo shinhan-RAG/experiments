@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여 특정NGS 유전자패널검사 지원특약 지급률 1년", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "NGS.{0,20}유전자패널", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01836", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01849", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00074", "arm": "V9_CLM_R"}

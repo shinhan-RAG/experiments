@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌경색 보장 포함 여부", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌경색", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05646", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05440", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05438", "arm": "V9_CLM_RWX"}

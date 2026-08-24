@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "통합건강원 보험료 납입면제특약", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료 납입면제", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "납입면제특약 별도 가입 부가", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "보험료 납입면제특약 자동부가 별도 가입", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "통합건강", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04926", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00024", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "가입금액|부가할 수|선택.{0,10}특약", "arm": "V9_D03B_CLM"}

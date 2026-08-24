@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "고액암진단특약 고액암 진단급여금 지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143358, "dense/V9": 0.143064}, "sparse_share": 0.5005, "dense_share": 0.4995, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "고액암 진단비 반복 지급 재진단", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.146374, "dense/V9": 0.142451}, "sparse_share": 0.5068, "dense_share": 0.4932, "notes": []}

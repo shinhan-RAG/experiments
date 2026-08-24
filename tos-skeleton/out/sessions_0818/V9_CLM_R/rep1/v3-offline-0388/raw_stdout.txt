@@ -1,0 +1,3 @@
+Confirmed across both 해약환급금 미지급형 and 갱신형 versions of the rider.
+
+{"status":"ranked","ranked_chunk_ids":["c00071","c00072","c00112","c04230","c04296"],"final_reason":"c00071/c00072의 감액지급표가 (간편)간병인사용입원특약은 가입 후 2년간 재해 이외 사유 발생시 50%만 지급하고 2년 경과 후 전액 지급됨을 명시한다."}

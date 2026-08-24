@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료급여금 단순재활 지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "단순재활", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02774", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00083", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02759", "arm": "V9_D03B_CLM"}

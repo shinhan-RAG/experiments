@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RW", "query": "남녀특정암진단특약 전립선암진단급여금 지급률 가입 경과기간", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.132423, "dense/V9": 0.13167}, "sparse_share": 0.5014, "dense_share": 0.4986, "notes": []}

@@ -1,0 +1,3 @@
+This confirms c00082 has the exact "감액 기간 및 보험금 지급비율" table showing 뇌출혈진단특약: 가입 후 1년간, 1년 이후 지급 보험금의 50% 지급. Also e00015__r002 covers the same table row. c02239/c02235/c02233 provide the 특약 조항 context.
+
+{"status":"ranked","ranked_chunk_ids":["c00082","e00015__r002","c02239","c02235","c02233"],"final_reason":"c00082/e00015__r002의 감액기간표에 뇌출혈진단특약이 '가입 후 1년간, 1년이후 지급보험금의 50% 지급'으로 명시되어 있음"}

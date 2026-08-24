@@ -1,0 +1,3 @@
+e01415 (제2-1조의8) contains the exact definition clause; c01661 provides supporting context on scope of use. Both verified by reading.
+
+{"status":"ranked","ranked_chunk_ids":["e01415","c01661","c01650","c05655","c01684"],"final_reason":"e01415(제2-1조의8)가 갑상선암수술후항암호르몬치료제의 정의 조항을 직접 명시하며, 나머지는 사용범위·의약품명 등 보조 근거로 확인됨"}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_R", "query": "전립선암진단급여금 지급사유 반복지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.11784, "dense/V9": 0.119722}, "sparse_share": 0.496, "dense_share": 0.504, "notes": []}
+{"arm": "V9_CLM_R", "query": "남녀특정암진단특약 전립선암 진단확정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.146865, "dense/V9": 0.145361}, "sparse_share": 0.5026, "dense_share": 0.4974, "notes": []}

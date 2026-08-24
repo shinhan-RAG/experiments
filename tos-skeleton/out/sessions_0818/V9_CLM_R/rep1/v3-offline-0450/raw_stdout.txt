@@ -1,0 +1,3 @@
+Confirmed: the answer is "연간 1회" (once per year), directly stated in both the 지급사유 clause and the 세부규정 clause for the 1-5종단일금액보장수술특약.
+
+{"status":"ranked","ranked_chunk_ids":["e02820","c03190","c03156","c03179","e02859","c03191","e02846","e02795"],"final_reason":"제2-2조 지급사유와 세부규정 조항 모두 1-5종단일금액보장수술특약 수술급여금은 연간 1회 한도임을 명시한다."}

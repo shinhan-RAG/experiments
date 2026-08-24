@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "암 재발 진단시 보험금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암보장개시일 이후 재발암 진단 보험금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "재발", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00962", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01326", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04106", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01801", "arm": "V9_D03B_CLM"}

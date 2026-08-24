@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여 갑상선 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편급여바늘생검조직병리진단특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01880", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "갑상선 바늘생검 조직병리진단.*정의", "arm": "V9_CLM_RWX"}

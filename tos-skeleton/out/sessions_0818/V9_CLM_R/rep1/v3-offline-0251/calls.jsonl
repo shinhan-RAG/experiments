@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "(간편)[30일한도형]첫날부터입원특약 보험금 지급 세부규정 지급기준", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "첫날부터입원특약 지급기준", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "제2-3조.{0,20}세부규정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03910", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03889", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03890", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03891", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c03892", "arm": "V9_CLM_R"}

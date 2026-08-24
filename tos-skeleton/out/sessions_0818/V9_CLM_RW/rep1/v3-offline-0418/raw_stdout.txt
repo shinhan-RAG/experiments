@@ -1,0 +1,3 @@
+c03994 confirms the exact clause for "(간편)첫날부터상급종합병원입원특약": 1일당 특약보험가입금액의 1% (일반), 단 간편심사형 가입 후 1년 미만 재해 이외 지급사유 발생 시 0.5%. c03963 is the same table's continuation (identical text, likely duplicate chunk from same doc) confirming the note details. Both verified as answering the question directly.
+
+{"status":"ranked","ranked_chunk_ids":["c03994","c03963","e03658__r001"],"final_reason":"c03994의 보험금 지급기준표가 상급종합병원 입원급여금 지급률(일반 1% vs 간편심사형 1년미만 재해외 0.5%)을 명시하며 c03963/e03658이 동일 조항을 보완 확인함"}

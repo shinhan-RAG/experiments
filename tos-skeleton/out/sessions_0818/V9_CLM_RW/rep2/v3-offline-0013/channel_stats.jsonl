@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "1급장해 사망보장 특약 소멸", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.108672, "dense/V9": 0.116451}, "sparse_share": 0.4827, "dense_share": 0.5173, "notes": []}
+{"arm": "V9_CLM_RW", "query": "장해분류표 1급 보험료 납입면제 계약 소멸 특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.143635, "dense/V9": 0.141435}, "sparse_share": 0.5039, "dense_share": 0.4961, "notes": []}

@@ -1,0 +1,3 @@
+Confirmed: this is the 제2-2조 지급사유 clause of the 삭감없음용 특약(해약환급금 미지급형), matching c00736's payment table (page 421-436 range). Both explicitly state "전립선암"으로 진단확정 시 지급하되 "최초 1회의 진단확정에 한함" — i.e., paid only once, not repeatedly.
+
+{"status":"ranked","ranked_chunk_ids":["c00722","c00736","c01042","c00097"],"final_reason":"c00722의 제2-2조 지급사유와 c00736 지급기준표가 전립선암 진단확정 시 최초 1회에 한해 지급됨을 명시하며 c01042·c00097이 이를 뒷받침한다"}

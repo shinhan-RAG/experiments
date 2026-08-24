@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고액암진단특약 고액암 진단급여금 재진단 최초 1회한", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "고액암.{0,10}진단급여금", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00770", "arm": "V9_CLM_R"}

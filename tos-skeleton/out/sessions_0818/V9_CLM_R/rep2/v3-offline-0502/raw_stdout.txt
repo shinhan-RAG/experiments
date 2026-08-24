@@ -1,0 +1,3 @@
+Confirmed: c00200 (제39조 설명서 교부 및 보험안내자료 등의 효력 ③항) directly answers the question, with e00083 as a matching element for the same clause.
+
+{"status":"ranked","ranked_chunk_ids":["c00200","e00083","c00199"],"final_reason":"제39조 3항이 설계사가 사용한 보험안내자료와 약관 내용이 다를 경우 계약자에게 유리한 내용으로 계약이 성립된 것으로 본다고 명시함"}

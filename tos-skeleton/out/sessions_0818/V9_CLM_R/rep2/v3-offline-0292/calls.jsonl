@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "통합건강보험 일반암 진단1 일반암 진단2 차이", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "일반암진단비 특약", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "일반암진단.?1\\|일반암진단.?2\\|일반암 진단1\\|일반암 진단2\\|일반암진단Ⅰ\\|일반암진단Ⅱ", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "\\[기본\\]일반암진단특약|\\[삭감없음용\\]일반암진단특약", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00902", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00905", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00867", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "가입금액의 50%|가입금액의 100%|지급사유가 발생한 경우 이후", "arm": "V9_CLM_R"}

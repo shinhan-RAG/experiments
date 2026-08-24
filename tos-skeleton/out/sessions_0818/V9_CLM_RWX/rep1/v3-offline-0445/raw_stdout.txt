@@ -1,0 +1,3 @@
+c01426 has the exact 부표2-1 table with the answer: 100% normally vs 50% if within 1 year of contract date. c00079 corroborates with the 감액기간표 (50% during first year). Both verified.
+
+{"status":"ranked","ranked_chunk_ids":["c01426","c00079","c00078","c01394"],"final_reason":"c01426의 부표2-1 지급기준표가 가입 1년 미만 시 특약보험가입금액의 50%, 그 외(1년 이후 등)는 100% 지급된다고 명시하며 c00079/c00078이 동일 내용을 감액표로 재확인한다."}

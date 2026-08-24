@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "특정순환계질환(2종~3종) 정의 (간편)특정순환계질환진단특약", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.148871, "dense/V9": 0.148755}, "sparse_share": 0.5002, "dense_share": 0.4998, "notes": []}

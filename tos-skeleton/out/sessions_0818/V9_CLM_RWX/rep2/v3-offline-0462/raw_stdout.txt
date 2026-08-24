@@ -1,0 +1,3 @@
+Verified: the policy caps 간병인사용입원 급여금 at a fixed per-admission limit (180일, not 185일) and explicitly states that repeated admissions for the same illness are aggregated as "1회 입원" (days summed) unless 180 days have passed since the last discharge/use — so it is not true that each hospitalization automatically restarts a full separate coverage period.
+
+{"status":"ranked","ranked_chunk_ids":["c04163","c04207","c03871","c04164","c02558","c04313"],"final_reason":"약관상 동일 질병 재입원은 최종 사용일(퇴원일)부터 180일 이내면 1회 입원으로 합산되어 사용일수가 누적되며(185일이 아닌 180일 한도), 180일 경과 후에만 새로운 입원으로 보아 별도 보장이 재개된다."}

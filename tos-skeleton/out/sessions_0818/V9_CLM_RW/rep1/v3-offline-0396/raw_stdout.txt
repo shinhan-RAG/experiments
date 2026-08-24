@@ -1,0 +1,3 @@
+c01881 confirms the exact answer clearly (지급 기준표: 1년 미만 0.5%, 1년 이후 1%). c00075 gives supporting summary table context.
+
+{"status":"ranked","ranked_chunk_ids":["c01881","c00075","c01866","c01865"],"final_reason":"c01881의 보험금 지급기준표에서 급여 전립선 바늘생검 조직병리진단급여금은 가입 1년 이후 특약보험가입금액의 1%, 1년 미만 발생 시 0.5% 지급으로 명시됨을 확인했다."}

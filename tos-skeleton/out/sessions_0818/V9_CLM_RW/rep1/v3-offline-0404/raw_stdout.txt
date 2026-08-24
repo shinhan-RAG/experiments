@@ -1,0 +1,3 @@
+Both confirmed relevant: c02239 states the payment condition (진단 확정 시, 최초 1회 한함 — 반복지급 없음), c02236 defines the diagnosis method/criteria (뇌전산화단층촬영, MRI 등 기초한 의사 진단확정). Also c02255 (지급기준표) and c02240 (사망시 취급) support this.
+
+{"status":"ranked","ranked_chunk_ids":["c02239","c02236","e01944","c02255","c02240"],"final_reason":"제2-2조가 최초 1회 진단확정에 한해 지급함을 명시하고, 제2-1조의2가 뇌출혈 진단확정 방법(CT/MRI 등 의사 진단)을 정의함을 read로 확인함"}

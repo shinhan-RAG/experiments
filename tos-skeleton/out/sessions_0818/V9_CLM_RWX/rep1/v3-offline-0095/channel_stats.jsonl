@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "대학병원 외래진료 보장", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.12748, "dense/V9": 0.107158}, "sparse_share": 0.5433, "dense_share": 0.4567, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "외래제비용 통원의료비 대학병원", "n_results": 10, "channel_sizes": {"bm25/V9": 0, "dense/V9": 50}, "hits_per_channel": {"dense/V9": 10}, "rrf_mass": {"dense/V9": 0.152966}, "sparse_share": 0.0, "dense_share": 1.0, "notes": []}

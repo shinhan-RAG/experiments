@@ -1,0 +1,3 @@
+Found the exact clause defining "연간" for the 암주요치료비 특약. c01327 gives the precise definition (최초 진단확정일부터 매년 진단확정일 전날까지) with an example, and c01330 gives the parallel definition for 기타피부암/갑상선암 주요치료.
+
+{"status":"ranked","ranked_chunk_ids":["c01327","c01330","c01329","c01314","c00106","c01800"],"final_reason":"c01327이 암주요치료급여금의 '연간'을 최초 진단확정일부터 매년 진단확정일 전날까지로 명시적으로 정의하며 예시까지 제공한다."}

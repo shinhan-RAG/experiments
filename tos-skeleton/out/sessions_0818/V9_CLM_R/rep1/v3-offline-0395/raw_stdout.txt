@@ -1,0 +1,3 @@
+Found the exact answer: c01880 contains the 지급기준표 row for 급여 유방 바늘생검 조직병리진단급여금 — 1년 이후는 특약보험가입금액의 1%, 최초계약일부터 1년 미만이면 0.5%. c01881 has the continuation with the "1년 미만" 정의 note. c00075 corroborates with the summary table.
+
+{"status":"ranked","ranked_chunk_ids":["c01880","c01881","c00075","c01865","c01861"],"final_reason":"c01880/c01881의 보험금 지급기준표가 급여 유방 바늘생검 조직병리진단급여금의 1년 미만 0.5% vs 1년 이후 1% 지급률을 명시함"}

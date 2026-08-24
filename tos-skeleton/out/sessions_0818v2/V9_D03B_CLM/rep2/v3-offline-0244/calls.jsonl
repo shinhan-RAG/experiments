@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "재해장해특약 기지급 재해장해급여금 동일부위 추가 재해장해 추가보험금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "동일한 부위에 다시 재해장해상태가 발생", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "동일한 부위", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "이미 지급받은 금액을 차감", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "재해장해 추가로 발생한 경우 이미 지급한 금액을 차감하고 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00309", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00308", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00310", "arm": "V9_D03B_CLM"}

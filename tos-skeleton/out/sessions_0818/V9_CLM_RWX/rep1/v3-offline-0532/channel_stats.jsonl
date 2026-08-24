@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "승낙전 보장 제1회 보험료 납입", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.132309, "dense/V9": 0.138859}, "sparse_share": 0.4879, "dense_share": 0.5121, "notes": []}

@@ -1,0 +1,3 @@
+e04323 directly answers: 인공관절치환수술특약(해약환급금 미지급형)은 보험료 납입기간 중 해지 시 해약환급금이 없음을 명시. Also c03164 (from hybrid) is a similar general 해약환급금 미지급형 clause but not specific to this contract — e04323/e04319/e04321 are specifically tied to 급여인공관절치환수술특약 via contract-slot match, so I'll rank those top.
+
+{"status":"ranked","ranked_chunk_ids":["e04323","e04319","e04321"],"final_reason":"e04323은 급여인공관절치환수술특약(해약환급금 미지급형)의 제2-11조 해약환급금 조항으로 보험료 납입기간 중 해지 시 해약환급금이 없음을 명시한다."}

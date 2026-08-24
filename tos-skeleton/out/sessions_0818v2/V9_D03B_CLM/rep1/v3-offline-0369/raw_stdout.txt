@@ -1,0 +1,3 @@
+Confirmed the core clause: c00628 has 제2-2조 (지급사유: 6개 소액암 진단확정시 지급, 각각 최초 1회에 한함). This directly answers both parts of the question.
+
+{"status":"ranked","ranked_chunk_ids":["c00628","c00659","c00994","c00641","c00961","c00962","c00958","c00097"],"final_reason":"제2-2조 지급사유 조항이 6대 소액암 진단확정 시 각각 최초 1회에 한해 지급됨을 명시하며, 관련 표·FAQ 청크들이 반복지급 불가를 뒷받침한다."}

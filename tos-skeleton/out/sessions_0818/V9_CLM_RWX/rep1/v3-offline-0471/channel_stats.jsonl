@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_RWX", "query": "급여뇌심장질환특정검사지원특약 검사급여금 지급 목적 연간 횟수", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.142599, "dense/V9": 0.134864}, "sparse_share": 0.5139, "dense_share": 0.4861, "notes": []}

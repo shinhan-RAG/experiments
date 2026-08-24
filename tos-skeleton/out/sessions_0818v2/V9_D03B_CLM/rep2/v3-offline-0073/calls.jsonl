@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "뇌전증 1회 발작 진단확정 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌전증", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02105", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05411", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02103", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02100", "arm": "V9_D03B_CLM"}

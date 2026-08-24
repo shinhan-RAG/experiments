@@ -1,0 +1,3 @@
+Both confirm: diagnosis must be by a doctor at a medical institution, based on ECG/echocardiography/coronary angiography/cardiac enzyme tests etc., and payment is limited to the first diagnosis only (최초 1회 한함) — not repeated.
+
+{"status":"ranked","ranked_chunk_ids":["c02299","c02333","c02346","c02322","c02309"],"final_reason":"지급기준표와 진단확정 조항을 읽어 '최초 1회 한함'(반복지급 불가) 및 의사의 정밀검사 기반 진단확정 요건을 확인했다."}

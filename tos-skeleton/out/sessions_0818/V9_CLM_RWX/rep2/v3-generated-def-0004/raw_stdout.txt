@@ -1,0 +1,3 @@
+Confirmed: c01629 (목차) matches "제2-1조의7 '특정항암호르몬치료제' 및 '특정항암호르몬약물허가치료'의 정의" as the correct article title for this specific 특약, and c01646/c01647 contain the actual definition text. This confirms my top candidates are correct.
+
+{"status":"ranked","ranked_chunk_ids":["c01646","c01647","c01629","c01682","c05648"],"final_reason":"c01646의 제2-1조의7 ①항이 '특정항암호르몬치료제'를 호르몬을 차단·감소시켜 암세포 성장을 억제하는 항암약물치료제로 직접 정의하며, c01647·c01629·c01682·c05648이 관련 세부범위와 목차·의약품 분류표로 이를 뒷받침한다."}

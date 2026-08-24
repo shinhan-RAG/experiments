@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "전립선암진단급여금 지급 전립선암 진단 확정", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140914, "dense/V9": 0.149203}, "sparse_share": 0.4857, "dense_share": 0.5143, "notes": []}

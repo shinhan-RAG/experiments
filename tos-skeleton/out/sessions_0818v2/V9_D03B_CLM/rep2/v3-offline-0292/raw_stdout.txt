@@ -1,0 +1,3 @@
+c00565 looks like the [기본]일반암진단특약 payment reduction clause. That, combined with c00076 (comparison table) and c00905 ([삭감없음용] clause with no such reduction), sufficiently documents the difference: [기본]형은 가입 1년 이내 발생 시 보험금 50%만 지급(삭감), [삭감없음용]형은 삭감 없이 100% 지급. Enough evidence gathered.
+
+{"status":"ranked","ranked_chunk_ids":["c00076","c00565","c00905","c00549","c00902","c00548","c00869"],"final_reason":"[기본]일반암진단특약은 가입 1년 이내 보험금 50% 삭감 지급, [삭감없음용]일반암진단특약은 삭감 없이 지급하는 차이를 비교표와 각 특약 조항에서 확인함"}

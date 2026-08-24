@@ -1,0 +1,3 @@
+Both c05115 (동일 입원 중 여러 수술 동시 시행 시 하나의 ADRG만 생성 — 사실상 같은 날/같은 입원 중복수술 비지급 원칙) and the repeated clause family (c03693/c03644/c03773 등, 동일 질병으로 두 종류 이상 수술 시 1회만 지급) directly answer the question. Verified via read.
+
+{"status":"ranked","ranked_chunk_ids":["c05115","c03693","c03644","c03773","c03764","c03737","c03723","c03680"],"final_reason":"동일 입원·동일 질병으로 여러 수술을 받아도 1회분만 인정되어 중복 지급되지 않는다는 조항들을 확인했다."}

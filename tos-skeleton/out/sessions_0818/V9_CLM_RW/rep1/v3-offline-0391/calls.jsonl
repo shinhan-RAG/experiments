@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "간편급성심근경색증진단특약 급성심근경색증진단급여금 최초 1회 재진단", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "급성심근경색증진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02369", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02352", "arm": "V9_CLM_RW"}

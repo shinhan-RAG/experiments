@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "특정부정맥진단특약 특정부정맥 진단급여금 지급률", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "가입 1년 이내 진단급여금 지급률 50% 100%", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02466", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00094", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "특정부정맥.*100%", "arm": "V9_CLM_RW"}

@@ -1,0 +1,7 @@
+{"tool": "read", "arg": "c03667", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03643", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00094", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "간편 질병수술특약 질병수술급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "질병수술급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03643", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03667", "arm": "V9_D03B_CLM"}

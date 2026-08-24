@@ -1,0 +1,3 @@
+Confirmed — c03075 completes the definition (③④ subclauses) before moving to 지급사유. All three chunks/elements verified against the actual question.
+
+{"status":"ranked","ranked_chunk_ids":["e02736","c03073","c03075","c05471"],"final_reason":"제2-1조의2가 '특정 류마티스 관절염'을 부표2-2 분류표 해당 질병 및 항류마티스약제 치료 이력 요건으로 정의하며, c05471은 그 부표2-2 분류표 원문을 담고 있음이 read로 확인됨."}

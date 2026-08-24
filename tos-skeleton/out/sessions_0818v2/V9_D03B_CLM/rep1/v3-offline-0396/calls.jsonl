@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "급여 전립선 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전립선.*바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여 전립선 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01881", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "전립선 바늘생검", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01881", "arm": "V9_D03B_CLM"}

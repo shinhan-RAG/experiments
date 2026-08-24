@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "신한통합건강보장보험 원 주보장 감액", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "주계약 보험가입금액 감액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "주계약.{0,20}감액", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00731", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "주계약의 보험가입금액을 감액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제1-[0-9]+조.*감액", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "주계약 보험가입금액 감액", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "가입금액의 감액", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "면역항암치료 보장", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "항암치료 면역요법 특약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "면역항암", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "면역관문억제제", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00078", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01252", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01605", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "카티", "arm": "V9_CLM_RWX"}

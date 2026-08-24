@@ -1,0 +1,3 @@
+Both c00935 (갱신형) and c00610 (해약환급금 미지급형, confirmed via grep preview showing "특약보험가입금액의 100%") confirm the answer: 100% of 특약보험가입금액.
+
+{"status":"ranked","ranked_chunk_ids":["c00935","c00610","c00899","c00579"],"final_reason":"보험금 지급기준표에서 (간편)[삭감없음용]일반암진단특약의 암진단급여금은 특약보험가입금액의 100%로 명시됨"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여 전립선 바늘생검 조직병리진단급여금 지급률 1년", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "전립선 바늘생검 조직병리진단", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01881", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01866", "arm": "V9_CLM_RW"}

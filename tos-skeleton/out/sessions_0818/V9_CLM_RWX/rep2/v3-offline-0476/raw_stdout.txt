@@ -1,0 +1,3 @@
+Verified both candidates directly answer the question with matching text.
+
+{"status":"ranked","ranked_chunk_ids":["c02759","c02774","c00108","c02754"],"final_reason":"c02759(지급사유 조항)과 c02774(지급기준표)가 주요뇌심장질환 진단확정 후 단순재활치료를 받은 경우 1일 1회·연간 30회 한도로 급여금을 지급함을 직접 명시함을 read로 확인했다."}

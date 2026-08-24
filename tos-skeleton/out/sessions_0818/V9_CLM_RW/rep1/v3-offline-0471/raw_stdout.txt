@@ -1,0 +1,3 @@
+Enough evidence found. The row prior to c02803's cutoff clearly begins with "특약보험기간 중 피보험자가 「의료기관의 의사에 의하여 "뇌심장질환"으로 진단 및 치료를 위한 필요소견을 토대로 "급여뇌심장질환검사"를 받았을 때" (mirroring the 혈관조영술 row structure), confirming purpose = 뇌심장질환 진단 및 치료 목적, and both capped at 연간 1회.
+
+{"status":"ranked","ranked_chunk_ids":["c02803","c00105","c02789"],"final_reason":"c02803의 지급기준표 조항이 '뇌심장질환 진단 및 치료 목적'의 검사 시 연간 1회 한도 지급을 명시하며 c00105·c02789로 교차 확인됨"}

@@ -1,0 +1,3 @@
+Both confirmed relevant and directly answer the question with matching clauses (재발/전이 시 재지급 불가, 단 5년 경과 시 예외 재보장).
+
+{"status":"ranked","ranked_chunk_ids":["c00997","c00962","c01801","c04106"],"final_reason":"재발/전이 시 동일 소액암 진단급여금은 재지급하지 않되 5년 경과 후 예외 재보장 조항을 직접 읽고 확인함"}

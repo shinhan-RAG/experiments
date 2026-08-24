@@ -1,0 +1,3 @@
+Both candidates confirmed the answer: 1년 미만 발생 시 50%, 1년 이후(포함) 100% 지급.
+
+{"status":"ranked","ranked_chunk_ids":["c02369","c02352","c00081"],"final_reason":"c02369의 보험금 지급기준표가 1년 미만 50%, 1년 이후 100% 지급률을 명시하고 c02352의 제2-3조가 이를 삭감 규정으로 뒷받침함"}

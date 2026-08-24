@@ -1,0 +1,3 @@
+This confirms the answer clearly. c00252 gives the exact 지급기준표: 100% normally, 50% if within 2 years for 간편심사형 non-accident cause. c00071 and c00235 corroborate.
+
+{"status":"ranked","ranked_chunk_ids":["c00252","c00071","c00276","c00235","c04329"],"final_reason":"c00252의 보험금 지급기준표가 2년 미만 50%, 2년 이후 100% 지급을 명시하고 다른 청크들이 이를 보강한다."}

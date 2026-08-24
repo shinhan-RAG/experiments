@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "알릴의무 위반 계약 해지", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "알릴의무 위반 효과 계약해지 보험금 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00048", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e00104__r001", "arm": "V9_CLM_RW"}

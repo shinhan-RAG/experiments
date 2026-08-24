@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "혈전용해치료특약 급성뇌경색증혈전용해치료급여금", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급성뇌경색증혈전용해치료급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02513", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02512", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02494", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급사유 진단확정", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "남녀특정암진단특약 유방암 진단급여금 반복지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00736", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01028", "arm": "V9_CLM_RWX"}

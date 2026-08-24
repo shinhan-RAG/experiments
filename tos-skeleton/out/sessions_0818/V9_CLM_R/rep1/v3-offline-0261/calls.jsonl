@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "중증 갑상선암 진단 기준", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "갑상선암 진단 확정 기준", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "중증 갑상선암", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01096", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c04139", "arm": "V9_CLM_R"}

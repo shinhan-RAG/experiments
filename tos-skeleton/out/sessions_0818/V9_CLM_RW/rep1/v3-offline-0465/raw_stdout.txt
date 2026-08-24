@@ -1,0 +1,3 @@
+Verified: c01880 gives 지급기준표 (지급요건 및 연간 1회 한도, 지급금액), e01603 gives 정의(수가코드 C8591 등 요건), c01866 confirms 연간 1회 지급 조항 문구. These three directly answer 지급 요건과 연간 지급 횟수.
+
+{"status":"ranked","ranked_chunk_ids":["c01880","e01603","c01866","e01607","c01859"],"final_reason":"부표2-1 지급기준표와 정의조항(e01603), 지급사유 조항(c01866)에서 갑상선 바늘생검 조직병리진단급여금의 지급요건과 연간 1회 한도를 직접 확인함"}

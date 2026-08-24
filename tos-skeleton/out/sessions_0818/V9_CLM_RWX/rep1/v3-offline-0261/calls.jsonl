@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "중증 갑상선암 진단 기준", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "갑상선암 진단비 분류 기준", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01096", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01057", "arm": "V9_CLM_RWX"}

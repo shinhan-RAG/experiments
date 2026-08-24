@@ -1,0 +1,3 @@
+Confirmed: c00200 contains the exact clause (제39조③), and slot search e00083 corroborates the same 제39조 text. c00199 provides the lead-in context.
+
+{"status":"ranked","ranked_chunk_ids":["c00200","e00083","c00199"],"final_reason":"c00200(제39조③)에 보험안내자료와 약관 내용이 다르면 계약자에게 유리한 내용으로 계약이 성립된 것으로 본다는 조항을 직접 확인했다."}

@@ -1,0 +1,3 @@
+c00518 is a Q&A-style chunk directly matching "6대질병 분류표에 해당하는 항목" definition text — good confirming candidate, consistent with c04033. c01789 is another article instance of the same definition (different specialty variant). This confirms my ranking is solid.
+
+{"status":"ranked","ranked_chunk_ids":["c04033","c05533","c00518","c01789","c05538","c05543","c04063","c05553"],"final_reason":"c04033/c00518/c01789가 6대질병(암·대장점막내암·비침습방광암·제자리암·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환) 구성요소를 정의하고, c05533 등 부표2-2 분류표가 각 항목의 세부 질병코드를 제시함을 read로 확인함."}

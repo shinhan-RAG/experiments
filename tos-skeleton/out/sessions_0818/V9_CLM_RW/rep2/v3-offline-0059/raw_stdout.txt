@@ -1,0 +1,3 @@
+Confirmed — c00311 is explicitly (간편)[3~100%장해형]재해장해특약, the exact document covering traffic-accident (재해) disability claims including 추간판탈출증, and specifies the required 사고증명서 documents.
+
+{"status":"ranked","ranked_chunk_ids":["c00311","c00336","c00390","c00391","c05359","c00464","c00533"],"final_reason":"재해장해특약 제2-5조(사고증명서) 조항이 교통사고(재해)로 인한 추간판탈출증 장해보험금 청구시 제출서류(사망진단서·장해진단서·진단서·진료기록부·각종사고증명서류)를 명시하며, c05359는 해당 장해분류표에서 추간판탈출증 장해기준을 정의함."}

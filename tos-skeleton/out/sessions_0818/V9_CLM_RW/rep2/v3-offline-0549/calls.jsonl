@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "허혈심장질환 상급종합병원 통원 통원급여금 1일 연간 횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "허혈심장질환 통원급여금 지급한도", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02699", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00109", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02399", "arm": "V9_CLM_RW"}

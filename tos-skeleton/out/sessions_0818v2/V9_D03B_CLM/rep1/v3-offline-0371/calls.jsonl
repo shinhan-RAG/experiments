@@ -1,0 +1,8 @@
+{"tool": "read", "arg": "c00959", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00961", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00962", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "소액암진단특약 소액암 진단급여금 최초 1회 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "소액암.*진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00961", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00641", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00962", "arm": "V9_D03B_CLM"}

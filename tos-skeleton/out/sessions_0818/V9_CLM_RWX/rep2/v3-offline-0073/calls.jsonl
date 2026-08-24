@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌전증 1회 발작 진단 지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "뇌전증", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02105", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05411", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02103", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02104", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c05505", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "1회성|단순 열성|열성경련|배제되는", "arm": "V9_CLM_RWX"}

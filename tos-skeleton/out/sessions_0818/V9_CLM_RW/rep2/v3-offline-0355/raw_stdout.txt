@@ -1,0 +1,3 @@
+Already found and read c03148, which directly answers the question with the exact clause. That's sufficient verification.
+
+{"status":"ranked","ranked_chunk_ids":["c03148","c03130","c03112","c03583"],"final_reason":"c03148은 4종 보장계약의 수술급여금 지급률(1년 이상 10%, 간편심사형 1년 미만 재해외 5%)을 직접 명시한 조항이며, 나머지는 정의 및 감액 규정을 보완한다."}

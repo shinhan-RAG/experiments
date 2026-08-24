@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "종합병원 중환자실치료 정의 뇌혈관질환 허혈심장질환 주요치료비 특약", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "종합병원.{0,5}중환자실", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02714", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02715", "arm": "V9_CLM_RW"}

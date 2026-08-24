@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "대상포진 통풍 중 하나만 가입 선택 가입", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "대상포진.*통풍|통풍.*대상포진", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03054", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03023", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "대상포진 통풍 동시 체결 보장계약", "arm": "V9_CLM_RWX"}

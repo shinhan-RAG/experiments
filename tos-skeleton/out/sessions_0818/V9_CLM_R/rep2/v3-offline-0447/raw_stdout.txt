@@ -1,0 +1,3 @@
+Found confirming evidence: definition/diagnosis criteria clause (제2-1조의3, c02333), the 지급기준표 clauses across multiple 허혈심장질환진단특약 variants explicitly stating "다만, 최초 1회의 진단확정에 한함" (only first diagnosis, no repeat payment), and the 지급사유 text with "최초 1회의 진단확정에 한함" in c02261.
+
+{"status":"ranked","ranked_chunk_ids":["c02333","c02275","c02261","c02299","c02346","c02322","c02324","c02302","c02257"],"final_reason":"약관상 허혈심장질환은 의사의 심전도·심장초음파·관상동맥촬영술 등 검사에 기초한 진단확정이 필요하며, 지급사유·지급기준표 조항에 '최초 1회의 진단확정에 한함'이라고 명시되어 반복지급되지 않음을 확인함."}

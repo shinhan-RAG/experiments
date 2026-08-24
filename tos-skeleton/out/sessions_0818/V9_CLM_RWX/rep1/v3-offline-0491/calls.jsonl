@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "보험금 지급 후 계약 유지 주계약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험금.*지급.*계약.*유지", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험금을 지급한 후에도", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험금 지급 후에도 계약은 계속 유효 소멸하지 않음", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "보험금 지급사유가 발생하였다 하더라도", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제1회 보험금 지급 후에도", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "주계약 계약의 소멸 보험금 지급으로 계약이 소멸하는 경우", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04479", "arm": "V9_CLM_RWX"}

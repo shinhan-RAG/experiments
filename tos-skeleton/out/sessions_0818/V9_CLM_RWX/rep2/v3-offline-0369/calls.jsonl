@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "소액암 진단급여금 지급사유 진단확정 반복지급", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "소액암진단비|소액암 진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00641", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "\\[기본\\]소액암진단특약.*제2-2조|제2-2조 보험금의 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00659", "arm": "V9_CLM_RWX"}

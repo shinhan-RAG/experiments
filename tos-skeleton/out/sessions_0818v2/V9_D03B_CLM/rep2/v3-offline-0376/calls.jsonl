@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 재진단 최초 1회 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암진단급여금.*최초 1회에 한하여", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 재진단 최초 1회 지급", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00899", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "일반암진단특약.*보험금의 지급사유", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암진단급여금.*최초 1회에 한하여", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "일반암진단특약\\(무배당, 갱신형\\)", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00899", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+I've verified the key candidates sufficiently.
+
+{"status":"ranked","ranked_chunk_ids":["c00770","c00755","c00754","c00771","c00801"],"final_reason":"c00770의 보험금 지급기준표가 1년 미만 50%, 1년 이후(고액암보장개시일 이후) 100% 지급률을 명시함"}

@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "제자리암 진단 확정 기준 조직검사", "arm": "V9_CLM_R"}
+{"tool": "slot", "arg": "제자리암 진단확정", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c01493", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00956", "arm": "V9_CLM_R"}

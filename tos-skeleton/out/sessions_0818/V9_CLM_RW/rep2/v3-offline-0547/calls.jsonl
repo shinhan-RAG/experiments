@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "해약환급금 미지급형 인공관절치환수술특약 보험료 납입중 해지 환급금", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "해약환급금 미지급형 특약 해지환급금 없음", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04713", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "인공관절치환수술특약.*해약환급금 미지급형", "arm": "V9_CLM_RW"}

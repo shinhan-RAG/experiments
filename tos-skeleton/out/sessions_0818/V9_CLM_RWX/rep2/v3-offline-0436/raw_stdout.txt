@@ -1,0 +1,3 @@
+Both confirm: 1년 이후는 가입금액의 1%, 1년 미만은 0.5%. Also c00095 corroborates via FAQ summary (50% 지급 = 절반).
+
+{"status":"ranked","ranked_chunk_ids":["c03667","c03643","c00095","c00094"],"final_reason":"약관 지급기준표에서 1년 미만 발생시 가입금액의 0.5%(1년 이후 1%의 50%)를 지급함을 확인함"}

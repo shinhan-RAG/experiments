@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 급여 뇌심장질환 검사급여금 지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌심장질환 검사급여금", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 검사급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00080", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02803", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "급여 뇌심장질환 검사급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "최초계약의 계약일부터 1년 미만", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00080", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+Confirmed: c03156 and c03179 both state the 수술급여금 has a 연간 1회 지급한도. c03190 shows the 보험금 지급기준표 with "연간 1회에 한함" for this specific specialty.
+
+{"status":"ranked","ranked_chunk_ids":["c03156","c03179","c03190","e02859","c03168"],"final_reason":"c03156/c03179가 '수술급여금은 연간 1회를 지급한도로 한다'고 명시하며 c03190/e02859의 지급기준표가 '연간 1회에 한함'으로 이를 뒷받침한다."}

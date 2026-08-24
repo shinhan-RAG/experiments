@@ -1,0 +1,3 @@
+Both candidates confirmed relevant. c03232 explains 암보장개시일 (계약일부터 90일이 지난 날의 다음 날, 예시 포함), and c01156 explains 무효조건 (암보장개시일 전일 이전 암 진단 확정 시 특약 무효, 납입보험료 반환). c01691 also confirmed same 암보장개시일 rule text via earlier hybrid search.
+
+{"status":"ranked","ranked_chunk_ids":["c03232","c01156","c01691","c01432","c00766","c00702"],"final_reason":"c03232는 암보장개시일 정의·예시, c01156은 무효 조건(개시일 전 암 진단시 특약무효·보험료반환)을 직접 명시하며 read로 검증함"}

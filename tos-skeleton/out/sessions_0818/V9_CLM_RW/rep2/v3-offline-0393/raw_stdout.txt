@@ -1,0 +1,3 @@
+c02803 confirms exact answer (특약보험가입금액의 1% vs 1년 미만 0.5%). c00105 is only a payment-limit table, not the rate detail — dropping it. Also verified c02789 context for the clause definition.
+
+{"status":"ranked","ranked_chunk_ids":["c02803","c02789","c02787"],"final_reason":"c02803의 보험금 지급기준표가 1년 미만 0.5%, 1년 이후 1% 지급률을 명확히 규정함을 read로 확인했다."}

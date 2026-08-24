@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "고액암진단특약 고액암 진단급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "고액암 진단확정 반복 지급 최초 1회", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00754", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00098", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "고액암 분류표", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00755", "arm": "V9_CLM_RWX"}

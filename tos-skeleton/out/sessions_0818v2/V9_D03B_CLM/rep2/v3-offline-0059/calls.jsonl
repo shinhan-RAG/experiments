@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "교통사고 추간판탈출증 장해보험금 청구 서류", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "장해보험금 청구시 제출서류", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00133", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "추간판탈출증", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "장해진단서", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00390", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00336", "arm": "V9_D03B_CLM"}

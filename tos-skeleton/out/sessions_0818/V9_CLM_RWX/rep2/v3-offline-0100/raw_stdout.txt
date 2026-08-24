@@ -1,0 +1,3 @@
+Based on verified evidence: CAR-T(카티) 항암약물허가치료 is a form of immune cell cancer therapy explicitly covered, and 표적항암약물허가치료/카티 특약 overview (c00078) plus efficacy-expansion detail (c01605) confirm coverage for immunotherapy-adjacent cancer treatments.
+
+{"status":"ranked","ranked_chunk_ids":["c00078","c01564","c01605","c01252","c01514"],"final_reason":"카티(CAR-T) 및 표적항암약물허가치료 특약이 면역항암치료(면역세포·표적치료)를 보장함을 원문으로 확인함"}

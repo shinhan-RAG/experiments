@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "간편 기본 신수술특약 급여수술 정의", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급여수술", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "급여수술.*정의와 장소", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "급여수술 정의 기본신수술특약", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03400", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03233", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03506", "arm": "V9_CLM_RWX"}

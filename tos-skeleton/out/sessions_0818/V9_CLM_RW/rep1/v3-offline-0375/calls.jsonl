@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "여성유방암진단급여금 지급률 가입 경과기간", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "여성유방암진단급여금", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00073", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01029", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01030", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "계약일부터 2년", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "2년 이상 4년 미만", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01041", "arm": "V9_CLM_RW"}

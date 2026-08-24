@@ -1,0 +1,3 @@
+Confirmed: both variants state 1년 이후는 가입금액의 1%, 1년 미만은 0.5% 지급. Also cross-checked with c00094/c00095 (감액기간표: "가입 후 1년간 1년이후에 지급하는 보험금의 50% 지급").
+
+{"status":"ranked","ranked_chunk_ids":["c03667","c03643","c00094","c00095","c03763"],"final_reason":"보험금 지급기준표에서 계약일부터 1년 미만 지급사유 발생 시 가입금액의 0.5%, 1년 이후는 1%(정상지급) 지급을 명시함."}

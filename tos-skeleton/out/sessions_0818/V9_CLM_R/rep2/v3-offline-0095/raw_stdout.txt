@@ -1,0 +1,7 @@
+Based on the searches, the policy doesn't use the literal term "대학병원" (university hospital) — the applicable concept is "상급종합병원" (tertiary general hospital, the legal category most university hospitals fall under), which has dedicated 통원(outpatient) benefit riders confirmed by the read chunks.
+
+{"status":"ranked","ranked_chunk_ids":["c02076","c02680","c02070","c02698","c02699","c02077","c02095","c02679","c02673well"],"final_reason":"약관은 '대학병원'이 아닌 '상급종합병원'을 기준으로 통원급여금 지급사유와 정의를 규정하고 있음을 확인함"}
+
+Let me correct the malformed ID in my output.
+
+{"status":"ranked","ranked_chunk_ids":["c02076","c02680","c02070","c02698","c02699","c02077","c02095","c02679"],"final_reason":"약관은 '대학병원'이 아닌 '상급종합병원'을 기준으로 통원급여금 지급사유와 정의를 규정하고 있음을 확인함"}

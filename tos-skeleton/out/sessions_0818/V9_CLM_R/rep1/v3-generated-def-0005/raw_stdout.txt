@@ -1,0 +1,3 @@
+Confirmed the exact definition text in 제2-1조의8.
+
+{"status":"ranked","ranked_chunk_ids":["e01415","c01649","c01650","c01652","e01396","c05655","c01684"],"final_reason":"제2-1조의8 조항(e01415/c01649)에 갑상선암수술후항암호르몬치료제의 정의가 명시되어 있고, 나머지는 의약품명 분류표 및 급여금 지급조건으로 정의를 뒷받침한다."}

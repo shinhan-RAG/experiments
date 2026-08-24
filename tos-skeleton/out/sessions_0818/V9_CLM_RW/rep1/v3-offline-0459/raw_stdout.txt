@@ -1,0 +1,3 @@
+Confirmed pattern consistent across multiple policy variants (간병인사용입원(요양병원 제외)급여금: 180일 한도).
+
+{"status":"ranked","ranked_chunk_ids":["c04230","c04272","c04206","c04295","c04296","c00112"],"final_reason":"복수 문서에서 요양병원 제외 병원급/의원급 의료기관 입원+간병인 사용 시 지급요건과 1회 입원당 180일 한도를 동일하게 확인함"}

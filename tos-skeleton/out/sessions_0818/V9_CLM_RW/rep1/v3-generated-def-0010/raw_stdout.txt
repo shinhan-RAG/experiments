@@ -1,0 +1,3 @@
+Both confirm the exact definition text for 제2-1조의3 "특정순환계질환(2종~3종)". Also confirming the classification table reference (c05511/부표2-3) as supporting evidence.
+
+{"status":"ranked","ranked_chunk_ids":["e02097","c02379","c02378","c05511","e02092","c02400"],"final_reason":"e02097과 c02379는 제2-1조의3 조항 원문을 직접 담고 있어 정의를 정확히 답하며, 나머지는 목차/분류표로 보조 근거를 제공한다"}

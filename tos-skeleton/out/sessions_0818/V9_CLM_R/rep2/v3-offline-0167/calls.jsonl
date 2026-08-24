@@ -1,0 +1,5 @@
+{"tool": "slot", "arg": "계약전 알릴의무 위반시 계약의 해지", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "알릴의무.{0,5}위반", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00048", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00049", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "e00103", "arm": "V9_CLM_R"}

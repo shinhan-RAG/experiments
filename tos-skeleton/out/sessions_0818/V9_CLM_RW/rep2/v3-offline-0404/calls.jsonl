@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "간편뇌출혈진단특약 뇌출혈 진단급여금 지급사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "뇌출혈 진단급여금 지급사유 반복지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02239", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02255", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e01944", "arm": "V9_CLM_RW"}

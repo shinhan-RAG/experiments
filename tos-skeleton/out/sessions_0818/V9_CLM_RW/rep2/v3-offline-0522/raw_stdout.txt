@@ -1,0 +1,3 @@
+Verified through reading: premium waiver upon cancer/disease diagnosis is triggered by a **separate 보험료납입면제특약 (premium-waiver rider)**, not automatically as part of the 주계약. The 주계약 itself only gets its premium waived if such a rider is attached and its specific 진단 조건(제2-2조의2) is met.
+
+{"status":"ranked","ranked_chunk_ids":["c04988","e04375","c00723","e00038"],"final_reason":"암 진단 시 보험료 납입면제는 주계약 자동적용이 아니라 별도의 '보험료납입면제특약'이 부가되어 그 특약의 지급사유(제2-2조의2)를 충족해야 발생함을 확인함"}

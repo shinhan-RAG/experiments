@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "항암세기조절방사선치료급여금 지급대상 암 지급횟수", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "항암세기조절방사선치료급여금 지급사유 지급금액", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01412", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "항암세기조절방사선치료급여금", "arm": "V9_CLM_RW"}

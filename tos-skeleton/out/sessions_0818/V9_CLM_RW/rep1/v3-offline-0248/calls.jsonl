@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "정기특약 고의사고 사망 예외 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "피보험자가 고의로 자신을 해친 경우 보험금을 지급하는 경우 2년", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00264", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05121", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "정기특약.*2년이 지난 후에 자살", "arm": "V9_CLM_RW"}

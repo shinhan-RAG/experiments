@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "표적항암약물허가치료특약 표적항암약물허가치료급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "표적항암약물허가치료급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00078", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01559", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "표적항암약물허가치료.*100%|특약보험가입금액의 100%", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01542", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+Verified: e02095 (제2-1조의2, 특정순환계질환 1종~3종 정의) and c02378 (제2-1조의3, 2종~3종 정의) both directly answer the question. c02381 covers 3종 definition similarly and rounds out the answer.
+
+{"status":"ranked","ranked_chunk_ids":["e02095","c02378","c02381","c02375","c02400","e02097","e02098"],"final_reason":"e02095/c02378/c02381 directly define 특정순환계질환 1종~3종, 2종~3종, 3종 per 제2-1조의2~4, verified by read."}

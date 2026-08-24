@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "1급장해 보험료 납입면제 특약 소멸", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "장해분류표 1급 사망보험금 지급 계약 소멸 특약", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04978", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00326", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "주계약의 보험금 지급으로 인하여 주계약이 소멸", "arm": "V9_CLM_RW"}

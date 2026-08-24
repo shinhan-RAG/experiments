@@ -1,0 +1,3 @@
+Found strong evidence. c04962 explicitly answers "납입면제 대상에서 제외되는 계약은?" listing 가/나/다/라 exceptions (다른 사유로 납입면제하는 특약의 해당 보험종목, 동일 납입면제사유를 가진 주계약/부가특약 자신, 소멸되는 계약, 중도부가특약). c04723 has the same clause plus e04337 is the defining element.
+
+{"status":"ranked","ranked_chunk_ids":["c04962","c04723","c04813","e04337","c04898","c00886","c04343"],"final_reason":"c04962/c04723은 「보험료납입면제대상계약」에서 제외되는 특약(가~라호)을 직접 열거해 질문에 정확히 답한다."}

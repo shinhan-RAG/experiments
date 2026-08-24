@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "암 진단 특약 갱신불가", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "암보장특약 갱신 거절 사유", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01219", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c03919", "arm": "V9_CLM_RW"}

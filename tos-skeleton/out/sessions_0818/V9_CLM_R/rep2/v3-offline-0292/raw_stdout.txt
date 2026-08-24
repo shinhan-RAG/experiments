@@ -1,0 +1,3 @@
+I've reached the tool call budget. Based on the searches, the two 특약 correspond to "(간편)[기본]일반암진단특약" and "(간편)[삭감없음용]일반암진단특약" — both cover the same "일반암" definition, but the [기본]형 reduces the payout to 50% if diagnosis occurs within 1 year of the first contract date, while the [삭감없음용]형 (as its name states, "no reduction") is structured to avoid that cut. These are the relevant clauses.
+
+{"status":"ranked","ranked_chunk_ids":["c00905","c00551","c00867","c00549","c00579","c00902","c00869","c00582","c00885"],"final_reason":"[기본]일반암진단특약과 [삭감없음용]일반암진단특약 조항을 비교해 명칭·정의는 동일하나 1년 미만 진단 시 50% 삭감 지급 여부가 다름을 확인함"}

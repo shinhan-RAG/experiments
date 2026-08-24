@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "통합건강원 보험료 납입면제특약 가입", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 5, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.079405, "dense/V9": 0.091751}, "sparse_share": 0.4639, "dense_share": 0.5361, "notes": []}
+{"arm": "V9_CLM_RW", "query": "보험료 납입면제특약 자동 부가", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.103457, "dense/V9": 0.112518}, "sparse_share": 0.479, "dense_share": 0.521, "notes": []}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "보장개시일 전 진단확정 특약 소멸", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보장개시일 이전 진단 보험금을 지급하지 아니하며 특약 소멸", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c01923", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00820", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00575", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,3 @@
+Verified: c01330 contains the exact definition (⑧), c01331 continues with the same clause. c01325 gives an example, c01354 has a Q&A-style paraphrase of the same rule.
+
+{"status":"ranked","ranked_chunk_ids":["c01330","c01331","c01354","c01325","c01322"],"final_reason":"c01330 8항이 지급기간을 '최초 진단확정일로부터 10년, 단 10차년도 치료시 치료일까지'로 명시적으로 정의하며 나머지는 이를 보완·예시한다."}

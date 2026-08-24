@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "뇌경색 보장 여부", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌경색", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05646", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02492", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c05440", "arm": "V9_D03B_CLM"}

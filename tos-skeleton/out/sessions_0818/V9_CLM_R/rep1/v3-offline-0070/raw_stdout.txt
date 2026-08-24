@@ -1,0 +1,3 @@
+This confirms c05646/c05647 (뇌졸중 분류표 - 뇌경색증 I63 included) directly answer whether 뇌경색 is covered under 뇌졸중.
+
+{"status":"ranked","ranked_chunk_ids":["c05646","c05647","c05440","c02492","e04905__r086","c02749"],"final_reason":"뇌졸중 분류표(I60~I66)에 뇌경색증(I63)이 포함되어 있음을 명시한 조항과 관련 정의 조항을 확인했다."}

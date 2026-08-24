@@ -1,0 +1,3 @@
+I have verified the key clauses confirming both the diagnosis requirement and the "first occurrence only" limitation.
+
+{"status":"ranked","ranked_chunk_ids":["e00424","c00899","c00579","c00935","c00565"],"final_reason":"제2-2조 지급사유와 부표2-1 지급기준표가 '암'/'중증 갑상선암' 진단확정 시 지급하되 최초 1회 진단확정에 한한다고 명시해 반복지급되지 않음을 확인함."}

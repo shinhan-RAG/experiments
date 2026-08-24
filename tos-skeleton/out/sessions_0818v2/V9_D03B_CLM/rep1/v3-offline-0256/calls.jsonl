@@ -1,0 +1,7 @@
+{"tool": "hybrid", "arg": "주계약 납입면제 기준", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "납입면제", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보험료납입면제사유|납입면제사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04746", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04895", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c04838", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00210", "arm": "V9_D03B_CLM"}

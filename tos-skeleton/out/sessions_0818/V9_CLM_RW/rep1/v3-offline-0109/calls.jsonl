@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "보장개시일 이전 진단 확정 보험금 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보장개시일 전 발병 특약 소멸", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05250", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c04412", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보장개시일 이전에 .*(진단|암).*무효", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "보장개시일 이전 진단확정 특약 무효", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e04421", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00575", "arm": "V9_CLM_RW"}

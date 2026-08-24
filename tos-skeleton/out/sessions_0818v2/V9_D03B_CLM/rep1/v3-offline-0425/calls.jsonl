@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "암주요치료비특약 암 대장점막내암 비침습방광암 주요치료급여금 지급한도 연간 최대", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "대장점막내암.{0,10}비침습방광암", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01347", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01328", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00106", "arm": "V9_D03B_CLM"}

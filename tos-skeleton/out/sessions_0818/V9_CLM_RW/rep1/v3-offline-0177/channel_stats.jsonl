@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "암 재발 진단급여금 재지급", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 9}, "rrf_mass": {"bm25/V9": 0.132119, "dense/V9": 0.1255}, "sparse_share": 0.5128, "dense_share": 0.4872, "notes": []}
+{"arm": "V9_CLM_RW", "query": "재진단암 진단비 지급사유 2년", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.11176, "dense/V9": 0.092957}, "sparse_share": 0.5459, "dense_share": 0.4541, "notes": []}

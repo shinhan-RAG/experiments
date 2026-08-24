@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "재해장해 특약 장해지급금 수령 후 장해진단 추가판정시 지급기준", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "재해장해 특약 장해지급률 장해진단 추가판정 지급기준", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "장해지급률 변경 추가 판정 장해보험금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "추가판정", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "이미 지급한 보험금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "장해지급률이 변경", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "이미 지급한 장해지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제2-3조", "arm": "V9_D03B_CLM"}

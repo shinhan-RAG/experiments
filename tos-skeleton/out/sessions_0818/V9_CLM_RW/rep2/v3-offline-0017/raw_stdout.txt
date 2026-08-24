@@ -1,0 +1,3 @@
+All three candidates verified with consistent, on-target text defining the 6대질병 구성요소 (암, 대장점막내암, 비침습방광암, 제자리암, 경계성종양, 뇌혈관질환, 허혈심장질환, 간질환, 폐질환, 신장질환).
+
+{"status":"ranked","ranked_chunk_ids":["e00386","c04033","e01537","e03703"],"final_reason":"모두 6대질병(암·대장점막내암·비침습방광암·제자리암·경계성종양·뇌혈관질환·허혈심장질환·간질환·폐질환·신장질환)의 정의 조항을 직접 읽어 확인함"}

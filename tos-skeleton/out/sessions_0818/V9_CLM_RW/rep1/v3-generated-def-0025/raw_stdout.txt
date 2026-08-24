@@ -1,0 +1,3 @@
+Found the exact definition in c03333 (제2-1조의6). This confirms candidates c03333 (primary), c03546/c05751 (관련 부표), c03330 (급여수술 정의 참조).
+
+{"status":"ranked","ranked_chunk_ids":["c03333","c03546","c05751","c03330","c03332"],"final_reason":"c03333의 제2-1조의6이 9대관절척추질병을 제8차 개정 한국표준질병·사인분류상 관절염 등 9개 항목으로 정의하는 원문 조항이며 부표2-3 관련 청크로 보완했다."}

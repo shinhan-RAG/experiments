@@ -1,0 +1,3 @@
+Verified via read: c03116 explicitly defines 5종 수술급여금 지급대상 (부표2-2 1~5종 수술분류표에서 정하는 5종 수술), corroborated by c03098/e02763/e02764 (제2-2조 지급사유 조항).
+
+{"status":"ranked","ranked_chunk_ids":["c03116","c03149","c03098","e02764","e02763"],"final_reason":"c03116이 5종 수술급여금 지급사유·금액을 명시하고 제2-2조 조항(c03098/e02764)이 이를 뒷받침함"}

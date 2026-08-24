@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "표적항암치료 해외 보장", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "표적항암치료", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "해외.{0,20}요양기관", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "국외 요양기관 표적항암제 처방 보장 여부", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01543", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01239", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "국외|해외.{0,10}(병원|진료|치료)", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01238", "arm": "V9_D03B_CLM"}

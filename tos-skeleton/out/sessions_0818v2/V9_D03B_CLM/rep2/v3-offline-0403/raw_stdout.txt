@@ -1,0 +1,3 @@
+Found and verified the exact 지급률 details: 1년 미만은 특약보험가입금액의 0.5%, 1년 이후는 1% 지급.
+
+{"status":"ranked","ranked_chunk_ids":["c01849","c01837","c01836","c00075","c00074"],"final_reason":"부표2-1과 삭감지급 도해에서 1년 미만 0.5%, 1년 이후 1% 지급률을 명시적으로 확인함"}

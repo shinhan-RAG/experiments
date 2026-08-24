@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여주요뇌심장질환특정재활치료급여금 단순재활 지급률", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편급여주요뇌심장질환특정재활치료특약 단순재활", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "단순재활\\] 급여주요뇌심장질환특정재활치료급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02775", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02774", "arm": "V9_CLM_RWX"}

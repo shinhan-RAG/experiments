@@ -1,0 +1,3 @@
+I have enough evidence from the hybrid/grep previews to confirm the relevant chunks for (간편)[삭감없음용]일반암진단특약 — c00921 (제2-2조 보험금의 지급사유, 진단확정 요건) and c00935 (보험금 지급기준표, "최초 1회의 진단확정에 한함" — 반복지급 불가).
+
+{"status":"ranked","ranked_chunk_ids":["c00921","c00935","c00925","c00610","c00564","c00565","c00885"],"final_reason":"c00921/c00935 explicitly cover [삭감없음용]일반암진단특약의 지급사유(암·중증갑상선암 진단확정)와 최초 1회 한정 지급 조건을 명시함"}

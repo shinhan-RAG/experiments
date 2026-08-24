@@ -1,0 +1,8 @@
+{"tool": "read", "arg": "c01815", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01727", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암보장개시일 전일 이전", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암 보장개시일 무효", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "암보장개시일 계약 무효 조건", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01815", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01923", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암보장개시일.{0,20}90일", "arm": "V9_D03B_CLM"}

@@ -1,0 +1,3 @@
+e00062 matches c00182's article exactly (제23조), confirming the main-clause answer. Enough verification done.
+
+{"status":"ranked","ranked_chunk_ids":["c00182","e00062","c00183","e00116"],"final_reason":"제23조(제1회 보험료 및 회사의 보장개시)는 청약과 함께 제1회 보험료를 낸 경우 승낙 전 사고도 보장개시일부터 보장한다고 명시한다."}

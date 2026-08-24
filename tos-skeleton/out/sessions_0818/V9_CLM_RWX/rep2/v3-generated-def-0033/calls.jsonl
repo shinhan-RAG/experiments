@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "희귀질환자 산정특례대상 정의 희귀질환자산정특례대상보장특약", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "희귀질환자 산정특례대상", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04564", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04565", "arm": "V9_CLM_RWX"}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "보험금 청구 시 필요서류", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "보험금 청구서류 구비서류", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00133", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "보험금.{0,5}청구.{0,10}서류|청구서.{0,5}보험금.{0,5}수령", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "청구서.{0,3}신분증.{0,3}(사고증명서|계좌번호)", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00132", "arm": "V9_CLM_RW"}

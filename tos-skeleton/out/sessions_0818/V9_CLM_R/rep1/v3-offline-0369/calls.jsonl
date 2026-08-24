@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "소액암진단특약 소액암 진단급여금 지급사유", "arm": "V9_CLM_R"}
+{"tool": "hybrid", "arg": "소액암 진단확정 반복 지급 재진단", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00641", "arm": "V9_CLM_R"}
+{"tool": "read", "arg": "c00628", "arm": "V9_CLM_R"}
+{"tool": "grep", "arg": "각각 최초.?1회", "arm": "V9_CLM_R"}

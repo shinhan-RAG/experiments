@@ -1,0 +1,3 @@
+Found and verified the exact clause (제2-1조의3) defining "중증치매Ⅰ/Ⅱ 산정특례대상" in c04527/c04528, corroborated by c04519's table of contents and c04523's cross-reference.
+
+{"status":"ranked","ranked_chunk_ids":["c04527","c04528","c04519","c04523","c04556"],"final_reason":"c04527/c04528 contain 제2-1조의3의 실제 정의 조항 원문이며 나머지는 목차·교차참조로 이를 뒷받침한다"}

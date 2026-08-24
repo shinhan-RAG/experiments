@@ -1,0 +1,3 @@
+Found the confirmation. c00082 clearly shows the 감액기간 표 for (간편)뇌출혈진단특약: 가입 후 1년간, 1년 이후 지급 보험금의 50% 지급. c02235/c02239 confirm the 특약 section context.
+
+{"status":"ranked","ranked_chunk_ids":["c00082","c02255","c02239","c02235","c02233"],"final_reason":"c00082의 감액기간표에 (간편)뇌출혈진단특약이 '가입 후 1년간 1년이후 지급 보험금의 50% 지급'으로 명시되어 있고, c02239/c02255가 해당 특약 조항과 지급기준표로 이를 뒷받침함"}

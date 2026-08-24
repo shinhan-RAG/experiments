@@ -1,0 +1,3 @@
+Both c00942 and c04433 confirm the core content: renewal-type riders (갱신형특약) have a limited insurance period that renews (10/15/20년만기 갱신), premium/적립액/해약환급금 recalculated at renewal age and rates, company notifies changes 30 days before expiry, and coverage amount stays the same at renewal — features that don't apply to non-renewal (비갱신형) riders which run for a fixed single term without these renewal mechanics.
+
+{"status":"ranked","ranked_chunk_ids":["c04433","c00942","c01779","c03867","c01739"],"final_reason":"이 청크들은 갱신형특약의 보험기간·갱신조건·갱신시 보험료 재산정·사전통지·가입금액 유지 등 비갱신형과 구별되는 약관상 반영 내용을 직접 규정한다."}

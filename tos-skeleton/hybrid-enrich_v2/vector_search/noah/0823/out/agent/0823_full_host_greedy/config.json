@@ -1,0 +1,36 @@
+{
+  "arm_name": "host_retrieve_greedy",
+  "arm": {
+    "tag_weights": {
+      "clm": 1.0,
+      "sparse": 2.0
+    },
+    "collapse_jo": true,
+    "router": "union",
+    "qtags": "out/qtags_haiku.jsonl",
+    "meta": 1,
+    "meta_view": "V9",
+    "mode": "host_retrieve",
+    "host_top_k": 80,
+    "read_cap": 40,
+    "submit_max": 10,
+    "greedy": true,
+    "_desc": "호스트 사전 검색 top-80 + 최대 포함 정책"
+  },
+  "args": {
+    "run": "0823_full_host_greedy",
+    "arm": "host_retrieve_greedy",
+    "gold": "c:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_train_full.jsonl",
+    "jo": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\filesearch\\out\\elements_u2jo.jsonl",
+    "n": -1,
+    "seed": 20260823,
+    "reps": 1,
+    "workers": 5,
+    "model": "sonnet",
+    "max_turns": 30,
+    "timeout": 600,
+    "claude_bin": "C:/Users/Atdev-pc/AppData/Roaming/npm/claude.cmd",
+    "pybin": "python",
+    "resume": true
+  }
+}

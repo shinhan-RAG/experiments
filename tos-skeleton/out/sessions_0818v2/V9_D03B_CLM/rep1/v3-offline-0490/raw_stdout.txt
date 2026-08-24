@@ -1,0 +1,3 @@
+Based on the search and verification performed (hybrid search, grep cross-checks, and reading top candidates), here is the final ranked result.
+
+{"status":"ranked","ranked_chunk_ids":["c00133","c04648","c05182","c04621","c04554","c00215","c02632"],"final_reason":"c00133은 청구서류를 표로 정리한 핵심 근거이며, 나머지는 청구서/사고증명서/신분증 등 기본 구비서류를 명시한 약관 조항들로 교차 검증됨."}

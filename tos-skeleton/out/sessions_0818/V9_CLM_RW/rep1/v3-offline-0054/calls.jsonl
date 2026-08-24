@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "고혈압(원발성)약물치료특약 무효 사유", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "고혈압 약물치료 특약 무효", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02823", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "e02533", "arm": "V9_CLM_RW"}

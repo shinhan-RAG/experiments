@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 최초 1회 지급", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "(간편)[기본]일반암진단특약 암진단급여금 재진단 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00899", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00579", "arm": "V9_CLM_RW"}
+{"tool": "slot", "arg": "일반암진단특약 암진단급여금 지급사유 최초 1회", "arm": "V9_CLM_RW"}

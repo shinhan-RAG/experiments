@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "간편 항암세기조절방사선치료특약 치료급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "항암세기조절방사선치료특약 항암세기조절 방사선 치료급여금 지급률", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암세기조절방사선치료", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암세기조절", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01426", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "항암세기조절방사선치료 급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01412", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00079", "arm": "V9_D03B_CLM"}

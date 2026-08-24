@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 급여 뇌심장질환 검사급여금 지급률", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "급여뇌심장질환특정검사지원특약 급여 뇌심장질환 검사급여금 지급률", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "특약보험가입금액의 0.5%", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02789", "arm": "V9_CLM_RW"}

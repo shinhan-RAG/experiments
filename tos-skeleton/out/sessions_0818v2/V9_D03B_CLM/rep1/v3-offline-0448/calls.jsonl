@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "허혈심장질환진단특약 진단급여금 지급률 1년", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "간편 허혈심장질환진단특약 진단급여금 지급률 1년 이내", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "허혈심장질환.*진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "허혈심장질환.{0,20}진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02275", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02322", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02275", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00081", "arm": "V9_D03B_CLM"}

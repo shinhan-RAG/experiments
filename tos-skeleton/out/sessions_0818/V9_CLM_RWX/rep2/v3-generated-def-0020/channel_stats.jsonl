@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RWX", "query": "간편 기본 신수술특약 급여수술 정의", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.127633, "dense/V9": 0.124576}, "sparse_share": 0.5061, "dense_share": 0.4939, "notes": []}
+{"arm": "V9_CLM_RWX", "query": "신수술특약 급여수술 정의", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.124976, "dense/V9": 0.136399}, "sparse_share": 0.4781, "dense_share": 0.5219, "notes": []}

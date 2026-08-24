@@ -1,0 +1,3 @@
+Both e02684, e02714 confirm the exact 지급사유 clause (해약환급금 미지급형 and 갱신형 versions). c03026 corresponds to same clause chunk-level.
+
+{"status":"ranked","ranked_chunk_ids":["e02684","e02714","c03026","c03040","e02685"],"final_reason":"e02684/e02714는 제2-2조(보험금의 지급사유) 원문에서 '대상포진으로 진단확정 되었을 때 대상포진진단급여금 지급'을 직접 명시해 read로 확인함"}

@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "뇌경색 보장 대상 포함", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.131637, "dense/V9": 0.124608}, "sparse_share": 0.5137, "dense_share": 0.4863, "notes": []}
+{"arm": "V9_CLM_RW", "query": "뇌졸중 뇌출혈 뇌경색 정의 분류", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.147674, "dense/V9": 0.149747}, "sparse_share": 0.4965, "dense_share": 0.5035, "notes": []}

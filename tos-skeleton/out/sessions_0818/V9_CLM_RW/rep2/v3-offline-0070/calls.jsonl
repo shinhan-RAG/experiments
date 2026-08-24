@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "뇌경색 보장 대상 포함", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "뇌졸중 뇌출혈 뇌경색 정의 분류", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02492", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c05438", "arm": "V9_CLM_RW"}

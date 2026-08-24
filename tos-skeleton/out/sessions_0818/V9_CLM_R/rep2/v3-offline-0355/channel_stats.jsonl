@@ -1,0 +1,1 @@
+{"arm": "V9_CLM_R", "query": "(간편)1-5종수술특약 4종 수술급여금 지급률 1년", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.140927, "dense/V9": 0.144355}, "sparse_share": 0.494, "dense_share": 0.506, "notes": []}

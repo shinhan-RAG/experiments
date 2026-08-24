@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "면역항암치료", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "면역항암약물허가치료비", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c02033", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01904", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "면역관문억제제|면역항암제|면역요법", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01536", "arm": "V9_CLM_RW"}

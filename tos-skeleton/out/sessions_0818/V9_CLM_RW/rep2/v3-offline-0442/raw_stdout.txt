@@ -1,0 +1,3 @@
+Both confirm: diagnosis must be by a medical doctor based on 제8차 개정 한국표준질병·사인분류 <부표2-2> "특정부정맥 분류표", using ECG/echo/coronary angiography/cardiac enzyme tests, and the benefit is paid only for the **first-ever** diagnosis confirmation (최초 1회의 진단확정에 한함) — not repeatedly for each diagnosis. c02466 (지급기준표) also corroborates this with the payout amount table.
+
+{"status":"ranked","ranked_chunk_ids":["c02473","c02451","c02466","c02469"],"final_reason":"제2-1조의2와 제2-2조가 특정부정맥 진단확정 기준(의사의 심전도·심장초음파 등 검사)과 최초 1회 진단확정에 한해서만 지급됨을 명시함"}

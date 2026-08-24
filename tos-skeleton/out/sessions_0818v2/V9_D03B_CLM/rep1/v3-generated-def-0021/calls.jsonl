@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "뇌혈관질환Ⅲ 정의", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "(간편)[질병별]신수술특약 뇌혈관질환Ⅲ 정의", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌혈관질환Ⅲ", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "뇌혈관질환Ⅲ", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "질병별.{0,3}신수술특약", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03281", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03489", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c03245", "arm": "V9_D03B_CLM"}

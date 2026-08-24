@@ -1,0 +1,3 @@
+e02273__r001 confirms the same content as c02541/c02542. My candidates are verified.
+
+{"status":"ranked","ranked_chunk_ids":["c02542","c00083","c02541","e02273__r001"],"final_reason":"c02542는 1일당 지급률(1%, 1년미만 간편심사형 0.5%)을 직접 명시하고 c00083은 1년 이후 지급액의 50%라는 요약표로 이를 교차 확인함."}

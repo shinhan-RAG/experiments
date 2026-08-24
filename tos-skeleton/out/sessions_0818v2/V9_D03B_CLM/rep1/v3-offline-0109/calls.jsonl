@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "보장개시일 전 진단확정 보험금 지급 특약 소멸", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보장개시일.{0,30}진단", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00828", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00755", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "보장개시일 전에.{0,20}(진단|암)", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c01769", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c02988", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "제1-10조.{0,10}특약의 무효", "arm": "V9_D03B_CLM"}

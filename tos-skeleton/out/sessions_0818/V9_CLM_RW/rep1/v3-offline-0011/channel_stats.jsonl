@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "1-5종 수술특약 보험금을 지급하지 않는 사유", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 10, "dense/V9": 10}, "rrf_mass": {"bm25/V9": 0.122636, "dense/V9": 0.133381}, "sparse_share": 0.479, "dense_share": 0.521, "notes": []}
+{"arm": "V9_CLM_RW", "query": "수술특약 면책사유 보장하지 않는 손해", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 8, "dense/V9": 6}, "rrf_mass": {"bm25/V9": 0.11466, "dense/V9": 0.085276}, "sparse_share": 0.5735, "dense_share": 0.4265, "notes": []}

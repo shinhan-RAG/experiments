@@ -1,0 +1,3 @@
+This confirms the full table: c01160 shows both the "암/대장점막내암/비침습방광암/기타피부암/갑상선암" line (10% vs 5% for <1년) and "제자리암/경계성종양" line (2% vs 1%). c01161 is the continuation with the 2%/1% detail and notes. c01147 is the visual summary diagram.
+
+{"status":"ranked","ranked_chunk_ids":["c01160","c01161","c01147","c00076"],"final_reason":"c01160/c01161이 암수술급여금 지급률표(1년미만 5%·10%, 제자리암 등 1%·2%)를 명시하고 c01147 도해와 c00076 요약표로 교차 확인됨"}

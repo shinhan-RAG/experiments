@@ -1,0 +1,2 @@
+{"arm": "V9_CLM_RW", "query": "자동대출 납입 유지", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 6, "dense/V9": 7}, "rrf_mass": {"bm25/V9": 0.093439, "dense/V9": 0.096546}, "sparse_share": 0.4918, "dense_share": 0.5082, "notes": []}
+{"arm": "V9_CLM_RW", "query": "보험료 자동대출납입제도", "n_results": 10, "channel_sizes": {"bm25/V9": 50, "dense/V9": 50}, "hits_per_channel": {"bm25/V9": 9, "dense/V9": 8}, "rrf_mass": {"bm25/V9": 0.122996, "dense/V9": 0.103474}, "sparse_share": 0.5431, "dense_share": 0.4569, "notes": []}

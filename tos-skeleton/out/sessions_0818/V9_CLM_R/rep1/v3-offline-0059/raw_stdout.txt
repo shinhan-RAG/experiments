@@ -1,0 +1,3 @@
+Found sufficient evidence confirming required documents (사고증명서 = 사망진단서/장해진단서/진단서/진료기록부/각종사고 증명서류 등, plus general claim documents table requiring 장해진단서 for 장해).
+
+{"status":"ranked","ranked_chunk_ids":["c00390","c00464","c00133","c00533","c02219","c04384","c05358","c00311","c00336"],"final_reason":"재해장해특약 제2-5조 사고증명서 조항과 보험금 청구서류 표가 교통사고(재해)로 인한 장해진단 시 장해진단서·진단서·진료기록부 등 제출서류를 규정함."}

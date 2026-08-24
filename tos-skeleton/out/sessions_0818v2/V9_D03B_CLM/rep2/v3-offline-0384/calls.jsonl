@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "(간편)[삭감없음용]일반암진단특약 암진단급여금 지급", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "일반암진단특약", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "일반암진단특약 암진단급여금 지급 사유", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00564", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00610", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00935", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "암진단급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "삭감없음용.*제2-2조|제2-2조 보험금의 지급사유", "arm": "V9_D03B_CLM"}

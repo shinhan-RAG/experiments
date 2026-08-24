@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "급여 혈관조영술 검사급여금 지급률 가입 1년", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "간편 급여뇌심장질환특정검사지원특약 혈관조영술 검사급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02803", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02789", "arm": "V9_CLM_RWX"}

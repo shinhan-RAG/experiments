@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "간병인사용입원특약 요양병원 제외 의료기관 입원 간병인사용 입원급여금 지급 1회 입원당 보장일수", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "간병인사용.{0,10}입원급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04272", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04296", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00112", "arm": "V9_CLM_RWX"}
+{"tool": "slot", "arg": "간병인사용입원 요양병원 제외 지급사유 한정", "arm": "V9_CLM_RWX"}

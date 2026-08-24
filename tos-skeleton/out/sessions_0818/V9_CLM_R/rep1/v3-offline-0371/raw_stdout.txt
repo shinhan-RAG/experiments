@@ -1,0 +1,3 @@
+Confirmed: c00641 shows the exact 지급기준표 for [기본]소액암진단특약 stating "다만, 각각 최초 1회의 진단확정에 한함" (each of the covered conditions paid only once). c00961/c00962 further confirm that even upon renewal, if the same condition already received payment under the initial contract, it isn't paid again (재진단 시 재지급 불가).
+
+{"status":"ranked","ranked_chunk_ids":["c00641","c00097","c00098","c00961","c00962","c00959","c00994","c00628","c00659"],"final_reason":"부표2-1 지급기준표(c00641)와 지급사유 조항이 각 질병당 '최초 1회의 진단확정에 한함'을 명시하고, c00961/c00962는 갱신 후 동일 진단 재발생 시에도 이미 지급된 경우 재지급되지 않음을 확인함"}

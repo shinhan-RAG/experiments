@@ -1,0 +1,8 @@
+{"tool": "hybrid", "arg": "질병 장해지급률 50% 이상 질병장해급여금 최초 1회 지급", "arm": "V9_D03B_CLM"}
+{"tool": "hybrid", "arg": "질병 장해지급률 50% 이상 장해 질병장해급여금 최초 1회", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "질병장해급여금", "arm": "V9_D03B_CLM"}
+{"tool": "grep", "arg": "질병장해급여금", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00433", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00448", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00433", "arm": "V9_D03B_CLM"}
+{"tool": "read", "arg": "c00483", "arm": "V9_D03B_CLM"}

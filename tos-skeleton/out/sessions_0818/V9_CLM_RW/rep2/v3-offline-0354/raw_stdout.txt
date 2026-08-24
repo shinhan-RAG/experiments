@@ -1,0 +1,3 @@
+e02809 matches c03148 content (갱신형 version), confirming the same clause. I've verified c03148 directly answers the question.
+
+{"status":"ranked","ranked_chunk_ids":["c03148","e02809","c03113"],"final_reason":"c03148은 (간편)1-5종수술특약 3종 수술급여금의 지급률을 직접 명시: 원칙 10%, 간편심사형 가입 1년 미만 재해 외 사유 발생 시 5%."}

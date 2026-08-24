@@ -1,0 +1,4 @@
+{"tool": "grep", "arg": "허혈심장질환.*진단급여금", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02275", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c02311", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00081", "arm": "V9_CLM_RWX"}

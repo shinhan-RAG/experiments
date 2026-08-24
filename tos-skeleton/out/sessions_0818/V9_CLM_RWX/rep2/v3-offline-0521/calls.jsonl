@@ -1,0 +1,4 @@
+{"tool": "hybrid", "arg": "제자리암 진단 확정 검사", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "제자리암", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c04084", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00956", "arm": "V9_CLM_RWX"}

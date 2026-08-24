@@ -1,0 +1,3 @@
+Confirmed: c03190 is the exact product's 지급기준표, and c03168 is a continuation of the same table (identical wording). c00085 corroborates the 1년 이후 50% framing from the summary table.
+
+{"status":"ranked","ranked_chunk_ids":["c03190","c03168","c00085"],"final_reason":"c03190/c03168는 해당 특약의 보험금 지급기준표로 1년 미만 간편심사형 0.5%, 1년 이후(정상) 1% 지급을 명시하며 c00085가 이를 보완 확인한다."}

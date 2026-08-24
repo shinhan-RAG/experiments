@@ -1,0 +1,25 @@
+{
+  "version": "v5",
+  "default_train337": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\out\\gold_v5\\gold_v5_train_full.jsonl",
+    "sha256": "f68514e4e44b0870d3f1f0c39116c59feff282db72e4a4a475ea2c5ee9ea8d6d",
+    "n_source": 337,
+    "n_eligible": 337,
+    "n_c3_partial": 0,
+    "n_strict_nonpartial": 337
+  },
+  "default_test90": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0821v2\\out\\gold_v5\\gold_v5_test_full.jsonl",
+    "sha256": "19bedd0aa23e94201c153ce0b103892b08894ca61389b25e5a852581201a67df",
+    "n_source": 90,
+    "n_eligible": 90,
+    "n_c3_partial": 0,
+    "n_strict_nonpartial": 90
+  },
+  "raw_test149": {
+    "path": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\gold_mapped_noah_v3_149_test.jsonl",
+    "sha256": "a3c3bc3a2fd6572d26ee744d97f7c80b1863837f8c3a872e942d6298b7fa02c7"
+  },
+  "spanmap_status": "not_available; external transfer required",
+  "official_if_present": "default_test90"
+}

@@ -1,0 +1,6 @@
+{"tool": "hybrid", "arg": "전이암 보장", "arm": "V9_CLM_RW"}
+{"tool": "hybrid", "arg": "전이암 진단비 지급", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c01058", "arm": "V9_CLM_RW"}
+{"tool": "grep", "arg": "전이", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00913", "arm": "V9_CLM_RW"}
+{"tool": "read", "arg": "c00716", "arm": "V9_CLM_RW"}

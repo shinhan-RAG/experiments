@@ -1,0 +1,3 @@
+I have strong, verified evidence: multiple chunks confirm that when 2+ surgeries occur in one hospitalization/visit (same day), only one surgery benefit is paid (ADRG surgical-priority rule), and separately, multiple surgeries for the same disease within 365 days also cap at one payment.
+
+{"status":"ranked","ranked_chunk_ids":["c03205","c05115","c03301","c03407","c03764","c03693","c03654","c04346","c03262","c03371"],"final_reason":"1회 입원·통원 중 2가지 이상 수술 시 하나의 수술코드(ADRG 우선순위)에 한해 1회만 급여수술급여금을 지급한다는 조항을 다수 특약에서 확인함"}

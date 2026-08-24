@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "같은 날 여러 수술을 받은 경우 수술급여금 중복 지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "같은 날 2회 이상 수술 수술비 각각 지급", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03654", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c03205", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "1회의 입원.*2가지 이상", "arm": "V9_CLM_RWX"}

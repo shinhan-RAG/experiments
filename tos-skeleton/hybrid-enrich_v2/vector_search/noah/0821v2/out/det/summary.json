@@ -1,0 +1,64 @@
+{
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\experiments\\tos-skeleton\\hybrid-enrich_v2\\out\\noah\\gold_v4_train_full.jsonl",
+  "n": 337,
+  "selection_metric": "jo fractional R@5",
+  "full_train_screen": true,
+  "tie_break": [
+    "suff@10",
+    "R@10",
+    "equal-weight simplicity"
+  ],
+  "selected_arm": "tag_sparse_lexical",
+  "arms": {
+    "baseline_fs_slot": {
+      "R@1": 0.209446,
+      "R@5": 0.452553,
+      "R@10": 0.574165,
+      "R@20": 0.689711,
+      "R@40": 0.747017,
+      "suff@5": 0.403561,
+      "suff@10": 0.519288,
+      "RR@10": 0.352754
+    },
+    "tag_sparse_no_collapse": {
+      "R@1": 0.259348,
+      "R@5": 0.574239,
+      "R@10": 0.672099,
+      "R@20": 0.747376,
+      "R@40": 0.808916,
+      "suff@5": 0.522255,
+      "suff@10": 0.614243,
+      "RR@10": 0.447344
+    },
+    "tag_sparse_equal": {
+      "R@1": 0.259348,
+      "R@5": 0.574239,
+      "R@10": 0.672099,
+      "R@20": 0.747376,
+      "R@40": 0.808916,
+      "suff@5": 0.522255,
+      "suff@10": 0.614243,
+      "RR@10": 0.447344
+    },
+    "tag_sparse_struct": {
+      "R@1": 0.248764,
+      "R@5": 0.554938,
+      "R@10": 0.663827,
+      "R@20": 0.725973,
+      "R@40": 0.77895,
+      "suff@5": 0.498516,
+      "suff@10": 0.608309,
+      "RR@10": 0.429068
+    },
+    "tag_sparse_lexical": {
+      "R@1": 0.2638,
+      "R@5": 0.58678,
+      "R@10": 0.66102,
+      "R@20": 0.735941,
+      "R@40": 0.797024,
+      "suff@5": 0.534125,
+      "suff@10": 0.605341,
+      "RR@10": 0.453693
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{"tool": "hybrid", "arg": "자동대출 납입 유지 보험료", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "보험료 자동대출납입 제도", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00185", "arm": "V9_CLM_RWX"}
+{"tool": "grep", "arg": "자동대출납입기간", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00184", "arm": "V9_CLM_RWX"}

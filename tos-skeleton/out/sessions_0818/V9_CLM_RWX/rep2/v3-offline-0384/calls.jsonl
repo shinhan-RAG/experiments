@@ -1,0 +1,5 @@
+{"tool": "grep", "arg": "암진단급여금.*지급", "arm": "V9_CLM_RWX"}
+{"tool": "hybrid", "arg": "삭감없음용 일반암진단특약 암진단급여금 지급사유", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00598", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00921", "arm": "V9_CLM_RWX"}
+{"tool": "read", "arg": "c00610", "arm": "V9_CLM_RWX"}

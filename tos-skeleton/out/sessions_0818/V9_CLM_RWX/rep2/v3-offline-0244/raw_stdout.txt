@@ -1,0 +1,1 @@
+{"status":"ranked","ranked_chunk_ids":["c00309","c00301","c00461","c00378"],"final_reason":"c00309 directly states that when additional 재해장해 occurs at the same body part with prior disability, the already-paid (3~100%)재해장해급여금 is deducted from the final amount due; c00301 provides the article structure of the same 특약, and c00461/c00378 give supporting/contrastive context."}
