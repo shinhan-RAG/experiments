@@ -1,0 +1,4 @@
+{
+ "policy": "targeted content-equivalence audit under spec v1 section 3's human-registration clause: OR members no longer require verbatim identity — any JO span whose content independently and completely supports the same claim(s) qualifies, judged retrieval-blind from question/official answer/source only. Summary/global questions may accept any section (TOC, summary table, applicable clause) that supports the official answer's content. Material differences still disqualify. Selection = remaining failure-mass qids (spec v1 section-6 error-discovery loop).",
+ "seed": null
+}

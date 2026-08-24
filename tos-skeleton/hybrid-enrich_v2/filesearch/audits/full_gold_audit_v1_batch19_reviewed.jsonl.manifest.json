@@ -1,0 +1,192 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v21.jsonl",
+      "sha256": "7113644589930d6d97951a2f19b71aa43fef464ecab05061bb6a714a1b6300fb"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch19_adjudicated.jsonl",
+      "sha256": "f24d8684c245d97162564121b40b5ddd9b8a9c070de5a0b364587388e36d70c4"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch19_qids.json",
+      "sha256": "75260d19ae5bc646011eb9d8c10e18cc296537adf7464f176c5ac06e2a3bf596"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "307759529b2a5cc4a1289d35a5633ed9daf130d21030de9a4cafb82ef34bba07"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch19_reviewed.jsonl",
+  "output_sha256": "e1e160f2e0bc4a419f31377d3c74f1ceca8b459f49831b1a7bd2476c010af53a",
+  "n_input": 26,
+  "n_output": 26,
+  "counts": {
+    "pass": 16,
+    "fix": 10,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0177",
+      "decision": "fix",
+      "groups": 1,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0288",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0278",
+      "decision": "pass",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0055",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0275",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0311",
+      "decision": "pass",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0232",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0009",
+      "decision": "pass",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0290",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0029",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0086",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0490",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0532",
+      "decision": "pass",
+      "groups": 1,
+      "members": 41
+    },
+    {
+      "qid": "v3-offline-0234",
+      "decision": "fix",
+      "groups": 2,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0345",
+      "decision": "fix",
+      "groups": 2,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0351",
+      "decision": "fix",
+      "groups": 2,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0216",
+      "decision": "fix",
+      "groups": 3,
+      "members": 5
+    },
+    {
+      "qid": "v3-offline-0170",
+      "decision": "fix",
+      "groups": 1,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0003",
+      "decision": "pass",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0400",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0138",
+      "decision": "pass",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0132",
+      "decision": "fix",
+      "groups": 2,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0179",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0134",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0491",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0314",
+      "decision": "pass",
+      "groups": 2,
+      "members": 3
+    }
+  ]
+}

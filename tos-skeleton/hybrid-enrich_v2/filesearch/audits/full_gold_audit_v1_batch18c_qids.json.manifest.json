@@ -1,0 +1,4 @@
+{
+ "policy": "restoration audit of previously excluded rows using the extended applier (add_required_group); base rows = last pre-exclusion content (gold_batch18_base_rows.jsonl); criteria = current (a/a-prime derived-version equivalence + spec v1 section-3 handled separately at scoring)",
+ "seed": null
+}
