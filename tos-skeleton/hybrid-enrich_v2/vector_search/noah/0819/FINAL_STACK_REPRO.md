@@ -1,6 +1,8 @@
-# 최종 채택 스택 재현 — r1v + Gold v22 (train 213, R@5 .9147)
+# 최종 채택 스택 재현 — r1v + Gold v23 + R10 재조합 (train 213, R@5 .9171)
 
-최종 조합은 arm `r1v_verify_identity_reference_hybrid`(arms.json) + `gold_train_scoped_u3_reviewed_overlay_v22.jsonl`이다.
+최종 조합은 arm `r1v_verify_identity_reference_hybrid`(arms.json) + `gold_train_scoped_u3_reviewed_overlay_v23.jsonl`
++ 호스트측 결정론 제출 재조합 R10(`recompose_submissions.py --anchor-n 2`, 에이전트 top-5 보존·첫 검색 top-2 후미 보충)이다.
+재조합 없는 as-submitted 수치는 .9147.
 검색기는 rule router + Semantic Tag/BM25F + CLM quota 앙상블(결정론)이며, 비에이전트 LLM·reranker를 쓰지 않는다.
 Meta V9 hybrid 채널(`vector_search/hybrid_search.py`)은 고정 변수로 항상 결합된다(require_meta_first).
 에이전트는 opus, reasoning effort medium, host-controlled search/read/submit, max-actions 5, ITT reps 2.
@@ -26,9 +28,9 @@ filesearch/out/tags_u4_fact_rules.jsonl                # U4 fact 태그 (규칙)
   19df8e21d9f9287394cf9d02924d5d0e2c84be7e9bf3ae9fca4f02aaacd18104
 filesearch/out/tags_u5_reference_graph_v14_stats.json  # U5 참조 그래프 edge_ledger (reference_follow 입력)
   8b76b9eb15f89afe4b33c3dd00b74e2ad9ff3afc02cd66e65032d38db1e110db
-filesearch/out/gold_train_scoped_u3_reviewed_overlay_v22.jsonl   # Gold v22 (213문항)
-  f75805c85ed4b02f5834cd9d17a4ff203695ffccf4b7653c1544d737f6addd19
-filesearch/out/qids_train_scoped_u3_reviewed_overlay_v22.json    # qid 목록 (213)
+filesearch/out/gold_train_scoped_u3_reviewed_overlay_v23.jsonl   # Gold v23 (213문항)
+  5f2404df0cba4b6665caa7f38b3f0fa9f3ac4e84e385cfd7aea728284d432929
+filesearch/out/qids_train_scoped_u3_reviewed_overlay_v23.json    # qid 목록 (213)
   ac610496980d4385bd41226bd84588857cf3283f0b82ec31b297216d17ae6bd4
 vector_search/out/view_V9.jsonl                        # Meta V9 view
   582602982443acf6294317c58867db882f1e71c271a95ff189fa6f775a5b0b85
@@ -49,20 +51,24 @@ export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
 
 python3 host_agent_runner.py \
-  --run r1v_full213x2_goldv22 \
+  --run r1v_full213x2_goldv23 \
   --arms r1v_verify_identity_reference_hybrid \
-  --qids ../../../filesearch/out/qids_train_scoped_u3_reviewed_overlay_v22.json \
-  --gold ../../../filesearch/out/gold_train_scoped_u3_reviewed_overlay_v22.jsonl \
+  --qids ../../../filesearch/out/qids_train_scoped_u3_reviewed_overlay_v23.json \
+  --gold ../../../filesearch/out/gold_train_scoped_u3_reviewed_overlay_v23.jsonl \
   --reps 2 --workers 4 \
   --model opus --reasoning-effort medium \
   --timeout 240 --max-actions 5 --seed 20260850
 ```
 
-공식 run(`out/host_agent/opus_r1v_full213x2_goldv20_20260824/`, gold v22 재채점)의 agent ITT 지표:
+공식 run(`out/host_agent/opus_r1v_full213x2_goldv20_20260824/`, gold v23 재채점 — v22와 동일 수치)의 agent ITT 지표:
 
 | arm | R@1 | R@5 | R@10 | suff@5 |
 |---|---:|---:|---:|---:|
-| r1v (최종) | .6025 | **.9147** [.878,.946] | .9300 | .9014 |
+| r1v as-submitted | .6025 | .9147 [.878,.946] | .9300 | .9014 |
+| r1v + R10 재조합 (최종) | .6049 | **.9171** | .9370 | .9038 |
+
+재조합은 run 종료 후 `recompose_submissions.py --run <run> --gold <gold v23> --anchor-n 2` 로 적용한다
+(top-5 보존 append-only — R@5 강등 구조적 불가, 대장 R10 절 참조).
 
 모델 비결정성 때문에 단일 재실행 수치가 동일할 필요는 없다. manifest의 Gold/data/code SHA,
 agent model, reasoning effort, worker 수, seed, 오류 처리 규칙이 일치해야 비교 가능하다.
@@ -70,7 +76,7 @@ agent model, reasoning effort, worker 수, seed, 오류 처리 규칙이 일치�
 
 ## Gold만 재사용하는 팀원용
 
-- Gold: `gold_train_scoped_u3_reviewed_overlay_v22.jsonl` — 1행 1문항, `groups`=[AND 그룹], 그룹 안 `members`=[OR], member는 char span(`c0`,`c1`)+`jo`.
+- Gold: `gold_train_scoped_u3_reviewed_overlay_v23.jsonl` — 1행 1문항, `groups`=[AND 그룹], 그룹 안 `members`=[OR], member는 char span(`c0`,`c1`)+`jo`.
 - 채점: `filesearch/scoring.py`의 fractional evidence-group Recall@K + `filesearch/units.py`(제출 id e*/j*/c* → 조 사상). 어느 검색기든 제출 상위 K id 리스트만 있으면 채점된다.
 - qid/질문 문구는 lsh train QA셋 기준(test149는 별도 봉인 — 이 저장소에서 열람·사용 금지 정책 유지).
 

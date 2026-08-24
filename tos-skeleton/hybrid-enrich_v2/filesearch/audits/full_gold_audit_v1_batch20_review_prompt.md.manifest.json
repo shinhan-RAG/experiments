@@ -1,0 +1,23 @@
+{
+ "policy": "generated retrieval-blind audit prompt (batch20 review — independent cross-review of primary)",
+ "mode": "review",
+ "inputs": {
+  "qids": {
+   "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_qids.json",
+   "sha256": "84e42fef33889cbb38f52de648402ab53eaa30742a51f32d7fd59d07d15de2dc"
+  },
+  "gold": {
+   "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v22.jsonl",
+   "sha256": "f75805c85ed4b02f5834cd9d17a4ff203695ffccf4b7653c1544d737f6addd19"
+  },
+  "jo": {
+   "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+   "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+  },
+  "primary": {
+   "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_primary_claude.json",
+   "sha256": "d2099c7527c2c559131d580c6fbae3c65c654d9b4e12c3274bc1590a96e82960"
+  }
+ },
+ "output_sha256": "b2904440cb4265b1d5c5a27e24c04fb42dfbfc0fddf5d0963a5745c40d6353c3"
+}

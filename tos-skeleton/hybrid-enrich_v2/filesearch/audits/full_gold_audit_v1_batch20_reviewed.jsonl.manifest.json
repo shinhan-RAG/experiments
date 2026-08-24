@@ -1,0 +1,48 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v22.jsonl",
+      "sha256": "f75805c85ed4b02f5834cd9d17a4ff203695ffccf4b7653c1544d737f6addd19"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_adjudicated.jsonl",
+      "sha256": "d78e8fdafd77e6c0b56e4028d85a48e2d3a1f402de2054b34b271693060a9f84"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_qids.json",
+      "sha256": "84e42fef33889cbb38f52de648402ab53eaa30742a51f32d7fd59d07d15de2dc"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "307759529b2a5cc4a1289d35a5633ed9daf130d21030de9a4cafb82ef34bba07"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_reviewed.jsonl",
+  "output_sha256": "041e4cf67f1f611ec45374c3863ac846b5a05d6c82966eb30ee8da082f3fbd69",
+  "n_input": 2,
+  "n_output": 2,
+  "counts": {
+    "pass": 1,
+    "fix": 1,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0532",
+      "decision": "fix",
+      "groups": 1,
+      "members": 43
+    },
+    {
+      "qid": "v3-offline-0490",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

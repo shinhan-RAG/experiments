@@ -58,13 +58,22 @@ def _table_jos(search, min_pipes=60):
     return cached
 
 
-def reference_follow_enabled(raw_query, gate="table_code_or_document"):
-    """참조 팔로우 발화 조건 — 표/코드/서류 표면형이 질문에 있을 때만."""
+def reference_follow_enabled(raw_query, gate="table_code_or_document", slots=None):
+    """참조 팔로우 발화 조건.
+
+    - table_code_or_document: 표/코드/서류 표면형이 질문에 있을 때만 (R1 원형).
+    - surface_or_routed_edge: 위 표면형 또는 라우터가 특약을 잡았을 때(R9).
+      엣지 부재 시 ranking 이 비어 tail-append 미발화 — fail-closed 유지.
+    """
     if not gate:
         return True
-    if gate != "table_code_or_document":
-        raise ValueError(f"unknown reference follow gate: {gate}")
-    return bool(REFERENCE_FOLLOW_RE.search(str(raw_query)))
+    if gate == "table_code_or_document":
+        return bool(REFERENCE_FOLLOW_RE.search(str(raw_query)))
+    if gate == "surface_or_routed_edge":
+        if REFERENCE_FOLLOW_RE.search(str(raw_query)):
+            return True
+        return bool((slots or {}).get("contract"))
+    raise ValueError(f"unknown reference follow gate: {gate}")
 
 
 def identity_core(contract):
@@ -1342,7 +1351,8 @@ def main():
                     if arm.get("reference_follow"):
                         follow = arm["reference_follow"]
                         follow_enabled = reference_follow_enabled(
-                            original, follow.get("gate", "table_code_or_document"))
+                            original, follow.get("gate", "table_code_or_document"),
+                            slots=slots)
                         follow_ranked, follow_audit = [], {}
                         if follow_enabled:
                             follow_stats = json.load(open(

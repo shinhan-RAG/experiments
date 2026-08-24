@@ -1,0 +1,15 @@
+{
+ "policy": "Batch20 targeted content-equivalence re-audit (spec v1 §3 human-registration clause, cross-scope sweep for scope-unspecified questions). Primary (opus) and independent cross-review (sonnet) are both retrieval-blind and validator-clean, and agree on every qid (0532 fix: add j05644/j07027 as content-equivalent OR members; 0490 pass: no additional equivalent evidence — candidate clauses differ materially in document-list composition). Select the review for every qid: it independently re-verified all spans and equivalence/exclusion judgments by direct corpus slicing.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0532",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified both added spans and all exclusion judgments (j00539-family, j00170-family, j00047) against source text."
+  },
+  {
+   "qid": "v3-offline-0490",
+   "selected_source": "review",
+   "reason": "Primary and review agree on pass; review independently re-verified both existing members and all five excluded candidates against source text."
+  }
+ ]
+}

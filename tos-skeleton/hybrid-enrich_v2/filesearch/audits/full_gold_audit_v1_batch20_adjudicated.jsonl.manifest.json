@@ -1,0 +1,71 @@
+{
+  "policy": "Batch20 targeted content-equivalence re-audit (spec v1 §3 human-registration clause, cross-scope sweep for scope-unspecified questions). Primary (opus) and independent cross-review (sonnet) are both retrieval-blind and validator-clean, and agree on every qid (0532 fix: add j05644/j07027 as content-equivalent OR members; 0490 pass: no additional equivalent evidence — candidate clauses differ materially in document-list composition). Select the review for every qid: it independently re-verified all spans and equivalence/exclusion judgments by direct corpus slicing.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_primary_claude.json",
+      "sha256": "d2099c7527c2c559131d580c6fbae3c65c654d9b4e12c3274bc1590a96e82960"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_review_claude.json",
+      "sha256": "9d45110869b74543bb1a865bbca0555b3305921e4c16a4be91b480425993eb95"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_resolution.json",
+      "sha256": "36be96647a546bf473033f20f74937d9a0db31f910db42eec2cfd4d70328aaa2"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_qids.json",
+      "sha256": "84e42fef33889cbb38f52de648402ab53eaa30742a51f32d7fd59d07d15de2dc"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v22.jsonl",
+      "sha256": "f75805c85ed4b02f5834cd9d17a4ff203695ffccf4b7653c1544d737f6addd19"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 2,
+    "decision_agreements": 2,
+    "decision_disagreements": 0,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 1,
+    "fix": 1,
+    "exclude": 0
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0532",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree; review independently re-verified both added spans and all exclusion judgments (j00539-family, j00170-family, j00047) against source text."
+    },
+    {
+      "qid": "v3-offline-0490",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary and review agree on pass; review independently re-verified both existing members and all five excluded candidates against source text."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch20_adjudicated.jsonl",
+    "sha256": "d78e8fdafd77e6c0b56e4028d85a48e2d3a1f402de2054b34b271693060a9f84"
+  }
+}
