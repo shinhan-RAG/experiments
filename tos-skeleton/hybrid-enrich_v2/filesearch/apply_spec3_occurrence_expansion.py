@@ -29,6 +29,11 @@ def main():
     nd, idx = norm_map(raw)
     E = [json.loads(l) for l in open(a.elements, encoding="utf-8")]
     starts = [e["char_start"] for e in E]
+    J = [json.loads(l) for l in open(str(HERE / "out/elements_u3jo.jsonl"), encoding="utf-8")]
+    jstarts = [u["char_start"] for u in J]
+    def jo_at(c):
+        i = bisect.bisect_right(jstarts, c) - 1
+        return J[i]["element_id"] if i >= 0 else ""
     def scope_at(c):
         i = bisect.bisect_right(starts, c) - 1
         return E[i]["contract_scope"] if i >= 0 else ""
@@ -57,7 +62,7 @@ def main():
                         sc = scope_at(c0)
                         ok = (not named) or (sc in named) or (re.sub(r"^주계약\((.*)\)$", r"\1", sc) in named)
                         if ok:
-                            gr["members"].append({"c0": c0, "c1": c1, "src": "occurrence_spec3"})
+                            gr["members"].append({"c0": c0, "c1": c1, "src": "occurrence_spec3", "jo": jo_at(c0)})
                             added += 1; n_exp += 1
                     p = nd.find(k, p + 1)
             gr["c0"] = min(m["c0"] for m in gr["members"]); gr["c1"] = max(m["c1"] for m in gr["members"])

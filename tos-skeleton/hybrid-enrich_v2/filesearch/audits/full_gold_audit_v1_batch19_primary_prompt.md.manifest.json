@@ -1,0 +1,30 @@
+{
+  "policy": "generated retrieval-blind audit prompt",
+  "mode": "primary",
+  "inputs": {
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch19_qids.json",
+      "sha256": "75260d19ae5bc646011eb9d8c10e18cc296537adf7464f176c5ac06e2a3bf596"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_train_scoped_u3_reviewed_overlay_v21.jsonl",
+      "sha256": "096465b1ba04f67ddbb3d80d6c8da6c100fea19ae33bdda7941609a64905441b"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/elements_u3jo.jsonl",
+      "sha256": "44d856004c473e186880cbe749c70d701d1ae25f528c6128cc575a004e8d980c"
+    }
+  },
+  "official_csv": {
+    "path": "/Users/ralph/Desktop/신한라이프/data_set/noah_qaset/정답셋_348_train_v3_retrieval_250212.csv",
+    "sha256": "dbbbfb0f957ef1a10cc95dc596f14d5ea282e988cc01b865fecb64005ad9a9ca"
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/prepare_gold_audit_prompt.py",
+    "sha256": "720333cc199f1c38bc4ed376ab9f7d23a5467261d288976483b0a4c73637b5e1"
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/full_gold_audit_v1_batch19_primary_prompt.md",
+    "sha256": "111c3b4217dece0ebf6ede6f81b263f427725a97a27f02863fff75f23a8cb5b8"
+  }
+}

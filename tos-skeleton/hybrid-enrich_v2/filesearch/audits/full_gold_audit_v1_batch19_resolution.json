@@ -1,0 +1,135 @@
+{
+ "policy": "Content-equivalence audit under spec v1 section-3 human-registration clause. Both audits are retrieval-blind and validator-clean; select the independent review for every qid: it re-verified all 9 fixes (incl. the 0351 group replacement and material-difference exclusions) and all 17 passes against source text, and additionally found one defective legacy member on v3-offline-0170 (j01249 span ends mid-definition of a different rider and does not support the 90-day claim), correcting pass to fix by removing it.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0177",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0288",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0278",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0055",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0275",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0311",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0232",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0009",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0290",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0029",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0086",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0490",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0532",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0234",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0345",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0351",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0216",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0170",
+   "selected_source": "review",
+   "reason": "Review found the legacy member j01249 does not support claim (b) (span cuts into another rider's definition); corrected primary's pass to fix by removing the defective member."
+  },
+  {
+   "qid": "v3-offline-0003",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0400",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0138",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0132",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0179",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0134",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0491",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  },
+  {
+   "qid": "v3-offline-0314",
+   "selected_source": "review",
+   "reason": "Primary and review agree; review independently re-verified spans and equivalence judgments against source text."
+  }
+ ]
+}
