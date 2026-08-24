@@ -1,0 +1,31 @@
+{
+  "run": "r2_verify_dense_quota_213x2_goldv21_20260824",
+  "n_q": 213,
+  "reps": 2,
+  "provider": "claude",
+  "model": "claude-sonnet-5",
+  "reasoning_effort": "medium",
+  "arms": {
+    "r2_verify_dense_quota_hybrid": {
+      "R@1": 0.6467136150234741,
+      "R@5": 0.8544600938967136,
+      "R@10": 0.8869327073552425,
+      "suff@5": 0.8309859154929577,
+      "suff@10": 0.863849765258216,
+      "errors": 0,
+      "protocol_errors": 16,
+      "empty_submissions": 1,
+      "mean_submitted": 8.626760563380282,
+      "mean_model_calls": 2.2699530516431925,
+      "mean_elapsed": 58.64853863257198,
+      "model_usage_total": {
+        "input_tokens": 1952,
+        "cached_input_tokens": 8989266,
+        "cache_write_input_tokens": 14208217,
+        "output_tokens": 544973,
+        "reasoning_output_tokens": 400107,
+        "cost_usd": 64.08435520000002
+      }
+    }
+  }
+}

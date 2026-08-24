@@ -1,0 +1,32 @@
+{
+  "version": "semtag-h35-luna-1.0",
+  "n": 32366,
+  "model": "gpt-5.6-luna",
+  "deterministic": [
+    "contract_key",
+    "locator",
+    "schema_tag"
+  ],
+  "llm": [
+    "subject_key",
+    "role",
+    "qualifier",
+    "reference",
+    "search_text"
+  ],
+  "jo_called": 3235,
+  "jo_skipped_short": 4364,
+  "min_text": 30,
+  "failed_uncached": 0,
+  "element_source": {
+    "llm": 27844,
+    "rules_승계": 4522
+  },
+  "coverage": {
+    "contract_key": 0.998,
+    "subject_key": 0.538,
+    "role": 0.926,
+    "qualifier": 0.253,
+    "reference": 0.201
+  }
+}
