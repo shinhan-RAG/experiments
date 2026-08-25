@@ -20,10 +20,10 @@ RULE_VERSION = "hybrid-enrich/build_elements.py@dev-fe43198 + main-regex-250212 
 # product attributes; a leading product-family marker is optional.  Table rows
 # are excluded by the caller before this expression is evaluated.
 RIDER = re.compile(r"^(?!.*\|).{1,100}특약\s*\(\s*무배당[^)]*\)\s*$")
-MAINS = [
-    re.compile(r"^신한\(간편가입\)통합건강보험 원\(ONE\)\(무배당[^)]*\)\s*$"),          # 260507판 표기
-    re.compile(r"^\(간편\)신한통합건강보장보험\s*원\(ONE\)\(무배당[^)]*\)\s*$"),        # 250212판 표기
-]
+# 주계약 헤더·브랜드 노이즈는 doc_profile 로 분리(G1) — 기본 프로필 값은 기존 리터럴과 동일.
+import doc_profile as _dp
+_PROFILE = _dp.load_profile()
+MAINS = _dp.compile_mains(_PROFILE)
 
 
 def sha256_file(path):
@@ -34,11 +34,7 @@ def sha256_file(path):
     return h.hexdigest()
 
 
-NOISE = [
-    re.compile(r"^_{3,}$"), re.compile(r"^-{3}$"), re.compile(r"^\d{10,}$"), re.compile(r"^\d{1,4}$"),
-    re.compile(r"^#?\s*SHINHAN LIFE$"), re.compile(r"^S$"), re.compile(r"^S 신한라\s?이프$"),
-    re.compile(r"^\(\d+,\d+\),\(\d+,\d+\)$"),
-]
+NOISE = _dp.compile_noise(_PROFILE)
 STARTS_MARKER = re.compile(r"^(?:[①-⑳]|제\d|\d+[.)]|[가-힣][.)]\s|[·•▪■□○●\-\[\(<「『#|]|[a-z][.)]?\s)")
 ARTICLE_TITLE = re.compile(r"^제\d+(?:-\d+)?(?:조|관|편|장|절)(?:의\d+)?\s*[\(\[]?[^.。]{0,60}$")
 ENDS_SENT = re.compile(r"(?:다\.|[.)\]」』>:]|니다|습니다|음|함)\s*$")
@@ -49,7 +45,14 @@ def is_noise(s):
 
 
 def build(raw, clean=False):
+    global MAINS
     lines = raw.split("\n")
+    if not any(m.match(l.strip()) for l in lines[:4000] for m in MAINS):
+        derived = _dp.derive_main_patterns(lines)
+        if derived:
+            MAINS = derived
+            print(json.dumps({"main_header": "derived",
+                              "patterns": [m.pattern for m in MAINS]}, ensure_ascii=False))
     line_offs, pos = [], 0
     for l in lines:
         line_offs.append(pos)

@@ -76,6 +76,64 @@ def reference_follow_enabled(raw_query, gate="table_code_or_document", slots=Non
     raise ValueError(f"unknown reference follow gate: {gate}")
 
 
+_SEG_LEX = None
+
+
+def _segment_lexicon():
+    """무공백 질의 분절용 어휘 — 문서 내부(태그 표면·조 제목·계약명 토큰)만 사용."""
+    global _SEG_LEX
+    if _SEG_LEX is not None:
+        return _SEG_LEX
+    import json as _j
+    words = set()
+    try:
+        for l in open(FS / "out/tags_u4_fact_rules.jsonl", encoding="utf-8"):
+            d = _j.loads(l)
+            for k in d.get("subject_key") or []:
+                for tkn in re.findall(r"[가-힣]{2,}", k):
+                    words.add(tkn)
+            a = (d.get("locator") or {}).get("article_title") or ""
+            for tkn in re.findall(r"[가-힣]{2,}", a):
+                words.add(tkn)
+            for tkn in re.findall(r"[가-힣]{2,}", d.get("contract_key") or ""):
+                words.add(tkn)
+    except OSError:
+        pass
+    _SEG_LEX = {w for w in words if 2 <= len(w) <= 12}
+    return _SEG_LEX
+
+
+def segment_spaceless(q):
+    """공백 없는 한글 질의를 문서 내부 어휘 greedy 최장일치로 분절(R12).
+
+    공백이 이미 있거나 8자 미만이면 원문 그대로. 미매치 구간은 붙여 둔다.
+    """
+    s = str(q).strip()
+    if " " in s or len(s) < 8 or not re.fullmatch(r"[가-힣?!.,·]+", s):
+        return q
+    lex = _segment_lexicon()
+    out, buf, i = [], "", 0
+    while i < len(s):
+        best = ""
+        for L in range(min(12, len(s) - i), 1, -1):
+            cand = s[i:i + L]
+            if cand in lex:
+                best = cand
+                break
+        if best:
+            if buf:
+                out.append(buf)
+                buf = ""
+            out.append(best)
+            i += len(best)
+        else:
+            buf += s[i]
+            i += 1
+    if buf:
+        out.append(buf)
+    return " ".join(out)
+
+
 def identity_core(contract):
     """특약명 → 대괄호 수식어([기본]·[한도형]…)와 판본 접미를 뺀 정규화 핵심명."""
     from textmatch import contract_core
@@ -1241,6 +1299,11 @@ def main():
             log({"browse": a.scope, "level": b.get("level"), "n_items": len(b.get("items", []))})
             out({"browse": True, "scope": a.scope, "search_calls_left": SEARCH_CAP - n_search - 1, **b}); return
         # 라우터: 동결 qtags + 규칙(--q) + 에이전트 지정 슬롯
+        if arm.get("segment_spaceless"):
+            seg_q = segment_spaceless(a.q)
+            if seg_q != a.q:
+                log({"segment_spaceless": {"orig": a.q, "seg": seg_q}})
+            a.q = seg_q
         slots, toks = S.router.route(a.q)
         conf = slots.pop("_conf", {})
         router = arm.get("router", "union")

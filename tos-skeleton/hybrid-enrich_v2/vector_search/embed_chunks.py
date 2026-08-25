@@ -29,7 +29,7 @@ def read_jsonl(path: Path) -> list[dict]:
 
 def main():
     ap = argparse.ArgumentParser(description="청크 임베딩 (BGE-m3-ko)")
-    ap.add_argument("--view", default="V9", choices=("V9", "BASE", "RAW", "RULE"))
+    ap.add_argument("--view", default="V9", choices=("V9", "BASE", "RAW", "RULE", "RULE2", "RULE2A"))
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--max-len", type=int, default=1024)
     ap.add_argument("--limit", type=int, default=-1)
