@@ -186,7 +186,7 @@ def main():
     ap.add_argument("--query", required=True, help="검색 질의")
     ap.add_argument("--strategy", default="hybrid", choices=("bm25", "dense", "hybrid"))
     ap.add_argument("--top-k", type=int, default=10)
-    ap.add_argument("--view", default="V9", choices=("V9", "BASE"))
+    ap.add_argument("--view", default="V9", choices=("V9", "BASE", "RAW", "RULE"))
     args = ap.parse_args()
 
     hs = ChunkHybridSearch(view=args.view)
