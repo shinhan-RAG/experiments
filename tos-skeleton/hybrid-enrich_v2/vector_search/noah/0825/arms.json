@@ -1,0 +1,228 @@
+{
+  "_comment": "0825 결정론 스윕: A=evidence_unit 활성화, F=locator_coverage 튜닝, G=portfolio 파라미터. baseline은 r1v 동등(u3/u4, BM25F core, 축커버리지 gate). 변인은 sfw/portfolio만.",
+  "baseline": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "r1v 동등 기준선 (evidence_unit=0, locator_coverage=0, portfolio=없음)"
+  },
+  "A1_eu_04": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "evidence_unit": 0.4,
+      "_evidence_unit_rare": 6
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "evidence_unit=0.4, rare=6"
+  },
+  "A2_eu_08": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "evidence_unit": 0.8,
+      "_evidence_unit_rare": 6
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "evidence_unit=0.8, rare=6"
+  },
+  "A3_eu_12": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "evidence_unit": 1.2,
+      "_evidence_unit_rare": 8
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "evidence_unit=1.2, rare=8"
+  },
+  "F1_loc_cov": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "_locator_coverage": 4.0
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "locator_coverage=4.0"
+  },
+  "F2_loc_cov_high": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "_locator_coverage": 6.0
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "locator_coverage=6.0"
+  },
+  "G1_portfolio_wide": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0
+    },
+    "portfolio": "rrf_safe_axes",
+    "portfolio_prompt": false,
+    "portfolio_window": 50,
+    "rrf_k": 50,
+    "coverage_seed": 4,
+    "coverage_per_role": 2,
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "portfolio=rrf_safe_axes, coverage_per_role=2, coverage_seed=4, window=50, rrf_k=50"
+  },
+  "AF_combined": {
+    "elements": "elements_u3.jsonl",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "jo": "elements_u3jo.jsonl",
+    "ranker": "bm25f",
+    "profile": "core",
+    "sfw": {
+      "identity_container": 0.7,
+      "evidence": 2.4,
+      "_hierarchy": 1.0,
+      "evidence_unit": 0.8,
+      "_evidence_unit_rare": 6,
+      "_locator_coverage": 4.0
+    },
+    "router": "rule",
+    "facet": 1,
+    "meta": 1,
+    "meta_view": "V9",
+    "search_only": true,
+    "fallback": {
+      "gate": "axis_coverage",
+      "top_k": 5,
+      "min_axis_coverage": 0.5,
+      "merge_k": 10,
+      "first_only": true,
+      "force_first": true
+    },
+    "_desc": "evidence_unit=0.8 + locator_coverage=4.0 (A+F 합성)"
+  }
+}
