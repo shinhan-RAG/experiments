@@ -1240,6 +1240,13 @@ def main():
     S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")),
                     str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")),
                     structured=arm.get("ranker") == "bm25f")
+    if arm.get("contract_alias_file"):
+        from textmatch import compact as _cmp
+        _extra = json.load(open(FS / arm["contract_alias_file"], encoding="utf-8"))
+        _extra.pop("_comment", None)
+        S.router.alias_map = {**getattr(S.router, "alias_map", {}),
+                              **{_cmp(a): _cmp(c) for c, alts in _extra.items()
+                                 for a in alts if len(_cmp(a)) >= 3}}
     S.router.strict_explicit_bracket = bool(arm.get("strict_explicit_bracket", False))
     if not hasattr(S, "_jo"):
         J = [json.loads(l) for l in open(FS / "out" / arm.get("jo", "elements_u2jo.jsonl"), encoding="utf-8")]
