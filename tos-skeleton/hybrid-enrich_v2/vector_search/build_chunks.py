@@ -87,9 +87,14 @@ def limit_article_mix(text, ranges):
 
 def main():
     ap = argparse.ArgumentParser(description="600/100 chunking with contract boundaries")
+    ap.add_argument("--out-dir", default=None)
     ap.add_argument("--doc", default=os.environ.get("DOC_PATH", str(DEFAULT_DOC)),
                     help="약관 마크다운 경로")
+    ap.add_argument("--out-dir", default=None, help="산출 디렉터리(기본 out/)")
     args = ap.parse_args()
+    global OUT
+    if args.out_dir:
+        OUT = Path(args.out_dir)
 
     doc_path = Path(args.doc)
     if not doc_path.exists():

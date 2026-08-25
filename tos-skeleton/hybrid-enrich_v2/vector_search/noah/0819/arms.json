@@ -3567,5 +3567,100 @@
    "max_hops": 2
   },
   "segment_spaceless": 1
+ },
+ "r11v_260507_pilot_hybrid": {
+  "elements": "elements_260507.jsonl",
+  "tags": "tags_u4_260507.jsonl",
+  "jo": "jo_260507.jsonl",
+  "ranker": "bm25f",
+  "profile": "core",
+  "sfw": {
+   "identity_container": 0.7,
+   "evidence": 2.4,
+   "_hierarchy": 1.0
+  },
+  "baseline_sfw": {},
+  "tag_ensemble": "quota",
+  "ensemble_lex": "count",
+  "ensemble_clm_w": {
+   "contract": 2.0,
+   "role": 0.5,
+   "subject": 1.5
+  },
+  "ensemble_rrf_k": 60,
+  "ensemble_clm_quota": 17,
+  "ensemble_fact_quota": 8,
+  "ensemble_support_clm_quota": 15,
+  "ensemble_support_fact_quota": 7,
+  "ensemble_unit_quota": 3,
+  "ensemble_unit_gate": "membership_or_code",
+  "ensemble_unit_require_support": true,
+  "ensemble_unit_sfw": {
+   "identity_container": 0.0,
+   "identity_full": 0.0,
+   "identity_base": 0.0,
+   "variant": 0.0,
+   "topic": 0.0,
+   "function": 0.0,
+   "locator": 0.0,
+   "table": 0.0,
+   "constraint": 0.0,
+   "relation": 0.0,
+   "structure": 0.0,
+   "evidence": 0.0,
+   "evidence_unit": 1.0,
+   "extra": 0.0,
+   "_evidence_unit_rare": 8
+  },
+  "ensemble_membership_support_quota": 3,
+  "ensemble_membership_support_sfw": {
+   "identity_container": 0.0,
+   "identity_full": 0.0,
+   "identity_base": 1.0,
+   "variant": 0.0,
+   "topic": 0.0,
+   "function": 0.0,
+   "locator": 0.0,
+   "table": 0.0,
+   "constraint": 0.0,
+   "relation": 0.0,
+   "structure": 0.0,
+   "evidence": 0.0,
+   "evidence_unit": 1.0,
+   "extra": 0.0
+  },
+  "preserve_jo_top": 5,
+  "router": "rule",
+  "facet": 1,
+  "meta": 1,
+  "meta_view": "RULE",
+  "search_only": true,
+  "audit_payload": true,
+  "score_view": "rank",
+  "fallback": {
+   "gate": "axis_coverage",
+   "top_k": 5,
+   "min_axis_coverage": 0.5,
+   "merge_k": 10,
+   "first_only": true,
+   "force_first": true
+  },
+  "prompt_addendum": "추가 제출 규칙:\n- 같은 문구가 여러 특약·판본에 반복되어 보이면(제목이 같고 preview 가 거의 동일한 후보들), 질문이 특정한 특약명·판본(갱신형/해약환급금 미지급형/[기본] 등)·범위와 정확히 일치하는 후보를 read 로 원문 확인한 뒤 그것을 앞세우십시오.\n- 질문이 표·분류표·코드·지급기준을 물으면 조문 후보보다 해당 표(부표·지급기준표·분류표) 후보를 상위에 두십시오.\n- 제출 순서는 \"그 하나만으로 답이 되는 후보\" 우선입니다. 확신이 없는 후보를 1~5위에 채우지 말고, 관련 조가 다른 후보를 6~10위에 두십시오.",
+  "identity_expand": {
+   "min_variant_len": 4,
+   "segment_min_len": 3,
+   "segment_max_len": 8,
+   "segment_min_contracts": 2,
+   "max_variants": 6,
+   "limit": 12
+  },
+  "reference_follow": {
+   "stats": "tags_u5_260507_stats.json",
+   "gate": "table_code_or_document",
+   "limit": 5,
+   "quota": 5,
+   "max_hops": 2
+  },
+  "meta_dir": "out_260507"
  }
 }

@@ -1270,16 +1270,21 @@ def main():
             env = dict(os.environ)
             env.setdefault("HF_HUB_OFFLINE", "1")
             env.setdefault("TRANSFORMERS_OFFLINE", "1")
+            meta_cmd = [meta_python, str(VS / "hybrid_search.py"), "--query", q,
+                        "--strategy", "hybrid", "--top-k", str(top_k),
+                        "--view", arm.get("meta_view", "V9")]
+            if arm.get("meta_dir"):
+                meta_cmd += ["--out-dir", str(VS / arm["meta_dir"])]
             proc = subprocess.run(
-                [meta_python, str(VS / "hybrid_search.py"), "--query", q,
-                 "--strategy", "hybrid", "--top-k", str(top_k),
-                 "--view", arm.get("meta_view", "V9")],
+                meta_cmd,
                 capture_output=True, text=True, timeout=180, env=env, check=True)
             res = json.loads(proc.stdout)["results"]
         else:
             sys.path.insert(0, str(VS))
             from hybrid_search import ChunkHybridSearch
-            hs = ChunkHybridSearch(view=arm.get("meta_view", "V9"))
+            from pathlib import Path as _P
+            hs = ChunkHybridSearch(view=arm.get("meta_view", "V9"),
+                                   out_dir=(VS / arm["meta_dir"]) if arm.get("meta_dir") else None)
             res = hs.search(q, strategy="hybrid", top_k=top_k)
         items = []
         for r in res:
@@ -1939,7 +1944,8 @@ def main():
         if eid.startswith("c"):
             from units import Units
             unit_index = Units(jo_path=FS / "out" / arm.get("jo", "elements_u2jo.jsonl"),
-                               chunks_path=VS / "out/chunks.jsonl")
+                               chunks_path=(VS / arm["meta_dir"] / "chunks.jsonl")
+                               if arm.get("meta_dir") else VS / "out/chunks.jsonl")
             chunk = unit_index.C.get(eid)
             if not chunk:
                 out({"error": "unknown id"}); return

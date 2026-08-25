@@ -77,11 +77,12 @@ def body_table_refs(els, ann):
     return refs
 
 
-def main(v2=False, mode="both"):
-    chunks = [json.loads(l) for l in open(OUT / "chunks.jsonl", encoding="utf-8")]
-    tags = [json.loads(l) for l in open(FS / "out/tags_u4_fact_rules.jsonl", encoding="utf-8")]
+def main(v2=False, mode="both", chunks_path=None, elements_path=None, tags_path=None, out_dir=None):
+    out_base = Path(out_dir) if out_dir else OUT
+    chunks = [json.loads(l) for l in open(chunks_path or (OUT / "chunks.jsonl"), encoding="utf-8")]
+    tags = [json.loads(l) for l in open(tags_path or (FS / "out/tags_u4_fact_rules.jsonl"), encoding="utf-8")]
     els = {json.loads(l)["element_id"]: json.loads(l)
-           for l in open(FS / "out/elements_u3.jsonl", encoding="utf-8")}
+           for l in open(elements_path or (FS / "out/elements_u3.jsonl"), encoding="utf-8")}
     tag_rows = sorted((els[t["element_id"]]["char_start"],
                        els[t["element_id"]]["char_end"], t)
                       for t in tags if t["element_id"] in els)
@@ -91,7 +92,7 @@ def main(v2=False, mode="both"):
     refs = body_table_refs(els, ann) if v2 else {}
     suffix = {"both": "RULE2", "annex": "RULE2A", "subject": "RULE2B"}[mode]
     out_name = f"view_{suffix}.jsonl" if v2 else "view_RULE.jsonl"
-    with open(OUT / out_name, "w", encoding="utf-8") as f:
+    with open(out_base / out_name, "w", encoding="utf-8") as f:
         for c in chunks:
             i = bisect.bisect_left(starts, c["char_start"]) - 3
             subs, roles, contracts = (collections.Counter(),
@@ -148,7 +149,7 @@ def main(v2=False, mode="both"):
             prefix = ("\n".join(parts) + "\n") if parts else ""
             f.write(json.dumps({"chunk_id": c["chunk_id"], "text": prefix + c["text"]},
                                ensure_ascii=False) + "\n")
-    print(json.dumps({"chunks": len(chunks), "out": str(OUT / out_name),
+    print(json.dumps({"chunks": len(chunks), "out": str(out_base / out_name),
                       "annex_start": ann}, ensure_ascii=False))
 
 
@@ -158,5 +159,10 @@ if __name__ == "__main__":
     ap.add_argument("--v2", action="store_true",
                     help="RULE2: 별표 존 오귀속 교정 + subject_key 정제")
     ap.add_argument("--mode", default="both", choices=("both", "annex", "subject"))
+    ap.add_argument("--chunks", default=None)
+    ap.add_argument("--elements", default=None)
+    ap.add_argument("--tags", default=None)
+    ap.add_argument("--out-dir", default=None)
     args = ap.parse_args()
-    main(v2=args.v2, mode=args.mode)
+    main(v2=args.v2, mode=args.mode, chunks_path=args.chunks,
+         elements_path=args.elements, tags_path=args.tags, out_dir=args.out_dir)

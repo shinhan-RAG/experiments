@@ -30,12 +30,14 @@ def read_jsonl(path: Path) -> list[dict]:
 def main():
     ap = argparse.ArgumentParser(description="청크 임베딩 (BGE-m3-ko)")
     ap.add_argument("--view", default="V9", choices=("V9", "BASE", "RAW", "RULE", "RULE2", "RULE2A"))
+    ap.add_argument("--out-dir", default=None)
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--max-len", type=int, default=1024)
     ap.add_argument("--limit", type=int, default=-1)
     args = ap.parse_args()
 
-    view_path = OUT / f"view_{args.view}.jsonl"
+    out_base = Path(args.out_dir) if getattr(args, "out_dir", None) else OUT
+    view_path = out_base / f"view_{args.view}.jsonl"
     if not view_path.exists():
         raise SystemExit(f"[오류] 뷰 파일이 없습니다: {view_path}. build_views.py를 먼저 실행하세요.")
 
@@ -52,7 +54,7 @@ def main():
     t0 = time.time()
     V = embedder.encode(texts, batch=args.batch, max_len=args.max_len, progress=True)
 
-    emb_dir = OUT / "emb"
+    emb_dir = out_base / "emb"
     emb_dir.mkdir(parents=True, exist_ok=True)
 
     npy_path = emb_dir / f"chunk_{args.view}.npy"
