@@ -142,7 +142,7 @@ class Router:
             slots["contract"] = [c for r, c in partial_hits if r >= top - 1e-9]
             slots["_conf"] = {"contract": 0.5}  # 부분 일치 신뢰도(가중 절반)
         if "주계약" in q or "주보험" in q:
-            slots["contract"] += [c for c in self.contracts if c.startswith("(간편)신한통합건강보장보험") or c.startswith("신한(간편가입)")]
+            slots["contract"] += [c for c in self.contracts if "특약" not in c]  # 주계약 = 특약 아님 (G1 일반화)
         for pat, role in ROLE_RULES:
             if re.search(pat, q):
                 slots["role"].append(role)

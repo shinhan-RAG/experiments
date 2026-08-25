@@ -1,8 +1,8 @@
-# 최종 채택 스택 재현 — r11v(무-LLM) + Gold v23 + R10 재조합 (train 213, R@5 .9041)
+# 최종 채택 스택 재현 — r11v(무-LLM) + Gold v23 + R11·R10 재조합 (train 213, R@5 .9112)
 
 최종 조합은 arm `r11v_meta_rule_hybrid`(arms.json — r1v 과 동일하되 meta_view=RULE) +
-`gold_train_scoped_u3_reviewed_overlay_v23.jsonl` + 호스트측 결정론 제출 재조합 R10
-(`recompose_submissions.py --anchor-n 2`, 에이전트 top-5 보존·첫 검색 top-2 후미 보충)이다.
+`gold_train_scoped_u3_reviewed_overlay_v23.jsonl` + 호스트측 결정론 제출 재조합 R11+R10
+(`recompose_submissions.py --dedup-family-thr 0.75 --anchor-n 2` — 같은 특약 계열 근사중복 판본 축약 후 첫 검색 top-2 후미 보충)이다.
 **적재·색인·후보구성 파이프라인은 LLM 0회** — 메타 소개문도 규칙 생성(`vector_search/build_view_rule.py`).
 LLM 은 최종 선택 에이전트(opus)에만 존재한다. (참고: LLM 소개문 V9 를 쓰면 R@5 .9171 — 사용자 결정으로
 무-LLM 을 우선해 RULE 채택, 트레이드오프 −.0130 은 대장 ablation 절 참조.)
@@ -70,10 +70,10 @@ python3 host_agent_runner.py \
 | arm | R@1 | R@5 | R@10 | suff@5 |
 |---|---:|---:|---:|---:|
 | r11v as-submitted (clean) | .6084 | .9041 | .9229 | .8873 |
-| r11v + R10 재조합 (최종) | .6084 | **.9041** | .9288 | .8873 |
-| (참고) r1v/V9 + R10 | .6049 | .9171 | .9370 | .9038 |
+| r11v + R11(0.75) + R10 (최종) | .6084 | **.9112** | .9288 | .8944 |
+| (참고) r1v/V9 + R11 + R10 | — | .9229 | — | — |
 
-재조합은 run 종료 후 `recompose_submissions.py --run <run> --gold <gold v23> --anchor-n 2` 로 적용한다
+재조합은 run 종료 후 `recompose_submissions.py --run <run> --gold <gold v23> --dedup-family-thr 0.75 --anchor-n 2` 로 적용한다
 (top-5 보존 append-only — R@5 강등 구조적 불가, 대장 R10 절 참조).
 
 모델 비결정성 때문에 단일 재실행 수치가 동일할 필요는 없다. manifest의 Gold/data/code SHA,
