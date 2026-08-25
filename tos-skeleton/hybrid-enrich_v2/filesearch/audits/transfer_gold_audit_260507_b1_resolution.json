@@ -1,0 +1,150 @@
+{
+ "policy": "Transfer-gold audit (260507, 3 batches). Primary(opus)와 review(sonnet) 가 85/86 완전 일치, 유일 불일치 0370 은 review 가 primary 의 fix 에 span 축소를 추가한 상위호환. 전 문항 review 선택 — review 가 모든 스팬·판정을 원문으로 재검증했음.",
+ "resolutions": [
+  {
+   "qid": "v3-offline-0065",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0083",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0072",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0151",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0054",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0006",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0046",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0132",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0306",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0004",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0179",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0208",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0094",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0332",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0059",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0130",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0237",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0201",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0188",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0041",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0055",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0289",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0126",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0345",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0037",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0547",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0485",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0415",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  },
+  {
+   "qid": "v3-offline-0425",
+   "selected_source": "review",
+   "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+  }
+ ]
+}

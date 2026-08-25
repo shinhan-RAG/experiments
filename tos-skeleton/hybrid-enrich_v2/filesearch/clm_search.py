@@ -119,12 +119,20 @@ class Router:
             if not core:
                 continue
             if (len(core) >= 3 and core in cq) or (len(core_nb) >= 3 and core_nb in cq):
+                if getattr(self, "core_in_subject_guard", False) and self.rev:
+                    # 오탐 가드: 매칭 코어가 질문 속 더 긴 대상어(역색인 키)의 내부 문자열이면
+                    # (예: '갑상선암' 안의 '암진단') 그 계약 매칭을 무효화하고 역색인에 맡긴다.
+                    probe = core_nb if core_nb in cq else core
+                    embedded = any(term != probe and probe in term and term in cq
+                                   for term in self.rev)
+                    if embedded:
+                        continue
                 slots["contract"].append(c)
             elif self.partial and len(core_nb) >= 4:
                 l = self._lcs(core_nb, cq)
-                if l >= 6 or (l >= 4 and l / len(core_nb) >= 0.6):
+                if l >= 6 or (l >= 4 and l / len(core_nb) >= getattr(self, "partial_ratio", 0.6)):
                     partial_hits.append((l / len(core_nb), c))
-        if not slots["contract"] and self.rev:
+        if (not slots["contract"] or getattr(self, "rev_union", False)) and self.rev:
             # 급여금명·질병명 → 특약 역색인(태그 subject 에서 생성). 질문에 그 대상어가 있고 특약 후보가 rev_max 이하이면 특약 슬롯 추론
             hits = collections.Counter()
             for term, cs in self.rev.items():
@@ -133,10 +141,16 @@ class Router:
                         hits[c] += 1
             if hits:
                 top = max(hits.values())
-                slots["contract"] = [c for c, n in hits.items()
-                                     if n == top and self.bracket_compatible(
-                                         c, explicit_brackets)]
-                slots["_conf"] = {"contract": 0.75}
+                rev_pick = [c for c, n in hits.items()
+                            if n == top and self.bracket_compatible(
+                                c, explicit_brackets)]
+                if slots["contract"]:
+                    # rev_union: 계약명 매칭이 있어도 역색인 후보를 병기(대체 아님)
+                    slots["contract"] += [c for c in rev_pick
+                                          if c not in slots["contract"]]
+                else:
+                    slots["contract"] = rev_pick
+                    slots["_conf"] = {"contract": 0.75}
         if not slots["contract"] and partial_hits:
             top = max(x[0] for x in partial_hits)
             slots["contract"] = [c for r, c in partial_hits if r >= top - 1e-9]

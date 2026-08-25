@@ -1240,6 +1240,12 @@ def main():
     S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")),
                     str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")),
                     structured=arm.get("ranker") == "bm25f")
+    if arm.get("router_core_in_subject_guard"):
+        S.router.core_in_subject_guard = True
+    if arm.get("router_rev_union"):
+        S.router.rev_union = True
+    if arm.get("router_partial_ratio"):
+        S.router.partial_ratio = float(arm["router_partial_ratio"])
     if arm.get("contract_alias_file"):
         from textmatch import compact as _cmp
         _extra = json.load(open(FS / arm["contract_alias_file"], encoding="utf-8"))

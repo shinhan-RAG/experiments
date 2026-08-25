@@ -1,0 +1,368 @@
+{
+  "policy": "Transfer-gold audit (260507, 3 batches). Primary(opus)와 review(sonnet) 가 85/86 완전 일치, 유일 불일치 0370 은 review 가 primary 의 fix 에 span 축소를 추가한 상위호환. 전 문항 review 선택 — review 가 모든 스팬·판정을 원문으로 재검증했음.",
+  "inputs": {
+    "primary_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b2_primary.json",
+      "sha256": "1883a5da1a7f030bc5694bca7112385dd56c56c496cd4cc1c4aa921ca44b33b6"
+    },
+    "review_audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b2_review.json",
+      "sha256": "fee1aec368984e7ab6d456ee411a5b10082eab8401abaeb5d502f46d59d151a7"
+    },
+    "resolution": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b2_resolution.json",
+      "sha256": "ae83361ec6123d1aaf914f1d47ab84d8b0e668af4fa3e2ec686c56fcc2180e26"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b2_qids.json",
+      "sha256": "f576ccc690596368687aca64dbcfb45c50063597dfc3d5023a89ca312b9fb83b"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_260507_pilot_v1.jsonl",
+      "sha256": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/jo_260507.jsonl",
+      "sha256": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/adjudicate_gold_audit_batch.py",
+    "sha256": "d00cb16dca6dbcac60bf3db35f9ef1c3e8ac696d4d937be81236bbfb64b95a9e"
+  },
+  "counts": {
+    "qids": 29,
+    "decision_agreements": 29,
+    "decision_disagreements": 0,
+    "primary_validation_errors": 0,
+    "review_validation_errors": 0,
+    "pass": 7,
+    "fix": 22,
+    "exclude": 0
+  },
+  "comparison": [
+    {
+      "qid": "v3-offline-0444",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0446",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0546",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0479",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0370",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0468",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0480",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0450",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0449",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0545",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0436",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0459",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0361",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0472",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0387",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0362",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0364",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0365",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0388",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0411",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0447",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0500",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0409",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0410",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0435",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0463",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-offline-0532",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-generated-def-0027",
+      "primary_decision": "pass",
+      "review_decision": "pass",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "pass",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    },
+    {
+      "qid": "v3-generated-def-0006",
+      "primary_decision": "fix",
+      "review_decision": "fix",
+      "decision_agreement": true,
+      "selected_source": "review",
+      "selected_decision": "fix",
+      "primary_validation_error": "",
+      "review_validation_error": "",
+      "reason": "Primary/review agree (or review strictly refines); review re-verified spans against jo_260507."
+    }
+  ],
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b2_adjudicated.jsonl",
+    "sha256": "5c74928bd70b5a456f8ec3a11e9b5161d0ac32974cea73ef278e7006167aec50"
+  }
+}

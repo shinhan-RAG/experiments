@@ -1,0 +1,9 @@
+{
+ "policy": "transfer-gold audit prompt (260507, batch 1/3) — 이식 gold 정확성·완전성, retrieval-blind, 260507 원문만 기준",
+ "inputs": {
+  "qids": "a84d2e0f579cab6d2a05d5f82244d391e1096805cbdf897310c51c959f0029db",
+  "gold": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954",
+  "jo": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167"
+ },
+ "output_sha256": "d5ab8d3bb54ebec83861ab6c9df29bbcfdf03cd4cd6f326cab7cfebed40430d5"
+}

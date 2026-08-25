@@ -1,0 +1,9 @@
+{
+ "policy": "transfer-gold cross-review prompt (batch 2/3)",
+ "inputs": {
+  "primary": "1883a5da1a7f030bc5694bca7112385dd56c56c496cd4cc1c4aa921ca44b33b6",
+  "gold": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954",
+  "jo": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167"
+ },
+ "output_sha256": "618f42ff8d9a9ee527bcbed246551010379af0e489edbbbc1284739cf6d18e5e"
+}
