@@ -12,6 +12,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import difflib
 import io
 import itertools
 import json
@@ -26,7 +27,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-if sys.platform == "win32":
+if sys.platform == "win32" and __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
@@ -105,6 +106,10 @@ SYSTEM_V9 = """너는 한국 보험 약관 청크를 색인하는 검색 엔지�
          표기를 질문 안에 **감싸는** 것이지 본문 구절을 **옮겨 적는** 것이 아니다.
          본문에 그대로 있는 문자열은 폐기된다 — 본문에 있는 말은 이미 검색되기 때문이다.
          그런 표기가 본문에 없으면 억지로 만들지 말고 "".
+         **같은 배치의 다른 narrow와 답변 대상이 의미상 구별되어야 한다.** 띄어쓰기,
+         어미, 동의어만 바꾼 질문은 다른 질문이 아니다. 질병명·급여금명·조건·금액·
+         한도·횟수·행위·예외 중 해당 청크만의 사실을 반영하라. 본문만으로 다른 청크와
+         구별할 수 없으면 식별자를 지어내지 말고 ""로 두어라.
          좋은 예: "중증 갑상선암도 납입면제 되나요?"
                   "C8591 갑상선 바늘생검은 어떤 조건에서 인정되나요?"
                   "30일한도형은 얼마까지 나오나요?"
@@ -112,6 +117,8 @@ SYSTEM_V9 = """너는 한국 보험 약관 청크를 색인하는 검색 엔지�
                           "제2-3조 보험금 지급에 관한 세부규정"  ← 〃
   terms  [문자열 3~4개]  고객이 검색창에 칠 법한 **구어체** 표현. 각 16자 이내.
          오타·띄어쓰기 변형·축약형 허용.
+         같은 배치에서 일부 표현은 겹쳐도 되지만, 비어 있지 않은 terms 집합 전체가
+         다른 항목과 같아서는 안 된다. 최소 한 표현은 해당 청크의 검색 의도를 구별하라.
          예: "암걸리면 보험료면제", "납입 안해도되나", "보험료 안냄"
 
 절대 하지 말 것:
@@ -185,6 +192,54 @@ def _clip_list(v, max_items: int, max_chars: int) -> list[str]:
     return out[:max_items]
 
 
+_QUESTION_TAIL_RX = re.compile(
+    r"(?:인가요|인가|나요|되나요|되나|하나요|하나|일까요|인지요|인지)$")
+
+
+def _squash(v: str) -> str:
+    """표면적인 공백·문장부호 차이를 제거한 비교용 정규형."""
+    return re.sub(r"[^0-9a-z가-힣]", "", str(v or "").lower())
+
+
+def _question_key(v: str) -> str:
+    """질문 어미만 바꾼 narrow도 같은 의미 후보로 묶는다."""
+    return _QUESTION_TAIL_RX.sub("", _squash(v))
+
+
+def _terms_key(terms: list[str]) -> tuple[str, ...]:
+    return tuple(sorted({_squash(t) for t in terms if _squash(t)}))
+
+
+def _anchors(v: str) -> set[str]:
+    return set(re.findall(r"[a-z]+\d[\w.~-]*|\d+[\w.%~-]*", v))
+
+
+def _narrow_keys_conflict(left: str, right: str) -> bool:
+    if not left or not right:
+        return False
+    if left == right:
+        return True
+    return (_anchors(left) == _anchors(right)
+            and difflib.SequenceMatcher(None, left, right).ratio() >= 0.94)
+
+
+def find_batch_conflicts(rows: list[dict]) -> tuple[set[int], set[int]]:
+    """배치 내 narrow 의미 중복 후보와 terms 전체집합 중복을 찾는다."""
+    narrow_conflicts: set[int] = set()
+    term_conflicts: set[int] = set()
+    for i, left in enumerate(rows):
+        lk = _question_key(left.get("narrow", ""))
+        lterms = _terms_key(left.get("terms") or [])
+        for j in range(i + 1, len(rows)):
+            right = rows[j]
+            if _narrow_keys_conflict(lk, _question_key(right.get("narrow", ""))):
+                narrow_conflicts.update((i, j))
+            rterms = _terms_key(right.get("terms") or [])
+            if lterms and lterms == rterms:
+                term_conflicts.update((i, j))
+    return narrow_conflicts, term_conflicts
+
+
 def _narrow_grounded(narrow: str, body: str) -> bool:
     if not narrow or not body:
         return False
@@ -245,9 +300,26 @@ def build_batch_prompt(chunks: list[dict]) -> str:
         f"반드시 JSON으로 응답하라. 최상위 키는 \"items\"이고, 값은 배열이다.\n"
         f"배열의 각 항목에는 \"index\" (1부터 시작하는 청크 번호)가 있어야 한다.\n"
         f"{field_desc}\n"
+        "출력 전에 narrow를 서로 비교하여 의미가 같은 질문이 없도록 고쳐라. "
+        "terms는 일부 겹쳐도 되지만 전체 집합이 같아서는 안 된다. "
+        "구별 근거가 없는 동일·연속 청크는 narrow를 빈 문자열로 두어라.\n"
         f"예시 형식: {{\"items\": [{{\"index\": 1, ...}}, {{\"index\": 2, ...}}, ...]}}"
     )
     return "\n\n".join(parts) + footer
+
+
+def build_repair_prompt(chunks: list[dict], rows: list[dict],
+                        narrow_conflicts: set[int], term_conflicts: set[int]) -> str:
+    current = [{"index": i + 1, "wide": r.get("wide", ""),
+                "narrow": r.get("narrow", ""), "terms": r.get("terms") or []}
+               for i, r in enumerate(rows)]
+    targets = sorted(narrow_conflicts | term_conflicts)
+    return (build_batch_prompt(chunks) + "\n\n--- 충돌 수리 ---\n"
+            + "현재 결과: " + json.dumps(current, ensure_ascii=False) + "\n"
+            + f"수리할 index: {[i + 1 for i in targets]}\n"
+            + "위 index만 수정하고 나머지는 그대로 반환하라. narrow 충돌은 각 청크만의 "
+              "구체 사실로 의미상 구별하고, terms 전체집합 충돌은 최소 한 검색 표현을 "
+              "구별하라. 본문으로 구별할 수 없으면 narrow는 빈 문자열로 두어라.")
 
 
 # ================================================================ LLM 호출
@@ -438,8 +510,8 @@ def align_items(items: list, n: int) -> list[dict] | None:
 
 
 # ================================================================ 배치 처리
-def process_batch(chunks: list[dict], system: str, stats: Stats,
-                  max_retries: int = 3) -> list[dict]:
+def _generate_batch(chunks: list[dict], system: str, stats: Stats,
+                    max_retries: int = 3) -> list[dict]:
     n = len(chunks)
     user = build_batch_prompt(chunks)
 
@@ -458,11 +530,55 @@ def process_batch(chunks: list[dict], system: str, stats: Stats,
 
     if len(chunks) > 1:
         mid = len(chunks) // 2
-        return (process_batch(chunks[:mid], system, stats, max_retries)
-                + process_batch(chunks[mid:], system, stats, max_retries))
+        return (_generate_batch(chunks[:mid], system, stats, max_retries)
+                + _generate_batch(chunks[mid:], system, stats, max_retries))
 
     return [{"chunk_id": chunks[0]["chunk_id"], "ok": False,
              "error": "all_retries_failed"}]
+
+
+def _fallback_conflicts(rows: list[dict]) -> None:
+    """수리 뒤에도 남은 충돌은 검색 오염 대신 빈 값으로 안전하게 축소한다."""
+    seen_narrow: list[str] = []
+    seen_terms: set[tuple[str, ...]] = set()
+    for row in rows:
+        key = _question_key(row.get("narrow", ""))
+        if key and any(_narrow_keys_conflict(key, prev) for prev in seen_narrow):
+            row["narrow"] = ""
+            row["narrow_grounded"] = False
+            row["narrow_conflict"] = True
+        elif key:
+            seen_narrow.append(key)
+        tkey = _terms_key(row.get("terms") or [])
+        if tkey and tkey in seen_terms:
+            row["terms"] = []
+            row["terms_full_conflict"] = True
+        elif tkey:
+            seen_terms.add(tkey)
+
+
+def process_batch(chunks: list[dict], system: str, stats: Stats,
+                  max_retries: int = 3) -> list[dict]:
+    """생성 실패로 분할되더라도 최초 배치 전체를 다시 비교한다."""
+    rows = _generate_batch(chunks, system, stats, max_retries)
+    if not all(r.get("ok") for r in rows):
+        return rows
+    narrow_conflicts, term_conflicts = find_batch_conflicts(rows)
+    if narrow_conflicts or term_conflicts:
+        items, err = call_transport(
+            system, build_repair_prompt(chunks, rows, narrow_conflicts, term_conflicts), stats)
+        aligned = align_items(items, len(chunks)) if err is None and items is not None else None
+        targets = narrow_conflicts | term_conflicts
+        if aligned is not None:
+            for i in targets:
+                rows[i].update(sanitize_v9(
+                    aligned[i], nav=False, body=chunks[i]["text"]))
+                rows[i]["repair_attempted"] = True
+        else:
+            for i in targets:
+                rows[i]["repair_attempted"] = True
+    _fallback_conflicts(rows)
+    return rows
 
 
 # ================================================================ 재개
