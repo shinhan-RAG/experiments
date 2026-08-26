@@ -20,11 +20,16 @@ HERE = Path(__file__).resolve().parent
 FS = HERE.parent
 
 PROMPT = """보험약관 조각들에 검색용 태그를 붙여라. 각 조각마다 JSON 한 줄씩, 조각 수만큼 정확히 출력하라(설명 금지).
-형식: {"i": 조각번호, "subject_key": [대상어(질병명·급부명·핵심 개념어) 최대 8개, 원문 표기 그대로, 완결된 명사구만], "role": [payment_trigger|exclusion|claim_procedure|definition|contract_lifecycle|timing_period|limit 중 해당], "qualifier": [한정 조건 문구(다만/최초 1회/연간 N회 등) 최대 4개]}
-잘리거나 문장 중간인 구절을 대상어로 뽑지 마라.
+형식: {"i": 조각번호, "subject_key": [...], "role": [payment_trigger|exclusion|claim_procedure|definition|contract_lifecycle|timing_period|limit 중 해당], "qualifier": [한정 조건 문구 최대 4개]}
+
+subject_key 규칙(중요):
+- 이 조각이 **규정·정의·지급대상으로 삼는 것**만 뽑아라. 본문에 단순히 등장·언급되는 어휘는 제외.
+  (예: 청구 절차 조각에 질병명이 나열되어도 그 조각의 주제는 '청구 서류'이지 질병이 아니다)
+- 문서 어디에나 나오는 범주어 금지: 보험료·보험금·특약·주계약·계약·회사·피보험자·암 같은 단독 일반어.
+  구체어만(예: '경계성종양진단비' O, '보험금' X, '중증 갑상선암' O, '암' X).
+- 완결된 명사구만, 최대 6개. 해당 없으면 빈 배열.
 
 """
-
 
 def broken_subject(keys):
     return any(k.count("(") != k.count(")") or k.count("[") != k.count("]")
@@ -59,7 +64,7 @@ def main():
     ap.add_argument("--elements", default=str(FS / "out/elements_u3.jsonl"))
     ap.add_argument("--base-tags", default=str(FS / "out/tags_u4_fact_rules.jsonl"))
     ap.add_argument("--out", default=str(FS / "out/tags_u4_llm.jsonl"))
-    ap.add_argument("--cache", default=str(FS / "out/.tagllm_v2_cache.jsonl"))
+    ap.add_argument("--cache", default=str(FS / "out/.tagllm_v3_cache.jsonl"))
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--only-broken", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
@@ -100,9 +105,12 @@ def main():
             got = {}
         with lock:
             for i, eid in enumerate(batch):
+                tag = got.get(i)
+                if not tag or not any(tag.get(k) for k in ("subject_key", "role", "qualifier")):
+                    continue  # 실패·빈 응답은 캐시하지 않음(재시도 가능하게)
                 cache_f.write(json.dumps({"text_sha": sha_of(eid),
-                                          "tag": got.get(i, {})}, ensure_ascii=False) + "\n")
-                cache[sha_of(eid)] = got.get(i, {})
+                                          "tag": tag}, ensure_ascii=False) + "\n")
+                cache[sha_of(eid)] = tag
             cache_f.flush()
             done[0] += 1
             if done[0] % 20 == 0:
@@ -111,6 +119,16 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=a.workers) as ex:
         list(ex.map(run_batch, batches))
 
+    ap_df_cap = 150  # subject 문서빈도 상한 — 초과 일반어는 기계적 차단
+    df = {}
+    for eid in targets:
+        tag = cache.get(sha_of(eid)) or {}
+        for k in set(tag.get("subject_key") or []):
+            df[k] = df.get(k, 0) + 1
+    banned = {k for k, n in df.items() if n > ap_df_cap}
+    if banned:
+        print(json.dumps({"df_banned": sorted(banned)[:20], "n_banned": len(banned)},
+                         ensure_ascii=False))
     target_set = set(targets)
     filled = empty = 0
     with open(a.out, "w", encoding="utf-8") as out_f:
@@ -124,6 +142,8 @@ def main():
                         if isinstance(v, str):
                             v = [v]
                         v = [str(x).strip() for x in (v or []) if str(x).strip()]
+                        if k == "subject_key":
+                            v = [x for x in v if x not in banned]
                         if v:
                             if a.merge:
                                 b[k] = list(dict.fromkeys((b.get(k) or []) + v))
