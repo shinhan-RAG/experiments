@@ -44,7 +44,11 @@ def llm_batch(model, items, timeout):
         try:
             d = json.loads(line)
             if isinstance(d.get("i"), int):
-                out[d["i"]] = {k: d.get(k) or [] for k in ("subject_key", "role", "qualifier")}
+                def as_list(v):
+                    if isinstance(v, str):
+                        v = [v]
+                    return [str(x).strip() for x in (v or []) if str(x).strip()]
+                out[d["i"]] = {k: as_list(d.get(k)) for k in ("subject_key", "role", "qualifier")}
         except Exception:
             continue
     return out
@@ -62,6 +66,8 @@ def main():
     ap.add_argument("--batch", type=int, default=15)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--timeout", type=int, default=180)
+    ap.add_argument("--merge", action="store_true",
+                    help="대체가 아니라 병기: subject/role/qualifier = 규칙 ∪ LLM (어휘 표면 보존)")
     a = ap.parse_args()
 
     els = {json.loads(l)["element_id"]: json.loads(l) for l in open(a.elements, encoding="utf-8")}
@@ -114,8 +120,15 @@ def main():
                 llm = cache.get(sha_of(t["element_id"])) or {}
                 if any(llm.get(k) for k in ("subject_key", "role", "qualifier")):
                     for k in ("subject_key", "role", "qualifier"):
-                        if llm.get(k):
-                            b[k] = llm[k]
+                        v = llm.get(k)
+                        if isinstance(v, str):
+                            v = [v]
+                        v = [str(x).strip() for x in (v or []) if str(x).strip()]
+                        if v:
+                            if a.merge:
+                                b[k] = list(dict.fromkeys((b.get(k) or []) + v))
+                            else:
+                                b[k] = v
                     b["schema_version"] = "semtag-llm-1.0"
                     parts = [f"[schema] {b.get('schema_tag', '')}"]
                     if b.get("subject_key"):
