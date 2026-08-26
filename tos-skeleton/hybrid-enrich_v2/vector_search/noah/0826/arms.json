@@ -1,0 +1,32 @@
+{
+  "baseline_rules": {
+    "description": "규칙 태그 기준선 (tags_u4_fact_rules.jsonl)",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": true
+  },
+  "baseline_rules_clm_only": {
+    "description": "규칙 태그, CLM만 (sparse 없음)",
+    "tags": "tags_u4_fact_rules.jsonl",
+    "tag_weights": {"clm": 1.0, "sparse": 0.0},
+    "collapse_jo": true
+  },
+  "llm_v3": {
+    "description": "8슬롯 전 LLM v3 태그",
+    "tags": "tags_u4_llm_v3.jsonl",
+    "tag_weights": {"clm": 1.0, "sparse": 1.0},
+    "collapse_jo": true
+  },
+  "llm_v3_clm_only": {
+    "description": "LLM v3 태그, CLM만",
+    "tags": "tags_u4_llm_v3.jsonl",
+    "tag_weights": {"clm": 1.0, "sparse": 0.0},
+    "collapse_jo": true
+  },
+  "llm_v3_sparse_heavy": {
+    "description": "LLM v3 태그, sparse 가중치 강화",
+    "tags": "tags_u4_llm_v3.jsonl",
+    "tag_weights": {"clm": 1.0, "sparse": 2.0},
+    "collapse_jo": true
+  }
+}

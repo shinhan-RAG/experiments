@@ -1,0 +1,12 @@
+{
+  "version": "semtag-llm-v3-1.0",
+  "transport": "codex",
+  "model": "gpt-5.6-luna",
+  "total": 32046,
+  "targets": 1000,
+  "filled": 13211,
+  "empty_fallback_rule": 18835,
+  "errors": 0,
+  "fallback_contract": 8,
+  "out": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\versionthree\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0826\\out\\tags_u4_llm_v3.jsonl"
+}
