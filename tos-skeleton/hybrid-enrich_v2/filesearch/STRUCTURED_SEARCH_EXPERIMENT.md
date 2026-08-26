@@ -1234,3 +1234,9 @@ manifest 에 retriever 기록). 무결성: 이동 후 첫 페이지 스모크 **
 (회귀 2건 수리: 이동 모듈의 __file__ 상대경로 → filesearch 루트 기준, 캐시 지문 의존성 →
 retriever_rules 실제 모듈로). filesearch + 0819 테스트 전부 통과.
 LLM 태그 대량 생성(32,046 elements)은 미실행 — 비용 승인 후 파일럿(--limit) → 결정론 게이트 순.
+
+### filesearch 폴더링 2차 — gold_tools/·tests/ 분리 (사용자 지시, 2026-08-26)
+gold 감사·매핑 11종 → `gold_tools/`, 단위 테스트 10종 → `tests/` (전부 filesearch 하위).
+루트 shim 11종 유지(하위호환), 이동 모듈의 filesearch 루트 상대경로 교정, 루트 .gitignore
+`tests/` 패턴 예외 등록. 검증: gold 체인 회귀(batch20 b1 재실행 output sha `c1250e92…` 동일) ·
+filesearch/0819 테스트 전부 통과. 루트에는 적재(4)·채점(3)·진단(3)·shim(18)만 남음.

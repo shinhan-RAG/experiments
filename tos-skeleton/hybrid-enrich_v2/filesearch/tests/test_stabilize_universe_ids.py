@@ -1,3 +1,6 @@
+import sys as _sys
+from pathlib import Path as _P
+_sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
 import unittest
 
 from stabilize_universe_ids import make_id_map

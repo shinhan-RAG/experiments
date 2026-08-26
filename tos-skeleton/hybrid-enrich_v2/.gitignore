@@ -19,3 +19,7 @@ vector_search/noah/0819/out/.cache_*.pkl
 vector_search/noah/0819/out/host_agent/*/sessions/
 vector_search/noah/0819/out/host_agent/*/results.jsonl
 vector_search/noah/0819/out/host_agent/*/summary.json
+
+# filesearch 단위 테스트는 추적 (루트 tests/ ignore 예외)
+!filesearch/tests/
+!filesearch/tests/**
