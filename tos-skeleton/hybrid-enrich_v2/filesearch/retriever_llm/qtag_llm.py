@@ -9,7 +9,7 @@ import argparse, json, re, subprocess, sys, hashlib
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent.parent  # filesearch 루트
 ROLES = ["exclusion_exception", "premium_waiver", "payment_trigger", "payment_amount", "limit_frequency",
          "timing_period", "definition", "criteria_rule", "contract_lifecycle", "claim_procedure", "code_reference"]
 ROLE_DESC = {

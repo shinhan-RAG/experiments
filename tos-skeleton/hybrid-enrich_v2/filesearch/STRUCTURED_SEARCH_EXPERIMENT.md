@@ -1218,3 +1218,19 @@ gold v2 직접 채점). 오류 10셀 재실행 — 0188 회복(1.0), **0208·034
 잔여 0점 7: 심층노출 2(0041·0278) + 미노출 4(0126·0134·0179·0532) + 선택 1(0311).
 결론: **범용화된 코드로 신규 문서 .90 달성 — 필요했던 것은 코드 수정이 아니라 gold 정합화 하나.**
 신문서 온보딩 공식(실측 근거): 자동 이식 → blind 병렬 감사 → 그대로 실측.
+
+## filesearch 검색기 재구성 — 미사용 제거 + rules/llm 이원화 (사용자 지시, 2026-08-26)
+정리: 미사용 4종 git 제거(구세대 filesearch/agent_tools.py — 0819 판이 대체 · apply_gold_adjudication ·
+apply_gold_repair_ledger — 현행 감사 체인이 대체 · rescore.py — rescore_agent_results 가 대체).
+map_gold_spans/map_lsh_gold/finalize_reviewed_holdout 은 test149 봉인 워크플로 소속으로 유지,
+compare_agent_runs 는 대장 재현 커맨드 인용으로 유지.
+
+이원화: `retriever_rules/`(정규식 검색기 — clm_search·structured_search·patterns·textmatch·
+tag_rules·build_tags_u4/u5) + `retriever_llm/`(LLM 태그 검색기 — build_tags_llm 스캐폴드·qtag_llm).
+**엔진은 공유**(SlotSearch/BM25F 결정론) — 두 검색기의 차이는 태그 자산뿐. LLM 은 적재 1회·동결
+원칙(검색 시점 LLM 0회 유지). 루트에 하위호환 shim 유지.
+전환 파라미터: `host_agent_runner.py --retriever rules|llm` (llm 은 tags_u4_llm.jsonl 요구,
+manifest 에 retriever 기록). 무결성: 이동 후 첫 페이지 스모크 **byte-동일** 복구 확인
+(회귀 2건 수리: 이동 모듈의 __file__ 상대경로 → filesearch 루트 기준, 캐시 지문 의존성 →
+retriever_rules 실제 모듈로). filesearch + 0819 테스트 전부 통과.
+LLM 태그 대량 생성(32,046 elements)은 미실행 — 비용 승인 후 파일럿(--limit) → 결정론 게이트 순.

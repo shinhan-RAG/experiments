@@ -1187,9 +1187,9 @@ def load_search(elements, tags, structured=False):
     """SlotSearch 를 pickle 캐시로 로드(호출당 프로세스 기동 비용 절감). 캐시는 자기 out/ 에 분리."""
     from clm_search import SlotSearch
     suffix = "_bm25f" if structured else ""
-    deps = [Path(elements), Path(tags), FS / "clm_search.py"]
+    deps = [Path(elements), Path(tags), FS / "retriever_rules" / "clm_search.py"]
     if structured:
-        deps += [FS / "structured_search.py", FS / "schema_adapter.py"]
+        deps += [FS / "retriever_rules" / "structured_search.py", FS / "schema_adapter.py"]
     fingerprint, entries = dependency_fingerprint(deps)
     key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}{suffix}_{fingerprint[:16]}.pkl"
     key.parent.mkdir(exist_ok=True)
