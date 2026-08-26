@@ -1187,9 +1187,9 @@ def load_search(elements, tags, structured=False):
     """SlotSearch 를 pickle 캐시로 로드(호출당 프로세스 기동 비용 절감). 캐시는 자기 out/ 에 분리."""
     from clm_search import SlotSearch
     suffix = "_bm25f" if structured else ""
-    deps = [Path(elements), Path(tags), FS / "clm_search.py"]
+    deps = [Path(elements), Path(tags), FS / "retriever_rules" / "clm_search.py"]
     if structured:
-        deps += [FS / "structured_search.py", FS / "schema_adapter.py"]
+        deps += [FS / "retriever_rules" / "structured_search.py", FS / "schema_adapter.py"]
     fingerprint, entries = dependency_fingerprint(deps)
     key = HERE / "out" / f".cache_{Path(elements).stem}_{Path(tags).stem}{suffix}_{fingerprint[:16]}.pkl"
     key.parent.mkdir(exist_ok=True)
@@ -1240,6 +1240,19 @@ def main():
     S = load_search(str(FS / "out" / arm.get("elements", "elements_u2.jsonl")),
                     str(FS / "out" / arm.get("tags", "tags_u2_rules.jsonl")),
                     structured=arm.get("ranker") == "bm25f")
+    if arm.get("router_core_in_subject_guard"):
+        S.router.core_in_subject_guard = True
+    if arm.get("router_rev_union"):
+        S.router.rev_union = True
+    if arm.get("router_partial_ratio"):
+        S.router.partial_ratio = float(arm["router_partial_ratio"])
+    if arm.get("contract_alias_file"):
+        from textmatch import compact as _cmp
+        _extra = json.load(open(FS / arm["contract_alias_file"], encoding="utf-8"))
+        _extra.pop("_comment", None)
+        S.router.alias_map = {**getattr(S.router, "alias_map", {}),
+                              **{_cmp(a): _cmp(c) for c, alts in _extra.items()
+                                 for a in alts if len(_cmp(a)) >= 3}}
     S.router.strict_explicit_bracket = bool(arm.get("strict_explicit_bracket", False))
     if not hasattr(S, "_jo"):
         J = [json.loads(l) for l in open(FS / "out" / arm.get("jo", "elements_u2jo.jsonl"), encoding="utf-8")]
@@ -1270,16 +1283,21 @@ def main():
             env = dict(os.environ)
             env.setdefault("HF_HUB_OFFLINE", "1")
             env.setdefault("TRANSFORMERS_OFFLINE", "1")
+            meta_cmd = [meta_python, str(VS / "hybrid_search.py"), "--query", q,
+                        "--strategy", "hybrid", "--top-k", str(top_k),
+                        "--view", arm.get("meta_view", "V9")]
+            if arm.get("meta_dir"):
+                meta_cmd += ["--out-dir", str(VS / arm["meta_dir"])]
             proc = subprocess.run(
-                [meta_python, str(VS / "hybrid_search.py"), "--query", q,
-                 "--strategy", "hybrid", "--top-k", str(top_k),
-                 "--view", arm.get("meta_view", "V9")],
+                meta_cmd,
                 capture_output=True, text=True, timeout=180, env=env, check=True)
             res = json.loads(proc.stdout)["results"]
         else:
             sys.path.insert(0, str(VS))
             from hybrid_search import ChunkHybridSearch
-            hs = ChunkHybridSearch(view=arm.get("meta_view", "V9"))
+            from pathlib import Path as _P
+            hs = ChunkHybridSearch(view=arm.get("meta_view", "V9"),
+                                   out_dir=(VS / arm["meta_dir"]) if arm.get("meta_dir") else None)
             res = hs.search(q, strategy="hybrid", top_k=top_k)
         items = []
         for r in res:
@@ -1939,7 +1957,8 @@ def main():
         if eid.startswith("c"):
             from units import Units
             unit_index = Units(jo_path=FS / "out" / arm.get("jo", "elements_u2jo.jsonl"),
-                               chunks_path=VS / "out/chunks.jsonl")
+                               chunks_path=(VS / arm["meta_dir"] / "chunks.jsonl")
+                               if arm.get("meta_dir") else VS / "out/chunks.jsonl")
             chunk = unit_index.C.get(eid)
             if not chunk:
                 out({"error": "unknown id"}); return

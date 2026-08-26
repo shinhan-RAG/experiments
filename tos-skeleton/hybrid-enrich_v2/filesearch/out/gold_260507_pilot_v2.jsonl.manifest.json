@@ -1,0 +1,7 @@
+{
+ "policy": "pilot v1 + 3-batch retrieval-blind transfer audit (primary opus + review sonnet, 85/86 일치·1건 review 상위호환) 적용",
+ "base_sha256": "",
+ "out_sha256": "6da2864d1cdaac9d9ac90e5e1e0ff03947bccc6458af57e9ab519eec6dbda1bb",
+ "n": 86,
+ "n_members": 387
+}

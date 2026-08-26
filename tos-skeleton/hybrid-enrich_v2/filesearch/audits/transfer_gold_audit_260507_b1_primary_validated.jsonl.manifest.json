@@ -1,0 +1,35 @@
+{
+  "policy": "retrieval-blind audit; exact batch coverage; JO/span/group validation",
+  "inputs": {
+    "audit": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_primary.json",
+      "sha256": "ce36abe7fb5f1309aeedc1e7ba051b24faef3732fd5b83215f79070ea130fa61"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_qids.json",
+      "sha256": "a84d2e0f579cab6d2a05d5f82244d391e1096805cbdf897310c51c959f0029db"
+    },
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_260507_pilot_v1.jsonl",
+      "sha256": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/jo_260507.jsonl",
+      "sha256": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/finalize_gold_audit_batch.py",
+    "sha256": "2e4e208d5f87a1e95be62dd5f49a4fe1e5d14ca704ad3012ddf31c6ea823595f"
+  },
+  "counts": {
+    "qids": 29,
+    "pass": 7,
+    "fix": 22,
+    "exclude": 0
+  },
+  "output": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_primary_validated.jsonl",
+    "sha256": "c1250e92520b1e27e36f5c5ac6622dde051f4f7fcfe5d8c9274931c44b255d16"
+  }
+}

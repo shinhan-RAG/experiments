@@ -1,0 +1,210 @@
+{
+  "inputs": {
+    "gold": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/gold_260507_pilot_v1.jsonl",
+      "sha256": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954"
+    },
+    "jo": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/out/jo_260507.jsonl",
+      "sha256": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167"
+    },
+    "ledger": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_adjudicated.jsonl",
+      "sha256": "2175280d364d89057a2e89f837fdc261ebe3937c2255034a0d2aa2785a510675"
+    },
+    "qids": {
+      "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_qids.json",
+      "sha256": "a84d2e0f579cab6d2a05d5f82244d391e1096805cbdf897310c51c959f0029db"
+    }
+  },
+  "generator": {
+    "path": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/apply_gold_completeness_ledger.py",
+    "sha256": "307759529b2a5cc4a1289d35a5633ed9daf130d21030de9a4cafb82ef34bba07"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "output": "/Users/ralph/Desktop/신한라이프/sementic_tag/experiments/tos-skeleton/hybrid-enrich_v2/filesearch/audits/transfer_gold_audit_260507_b1_reviewed.jsonl",
+  "output_sha256": "0d2ee65df88ada11c9bd7a5aceafbc90a0272dda828ac890d8681c5204f5bccd",
+  "n_input": 29,
+  "n_output": 29,
+  "counts": {
+    "pass": 7,
+    "fix": 22,
+    "exclude": 0
+  },
+  "audit": [
+    {
+      "qid": "v3-offline-0065",
+      "decision": "fix",
+      "groups": 1,
+      "members": 11
+    },
+    {
+      "qid": "v3-offline-0083",
+      "decision": "fix",
+      "groups": 1,
+      "members": 17
+    },
+    {
+      "qid": "v3-offline-0072",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0151",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0054",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0006",
+      "decision": "fix",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0046",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0132",
+      "decision": "fix",
+      "groups": 2,
+      "members": 4
+    },
+    {
+      "qid": "v3-offline-0306",
+      "decision": "fix",
+      "groups": 2,
+      "members": 6
+    },
+    {
+      "qid": "v3-offline-0004",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0179",
+      "decision": "fix",
+      "groups": 1,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0208",
+      "decision": "fix",
+      "groups": 2,
+      "members": 5
+    },
+    {
+      "qid": "v3-offline-0094",
+      "decision": "fix",
+      "groups": 1,
+      "members": 72
+    },
+    {
+      "qid": "v3-offline-0332",
+      "decision": "fix",
+      "groups": 1,
+      "members": 9
+    },
+    {
+      "qid": "v3-offline-0059",
+      "decision": "fix",
+      "groups": 1,
+      "members": 12
+    },
+    {
+      "qid": "v3-offline-0130",
+      "decision": "fix",
+      "groups": 1,
+      "members": 6
+    },
+    {
+      "qid": "v3-offline-0237",
+      "decision": "fix",
+      "groups": 1,
+      "members": 14
+    },
+    {
+      "qid": "v3-offline-0201",
+      "decision": "pass",
+      "groups": 2,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0188",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0041",
+      "decision": "fix",
+      "groups": 1,
+      "members": 7
+    },
+    {
+      "qid": "v3-offline-0055",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0289",
+      "decision": "fix",
+      "groups": 1,
+      "members": 7
+    },
+    {
+      "qid": "v3-offline-0126",
+      "decision": "fix",
+      "groups": 1,
+      "members": 14
+    },
+    {
+      "qid": "v3-offline-0345",
+      "decision": "fix",
+      "groups": 2,
+      "members": 3
+    },
+    {
+      "qid": "v3-offline-0037",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0547",
+      "decision": "pass",
+      "groups": 1,
+      "members": 1
+    },
+    {
+      "qid": "v3-offline-0485",
+      "decision": "pass",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0415",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    },
+    {
+      "qid": "v3-offline-0425",
+      "decision": "fix",
+      "groups": 1,
+      "members": 2
+    }
+  ]
+}

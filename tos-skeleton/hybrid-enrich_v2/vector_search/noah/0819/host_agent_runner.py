@@ -50,8 +50,17 @@ def command_version(command):
     return text if proc.returncode == 0 else f"error:{proc.returncode}:{text[-300:]}"
 
 
-def resolve_arm(name):
+def resolve_arm(name, retriever="rules"):
     arms = json.loads((HERE / "arms.json").read_text(encoding="utf-8"))
+    if retriever == "llm":
+        # 검색기 전환 파라미터: 엔진·arm 은 동일, 태그 자산만 LLM 판으로 교체
+        llm_tags = "tags_u4_llm.jsonl"
+        if not (FS / "out" / llm_tags).exists():
+            raise SystemExit(f"--retriever llm: {llm_tags} 가 없습니다. "
+                             "filesearch/retriever_llm/build_tags_llm.py 로 먼저 생성하십시오.")
+        for key in list(arms):
+            if isinstance(arms[key], dict) and "tags" in arms[key]:
+                arms[key] = {**arms[key], "tags": llm_tags}
     return arms[name]
 
 
@@ -159,6 +168,8 @@ def main():
     parser.add_argument("--arms", nargs="+", required=True)
     parser.add_argument("--qids", required=True)
     parser.add_argument("--gold", default=str(FS / "out/gold_spans_lsh_train.jsonl"))
+    parser.add_argument("--retriever", choices=("rules", "llm"), default="rules",
+                        help="검색기 선택: rules(공식, 규칙 태그) | llm(LLM 태그 tags_u4_llm.jsonl)")
     parser.add_argument("--reps", type=int, default=2)
     parser.add_argument("--rep-start", type=int, default=0,
                         help="first replicate index; used for exact-key clean retries")
@@ -200,7 +211,7 @@ def main():
     missing_qids = sorted(keep - set(gold))
     if missing_qids:
         raise ValueError(f"qids missing from Gold: {missing_qids}")
-    arms = {name: resolve_arm(name) for name in args.arms}
+    arms = {name: resolve_arm(name, args.retriever) for name in args.arms}
     units = {name: Units(FS / "out" / arm.get("jo", "elements_u2jo.jsonl"))
              for name, arm in arms.items()}
     run_dir = HERE / "out/host_agent" / args.run
@@ -226,6 +237,7 @@ def main():
                 "system_prompt_sha256": hashlib.sha256(SYSTEM.encode("utf-8")).hexdigest(),
                 "agent_tools_sha256": sha256(HERE / "agent_tools.py"),
                 "arms_sha256": sha256(HERE / "arms.json"),
+                "retriever": args.retriever,
                 "hybrid_search_sha256": sha256(VS / "hybrid_search.py"),
                 "clm_search_sha256": sha256(FS / "clm_search.py"),
                 "structured_search_sha256": sha256(FS / "structured_search.py"),

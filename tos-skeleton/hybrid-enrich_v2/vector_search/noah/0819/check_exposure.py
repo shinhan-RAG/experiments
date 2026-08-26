@@ -14,12 +14,13 @@ def main():
     ap.add_argument("--gold", default=str(FS / "out/gold_train_scoped_u3_reviewed_overlay_v19.jsonl"))
     ap.add_argument("--k", type=int, default=40)
     ap.add_argument("--tag", default="", help="세션 디렉터리 접미(대조 기록용)")
+    ap.add_argument("--jo", default=str(FS / "out/elements_u3jo.jsonl"))
     a = ap.parse_args()
     qids = json.load(open(a.qids)) if a.qids.endswith(".json") else [x.strip() for x in a.qids.split(",")]
     arms = json.loads((HERE / "arms.json").read_text())
     arm = arms[a.arm]
     G = {json.loads(l)["qid"]: json.loads(l) for l in open(a.gold)}
-    J = [json.loads(l) for l in open(FS / "out/elements_u3jo.jsonl")]
+    J = [json.loads(l) for l in open(a.jo)]
     exposed = 0
     rows = []
     for qid in qids:

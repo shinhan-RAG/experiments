@@ -1,0 +1,8 @@
+{
+ "policy": "gold v23 -> 260507 자동 이식 파일럿(v1). member 는 단일 260507 조 포함율(containment, 노이즈 제거 bigram)>=0.85 로 매칭된 것만; 병합-창 매칭·저유사 member 제외. 문항은 모든 AND 그룹에 이식 member 가 남는 경우만. 편향 주의: 미개정 문항 편향 — 보수적 1차 신호용.",
+ "src_gold_sha256": "5f2404df0cba4b6665caa7f38b3f0fa9f3ac4e84e385cfd7aea728284d432929",
+ "jo260_sha256": "4b76883d5c21729cfaffeea605ebeb30c35e338d068ed24baeb64223e4698167",
+ "out_sha256": "98f27869ae5cecfc18cbbb365d261fcb54ee19eddf584bbf2184daf4dd0c3954",
+ "n_questions": 86,
+ "n_members": 228
+}

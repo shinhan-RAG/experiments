@@ -187,9 +187,10 @@ def main():
     ap.add_argument("--strategy", default="hybrid", choices=("bm25", "dense", "hybrid"))
     ap.add_argument("--top-k", type=int, default=10)
     ap.add_argument("--view", default="V9", choices=("V9", "BASE", "RAW", "RULE", "RULE2", "RULE2A"))
+    ap.add_argument("--out-dir", default=None)
     args = ap.parse_args()
 
-    hs = ChunkHybridSearch(view=args.view)
+    hs = ChunkHybridSearch(view=args.view, out_dir=Path(args.out_dir) if args.out_dir else None)
     results = hs.search(args.query, strategy=args.strategy, top_k=args.top_k)
     print(json.dumps({"query": args.query, "strategy": args.strategy,
                       "n_results": len(results), "results": results},
