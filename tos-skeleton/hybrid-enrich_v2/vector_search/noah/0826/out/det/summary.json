@@ -1,0 +1,34 @@
+{
+  "gold": "C:\\Users\\Atdev-pc\\Desktop\\wiki\\versionthree\\experiments\\tos-skeleton\\hybrid-enrich_v2\\vector_search\\noah\\0824\\v2\\gold_v21_train213.jsonl",
+  "n": 213,
+  "selection_metric": "jo fractional R@5",
+  "tie_break": [
+    "suff@10",
+    "R@10"
+  ],
+  "selected_arm": "llm_v3",
+  "arms": {
+    "baseline_rules": {
+      "R@1": 0.392019,
+      "R@5": 0.723005,
+      "R@10": 0.799687,
+      "R@20": 0.87011,
+      "R@40": 0.902973,
+      "suff@5": 0.704225,
+      "suff@10": 0.784038,
+      "RR@10": 0.549603,
+      "delta_R@5": 0.0
+    },
+    "llm_v3": {
+      "R@1": 0.408451,
+      "R@5": 0.725352,
+      "R@10": 0.77856,
+      "R@20": 0.856025,
+      "R@40": 0.902191,
+      "suff@5": 0.70892,
+      "suff@10": 0.760563,
+      "RR@10": 0.550156,
+      "delta_R@5": 0.002347
+    }
+  }
+}
